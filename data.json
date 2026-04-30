@@ -1,7 +1,7 @@
 {
   "league": {
     "name": "LCHQ",
-    "season": "Saison 4",
+    "season": "Saison 6",
     "platform": "World of Chel - NHL 26",
     "format": "4v4 (3 patineurs + 1 gardien)"
   },
@@ -76,8 +76,8 @@
       "city": "Los Angeles",
       "division": "nhl",
       "affiliate": "saguenéens",
-      "color": "#111111",
-      "secondary": "#A2AAAD",
+      "color": "#A2AAAD",
+      "secondary": "#111111",
       "logo": "https://upload.wikimedia.org/wikipedia/en/6/63/Los_Angeles_Kings_2024_Logo.svg",
       "emoji": "👑",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
@@ -87,8 +87,8 @@
       "city": "Seattle",
       "division": "nhl",
       "affiliate": "drakkar",
-      "color": "#001628",
-      "secondary": "#99D9D9",
+      "color": "#99D9D9",
+      "secondary": "#001628",
       "logo": "https://upload.wikimedia.org/wikipedia/en/4/48/Seattle_Kraken_official_logo.svg",
       "emoji": "🦑",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
@@ -99,7 +99,7 @@
       "division": "nhl",
       "affiliate": "wildcats",
       "color": "#C8102E",
-      "secondary": "#041E42",
+      "secondary": "#FFB81C",
       "logo": "https://upload.wikimedia.org/wikipedia/en/4/43/Florida_Panthers_2016_logo.svg",
       "emoji": "🐆",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
@@ -155,7 +155,7 @@
       "affiliate": "avalanche",
       "color": "#0033A0",
       "secondary": "#C8102E",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/2.png",
       "emoji": "♠️",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -166,7 +166,7 @@
       "affiliate": "bruins",
       "color": "#F47B30",
       "secondary": "#000000",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/17.png",
       "emoji": "🐯",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -177,7 +177,7 @@
       "affiliate": "canadiens",
       "color": "#C8102E",
       "secondary": "#FFB81C",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/14.png",
       "emoji": "⚜️",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -188,7 +188,7 @@
       "affiliate": "canucks",
       "color": "#003DA5",
       "secondary": "#C8102E",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/15.png",
       "emoji": "👻",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -199,7 +199,7 @@
       "affiliate": "capitals",
       "color": "#E03A3E",
       "secondary": "#FDB927",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/60.png",
       "emoji": "🔥",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -210,7 +210,7 @@
       "affiliate": "kings",
       "color": "#003DA5",
       "secondary": "#FFFFFF",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/3.png",
       "emoji": "🔱",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -221,7 +221,7 @@
       "affiliate": "kraken",
       "color": "#000000",
       "secondary": "#C8102E",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/1.png",
       "emoji": "🐉",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -232,7 +232,7 @@
       "affiliate": "panthers",
       "color": "#C8102E",
       "secondary": "#000000",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/9.png",
       "emoji": "🐅",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -243,7 +243,7 @@
       "affiliate": "predators",
       "color": "#000000",
       "secondary": "#C8102E",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/16.png",
       "emoji": "🐾",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -254,7 +254,7 @@
       "affiliate": "rangers",
       "color": "#C8102E",
       "secondary": "#FFFFFF",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/12.png",
       "emoji": "⛑️",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -265,7 +265,7 @@
       "affiliate": "sharks",
       "color": "#003DA5",
       "secondary": "#FDB927",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/11.png",
       "emoji": "🐬",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     },
@@ -276,7 +276,7 @@
       "affiliate": "wild",
       "color": "#003DA5",
       "secondary": "#C8102E",
-      "logo": "",
+      "logo": "https://assets.leaguestat.com/lhjmq/logos/6.png",
       "emoji": "🫎",
       "record": { "gp": 0, "w": 0, "l": 0, "otl": 0, "sol": 0, "pts": 0, "gf": 0, "ga": 0, "streak": "-" }
     }
@@ -383,3 +383,4 @@
   ],
   "games": []
 }
+
