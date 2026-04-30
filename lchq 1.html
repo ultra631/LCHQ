@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCHQ — Saison 4 | Stats officielles</title>
+<meta name="description" content="Statistiques officielles de la LCHQ — Ligue de hockey World of Chel sur NHL 26">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #111118;
+    --bg-card: #16161f;
+    --bg-card-hover: #1c1c28;
+    --bg-elevated: #1f1f2c;
+    --border: #2a2a3a;
+    --border-bright: #3a3a4f;
+    --red: #e63946;
+    --red-bright: #ff4757;
+    --red-dark: #c1121f;
+    --red-glow: rgba(230, 57, 70, 0.4);
+    --text-primary: #ffffff;
+    --text-secondary: #b8b8c8;
+    --text-tertiary: #7a7a8c;
+    --gold: #ffb81c;
+    --green: #4ade80;
+    --orange: #fb923c;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(230, 57, 70, 0.12) 0%, transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(193, 18, 31, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--red);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .header-content {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 20px; max-width: 1400px; margin: 0 auto;
+  }
+  .logo-wrap { display: flex; align-items: center; gap: 14px; cursor: pointer; }
+  .logo-img {
+    width: 52px; height: 52px; border-radius: 12px;
+    box-shadow: 0 0 20px var(--red-glow);
+    border: 2px solid var(--red);
+    object-fit: cover;
+    background: var(--bg-card);
+  }
+  .logo-text h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 2px;
+    background: linear-gradient(135deg, #fff 0%, var(--red-bright) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-text p { font-size: 11px; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; }
+
+  /* NAV */
+  nav { display: flex; gap: 4px; }
+  .nav-btn {
+    background: transparent; color: var(--text-secondary);
+    border: none; padding: 10px 16px; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    border-radius: 8px;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .nav-btn:hover { color: var(--text-primary); background: var(--bg-card); }
+  .nav-btn.active { color: var(--text-primary); background: var(--red); box-shadow: 0 0 15px var(--red-glow); }
+
+  .mobile-menu-btn { display: none; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 20px; }
+
+  /* MAIN */
+  main { padding: 30px 0 60px; }
+  .page { display: none; animation: fadeIn 0.4s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* HERO HOME */
+  .hero {
+    text-align: center; padding: 50px 20px 40px;
+    background:
+      radial-gradient(ellipse at center, rgba(230, 57, 70, 0.15) 0%, transparent 70%),
+      linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(230, 57, 70, 0.08) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+  .hero-logo {
+    width: 160px; height: 160px; border-radius: 28px;
+    box-shadow: 0 0 60px var(--red-glow), 0 0 120px rgba(230, 57, 70, 0.2);
+    border: 3px solid var(--red);
+    object-fit: cover;
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
+    background: var(--bg-card);
+  }
+  .hero h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 86px);
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #fff 0%, var(--red-bright) 50%, var(--red-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 40px var(--red-glow);
+    line-height: 1;
+    position: relative; z-index: 1;
+  }
+  .hero .subtitle {
+    font-size: 18px; color: var(--text-secondary);
+    margin-top: 10px; font-weight: 500;
+    position: relative; z-index: 1;
+  }
+  .hero .badge {
+    display: inline-block; margin-top: 20px;
+    padding: 8px 20px;
+    background: var(--red);
+    border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    box-shadow: 0 4px 20px var(--red-glow);
+    position: relative; z-index: 1;
+  }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; letter-spacing: 3px;
+    margin: 40px 0 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .section-title::before {
+    content: ''; width: 6px; height: 32px;
+    background: linear-gradient(180deg, var(--red-bright), var(--red-dark));
+    border-radius: 3px;
+    box-shadow: 0 0 15px var(--red-glow);
+  }
+
+  /* GRIDS */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s;
+  }
+  .card:hover {
+    border-color: var(--red);
+    box-shadow: 0 8px 30px rgba(230, 57, 70, 0.15);
+    transform: translateY(-2px);
+  }
+  .card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 2px;
+    margin-bottom: 18px;
+    color: var(--red-bright);
+  }
+
+  /* LEADERS */
+  .leader-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .leader-row:last-child { border-bottom: none; }
+  .leader-rank {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    font-weight: 800; font-size: 13px;
+    color: var(--text-tertiary);
+  }
+  .leader-rank.gold { background: linear-gradient(135deg, #ffd700, #ff9500); color: #000; }
+  .leader-rank.silver { background: linear-gradient(135deg, #c0c0c0, #808080); color: #000; }
+  .leader-rank.bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #fff; }
+  .leader-info { flex: 1; min-width: 0; }
+  .leader-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .leader-team { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; }
+  .leader-stat { font-family: 'Bebas Neue'; font-size: 24px; color: var(--red-bright); }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  thead {
+    background: linear-gradient(180deg, var(--bg-elevated), var(--bg-card));
+    border-bottom: 2px solid var(--red);
+  }
+  th {
+    padding: 14px 12px; text-align: left;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer; user-select: none;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+  th:hover { color: var(--red-bright); }
+  th.sortable::after { content: ' ⇅'; opacity: 0.3; font-size: 10px; }
+  th.sort-asc::after { content: ' ▲'; opacity: 1; color: var(--red-bright); }
+  th.sort-desc::after { content: ' ▼'; opacity: 1; color: var(--red-bright); }
+  td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  tbody tr { transition: background 0.2s; cursor: pointer; }
+  tbody tr:hover { background: var(--bg-card-hover); }
+  tbody tr:last-child td { border-bottom: none; }
+  .team-cell { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .team-emoji { font-size: 20px; }
+  .num { text-align: center; font-variant-numeric: tabular-nums; }
+  .pts-cell { font-weight: 800; color: var(--red-bright); }
+  .diff-pos { color: var(--green); font-weight: 700; }
+  .diff-neg { color: var(--red-bright); font-weight: 700; }
+  .streak-w { color: var(--green); font-weight: 700; }
+  .streak-l { color: var(--red-bright); font-weight: 700; }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 8px; margin-bottom: 20px;
+    background: var(--bg-card); padding: 6px;
+    border-radius: 12px; border: 1px solid var(--border);
+    width: fit-content;
+    flex-wrap: wrap;
+  }
+  .tab {
+    background: transparent; border: none;
+    padding: 10px 20px; cursor: pointer;
+    color: var(--text-secondary);
+    font-family: inherit; font-weight: 600; font-size: 13px;
+    letter-spacing: 1px; text-transform: uppercase;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .tab:hover { color: var(--text-primary); }
+  .tab.active { background: var(--red); color: #fff; box-shadow: 0 4px 15px var(--red-glow); }
+
+  /* FILTERS */
+  .filters {
+    display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .filter-input, .filter-select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-family: inherit; font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .filter-input:focus, .filter-select:focus { border-color: var(--red); }
+  .filter-input { flex: 1; min-width: 200px; }
+
+  /* TEAM PAGES */
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .team-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .team-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--team-color, var(--red));
+  }
+  .team-card:hover {
+    border-color: var(--team-color, var(--red));
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  }
+  .team-card-emoji { font-size: 48px; margin-bottom: 10px; }
+  .team-card-name { font-family: 'Bebas Neue'; font-size: 22px; letter-spacing: 1px; }
+  .team-card-city { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
+  .team-card-record { margin-top: 10px; font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+
+  /* TEAM DETAIL */
+  .team-header {
+    display: flex; align-items: center; gap: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 6px solid var(--team-color, var(--red));
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .team-header-emoji { font-size: 64px; }
+  .team-header-info h2 { font-family: 'Bebas Neue'; font-size: 42px; letter-spacing: 2px; }
+  .team-header-info p { color: var(--text-tertiary); font-size: 14px; }
+  .team-header-stats {
+    margin-left: auto;
+    display: flex; gap: 24px;
+    flex-wrap: wrap;
+  }
+  .stat-block { text-align: center; }
+  .stat-block-value { font-family: 'Bebas Neue'; font-size: 32px; color: var(--red-bright); }
+  .stat-block-label { font-size: 10px; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; }
+
+  .affiliate-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--bg-elevated);
+    padding: 8px 14px;
+    border-radius: 10px;
+    margin-top: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+  }
+  .affiliate-link:hover { border-color: var(--red); color: var(--red-bright); }
+
+  .back-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 16px; border-radius: 10px;
+    cursor: pointer; font-family: inherit; font-size: 13px;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { border-color: var(--red); color: var(--text-primary); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--text-tertiary);
+  }
+  .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    margin-top: 40px;
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 13px;
+  }
+  footer .heart { color: var(--red-bright); }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .mobile-menu-btn { display: block; }
+    nav {
+      position: fixed; top: 80px; left: 0; right: 0;
+      flex-direction: column; gap: 0;
+      background: var(--bg-secondary);
+      border-bottom: 2px solid var(--red);
+      padding: 12px;
+      transform: translateY(-150%);
+      transition: transform 0.3s;
+      z-index: 99;
+    }
+    nav.open { transform: translateY(0); }
+    .nav-btn { width: 100%; text-align: left; padding: 14px; }
+    .hero h2 { letter-spacing: 2px; }
+    .hero-logo { width: 120px; height: 120px; }
+    .section-title { font-size: 28px; }
+    .team-header-stats { width: 100%; justify-content: space-around; margin-left: 0; }
+  }
+  @media (max-width: 500px) {
+    .container { padding: 0 12px; }
+    .header-content { padding: 12px; }
+    .logo-text h1 { font-size: 22px; }
+    .logo-text p { font-size: 9px; }
+    .logo-img { width: 44px; height: 44px; }
+    .card { padding: 18px; }
+    th, td { padding: 10px 8px; font-size: 12px; }
+    .tab { padding: 8px 14px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="logo-wrap" onclick="navigate('home')">
+      <img src="logo.png" alt="LCHQ" class="logo-img" onerror="this.style.display='none'">
+      <div class="logo-text">
+        <h1>LCHQ</h1>
+        <p>Saison 4 · World of Chel</p>
+      </div>
+    </div>
+    <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+    <nav id="mainNav">
+      <button class="nav-btn active" data-page="home" onclick="navigate('home')">Accueil</button>
+      <button class="nav-btn" data-page="standings" onclick="navigate('standings')">Classement</button>
+      <button class="nav-btn" data-page="players" onclick="navigate('players')">Joueurs</button>
+      <button class="nav-btn" data-page="goalies" onclick="navigate('goalies')">Gardiens</button>
+      <button class="nav-btn" data-page="teams" onclick="navigate('teams')">Équipes</button>
+      <button class="nav-btn" data-page="schedule" onclick="navigate('schedule')">Calendrier</button>
+      <button class="nav-btn" data-page="leaders" onclick="navigate('leaders')">Trophées</button>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+<!-- HOME -->
+<section id="page-home" class="page active">
+  <div class="hero">
+    <img src="logo.png" alt="LCHQ" class="hero-logo" onerror="this.style.display='none'">
+    <h2>LCHQ</h2>
+    <p class="subtitle">Ligue de Hockey · World of Chel · NHL 26</p>
+    <div class="badge">⚡ Saison 4 — En cours</div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h3>🥅 Top Buteurs</h3>
+      <div id="topScorers"></div>
+    </div>
+    <div class="card">
+      <h3>🎯 Top Pointeurs</h3>
+      <div id="topPoints"></div>
+    </div>
+    <div class="card">
+      <h3>🛡️ Top Gardiens</h3>
+      <div id="topGoalies"></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Derniers Résultats</h2>
+  <div class="card">
+    <div id="recentGames" class="empty-state">
+      <div class="empty-state-icon">📅</div>
+      <p>Aucun match joué pour le moment.</p>
+      <p style="margin-top: 8px; font-size: 13px;">Les résultats apparaîtront ici après la première partie.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STANDINGS -->
+<section id="page-standings" class="page">
+  <h2 class="section-title">Classement</h2>
+  <div class="tabs">
+    <button class="tab active" onclick="switchStandingsDiv('nhl', this)">Division NHL</button>
+    <button class="tab" onclick="switchStandingsDiv('lhjmq', this)">Division LHJMQ</button>
+    <button class="tab" onclick="switchStandingsDiv('all', this)">Vue combinée</button>
+  </div>
+  <div class="table-wrap">
+    <table id="standingsTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Équipe</th>
+          <th class="num sortable" data-key="gp">PJ</th>
+          <th class="num sortable" data-key="w">V</th>
+          <th class="num sortable" data-key="l">D</th>
+          <th class="num sortable" data-key="otl">DP</th>
+          <th class="num sortable" data-key="sol">DF</th>
+          <th class="num sortable" data-key="gf">BP</th>
+          <th class="num sortable" data-key="ga">BC</th>
+          <th class="num sortable" data-key="diff">DIFF</th>
+          <th class="num">SÉR.</th>
+          <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        </tr>
+      </thead>
+      <tbody id="standingsBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PLAYERS -->
+<section id="page-players" class="page">
+  <h2 class="section-title">Statistiques des Joueurs</h2>
+  <div class="filters">
+    <input type="text" id="playerSearch" class="filter-input" placeholder="🔎 Rechercher un joueur..." oninput="renderPlayers()">
+    <select id="playerTeamFilter" class="filter-select" onchange="renderPlayers()">
+      <option value="">Toutes les équipes</option>
+    </select>
+    <select id="playerDivFilter" class="filter-select" onchange="renderPlayers()">
+      <option value="">Toutes les divisions</option>
+      <option value="nhl">Division NHL</option>
+      <option value="lhjmq">Division LHJMQ</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="playersTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Joueur</th>
+          <th>Équipe</th>
+          <th>Pos</th>
+          <th class="num sortable" data-key="gp">PJ</th>
+          <th class="num sortable" data-key="g">B</th>
+          <th class="num sortable" data-key="a">A</th>
+          <th class="num sortable sort-desc" data-key="pts">PTS</th>
+          <th class="num sortable" data-key="plusminus">+/-</th>
+          <th class="num sortable" data-key="pim">PUN</th>
+          <th class="num sortable" data-key="shots">TIRS</th>
+          <th class="num sortable" data-key="shotpct">%T</th>
+          <th class="num">TG/M</th>
+          <th class="num sortable" data-key="fopct">%MAJ</th>
+        </tr>
+      </thead>
+      <tbody id="playersBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GOALIES -->
+<section id="page-goalies" class="page">
+  <h2 class="section-title">Statistiques des Gardiens</h2>
+  <div class="filters">
+    <input type="text" id="goalieSearch" class="filter-input" placeholder="🔎 Rechercher un gardien..." oninput="renderGoalies()">
+    <select id="goalieDivFilter" class="filter-select" onchange="renderGoalies()">
+      <option value="">Toutes les divisions</option>
+      <option value="nhl">Division NHL</option>
+      <option value="lhjmq">Division LHJMQ</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="goaliesTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Gardien</th>
+          <th>Équipe</th>
+          <th class="num sortable" data-key="gp">PJ</th>
+          <th class="num sortable sort-desc" data-key="w">V</th>
+          <th class="num sortable" data-key="l">D</th>
+          <th class="num sortable" data-key="otl">DP</th>
+          <th class="num sortable" data-key="gaa">MOY</th>
+          <th class="num sortable" data-key="svpct">%ARR</th>
+          <th class="num sortable" data-key="so">BL</th>
+          <th class="num sortable" data-key="sa">TR</th>
+          <th class="num sortable" data-key="sv">ARR</th>
+        </tr>
+      </thead>
+      <tbody id="goaliesBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TEAMS -->
+<section id="page-teams" class="page">
+  <h2 class="section-title">Les 24 Équipes</h2>
+  <div class="tabs">
+    <button class="tab active" onclick="filterTeams('all', this)">Toutes</button>
+    <button class="tab" onclick="filterTeams('nhl', this)">NHL</button>
+    <button class="tab" onclick="filterTeams('lhjmq', this)">LHJMQ</button>
+  </div>
+  <div id="teamsGrid" class="teams-grid"></div>
+</section>
+
+<!-- TEAM DETAIL -->
+<section id="page-team-detail" class="page">
+  <button class="back-btn" onclick="navigate('teams')">← Retour aux équipes</button>
+  <div id="teamDetail"></div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="page-schedule" class="page">
+  <h2 class="section-title">Calendrier & Résultats</h2>
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon">🏒</div>
+      <p style="font-size: 16px;"><strong>Le calendrier sera bientôt disponible.</strong></p>
+      <p style="margin-top: 8px;">Les matchs joués et à venir apparaîtront ici une fois ajoutés au fichier <code>data.json</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERS -->
+<section id="page-leaders" class="page">
+  <h2 class="section-title">Trophées & Leaders</h2>
+  <div class="grid-3">
+    <div class="card">
+      <h3>🏆 Top Buteurs</h3>
+      <div id="leaderGoals"></div>
+    </div>
+    <div class="card">
+      <h3>🎯 Top Pointeurs</h3>
+      <div id="leaderPoints"></div>
+    </div>
+    <div class="card">
+      <h3>🤝 Top Passeurs</h3>
+      <div id="leaderAssists"></div>
+    </div>
+    <div class="card">
+      <h3>➕ Meilleur +/-</h3>
+      <div id="leaderPlusMinus"></div>
+    </div>
+    <div class="card">
+      <h3>👊 Meilleur Frappeur (PUN)</h3>
+      <div id="leaderPIM"></div>
+    </div>
+    <div class="card">
+      <h3>🥅 Trophée Vézina</h3>
+      <div id="leaderVezina"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p>LCHQ · Saison 4 · World of Chel · NHL 26</p>
+    <p style="margin-top: 6px;">Bâti avec <span class="heart">♥</span> pour la communauté</p>
+  </div>
+</footer>
+
+<script>
+let DATA = null;
+let currentStandingsDiv = 'nhl';
+let currentTeamFilter = 'all';
+let standingsSort = { key: 'pts', dir: 'desc' };
+let playersSort = { key: 'pts', dir: 'desc' };
+let goaliesSort = { key: 'w', dir: 'desc' };
+
+// LOAD DATA
+async function loadData() {
+  try {
+    const res = await fetch('data.json');
+    DATA = await res.json();
+  } catch (e) {
+    console.error('Erreur chargement data.json:', e);
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#fff;background:#0a0a0f;min-height:100vh;"><h1 style="color:#e63946;">⚠️ Erreur</h1><p>Impossible de charger <code>data.json</code>.</p><p style="margin-top:12px;font-size:13px;color:#7a7a8c;">Assure-toi que le fichier <strong>data.json</strong> est dans le même dossier que <strong>index.html</strong>.</p></div>';
+    return;
+  }
+  initApp();
+}
+
+function initApp() {
+  populateTeamFilter();
+  renderHome();
+  renderStandings();
+  renderPlayers();
+  renderGoalies();
+  renderTeamsGrid();
+  renderLeaders();
+  setupSortHandlers();
+}
+
+// NAVIGATION
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.nav-btn[data-page="${page}"]`);
+  if (btn) btn.classList.add('active');
+  document.getElementById('mainNav').classList.remove('open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleMenu() {
+  document.getElementById('mainNav').classList.toggle('open');
+}
+
+// HOME
+function renderHome() {
+  const sortedG = [...DATA.players].sort((a, b) => b.g - a.g).slice(0, 5);
+  document.getElementById('topScorers').innerHTML = renderLeaderList(sortedG, 'g');
+
+  const sortedP = [...DATA.players].sort((a, b) => b.pts - a.pts).slice(0, 5);
+  document.getElementById('topPoints').innerHTML = renderLeaderList(sortedP, 'pts');
+
+  const sortedGoalies = [...DATA.goalies].sort((a, b) => b.w - a.w).slice(0, 5);
+  document.getElementById('topGoalies').innerHTML = renderGoalieLeaderList(sortedGoalies, 'w');
+}
+
+function renderLeaderList(players, statKey) {
+  if (!players.length) return '<div class="empty-state"><p>Aucune donnée</p></div>';
+  return players.map((p, i) => {
+    const team = DATA.teams[p.team];
+    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    return `
+      <div class="leader-row">
+        <div class="leader-rank ${rankClass}">${i + 1}</div>
+        <div class="leader-info">
+          <div class="leader-name">${escapeHtml(p.name)}</div>
+          <div class="leader-team">${team.emoji} ${team.name}</div>
+        </div>
+        <div class="leader-stat">${p[statKey]}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderGoalieLeaderList(goalies, statKey) {
+  if (!goalies.length) return '<div class="empty-state"><p>Aucune donnée</p></div>';
+  return goalies.map((g, i) => {
+    const team = DATA.teams[g.team];
+    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    return `
+      <div class="leader-row">
+        <div class="leader-rank ${rankClass}">${i + 1}</div>
+        <div class="leader-info">
+          <div class="leader-name">${escapeHtml(g.name)}</div>
+          <div class="leader-team">${team.emoji} ${team.name}</div>
+        </div>
+        <div class="leader-stat">${g[statKey]}</div>
+      </div>`;
+  }).join('');
+}
+
+// STANDINGS
+function switchStandingsDiv(div, btn) {
+  currentStandingsDiv = div;
+  document.querySelectorAll('#page-standings .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderStandings();
+}
+
+function renderStandings() {
+  let teams = Object.entries(DATA.teams).map(([key, t]) => ({
+    key, ...t,
+    diff: t.record.gf - t.record.ga,
+    ...t.record
+  }));
+  if (currentStandingsDiv !== 'all') {
+    teams = teams.filter(t => t.division === currentStandingsDiv);
+  }
+  teams.sort((a, b) => {
+    let av = a[standingsSort.key], bv = b[standingsSort.key];
+    if (standingsSort.dir === 'desc') return bv - av || b.pts - a.pts;
+    return av - bv || a.pts - b.pts;
+  });
+
+  const body = document.getElementById('standingsBody');
+  body.innerHTML = teams.map((t, i) => {
+    const diffClass = t.diff > 0 ? 'diff-pos' : t.diff < 0 ? 'diff-neg' : '';
+    const diffStr = t.diff > 0 ? `+${t.diff}` : t.diff;
+    const streakClass = t.record.streak.startsWith('V') ? 'streak-w' : t.record.streak.startsWith('D') ? 'streak-l' : '';
+    return `
+      <tr onclick="showTeamDetail('${t.key}')">
+        <td class="num">${i + 1}</td>
+        <td><div class="team-cell"><span class="team-emoji">${t.emoji}</span><span>${t.name}</span></div></td>
+        <td class="num">${t.gp}</td>
+        <td class="num">${t.w}</td>
+        <td class="num">${t.l}</td>
+        <td class="num">${t.otl}</td>
+        <td class="num">${t.sol}</td>
+        <td class="num">${t.gf}</td>
+        <td class="num">${t.ga}</td>
+        <td class="num ${diffClass}">${diffStr}</td>
+        <td class="num ${streakClass}">${t.record.streak}</td>
+        <td class="num pts-cell">${t.pts}</td>
+      </tr>`;
+  }).join('');
+}
+
+// PLAYERS
+function populateTeamFilter() {
+  const sel = document.getElementById('playerTeamFilter');
+  Object.entries(DATA.teams)
+    .sort((a, b) => a[1].name.localeCompare(b[1].name))
+    .forEach(([k, t]) => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = `${t.emoji} ${t.name}`;
+      sel.appendChild(opt);
+    });
+}
+
+function renderPlayers() {
+  const search = document.getElementById('playerSearch').value.toLowerCase();
+  const teamF = document.getElementById('playerTeamFilter').value;
+  const divF = document.getElementById('playerDivFilter').value;
+
+  let players = DATA.players.filter(p => {
+    if (search && !p.name.toLowerCase().includes(search)) return false;
+    if (teamF && p.team !== teamF) return false;
+    if (divF && DATA.teams[p.team].division !== divF) return false;
+    return true;
+  });
+
+  players.sort((a, b) => {
+    let av = a[playersSort.key], bv = b[playersSort.key];
+    if (typeof av === 'string') {
+      return playersSort.dir === 'desc' ? bv.localeCompare(av) : av.localeCompare(bv);
+    }
+    if (playersSort.dir === 'desc') return bv - av;
+    return av - bv;
+  });
+
+  document.getElementById('playersBody').innerHTML = players.map((p, i) => {
+    const team = DATA.teams[p.team];
+    const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
+    const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : p.plusminus;
+    return `
+      <tr onclick="showTeamDetail('${p.team}')">
+        <td class="num">${i + 1}</td>
+        <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
+        <td><div class="team-cell"><span class="team-emoji">${team.emoji}</span><span>${team.name}</span></div></td>
+        <td>${p.position}</td>
+        <td class="num">${p.gp}</td>
+        <td class="num">${p.g}</td>
+        <td class="num">${p.a}</td>
+        <td class="num pts-cell">${p.pts}</td>
+        <td class="num ${pmClass}">${pmStr}</td>
+        <td class="num">${p.pim}</td>
+        <td class="num">${p.shots}</td>
+        <td class="num">${p.shotpct.toFixed(1)}%</td>
+        <td class="num">${p.toi}</td>
+        <td class="num">${p.fopct.toFixed(1)}%</td>
+      </tr>`;
+  }).join('') || '<tr><td colspan="14" class="empty-state">Aucun joueur trouvé.</td></tr>';
+}
+
+// GOALIES
+function renderGoalies() {
+  const search = document.getElementById('goalieSearch').value.toLowerCase();
+  const divF = document.getElementById('goalieDivFilter').value;
+
+  let goalies = DATA.goalies.filter(g => {
+    if (search && !g.name.toLowerCase().includes(search)) return false;
+    if (divF && DATA.teams[g.team].division !== divF) return false;
+    return true;
+  });
+
+  goalies.sort((a, b) => {
+    let av = a[goaliesSort.key], bv = b[goaliesSort.key];
+    if (goaliesSort.dir === 'desc') return bv - av;
+    return av - bv;
+  });
+
+  document.getElementById('goaliesBody').innerHTML = goalies.map((g, i) => {
+    const team = DATA.teams[g.team];
+    return `
+      <tr onclick="showTeamDetail('${g.team}')">
+        <td class="num">${i + 1}</td>
+        <td style="font-weight: 600;">${escapeHtml(g.name)}</td>
+        <td><div class="team-cell"><span class="team-emoji">${team.emoji}</span><span>${team.name}</span></div></td>
+        <td class="num">${g.gp}</td>
+        <td class="num pts-cell">${g.w}</td>
+        <td class="num">${g.l}</td>
+        <td class="num">${g.otl}</td>
+        <td class="num">${g.gaa.toFixed(2)}</td>
+        <td class="num">${(g.svpct * 100).toFixed(1)}%</td>
+        <td class="num">${g.so}</td>
+        <td class="num">${g.sa}</td>
+        <td class="num">${g.sv}</td>
+      </tr>`;
+  }).join('') || '<tr><td colspan="12" class="empty-state">Aucun gardien trouvé.</td></tr>';
+}
+
+// TEAMS GRID
+function filterTeams(div, btn) {
+  currentTeamFilter = div;
+  document.querySelectorAll('#page-teams .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderTeamsGrid();
+}
+
+function renderTeamsGrid() {
+  let teams = Object.entries(DATA.teams);
+  if (currentTeamFilter !== 'all') {
+    teams = teams.filter(([_, t]) => t.division === currentTeamFilter);
+  }
+  teams.sort((a, b) => a[1].name.localeCompare(b[1].name));
+
+  document.getElementById('teamsGrid').innerHTML = teams.map(([key, t]) => `
+    <div class="team-card" style="--team-color: ${t.color}" onclick="showTeamDetail('${key}')">
+      <div class="team-card-emoji">${t.emoji}</div>
+      <div class="team-card-name">${t.name}</div>
+      <div class="team-card-city">${t.city}</div>
+      <div class="team-card-record">${t.record.w}V – ${t.record.l}D – ${t.record.otl + t.record.sol}DP · ${t.record.pts} PTS</div>
+    </div>
+  `).join('');
+}
+
+// TEAM DETAIL
+function showTeamDetail(teamKey) {
+  const t = DATA.teams[teamKey];
+  if (!t) return;
+  const affiliate = DATA.teams[t.affiliate];
+  const roster = DATA.players.filter(p => p.team === teamKey);
+  const goalie = DATA.goalies.find(g => g.team === teamKey);
+  const diff = t.record.gf - t.record.ga;
+
+  document.getElementById('teamDetail').innerHTML = `
+    <div class="team-header" style="--team-color: ${t.color}">
+      <div class="team-header-emoji">${t.emoji}</div>
+      <div class="team-header-info">
+        <h2>${t.name}</h2>
+        <p>${t.city} · Division ${t.division.toUpperCase()}</p>
+        ${affiliate ? `<div class="affiliate-link" onclick="showTeamDetail('${t.affiliate}')">${t.division === 'nhl' ? 'Filiale ' : 'Club parent '}: ${affiliate.emoji} ${affiliate.name} →</div>` : ''}
+      </div>
+      <div class="team-header-stats">
+        <div class="stat-block"><div class="stat-block-value">${t.record.pts}</div><div class="stat-block-label">Points</div></div>
+        <div class="stat-block"><div class="stat-block-value">${t.record.w}–${t.record.l}–${t.record.otl + t.record.sol}</div><div class="stat-block-label">V–D–DP</div></div>
+        <div class="stat-block"><div class="stat-block-value">${t.record.gf}</div><div class="stat-block-label">Buts pour</div></div>
+        <div class="stat-block"><div class="stat-block-value">${t.record.ga}</div><div class="stat-block-label">Buts contre</div></div>
+        <div class="stat-block"><div class="stat-block-value">${diff > 0 ? '+' : ''}${diff}</div><div class="stat-block-label">Différentiel</div></div>
+      </div>
+    </div>
+
+    <h3 class="section-title" style="font-size: 28px;">Roster</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Joueur</th><th>Pos</th>
+            <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th>
+            <th class="num">+/-</th><th class="num">PUN</th><th class="num">TIRS</th><th class="num">%T</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${roster.map(p => {
+            const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
+            const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : p.plusminus;
+            return `<tr>
+              <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
+              <td>${p.position}</td>
+              <td class="num">${p.gp}</td>
+              <td class="num">${p.g}</td>
+              <td class="num">${p.a}</td>
+              <td class="num pts-cell">${p.pts}</td>
+              <td class="num ${pmClass}">${pmStr}</td>
+              <td class="num">${p.pim}</td>
+              <td class="num">${p.shots}</td>
+              <td class="num">${p.shotpct.toFixed(1)}%</td>
+            </tr>`;
+          }).join('')}
+          ${goalie ? `<tr style="background: var(--bg-elevated);">
+            <td style="font-weight: 600;">🥅 ${escapeHtml(goalie.name)}</td>
+            <td>G</td>
+            <td class="num">${goalie.gp}</td>
+            <td class="num" colspan="2">${goalie.w}V – ${goalie.l}D – ${goalie.otl}DP</td>
+            <td class="num">${goalie.gaa.toFixed(2)} MOY</td>
+            <td class="num" colspan="3">${(goalie.svpct * 100).toFixed(1)}% ARR</td>
+            <td class="num">${goalie.so} BL</td>
+          </tr>` : ''}
+        </tbody>
+      </table>
+    </div>
+  `;
+  navigate('team-detail');
+}
+
+// LEADERS
+function renderLeaders() {
+  document.getElementById('leaderGoals').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.g - a.g).slice(0, 5), 'g');
+  document.getElementById('leaderPoints').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.pts - a.pts).slice(0, 5), 'pts');
+  document.getElementById('leaderAssists').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.a - a.a).slice(0, 5), 'a');
+  document.getElementById('leaderPlusMinus').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.plusminus - a.plusminus).slice(0, 5), 'plusminus');
+  document.getElementById('leaderPIM').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.pim - a.pim).slice(0, 5), 'pim');
+  document.getElementById('leaderVezina').innerHTML = renderGoalieLeaderList([...DATA.goalies].sort((a, b) => (b.svpct - a.svpct) || (b.w - a.w)).slice(0, 5), 'w');
+}
+
+// SORTING
+function setupSortHandlers() {
+  document.querySelectorAll('#standingsTable th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.key;
+      if (standingsSort.key === key) {
+        standingsSort.dir = standingsSort.dir === 'desc' ? 'asc' : 'desc';
+      } else {
+        standingsSort.key = key;
+        standingsSort.dir = 'desc';
+      }
+      updateSortHeaders('#standingsTable', standingsSort);
+      renderStandings();
+    });
+  });
+  document.querySelectorAll('#playersTable th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.key;
+      if (playersSort.key === key) {
+        playersSort.dir = playersSort.dir === 'desc' ? 'asc' : 'desc';
+      } else {
+        playersSort.key = key;
+        playersSort.dir = 'desc';
+      }
+      updateSortHeaders('#playersTable', playersSort);
+      renderPlayers();
+    });
+  });
+  document.querySelectorAll('#goaliesTable th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.key;
+      if (goaliesSort.key === key) {
+        goaliesSort.dir = goaliesSort.dir === 'desc' ? 'asc' : 'desc';
+      } else {
+        goaliesSort.key = key;
+        goaliesSort.dir = 'desc';
+      }
+      updateSortHeaders('#goaliesTable', goaliesSort);
+      renderGoalies();
+    });
+  });
+}
+
+function updateSortHeaders(tableSel, sort) {
+  document.querySelectorAll(`${tableSel} th.sortable`).forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (th.dataset.key === sort.key) {
+      th.classList.add(sort.dir === 'desc' ? 'sort-desc' : 'sort-asc');
+    }
+  });
+}
+
+// UTILS
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// START
+loadData();
+</script>
+
+</body>
+</html>
