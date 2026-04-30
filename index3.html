@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCHQ — Saison 6 | Stats officielles</title>
+<meta name="description" content="Statistiques officielles de la LCHQ — Ligue de hockey World of Chel sur NHL 26">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #111118;
+    --bg-card: #16161f;
+    --bg-card-hover: #1c1c28;
+    --bg-elevated: #1f1f2c;
+    --border: #2a2a3a;
+    --border-bright: #3a3a4f;
+    --red: #e63946;
+    --red-bright: #ff4757;
+    --red-dark: #c1121f;
+    --red-glow: rgba(230, 57, 70, 0.4);
+    --text-primary: #ffffff;
+    --text-secondary: #b8b8c8;
+    --text-tertiary: #7a7a8c;
+    --gold: #ffb81c;
+    --green: #4ade80;
+    --orange: #fb923c;
+    --nhl-color: #003e7e;
+    --lhjmq-color: #c8102e;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(230, 57, 70, 0.12) 0%, transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(193, 18, 31, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--red);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .header-content {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 20px; max-width: 1400px; margin: 0 auto;
+  }
+  .logo-wrap { display: flex; align-items: center; gap: 14px; cursor: pointer; }
+  .logo-img {
+    width: 52px; height: 52px; border-radius: 12px;
+    box-shadow: 0 0 20px var(--red-glow);
+    border: 2px solid var(--red);
+    object-fit: cover;
+    background: var(--bg-card);
+  }
+  .logo-text h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 2px;
+    background: linear-gradient(135deg, #fff 0%, var(--red-bright) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-text p { font-size: 11px; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; }
+
+  /* NAV */
+  nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .nav-btn {
+    background: transparent; color: var(--text-secondary);
+    border: none; padding: 9px 13px; cursor: pointer;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    border-radius: 8px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { color: var(--text-primary); background: var(--bg-card); }
+  .nav-btn.active { color: var(--text-primary); background: var(--red); box-shadow: 0 0 15px var(--red-glow); }
+  .nav-btn.nhl-active { background: var(--nhl-color); }
+  .nav-btn.lhjmq-active { background: var(--lhjmq-color); }
+
+  /* NAV GROUP DROPDOWN */
+  .nav-group { position: relative; }
+  .nav-dropdown {
+    display: none;
+    position: absolute; top: 100%; left: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px;
+    min-width: 180px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    z-index: 200;
+  }
+  .nav-group:hover .nav-dropdown { display: flex; flex-direction: column; gap: 2px; }
+  .nav-dropdown .nav-btn { width: 100%; text-align: left; }
+
+  .mobile-menu-btn { display: none; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 20px; }
+
+  /* MAIN */
+  main { padding: 30px 0 60px; }
+  .page { display: none; animation: fadeIn 0.4s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* HERO HOME — BANNIÈRE PAYSAGE IMMERSIVE */
+  .hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1682 / 935;
+    max-height: 75vh;
+    margin-bottom: 30px;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 2px solid var(--red);
+    box-shadow:
+      0 0 60px var(--red-glow),
+      0 20px 80px rgba(0,0,0,0.6),
+      inset 0 0 100px rgba(230, 57, 70, 0.15);
+    background: var(--bg-card);
+  }
+  .hero-banner {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .hero-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      linear-gradient(180deg, transparent 0%, transparent 55%, rgba(10, 10, 15, 0.85) 100%);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  .hero .badge {
+    display: inline-block;
+    padding: 10px 24px;
+    background: var(--red);
+    border-radius: 999px;
+    font-size: 13px; font-weight: 800;
+    letter-spacing: 3px; text-transform: uppercase;
+    box-shadow: 0 4px 20px var(--red-glow);
+    border: 2px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    z-index: 2;
+  }
+  .hero .subtitle {
+    font-size: clamp(13px, 1.6vw, 17px);
+    color: #fff;
+    margin-bottom: 14px;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  /* Animation de pulsation sur la bannière */
+  @keyframes hero-glow {
+    0%, 100% { filter: brightness(1) saturate(1.1); }
+    50% { filter: brightness(1.05) saturate(1.2); }
+  }
+  .hero-banner { animation: hero-glow 4s ease-in-out infinite; }
+
+  /* DIVISION BANNER */
+  .division-banner {
+    display: flex; align-items: center; gap: 16px;
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    border-left: 6px solid var(--division-color, var(--red));
+    border-radius: 14px;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+  }
+  .division-banner-icon {
+    width: 50px; height: 50px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--division-color, var(--red));
+    border-radius: 12px;
+    font-size: 24px; font-weight: 800;
+    color: #fff;
+    font-family: 'Bebas Neue';
+    letter-spacing: 1px;
+  }
+  .division-banner-text h3 {
+    font-family: 'Bebas Neue';
+    font-size: 28px; letter-spacing: 2px;
+  }
+  .division-banner-text p { font-size: 13px; color: var(--text-tertiary); }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px; letter-spacing: 3px;
+    margin: 40px 0 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .section-title::before {
+    content: ''; width: 6px; height: 32px;
+    background: linear-gradient(180deg, var(--red-bright), var(--red-dark));
+    border-radius: 3px;
+    box-shadow: 0 0 15px var(--red-glow);
+  }
+
+  /* GRIDS */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s;
+  }
+  .card:hover {
+    border-color: var(--red);
+    box-shadow: 0 8px 30px rgba(230, 57, 70, 0.15);
+    transform: translateY(-2px);
+  }
+  .card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 2px;
+    margin-bottom: 18px;
+    color: var(--red-bright);
+  }
+  .card.nhl h3 { color: #5b9bd5; }
+  .card.lhjmq h3 { color: var(--red-bright); }
+
+  /* LEADERS */
+  .leader-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .leader-row:last-child { border-bottom: none; }
+  .leader-rank {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-elevated);
+    border-radius: 8px;
+    font-weight: 800; font-size: 13px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+  }
+  .leader-rank.gold { background: linear-gradient(135deg, #ffd700, #ff9500); color: #000; }
+  .leader-rank.silver { background: linear-gradient(135deg, #c0c0c0, #808080); color: #000; }
+  .leader-rank.bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #fff; }
+  .leader-info { flex: 1; min-width: 0; }
+  .leader-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .leader-team { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+  .leader-stat { font-family: 'Bebas Neue'; font-size: 24px; color: var(--red-bright); flex-shrink: 0; }
+  .team-mini-logo { width: 18px; height: 18px; object-fit: contain; }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  thead {
+    background: linear-gradient(180deg, var(--bg-elevated), var(--bg-card));
+    border-bottom: 2px solid var(--red);
+  }
+  th {
+    padding: 14px 12px; text-align: left;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-secondary);
+    cursor: pointer; user-select: none;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+  th:hover { color: var(--red-bright); }
+  th.sortable::after { content: ' ⇅'; opacity: 0.3; font-size: 10px; }
+  th.sort-asc::after { content: ' ▲'; opacity: 1; color: var(--red-bright); }
+  th.sort-desc::after { content: ' ▼'; opacity: 1; color: var(--red-bright); }
+  td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  tbody tr { transition: background 0.2s; cursor: pointer; }
+  tbody tr:hover { background: var(--bg-card-hover); }
+  tbody tr:last-child td { border-bottom: none; }
+  .team-cell { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .team-logo-table {
+    width: 32px; height: 32px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+  .team-emoji-fallback { font-size: 24px; }
+  .num { text-align: center; font-variant-numeric: tabular-nums; }
+  .pts-cell { font-weight: 800; color: var(--red-bright); }
+  .diff-pos { color: var(--green); font-weight: 700; }
+  .diff-neg { color: var(--red-bright); font-weight: 700; }
+  .streak-w { color: var(--green); font-weight: 700; }
+  .streak-l { color: var(--red-bright); font-weight: 700; }
+
+  /* FILTERS */
+  .filters {
+    display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .filter-input, .filter-select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-family: inherit; font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .filter-input:focus, .filter-select:focus { border-color: var(--red); }
+  .filter-input { flex: 1; min-width: 200px; }
+
+  /* TEAM CARDS GRID */
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .team-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .team-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--team-color, var(--red));
+  }
+  .team-card:hover {
+    border-color: var(--team-color, var(--red));
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  }
+  .team-card-logo {
+    width: 80px; height: 80px;
+    object-fit: contain;
+    margin: 0 auto 12px;
+    display: block;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  }
+  .team-card-name { font-family: 'Bebas Neue'; font-size: 22px; letter-spacing: 1px; }
+  .team-card-city { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
+  .team-card-record { margin-top: 10px; font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+
+  /* TEAM DETAIL */
+  .team-header {
+    display: flex; align-items: center; gap: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 6px solid var(--team-color, var(--red));
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .team-header-logo {
+    width: 100px; height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5));
+  }
+  .team-header-info h2 { font-family: 'Bebas Neue'; font-size: 42px; letter-spacing: 2px; }
+  .team-header-info p { color: var(--text-tertiary); font-size: 14px; }
+  .team-header-stats {
+    margin-left: auto;
+    display: flex; gap: 24px;
+    flex-wrap: wrap;
+  }
+  .stat-block { text-align: center; }
+  .stat-block-value { font-family: 'Bebas Neue'; font-size: 32px; color: var(--red-bright); }
+  .stat-block-label { font-size: 10px; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; }
+
+  .affiliate-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--bg-elevated);
+    padding: 8px 14px;
+    border-radius: 10px;
+    margin-top: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+  }
+  .affiliate-link:hover { border-color: var(--red); color: var(--red-bright); }
+  .affiliate-link img { width: 22px; height: 22px; object-fit: contain; }
+
+  .back-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 16px; border-radius: 10px;
+    cursor: pointer; font-family: inherit; font-size: 13px;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { border-color: var(--red); color: var(--text-primary); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--text-tertiary);
+  }
+  .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    margin-top: 40px;
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 13px;
+  }
+  footer .heart { color: var(--red-bright); }
+
+  /* MOBILE */
+  @media (max-width: 1100px) {
+    .nav-btn { padding: 8px 10px; font-size: 11px; }
+  }
+  @media (max-width: 900px) {
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .mobile-menu-btn { display: block; }
+    nav {
+      position: fixed; top: 80px; left: 0; right: 0;
+      flex-direction: column; gap: 0;
+      background: var(--bg-secondary);
+      border-bottom: 2px solid var(--red);
+      padding: 12px;
+      transform: translateY(-150%);
+      transition: transform 0.3s;
+      z-index: 99;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+    }
+    nav.open { transform: translateY(0); }
+    .nav-btn { width: 100%; text-align: left; padding: 14px; font-size: 13px; }
+    .nav-group .nav-dropdown { display: flex; flex-direction: column; position: static; box-shadow: none; padding-left: 20px; padding-right: 0; padding-top: 0; padding-bottom: 0; min-width: auto; border: none; background: transparent; }
+    .hero { max-height: 60vh; border-radius: 16px; }
+    .hero-overlay { padding: 20px 16px; }
+    .section-title { font-size: 28px; }
+    .team-header-stats { width: 100%; justify-content: space-around; margin-left: 0; }
+  }
+  @media (max-width: 500px) {
+    .container { padding: 0 12px; }
+    .header-content { padding: 12px; }
+    .logo-text h1 { font-size: 22px; }
+    .logo-text p { font-size: 9px; }
+    .logo-img { width: 44px; height: 44px; }
+    .card { padding: 18px; }
+    th, td { padding: 10px 8px; font-size: 12px; }
+    .team-logo-table { width: 26px; height: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="logo-wrap" onclick="navigate('home')">
+      <img src="logo.png" alt="LCHQ" class="logo-img" onerror="this.style.display='none'">
+      <div class="logo-text">
+        <h1>LCHQ</h1>
+        <p>Saison 6 · World of Chel</p>
+      </div>
+    </div>
+    <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+    <nav id="mainNav">
+      <button class="nav-btn active" data-page="home" onclick="navigate('home')">Accueil</button>
+
+      <div class="nav-group">
+        <button class="nav-btn" data-section="standings">Classement ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn" data-page="standings-nhl" onclick="navigate('standings-nhl')">Division NHL</button>
+          <button class="nav-btn" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">Division LHJMQ</button>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <button class="nav-btn" data-section="players">Joueurs ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
+          <button class="nav-btn" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <button class="nav-btn" data-section="goalies">Gardiens ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
+          <button class="nav-btn" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
+        </div>
+      </div>
+
+      <button class="nav-btn" data-page="teams" onclick="navigate('teams')">Équipes</button>
+      <button class="nav-btn" data-page="schedule" onclick="navigate('schedule')">Calendrier</button>
+
+      <div class="nav-group">
+        <button class="nav-btn" data-section="trophies">Trophées ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
+          <button class="nav-btn" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+<!-- HOME -->
+<section id="page-home" class="page active">
+  <div class="hero">
+    <img src="logo-banner.png" alt="LCHQ Hockey" class="hero-banner" onerror="this.style.display='none'">
+    <div class="hero-overlay">
+      <p class="subtitle">Ligue de Hockey · World of Chel · NHL 26</p>
+      <div class="badge">⚡ Saison 6 — En cours</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Division NHL — Leaders</h2>
+  <div class="grid-3">
+    <div class="card nhl"><h3>🥅 Top Buteurs NHL</h3><div id="nhlTopGoals"></div></div>
+    <div class="card nhl"><h3>🎯 Top Pointeurs NHL</h3><div id="nhlTopPoints"></div></div>
+    <div class="card nhl"><h3>🛡️ Top Gardiens NHL</h3><div id="nhlTopGoalies"></div></div>
+  </div>
+
+  <h2 class="section-title">Division LHJMQ — Leaders</h2>
+  <div class="grid-3">
+    <div class="card lhjmq"><h3>🥅 Top Buteurs LHJMQ</h3><div id="lhjmqTopGoals"></div></div>
+    <div class="card lhjmq"><h3>🎯 Top Pointeurs LHJMQ</h3><div id="lhjmqTopPoints"></div></div>
+    <div class="card lhjmq"><h3>🛡️ Top Gardiens LHJMQ</h3><div id="lhjmqTopGoalies"></div></div>
+  </div>
+</section>
+
+<!-- STANDINGS NHL -->
+<section id="page-standings-nhl" class="page">
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Classement Division NHL</h3>
+      <p>12 équipes · Saison régulière</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table id="standingsNhlTable">
+      <thead>
+        <tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num sortable" data-key="gp">PJ</th>
+          <th class="num sortable" data-key="w">V</th>
+          <th class="num sortable" data-key="l">D</th>
+          <th class="num sortable" data-key="otl">DP</th>
+          <th class="num sortable" data-key="sol">DF</th>
+          <th class="num sortable" data-key="gf">BP</th>
+          <th class="num sortable" data-key="ga">BC</th>
+          <th class="num sortable" data-key="diff">DIFF</th>
+          <th class="num">SÉR.</th>
+          <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        </tr>
+      </thead>
+      <tbody id="standingsNhlBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- STANDINGS LHJMQ -->
+<section id="page-standings-lhjmq" class="page">
+  <div class="division-banner" style="--division-color: var(--lhjmq-color)">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Classement Division LHJMQ</h3>
+      <p>12 équipes · Saison régulière</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table id="standingsLhjmqTable">
+      <thead>
+        <tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num sortable" data-key="gp">PJ</th>
+          <th class="num sortable" data-key="w">V</th>
+          <th class="num sortable" data-key="l">D</th>
+          <th class="num sortable" data-key="otl">DP</th>
+          <th class="num sortable" data-key="sol">DF</th>
+          <th class="num sortable" data-key="gf">BP</th>
+          <th class="num sortable" data-key="ga">BC</th>
+          <th class="num sortable" data-key="diff">DIFF</th>
+          <th class="num">SÉR.</th>
+          <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        </tr>
+      </thead>
+      <tbody id="standingsLhjmqBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PLAYERS NHL -->
+<section id="page-players-nhl" class="page">
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Statistiques des Joueurs NHL</h3>
+      <p>Tous les joueurs de la Division NHL</p>
+    </div>
+  </div>
+  <div class="filters">
+    <input type="text" id="playerNhlSearch" class="filter-input" placeholder="🔎 Rechercher un joueur..." oninput="renderPlayersNHL()">
+    <select id="playerNhlTeamFilter" class="filter-select" onchange="renderPlayersNHL()">
+      <option value="">Toutes les équipes NHL</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="playersNhlTable">
+      <thead><tr>
+        <th>#</th><th>Joueur</th><th>Équipe</th><th>Pos</th>
+        <th class="num sortable" data-key="gp">PJ</th>
+        <th class="num sortable" data-key="g">B</th>
+        <th class="num sortable" data-key="a">A</th>
+        <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        <th class="num sortable" data-key="plusminus">+/-</th>
+        <th class="num sortable" data-key="pim">PUN</th>
+        <th class="num sortable" data-key="shots">TIRS</th>
+        <th class="num sortable" data-key="shotpct">%T</th>
+        <th class="num">TG/M</th>
+        <th class="num sortable" data-key="fopct">%MAJ</th>
+      </tr></thead>
+      <tbody id="playersNhlBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PLAYERS LHJMQ -->
+<section id="page-players-lhjmq" class="page">
+  <div class="division-banner" style="--division-color: var(--lhjmq-color)">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Statistiques des Joueurs LHJMQ</h3>
+      <p>Tous les joueurs de la Division LHJMQ</p>
+    </div>
+  </div>
+  <div class="filters">
+    <input type="text" id="playerLhjmqSearch" class="filter-input" placeholder="🔎 Rechercher un joueur..." oninput="renderPlayersLHJMQ()">
+    <select id="playerLhjmqTeamFilter" class="filter-select" onchange="renderPlayersLHJMQ()">
+      <option value="">Toutes les équipes LHJMQ</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="playersLhjmqTable">
+      <thead><tr>
+        <th>#</th><th>Joueur</th><th>Équipe</th><th>Pos</th>
+        <th class="num sortable" data-key="gp">PJ</th>
+        <th class="num sortable" data-key="g">B</th>
+        <th class="num sortable" data-key="a">A</th>
+        <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        <th class="num sortable" data-key="plusminus">+/-</th>
+        <th class="num sortable" data-key="pim">PUN</th>
+        <th class="num sortable" data-key="shots">TIRS</th>
+        <th class="num sortable" data-key="shotpct">%T</th>
+        <th class="num">TG/M</th>
+        <th class="num sortable" data-key="fopct">%MAJ</th>
+      </tr></thead>
+      <tbody id="playersLhjmqBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GOALIES NHL -->
+<section id="page-goalies-nhl" class="page">
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Gardiens NHL</h3>
+      <p>Statistiques des gardiens de la Division NHL</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table id="goaliesNhlTable">
+      <thead><tr>
+        <th>#</th><th>Gardien</th><th>Équipe</th>
+        <th class="num sortable" data-key="gp">PJ</th>
+        <th class="num sortable sort-desc" data-key="w">V</th>
+        <th class="num sortable" data-key="l">D</th>
+        <th class="num sortable" data-key="otl">DP</th>
+        <th class="num sortable" data-key="gaa">MOY</th>
+        <th class="num sortable" data-key="svpct">%ARR</th>
+        <th class="num sortable" data-key="so">BL</th>
+        <th class="num sortable" data-key="sa">TR</th>
+        <th class="num sortable" data-key="sv">ARR</th>
+      </tr></thead>
+      <tbody id="goaliesNhlBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GOALIES LHJMQ -->
+<section id="page-goalies-lhjmq" class="page">
+  <div class="division-banner" style="--division-color: var(--lhjmq-color)">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Gardiens LHJMQ</h3>
+      <p>Statistiques des gardiens de la Division LHJMQ</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table id="goaliesLhjmqTable">
+      <thead><tr>
+        <th>#</th><th>Gardien</th><th>Équipe</th>
+        <th class="num sortable" data-key="gp">PJ</th>
+        <th class="num sortable sort-desc" data-key="w">V</th>
+        <th class="num sortable" data-key="l">D</th>
+        <th class="num sortable" data-key="otl">DP</th>
+        <th class="num sortable" data-key="gaa">MOY</th>
+        <th class="num sortable" data-key="svpct">%ARR</th>
+        <th class="num sortable" data-key="so">BL</th>
+        <th class="num sortable" data-key="sa">TR</th>
+        <th class="num sortable" data-key="sv">ARR</th>
+      </tr></thead>
+      <tbody id="goaliesLhjmqBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TEAMS -->
+<section id="page-teams" class="page">
+  <h2 class="section-title">Les 24 Équipes</h2>
+
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Division NHL</h3>
+      <p>12 équipes professionnelles</p>
+    </div>
+  </div>
+  <div id="teamsGridNhl" class="teams-grid"></div>
+
+  <div class="division-banner" style="--division-color: var(--lhjmq-color); margin-top: 40px;">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Division LHJMQ</h3>
+      <p>12 équipes filiales junior</p>
+    </div>
+  </div>
+  <div id="teamsGridLhjmq" class="teams-grid"></div>
+</section>
+
+<!-- TEAM DETAIL -->
+<section id="page-team-detail" class="page">
+  <button class="back-btn" onclick="navigate('teams')">← Retour aux équipes</button>
+  <div id="teamDetail"></div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="page-schedule" class="page">
+  <h2 class="section-title">Calendrier & Résultats</h2>
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon">🏒</div>
+      <p style="font-size: 16px;"><strong>Le calendrier sera bientôt disponible.</strong></p>
+      <p style="margin-top: 8px;">Les matchs joués et à venir apparaîtront ici une fois ajoutés au fichier <code>data.json</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TROPHIES NHL -->
+<section id="page-trophies-nhl" class="page">
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Trophées & Leaders NHL</h3>
+      <p>Les meilleurs de la Division NHL</p>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card nhl"><h3>🏆 Top Buteurs</h3><div id="trophyNhlGoals"></div></div>
+    <div class="card nhl"><h3>🎯 Top Pointeurs (Art Ross)</h3><div id="trophyNhlPoints"></div></div>
+    <div class="card nhl"><h3>🤝 Top Passeurs</h3><div id="trophyNhlAssists"></div></div>
+    <div class="card nhl"><h3>➕ Meilleur +/-</h3><div id="trophyNhlPM"></div></div>
+    <div class="card nhl"><h3>👊 Meilleur Frappeur (PUN)</h3><div id="trophyNhlPIM"></div></div>
+    <div class="card nhl"><h3>🥅 Trophée Vézina</h3><div id="trophyNhlVezina"></div></div>
+  </div>
+</section>
+
+<!-- TROPHIES LHJMQ -->
+<section id="page-trophies-lhjmq" class="page">
+  <div class="division-banner" style="--division-color: var(--lhjmq-color)">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Trophées & Leaders LHJMQ</h3>
+      <p>Les meilleurs de la Division LHJMQ</p>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card lhjmq"><h3>🏆 Top Buteurs</h3><div id="trophyLhjmqGoals"></div></div>
+    <div class="card lhjmq"><h3>🎯 Top Pointeurs</h3><div id="trophyLhjmqPoints"></div></div>
+    <div class="card lhjmq"><h3>🤝 Top Passeurs</h3><div id="trophyLhjmqAssists"></div></div>
+    <div class="card lhjmq"><h3>➕ Meilleur +/-</h3><div id="trophyLhjmqPM"></div></div>
+    <div class="card lhjmq"><h3>👊 Meilleur Frappeur (PUN)</h3><div id="trophyLhjmqPIM"></div></div>
+    <div class="card lhjmq"><h3>🥅 Trophée Gardien</h3><div id="trophyLhjmqVezina"></div></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p>LCHQ · Saison 6 · World of Chel · NHL 26</p>
+    <p style="margin-top: 6px;">Bâti avec <span class="heart">♥</span> pour la communauté</p>
+  </div>
+</footer>
+
+<script>
+let DATA = null;
+let standingsNhlSort = { key: 'pts', dir: 'desc' };
+let standingsLhjmqSort = { key: 'pts', dir: 'desc' };
+let playersNhlSort = { key: 'pts', dir: 'desc' };
+let playersLhjmqSort = { key: 'pts', dir: 'desc' };
+let goaliesNhlSort = { key: 'w', dir: 'desc' };
+let goaliesLhjmqSort = { key: 'w', dir: 'desc' };
+
+async function loadData() {
+  try {
+    const res = await fetch('data.json');
+    DATA = await res.json();
+  } catch (e) {
+    console.error('Erreur chargement data.json:', e);
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#fff;background:#0a0a0f;min-height:100vh;"><h1 style="color:#e63946;">⚠️ Erreur</h1><p>Impossible de charger <code>data.json</code>.</p><p style="margin-top:12px;font-size:13px;color:#7a7a8c;">Assure-toi que le fichier <strong>data.json</strong> est dans le même dossier que <strong>index.html</strong>.</p></div>';
+    return;
+  }
+  initApp();
+}
+
+function initApp() {
+  populateTeamFilters();
+  renderHome();
+  renderStandingsNHL();
+  renderStandingsLHJMQ();
+  renderPlayersNHL();
+  renderPlayersLHJMQ();
+  renderGoaliesNHL();
+  renderGoaliesLHJMQ();
+  renderTeamsGrids();
+  renderTrophiesNHL();
+  renderTrophiesLHJMQ();
+  setupSortHandlers();
+}
+
+// NAVIGATION
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.nav-btn[data-page="${page}"]`);
+  if (btn) btn.classList.add('active');
+  document.getElementById('mainNav').classList.remove('open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleMenu() {
+  document.getElementById('mainNav').classList.toggle('open');
+}
+
+// LOGO HELPER — affiche le vrai logo, fallback sur emoji
+function teamLogoHtml(team, size = 'table') {
+  const cls = size === 'table' ? 'team-logo-table' : 'team-card-logo';
+  if (team.logo) {
+    return `<img src="${team.logo}" alt="${escapeHtml(team.name)}" class="${cls}" onerror="this.outerHTML='<span class=\\'team-emoji-fallback\\'>${team.emoji}</span>'">`;
+  }
+  return `<span class="team-emoji-fallback">${team.emoji}</span>`;
+}
+
+// HOME
+function renderHome() {
+  const nhlPlayers = DATA.players.filter(p => DATA.teams[p.team].division === 'nhl');
+  const lhjmqPlayers = DATA.players.filter(p => DATA.teams[p.team].division === 'lhjmq');
+  const nhlGoalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'nhl');
+  const lhjmqGoalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'lhjmq');
+
+  document.getElementById('nhlTopGoals').innerHTML = renderLeaderList([...nhlPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('nhlTopPoints').innerHTML = renderLeaderList([...nhlPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  document.getElementById('nhlTopGoalies').innerHTML = renderGoalieLeaderList([...nhlGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w');
+
+  document.getElementById('lhjmqTopGoals').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('lhjmqTopPoints').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  document.getElementById('lhjmqTopGoalies').innerHTML = renderGoalieLeaderList([...lhjmqGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w');
+}
+
+function renderLeaderList(players, statKey) {
+  if (!players.length) return '<div class="empty-state"><p>Aucune donnée</p></div>';
+  return players.map((p, i) => {
+    const team = DATA.teams[p.team];
+    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    const logoHtml = team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji;
+    return `
+      <div class="leader-row">
+        <div class="leader-rank ${rankClass}">${i + 1}</div>
+        <div class="leader-info">
+          <div class="leader-name">${escapeHtml(p.name)}</div>
+          <div class="leader-team">${logoHtml} ${team.name}</div>
+        </div>
+        <div class="leader-stat">${p[statKey]}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderGoalieLeaderList(goalies, statKey) {
+  if (!goalies.length) return '<div class="empty-state"><p>Aucune donnée</p></div>';
+  return goalies.map((g, i) => {
+    const team = DATA.teams[g.team];
+    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    const logoHtml = team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji;
+    return `
+      <div class="leader-row">
+        <div class="leader-rank ${rankClass}">${i + 1}</div>
+        <div class="leader-info">
+          <div class="leader-name">${escapeHtml(g.name)}</div>
+          <div class="leader-team">${logoHtml} ${team.name}</div>
+        </div>
+        <div class="leader-stat">${g[statKey]}</div>
+      </div>`;
+  }).join('');
+}
+
+// STANDINGS
+function renderStandingsByDivision(division, sort, bodyId) {
+  let teams = Object.entries(DATA.teams)
+    .filter(([_, t]) => t.division === division)
+    .map(([key, t]) => ({ key, ...t, diff: t.record.gf - t.record.ga, ...t.record }));
+
+  teams.sort((a, b) => {
+    let av = a[sort.key], bv = b[sort.key];
+    if (sort.dir === 'desc') return bv - av || b.pts - a.pts;
+    return av - bv || a.pts - b.pts;
+  });
+
+  document.getElementById(bodyId).innerHTML = teams.map((t, i) => {
+    const diffClass = t.diff > 0 ? 'diff-pos' : t.diff < 0 ? 'diff-neg' : '';
+    const diffStr = t.diff > 0 ? `+${t.diff}` : t.diff;
+    const streakClass = t.record.streak.startsWith('V') ? 'streak-w' : t.record.streak.startsWith('D') ? 'streak-l' : '';
+    return `
+      <tr onclick="showTeamDetail('${t.key}')">
+        <td class="num">${i + 1}</td>
+        <td><div class="team-cell">${teamLogoHtml(t)}<span>${t.name}</span></div></td>
+        <td class="num">${t.gp}</td>
+        <td class="num">${t.w}</td>
+        <td class="num">${t.l}</td>
+        <td class="num">${t.otl}</td>
+        <td class="num">${t.sol}</td>
+        <td class="num">${t.gf}</td>
+        <td class="num">${t.ga}</td>
+        <td class="num ${diffClass}">${diffStr}</td>
+        <td class="num ${streakClass}">${t.record.streak}</td>
+        <td class="num pts-cell">${t.pts}</td>
+      </tr>`;
+  }).join('');
+}
+
+function renderStandingsNHL() { renderStandingsByDivision('nhl', standingsNhlSort, 'standingsNhlBody'); }
+function renderStandingsLHJMQ() { renderStandingsByDivision('lhjmq', standingsLhjmqSort, 'standingsLhjmqBody'); }
+
+// PLAYERS
+function populateTeamFilters() {
+  const nhlSel = document.getElementById('playerNhlTeamFilter');
+  const lhjmqSel = document.getElementById('playerLhjmqTeamFilter');
+  Object.entries(DATA.teams).sort((a, b) => a[1].name.localeCompare(b[1].name)).forEach(([k, t]) => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = `${t.emoji} ${t.name}`;
+    if (t.division === 'nhl') nhlSel.appendChild(opt);
+    else lhjmqSel.appendChild(opt.cloneNode(true)) || lhjmqSel.appendChild(opt);
+  });
+  // fix - re-iterate for lhjmq
+  Object.entries(DATA.teams).filter(([_, t]) => t.division === 'lhjmq').sort((a, b) => a[1].name.localeCompare(b[1].name)).forEach(([k, t]) => {
+    if (![...lhjmqSel.options].some(o => o.value === k)) {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = `${t.emoji} ${t.name}`;
+      lhjmqSel.appendChild(opt);
+    }
+  });
+}
+
+function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId) {
+  const search = document.getElementById(searchId).value.toLowerCase();
+  const teamF = document.getElementById(teamFilterId).value;
+
+  let players = DATA.players.filter(p => {
+    if (DATA.teams[p.team].division !== division) return false;
+    if (search && !p.name.toLowerCase().includes(search)) return false;
+    if (teamF && p.team !== teamF) return false;
+    return true;
+  });
+
+  players.sort((a, b) => {
+    let av = a[sort.key], bv = b[sort.key];
+    if (typeof av === 'string') return sort.dir === 'desc' ? bv.localeCompare(av) : av.localeCompare(bv);
+    return sort.dir === 'desc' ? bv - av : av - bv;
+  });
+
+  document.getElementById(bodyId).innerHTML = players.map((p, i) => {
+    const team = DATA.teams[p.team];
+    const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
+    const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : p.plusminus;
+    return `
+      <tr onclick="showTeamDetail('${p.team}')">
+        <td class="num">${i + 1}</td>
+        <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
+        <td><div class="team-cell">${teamLogoHtml(team)}<span>${team.name}</span></div></td>
+        <td>${p.position}</td>
+        <td class="num">${p.gp}</td>
+        <td class="num">${p.g}</td>
+        <td class="num">${p.a}</td>
+        <td class="num pts-cell">${p.pts}</td>
+        <td class="num ${pmClass}">${pmStr}</td>
+        <td class="num">${p.pim}</td>
+        <td class="num">${p.shots}</td>
+        <td class="num">${p.shotpct.toFixed(1)}%</td>
+        <td class="num">${p.toi}</td>
+        <td class="num">${p.fopct.toFixed(1)}%</td>
+      </tr>`;
+  }).join('') || '<tr><td colspan="14" class="empty-state">Aucun joueur trouvé.</td></tr>';
+}
+
+function renderPlayersNHL() { renderPlayersByDivision('nhl', playersNhlSort, 'playerNhlSearch', 'playerNhlTeamFilter', 'playersNhlBody'); }
+function renderPlayersLHJMQ() { renderPlayersByDivision('lhjmq', playersLhjmqSort, 'playerLhjmqSearch', 'playerLhjmqTeamFilter', 'playersLhjmqBody'); }
+
+// GOALIES
+function renderGoaliesByDivision(division, sort, bodyId) {
+  let goalies = DATA.goalies.filter(g => DATA.teams[g.team].division === division);
+  goalies.sort((a, b) => sort.dir === 'desc' ? b[sort.key] - a[sort.key] : a[sort.key] - b[sort.key]);
+
+  document.getElementById(bodyId).innerHTML = goalies.map((g, i) => {
+    const team = DATA.teams[g.team];
+    return `
+      <tr onclick="showTeamDetail('${g.team}')">
+        <td class="num">${i + 1}</td>
+        <td style="font-weight: 600;">${escapeHtml(g.name)}</td>
+        <td><div class="team-cell">${teamLogoHtml(team)}<span>${team.name}</span></div></td>
+        <td class="num">${g.gp}</td>
+        <td class="num pts-cell">${g.w}</td>
+        <td class="num">${g.l}</td>
+        <td class="num">${g.otl}</td>
+        <td class="num">${g.gaa.toFixed(2)}</td>
+        <td class="num">${(g.svpct * 100).toFixed(1)}%</td>
+        <td class="num">${g.so}</td>
+        <td class="num">${g.sa}</td>
+        <td class="num">${g.sv}</td>
+      </tr>`;
+  }).join('') || '<tr><td colspan="12" class="empty-state">Aucun gardien trouvé.</td></tr>';
+}
+
+function renderGoaliesNHL() { renderGoaliesByDivision('nhl', goaliesNhlSort, 'goaliesNhlBody'); }
+function renderGoaliesLHJMQ() { renderGoaliesByDivision('lhjmq', goaliesLhjmqSort, 'goaliesLhjmqBody'); }
+
+// TEAMS GRID
+function renderTeamCard(key, t) {
+  const logoHtml = t.logo
+    ? `<img src="${t.logo}" alt="${escapeHtml(t.name)}" class="team-card-logo" onerror="this.outerHTML='<div style=\\'font-size:64px;margin-bottom:10px;\\'>${t.emoji}</div>'">`
+    : `<div style="font-size: 64px; margin-bottom: 10px;">${t.emoji}</div>`;
+  return `
+    <div class="team-card" style="--team-color: ${t.color}" onclick="showTeamDetail('${key}')">
+      ${logoHtml}
+      <div class="team-card-name">${t.name}</div>
+      <div class="team-card-city">${t.city}</div>
+      <div class="team-card-record">${t.record.w}V – ${t.record.l}D – ${t.record.otl + t.record.sol}DP · ${t.record.pts} PTS</div>
+    </div>`;
+}
+
+function renderTeamsGrids() {
+  const nhlTeams = Object.entries(DATA.teams).filter(([_, t]) => t.division === 'nhl').sort((a, b) => a[1].name.localeCompare(b[1].name));
+  const lhjmqTeams = Object.entries(DATA.teams).filter(([_, t]) => t.division === 'lhjmq').sort((a, b) => a[1].name.localeCompare(b[1].name));
+  document.getElementById('teamsGridNhl').innerHTML = nhlTeams.map(([k, t]) => renderTeamCard(k, t)).join('');
+  document.getElementById('teamsGridLhjmq').innerHTML = lhjmqTeams.map(([k, t]) => renderTeamCard(k, t)).join('');
+}
+
+// TEAM DETAIL
+function showTeamDetail(teamKey) {
+  const t = DATA.teams[teamKey];
+  if (!t) return;
+  const affiliate = DATA.teams[t.affiliate];
+  const roster = DATA.players.filter(p => p.team === teamKey);
+  const goalie = DATA.goalies.find(g => g.team === teamKey);
+  const diff = t.record.gf - t.record.ga;
+
+  const teamLogoBig = t.logo
+    ? `<img src="${t.logo}" alt="${escapeHtml(t.name)}" class="team-header-logo" onerror="this.outerHTML='<div style=\\'font-size:80px;\\'>${t.emoji}</div>'">`
+    : `<div style="font-size: 80px;">${t.emoji}</div>`;
+
+  const affiliateLogoMini = affiliate && affiliate.logo
+    ? `<img src="${affiliate.logo}" alt="" onerror="this.outerHTML='<span>${affiliate.emoji}</span>'">`
+    : `<span>${affiliate ? affiliate.emoji : ''}</span>`;
+
+  document.getElementById('teamDetail').innerHTML = `
+    <div class="team-header" style="--team-color: ${t.color}">
+      ${teamLogoBig}
+      <div class="team-header-info">
+        <h2>${t.name}</h2>
+        <p>${t.city} · Division ${t.division.toUpperCase()}</p>
+        ${affiliate ? `<div class="affiliate-link" onclick="showTeamDetail('${t.affiliate}')">${affiliateLogoMini} ${t.division === 'nhl' ? 'Filiale ' : 'Club parent '}: ${affiliate.name} →</div>` : ''}
+      </div>
+      <div class="team-header-stats">
+        <div class="stat-block"><div class="stat-block-value">${t.record.pts}</div><div class="stat-block-label">Points</div></div>
+        <div class="stat-block"><div class="stat-block-value">${t.record.w}–${t.record.l}–${t.record.otl + t.record.sol}</div><div class="stat-block-label">V–D–DP</div></div>
+        <div class="stat-block"><div class="stat-block-value">${t.record.gf}</div><div class="stat-block-label">Buts pour</div></div>
+        <div class="stat-block"><div class="stat-block-value">${t.record.ga}</div><div class="stat-block-label">Buts contre</div></div>
+        <div class="stat-block"><div class="stat-block-value">${diff > 0 ? '+' : ''}${diff}</div><div class="stat-block-label">Différentiel</div></div>
+      </div>
+    </div>
+
+    <h3 class="section-title" style="font-size: 28px;">Roster</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Joueur</th><th>Pos</th>
+            <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th>
+            <th class="num">+/-</th><th class="num">PUN</th><th class="num">TIRS</th><th class="num">%T</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${roster.map(p => {
+            const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
+            const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : p.plusminus;
+            return `<tr>
+              <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
+              <td>${p.position}</td>
+              <td class="num">${p.gp}</td>
+              <td class="num">${p.g}</td>
+              <td class="num">${p.a}</td>
+              <td class="num pts-cell">${p.pts}</td>
+              <td class="num ${pmClass}">${pmStr}</td>
+              <td class="num">${p.pim}</td>
+              <td class="num">${p.shots}</td>
+              <td class="num">${p.shotpct.toFixed(1)}%</td>
+            </tr>`;
+          }).join('')}
+          ${goalie ? `<tr style="background: var(--bg-elevated);">
+            <td style="font-weight: 600;">🥅 ${escapeHtml(goalie.name)}</td>
+            <td>G</td>
+            <td class="num">${goalie.gp}</td>
+            <td class="num" colspan="2">${goalie.w}V – ${goalie.l}D – ${goalie.otl}DP</td>
+            <td class="num">${goalie.gaa.toFixed(2)} MOY</td>
+            <td class="num" colspan="3">${(goalie.svpct * 100).toFixed(1)}% ARR</td>
+            <td class="num">${goalie.so} BL</td>
+          </tr>` : ''}
+        </tbody>
+      </table>
+    </div>
+  `;
+  navigate('team-detail');
+}
+
+// TROPHIES
+function renderTrophiesNHL() {
+  const players = DATA.players.filter(p => DATA.teams[p.team].division === 'nhl');
+  const goalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'nhl');
+  document.getElementById('trophyNhlGoals').innerHTML = renderLeaderList([...players].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('trophyNhlPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  document.getElementById('trophyNhlAssists').innerHTML = renderLeaderList([...players].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
+  document.getElementById('trophyNhlPM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.plusminus-a.plusminus).slice(0,5), 'plusminus');
+  document.getElementById('trophyNhlPIM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pim-a.pim).slice(0,5), 'pim');
+  document.getElementById('trophyNhlVezina').innerHTML = renderGoalieLeaderList([...goalies].sort((a,b)=>(b.svpct-a.svpct)||(b.w-a.w)).slice(0,5), 'w');
+}
+
+function renderTrophiesLHJMQ() {
+  const players = DATA.players.filter(p => DATA.teams[p.team].division === 'lhjmq');
+  const goalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'lhjmq');
+  document.getElementById('trophyLhjmqGoals').innerHTML = renderLeaderList([...players].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('trophyLhjmqPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  document.getElementById('trophyLhjmqAssists').innerHTML = renderLeaderList([...players].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
+  document.getElementById('trophyLhjmqPM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.plusminus-a.plusminus).slice(0,5), 'plusminus');
+  document.getElementById('trophyLhjmqPIM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pim-a.pim).slice(0,5), 'pim');
+  document.getElementById('trophyLhjmqVezina').innerHTML = renderGoalieLeaderList([...goalies].sort((a,b)=>(b.svpct-a.svpct)||(b.w-a.w)).slice(0,5), 'w');
+}
+
+// SORTING
+function setupSortHandlers() {
+  setupSortFor('#standingsNhlTable', standingsNhlSort, renderStandingsNHL);
+  setupSortFor('#standingsLhjmqTable', standingsLhjmqSort, renderStandingsLHJMQ);
+  setupSortFor('#playersNhlTable', playersNhlSort, renderPlayersNHL);
+  setupSortFor('#playersLhjmqTable', playersLhjmqSort, renderPlayersLHJMQ);
+  setupSortFor('#goaliesNhlTable', goaliesNhlSort, renderGoaliesNHL);
+  setupSortFor('#goaliesLhjmqTable', goaliesLhjmqSort, renderGoaliesLHJMQ);
+}
+
+function setupSortFor(tableSel, sort, rerender) {
+  document.querySelectorAll(`${tableSel} th.sortable`).forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.key;
+      if (sort.key === key) sort.dir = sort.dir === 'desc' ? 'asc' : 'desc';
+      else { sort.key = key; sort.dir = 'desc'; }
+      document.querySelectorAll(`${tableSel} th.sortable`).forEach(t => {
+        t.classList.remove('sort-asc', 'sort-desc');
+        if (t.dataset.key === sort.key) t.classList.add(sort.dir === 'desc' ? 'sort-desc' : 'sort-asc');
+      });
+      rerender();
+    });
+  });
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+loadData();
+</script>
+
+</body>
+</html>
