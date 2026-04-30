@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LCHQ — Saison 4 | Stats officielles</title>
+<title>LCHQ — Saison 6 | Stats officielles</title>
 <meta name="description" content="Statistiques officielles de la LCHQ — Ligue de hockey World of Chel sur NHL 26">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +28,8 @@
     --gold: #ffb81c;
     --green: #4ade80;
     --orange: #fb923c;
+    --nhl-color: #003e7e;
+    --lhjmq-color: #c8102e;
   }
   html { scroll-behavior: smooth; }
   body {
@@ -80,18 +82,36 @@
   .logo-text p { font-size: 11px; color: var(--text-tertiary); letter-spacing: 1.5px; text-transform: uppercase; }
 
   /* NAV */
-  nav { display: flex; gap: 4px; }
+  nav { display: flex; gap: 4px; flex-wrap: wrap; }
   .nav-btn {
     background: transparent; color: var(--text-secondary);
-    border: none; padding: 10px 16px; cursor: pointer;
-    font-family: inherit; font-size: 13px; font-weight: 600;
+    border: none; padding: 9px 13px; cursor: pointer;
+    font-family: inherit; font-size: 12px; font-weight: 600;
     letter-spacing: 0.5px; text-transform: uppercase;
     border-radius: 8px;
     transition: all 0.2s;
-    position: relative;
+    white-space: nowrap;
   }
   .nav-btn:hover { color: var(--text-primary); background: var(--bg-card); }
   .nav-btn.active { color: var(--text-primary); background: var(--red); box-shadow: 0 0 15px var(--red-glow); }
+  .nav-btn.nhl-active { background: var(--nhl-color); }
+  .nav-btn.lhjmq-active { background: var(--lhjmq-color); }
+
+  /* NAV GROUP DROPDOWN */
+  .nav-group { position: relative; }
+  .nav-dropdown {
+    display: none;
+    position: absolute; top: 100%; left: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px;
+    min-width: 180px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    z-index: 200;
+  }
+  .nav-group:hover .nav-dropdown { display: flex; flex-direction: column; gap: 2px; }
+  .nav-dropdown .nav-btn { width: 100%; text-align: left; }
 
   .mobile-menu-btn { display: none; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 20px; }
 
@@ -156,6 +176,31 @@
     position: relative; z-index: 1;
   }
 
+  /* DIVISION BANNER */
+  .division-banner {
+    display: flex; align-items: center; gap: 16px;
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    border-left: 6px solid var(--division-color, var(--red));
+    border-radius: 14px;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+  }
+  .division-banner-icon {
+    width: 50px; height: 50px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--division-color, var(--red));
+    border-radius: 12px;
+    font-size: 24px; font-weight: 800;
+    color: #fff;
+    font-family: 'Bebas Neue';
+    letter-spacing: 1px;
+  }
+  .division-banner-text h3 {
+    font-family: 'Bebas Neue';
+    font-size: 28px; letter-spacing: 2px;
+  }
+  .division-banner-text p { font-size: 13px; color: var(--text-tertiary); }
+
   /* SECTION TITLES */
   .section-title {
     font-family: 'Bebas Neue', sans-serif;
@@ -193,6 +238,8 @@
     margin-bottom: 18px;
     color: var(--red-bright);
   }
+  .card.nhl h3 { color: #5b9bd5; }
+  .card.lhjmq h3 { color: var(--red-bright); }
 
   /* LEADERS */
   .leader-row {
@@ -208,14 +255,16 @@
     border-radius: 8px;
     font-weight: 800; font-size: 13px;
     color: var(--text-tertiary);
+    flex-shrink: 0;
   }
   .leader-rank.gold { background: linear-gradient(135deg, #ffd700, #ff9500); color: #000; }
   .leader-rank.silver { background: linear-gradient(135deg, #c0c0c0, #808080); color: #000; }
   .leader-rank.bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #fff; }
   .leader-info { flex: 1; min-width: 0; }
   .leader-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .leader-team { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; }
-  .leader-stat { font-family: 'Bebas Neue'; font-size: 24px; color: var(--red-bright); }
+  .leader-team { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+  .leader-stat { font-family: 'Bebas Neue'; font-size: 24px; color: var(--red-bright); flex-shrink: 0; }
+  .team-mini-logo { width: 18px; height: 18px; object-fit: contain; }
 
   /* TABLE */
   .table-wrap {
@@ -252,33 +301,19 @@
   tbody tr:hover { background: var(--bg-card-hover); }
   tbody tr:last-child td { border-bottom: none; }
   .team-cell { display: flex; align-items: center; gap: 10px; font-weight: 600; }
-  .team-emoji { font-size: 20px; }
+  .team-logo-table {
+    width: 32px; height: 32px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+  .team-emoji-fallback { font-size: 24px; }
   .num { text-align: center; font-variant-numeric: tabular-nums; }
   .pts-cell { font-weight: 800; color: var(--red-bright); }
   .diff-pos { color: var(--green); font-weight: 700; }
   .diff-neg { color: var(--red-bright); font-weight: 700; }
   .streak-w { color: var(--green); font-weight: 700; }
   .streak-l { color: var(--red-bright); font-weight: 700; }
-
-  /* TABS */
-  .tabs {
-    display: flex; gap: 8px; margin-bottom: 20px;
-    background: var(--bg-card); padding: 6px;
-    border-radius: 12px; border: 1px solid var(--border);
-    width: fit-content;
-    flex-wrap: wrap;
-  }
-  .tab {
-    background: transparent; border: none;
-    padding: 10px 20px; cursor: pointer;
-    color: var(--text-secondary);
-    font-family: inherit; font-weight: 600; font-size: 13px;
-    letter-spacing: 1px; text-transform: uppercase;
-    border-radius: 8px;
-    transition: all 0.2s;
-  }
-  .tab:hover { color: var(--text-primary); }
-  .tab.active { background: var(--red); color: #fff; box-shadow: 0 4px 15px var(--red-glow); }
 
   /* FILTERS */
   .filters {
@@ -297,7 +332,7 @@
   .filter-input:focus, .filter-select:focus { border-color: var(--red); }
   .filter-input { flex: 1; min-width: 200px; }
 
-  /* TEAM PAGES */
+  /* TEAM CARDS GRID */
   .teams-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -307,7 +342,7 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 20px;
+    padding: 24px 20px;
     cursor: pointer;
     transition: all 0.3s;
     text-align: center;
@@ -324,7 +359,13 @@
     transform: translateY(-4px);
     box-shadow: 0 12px 30px rgba(0,0,0,0.4);
   }
-  .team-card-emoji { font-size: 48px; margin-bottom: 10px; }
+  .team-card-logo {
+    width: 80px; height: 80px;
+    object-fit: contain;
+    margin: 0 auto 12px;
+    display: block;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  }
   .team-card-name { font-family: 'Bebas Neue'; font-size: 22px; letter-spacing: 1px; }
   .team-card-city { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
   .team-card-record { margin-top: 10px; font-size: 13px; color: var(--text-secondary); font-weight: 600; }
@@ -340,7 +381,11 @@
     margin-bottom: 24px;
     flex-wrap: wrap;
   }
-  .team-header-emoji { font-size: 64px; }
+  .team-header-logo {
+    width: 100px; height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5));
+  }
   .team-header-info h2 { font-family: 'Bebas Neue'; font-size: 42px; letter-spacing: 2px; }
   .team-header-info p { color: var(--text-tertiary); font-size: 14px; }
   .team-header-stats {
@@ -364,6 +409,7 @@
     border: 1px solid var(--border);
   }
   .affiliate-link:hover { border-color: var(--red); color: var(--red-bright); }
+  .affiliate-link img { width: 22px; height: 22px; object-fit: contain; }
 
   .back-btn {
     background: var(--bg-card);
@@ -395,6 +441,9 @@
   footer .heart { color: var(--red-bright); }
 
   /* MOBILE */
+  @media (max-width: 1100px) {
+    .nav-btn { padding: 8px 10px; font-size: 11px; }
+  }
   @media (max-width: 900px) {
     .grid-3 { grid-template-columns: 1fr; }
     .grid-2 { grid-template-columns: 1fr; }
@@ -408,9 +457,12 @@
       transform: translateY(-150%);
       transition: transform 0.3s;
       z-index: 99;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
     }
     nav.open { transform: translateY(0); }
-    .nav-btn { width: 100%; text-align: left; padding: 14px; }
+    .nav-btn { width: 100%; text-align: left; padding: 14px; font-size: 13px; }
+    .nav-group .nav-dropdown { display: flex; flex-direction: column; position: static; box-shadow: none; padding-left: 20px; padding-right: 0; padding-top: 0; padding-bottom: 0; min-width: auto; border: none; background: transparent; }
     .hero h2 { letter-spacing: 2px; }
     .hero-logo { width: 120px; height: 120px; }
     .section-title { font-size: 28px; }
@@ -424,7 +476,7 @@
     .logo-img { width: 44px; height: 44px; }
     .card { padding: 18px; }
     th, td { padding: 10px 8px; font-size: 12px; }
-    .tab { padding: 8px 14px; font-size: 11px; }
+    .team-logo-table { width: 26px; height: 26px; }
   }
 </style>
 </head>
@@ -436,18 +488,47 @@
       <img src="logo.png" alt="LCHQ" class="logo-img" onerror="this.style.display='none'">
       <div class="logo-text">
         <h1>LCHQ</h1>
-        <p>Saison 4 · World of Chel</p>
+        <p>Saison 6 · World of Chel</p>
       </div>
     </div>
     <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
     <nav id="mainNav">
       <button class="nav-btn active" data-page="home" onclick="navigate('home')">Accueil</button>
-      <button class="nav-btn" data-page="standings" onclick="navigate('standings')">Classement</button>
-      <button class="nav-btn" data-page="players" onclick="navigate('players')">Joueurs</button>
-      <button class="nav-btn" data-page="goalies" onclick="navigate('goalies')">Gardiens</button>
+
+      <div class="nav-group">
+        <button class="nav-btn" data-section="standings">Classement ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn" data-page="standings-nhl" onclick="navigate('standings-nhl')">Division NHL</button>
+          <button class="nav-btn" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">Division LHJMQ</button>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <button class="nav-btn" data-section="players">Joueurs ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
+          <button class="nav-btn" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <button class="nav-btn" data-section="goalies">Gardiens ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
+          <button class="nav-btn" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
+        </div>
+      </div>
+
       <button class="nav-btn" data-page="teams" onclick="navigate('teams')">Équipes</button>
       <button class="nav-btn" data-page="schedule" onclick="navigate('schedule')">Calendrier</button>
-      <button class="nav-btn" data-page="leaders" onclick="navigate('leaders')">Trophées</button>
+
+      <div class="nav-group">
+        <button class="nav-btn" data-section="trophies">Trophées ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
+          <button class="nav-btn" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
@@ -460,48 +541,38 @@
     <img src="logo.png" alt="LCHQ" class="hero-logo" onerror="this.style.display='none'">
     <h2>LCHQ</h2>
     <p class="subtitle">Ligue de Hockey · World of Chel · NHL 26</p>
-    <div class="badge">⚡ Saison 4 — En cours</div>
+    <div class="badge">⚡ Saison 6 — En cours</div>
   </div>
 
+  <h2 class="section-title">Division NHL — Leaders</h2>
   <div class="grid-3">
-    <div class="card">
-      <h3>🥅 Top Buteurs</h3>
-      <div id="topScorers"></div>
-    </div>
-    <div class="card">
-      <h3>🎯 Top Pointeurs</h3>
-      <div id="topPoints"></div>
-    </div>
-    <div class="card">
-      <h3>🛡️ Top Gardiens</h3>
-      <div id="topGoalies"></div>
-    </div>
+    <div class="card nhl"><h3>🥅 Top Buteurs NHL</h3><div id="nhlTopGoals"></div></div>
+    <div class="card nhl"><h3>🎯 Top Pointeurs NHL</h3><div id="nhlTopPoints"></div></div>
+    <div class="card nhl"><h3>🛡️ Top Gardiens NHL</h3><div id="nhlTopGoalies"></div></div>
   </div>
 
-  <h2 class="section-title">Derniers Résultats</h2>
-  <div class="card">
-    <div id="recentGames" class="empty-state">
-      <div class="empty-state-icon">📅</div>
-      <p>Aucun match joué pour le moment.</p>
-      <p style="margin-top: 8px; font-size: 13px;">Les résultats apparaîtront ici après la première partie.</p>
-    </div>
+  <h2 class="section-title">Division LHJMQ — Leaders</h2>
+  <div class="grid-3">
+    <div class="card lhjmq"><h3>🥅 Top Buteurs LHJMQ</h3><div id="lhjmqTopGoals"></div></div>
+    <div class="card lhjmq"><h3>🎯 Top Pointeurs LHJMQ</h3><div id="lhjmqTopPoints"></div></div>
+    <div class="card lhjmq"><h3>🛡️ Top Gardiens LHJMQ</h3><div id="lhjmqTopGoalies"></div></div>
   </div>
 </section>
 
-<!-- STANDINGS -->
-<section id="page-standings" class="page">
-  <h2 class="section-title">Classement</h2>
-  <div class="tabs">
-    <button class="tab active" onclick="switchStandingsDiv('nhl', this)">Division NHL</button>
-    <button class="tab" onclick="switchStandingsDiv('lhjmq', this)">Division LHJMQ</button>
-    <button class="tab" onclick="switchStandingsDiv('all', this)">Vue combinée</button>
+<!-- STANDINGS NHL -->
+<section id="page-standings-nhl" class="page">
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Classement Division NHL</h3>
+      <p>12 équipes · Saison régulière</p>
+    </div>
   </div>
   <div class="table-wrap">
-    <table id="standingsTable">
+    <table id="standingsNhlTable">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Équipe</th>
+          <th>#</th><th>Équipe</th>
           <th class="num sortable" data-key="gp">PJ</th>
           <th class="num sortable" data-key="w">V</th>
           <th class="num sortable" data-key="l">D</th>
@@ -514,80 +585,164 @@
           <th class="num sortable sort-desc" data-key="pts">PTS</th>
         </tr>
       </thead>
-      <tbody id="standingsBody"></tbody>
+      <tbody id="standingsNhlBody"></tbody>
     </table>
   </div>
 </section>
 
-<!-- PLAYERS -->
-<section id="page-players" class="page">
-  <h2 class="section-title">Statistiques des Joueurs</h2>
-  <div class="filters">
-    <input type="text" id="playerSearch" class="filter-input" placeholder="🔎 Rechercher un joueur..." oninput="renderPlayers()">
-    <select id="playerTeamFilter" class="filter-select" onchange="renderPlayers()">
-      <option value="">Toutes les équipes</option>
-    </select>
-    <select id="playerDivFilter" class="filter-select" onchange="renderPlayers()">
-      <option value="">Toutes les divisions</option>
-      <option value="nhl">Division NHL</option>
-      <option value="lhjmq">Division LHJMQ</option>
-    </select>
+<!-- STANDINGS LHJMQ -->
+<section id="page-standings-lhjmq" class="page">
+  <div class="division-banner" style="--division-color: var(--lhjmq-color)">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Classement Division LHJMQ</h3>
+      <p>12 équipes · Saison régulière</p>
+    </div>
   </div>
   <div class="table-wrap">
-    <table id="playersTable">
+    <table id="standingsLhjmqTable">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Joueur</th>
-          <th>Équipe</th>
-          <th>Pos</th>
+          <th>#</th><th>Équipe</th>
           <th class="num sortable" data-key="gp">PJ</th>
-          <th class="num sortable" data-key="g">B</th>
-          <th class="num sortable" data-key="a">A</th>
-          <th class="num sortable sort-desc" data-key="pts">PTS</th>
-          <th class="num sortable" data-key="plusminus">+/-</th>
-          <th class="num sortable" data-key="pim">PUN</th>
-          <th class="num sortable" data-key="shots">TIRS</th>
-          <th class="num sortable" data-key="shotpct">%T</th>
-          <th class="num">TG/M</th>
-          <th class="num sortable" data-key="fopct">%MAJ</th>
-        </tr>
-      </thead>
-      <tbody id="playersBody"></tbody>
-    </table>
-  </div>
-</section>
-
-<!-- GOALIES -->
-<section id="page-goalies" class="page">
-  <h2 class="section-title">Statistiques des Gardiens</h2>
-  <div class="filters">
-    <input type="text" id="goalieSearch" class="filter-input" placeholder="🔎 Rechercher un gardien..." oninput="renderGoalies()">
-    <select id="goalieDivFilter" class="filter-select" onchange="renderGoalies()">
-      <option value="">Toutes les divisions</option>
-      <option value="nhl">Division NHL</option>
-      <option value="lhjmq">Division LHJMQ</option>
-    </select>
-  </div>
-  <div class="table-wrap">
-    <table id="goaliesTable">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Gardien</th>
-          <th>Équipe</th>
-          <th class="num sortable" data-key="gp">PJ</th>
-          <th class="num sortable sort-desc" data-key="w">V</th>
+          <th class="num sortable" data-key="w">V</th>
           <th class="num sortable" data-key="l">D</th>
           <th class="num sortable" data-key="otl">DP</th>
-          <th class="num sortable" data-key="gaa">MOY</th>
-          <th class="num sortable" data-key="svpct">%ARR</th>
-          <th class="num sortable" data-key="so">BL</th>
-          <th class="num sortable" data-key="sa">TR</th>
-          <th class="num sortable" data-key="sv">ARR</th>
+          <th class="num sortable" data-key="sol">DF</th>
+          <th class="num sortable" data-key="gf">BP</th>
+          <th class="num sortable" data-key="ga">BC</th>
+          <th class="num sortable" data-key="diff">DIFF</th>
+          <th class="num">SÉR.</th>
+          <th class="num sortable sort-desc" data-key="pts">PTS</th>
         </tr>
       </thead>
-      <tbody id="goaliesBody"></tbody>
+      <tbody id="standingsLhjmqBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PLAYERS NHL -->
+<section id="page-players-nhl" class="page">
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Statistiques des Joueurs NHL</h3>
+      <p>Tous les joueurs de la Division NHL</p>
+    </div>
+  </div>
+  <div class="filters">
+    <input type="text" id="playerNhlSearch" class="filter-input" placeholder="🔎 Rechercher un joueur..." oninput="renderPlayersNHL()">
+    <select id="playerNhlTeamFilter" class="filter-select" onchange="renderPlayersNHL()">
+      <option value="">Toutes les équipes NHL</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="playersNhlTable">
+      <thead><tr>
+        <th>#</th><th>Joueur</th><th>Équipe</th><th>Pos</th>
+        <th class="num sortable" data-key="gp">PJ</th>
+        <th class="num sortable" data-key="g">B</th>
+        <th class="num sortable" data-key="a">A</th>
+        <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        <th class="num sortable" data-key="plusminus">+/-</th>
+        <th class="num sortable" data-key="pim">PUN</th>
+        <th class="num sortable" data-key="shots">TIRS</th>
+        <th class="num sortable" data-key="shotpct">%T</th>
+        <th class="num">TG/M</th>
+        <th class="num sortable" data-key="fopct">%MAJ</th>
+      </tr></thead>
+      <tbody id="playersNhlBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PLAYERS LHJMQ -->
+<section id="page-players-lhjmq" class="page">
+  <div class="division-banner" style="--division-color: var(--lhjmq-color)">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Statistiques des Joueurs LHJMQ</h3>
+      <p>Tous les joueurs de la Division LHJMQ</p>
+    </div>
+  </div>
+  <div class="filters">
+    <input type="text" id="playerLhjmqSearch" class="filter-input" placeholder="🔎 Rechercher un joueur..." oninput="renderPlayersLHJMQ()">
+    <select id="playerLhjmqTeamFilter" class="filter-select" onchange="renderPlayersLHJMQ()">
+      <option value="">Toutes les équipes LHJMQ</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="playersLhjmqTable">
+      <thead><tr>
+        <th>#</th><th>Joueur</th><th>Équipe</th><th>Pos</th>
+        <th class="num sortable" data-key="gp">PJ</th>
+        <th class="num sortable" data-key="g">B</th>
+        <th class="num sortable" data-key="a">A</th>
+        <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        <th class="num sortable" data-key="plusminus">+/-</th>
+        <th class="num sortable" data-key="pim">PUN</th>
+        <th class="num sortable" data-key="shots">TIRS</th>
+        <th class="num sortable" data-key="shotpct">%T</th>
+        <th class="num">TG/M</th>
+        <th class="num sortable" data-key="fopct">%MAJ</th>
+      </tr></thead>
+      <tbody id="playersLhjmqBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GOALIES NHL -->
+<section id="page-goalies-nhl" class="page">
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Gardiens NHL</h3>
+      <p>Statistiques des gardiens de la Division NHL</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table id="goaliesNhlTable">
+      <thead><tr>
+        <th>#</th><th>Gardien</th><th>Équipe</th>
+        <th class="num sortable" data-key="gp">PJ</th>
+        <th class="num sortable sort-desc" data-key="w">V</th>
+        <th class="num sortable" data-key="l">D</th>
+        <th class="num sortable" data-key="otl">DP</th>
+        <th class="num sortable" data-key="gaa">MOY</th>
+        <th class="num sortable" data-key="svpct">%ARR</th>
+        <th class="num sortable" data-key="so">BL</th>
+        <th class="num sortable" data-key="sa">TR</th>
+        <th class="num sortable" data-key="sv">ARR</th>
+      </tr></thead>
+      <tbody id="goaliesNhlBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GOALIES LHJMQ -->
+<section id="page-goalies-lhjmq" class="page">
+  <div class="division-banner" style="--division-color: var(--lhjmq-color)">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Gardiens LHJMQ</h3>
+      <p>Statistiques des gardiens de la Division LHJMQ</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table id="goaliesLhjmqTable">
+      <thead><tr>
+        <th>#</th><th>Gardien</th><th>Équipe</th>
+        <th class="num sortable" data-key="gp">PJ</th>
+        <th class="num sortable sort-desc" data-key="w">V</th>
+        <th class="num sortable" data-key="l">D</th>
+        <th class="num sortable" data-key="otl">DP</th>
+        <th class="num sortable" data-key="gaa">MOY</th>
+        <th class="num sortable" data-key="svpct">%ARR</th>
+        <th class="num sortable" data-key="so">BL</th>
+        <th class="num sortable" data-key="sa">TR</th>
+        <th class="num sortable" data-key="sv">ARR</th>
+      </tr></thead>
+      <tbody id="goaliesLhjmqBody"></tbody>
     </table>
   </div>
 </section>
@@ -595,12 +750,24 @@
 <!-- TEAMS -->
 <section id="page-teams" class="page">
   <h2 class="section-title">Les 24 Équipes</h2>
-  <div class="tabs">
-    <button class="tab active" onclick="filterTeams('all', this)">Toutes</button>
-    <button class="tab" onclick="filterTeams('nhl', this)">NHL</button>
-    <button class="tab" onclick="filterTeams('lhjmq', this)">LHJMQ</button>
+
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Division NHL</h3>
+      <p>12 équipes professionnelles</p>
+    </div>
   </div>
-  <div id="teamsGrid" class="teams-grid"></div>
+  <div id="teamsGridNhl" class="teams-grid"></div>
+
+  <div class="division-banner" style="--division-color: var(--lhjmq-color); margin-top: 40px;">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Division LHJMQ</h3>
+      <p>12 équipes filiales junior</p>
+    </div>
+  </div>
+  <div id="teamsGridLhjmq" class="teams-grid"></div>
 </section>
 
 <!-- TEAM DETAIL -->
@@ -621,34 +788,41 @@
   </div>
 </section>
 
-<!-- LEADERS -->
-<section id="page-leaders" class="page">
-  <h2 class="section-title">Trophées & Leaders</h2>
+<!-- TROPHIES NHL -->
+<section id="page-trophies-nhl" class="page">
+  <div class="division-banner" style="--division-color: var(--nhl-color)">
+    <div class="division-banner-icon">NHL</div>
+    <div class="division-banner-text">
+      <h3>Trophées & Leaders NHL</h3>
+      <p>Les meilleurs de la Division NHL</p>
+    </div>
+  </div>
   <div class="grid-3">
-    <div class="card">
-      <h3>🏆 Top Buteurs</h3>
-      <div id="leaderGoals"></div>
+    <div class="card nhl"><h3>🏆 Top Buteurs</h3><div id="trophyNhlGoals"></div></div>
+    <div class="card nhl"><h3>🎯 Top Pointeurs (Art Ross)</h3><div id="trophyNhlPoints"></div></div>
+    <div class="card nhl"><h3>🤝 Top Passeurs</h3><div id="trophyNhlAssists"></div></div>
+    <div class="card nhl"><h3>➕ Meilleur +/-</h3><div id="trophyNhlPM"></div></div>
+    <div class="card nhl"><h3>👊 Meilleur Frappeur (PUN)</h3><div id="trophyNhlPIM"></div></div>
+    <div class="card nhl"><h3>🥅 Trophée Vézina</h3><div id="trophyNhlVezina"></div></div>
+  </div>
+</section>
+
+<!-- TROPHIES LHJMQ -->
+<section id="page-trophies-lhjmq" class="page">
+  <div class="division-banner" style="--division-color: var(--lhjmq-color)">
+    <div class="division-banner-icon">LHJMQ</div>
+    <div class="division-banner-text">
+      <h3>Trophées & Leaders LHJMQ</h3>
+      <p>Les meilleurs de la Division LHJMQ</p>
     </div>
-    <div class="card">
-      <h3>🎯 Top Pointeurs</h3>
-      <div id="leaderPoints"></div>
-    </div>
-    <div class="card">
-      <h3>🤝 Top Passeurs</h3>
-      <div id="leaderAssists"></div>
-    </div>
-    <div class="card">
-      <h3>➕ Meilleur +/-</h3>
-      <div id="leaderPlusMinus"></div>
-    </div>
-    <div class="card">
-      <h3>👊 Meilleur Frappeur (PUN)</h3>
-      <div id="leaderPIM"></div>
-    </div>
-    <div class="card">
-      <h3>🥅 Trophée Vézina</h3>
-      <div id="leaderVezina"></div>
-    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card lhjmq"><h3>🏆 Top Buteurs</h3><div id="trophyLhjmqGoals"></div></div>
+    <div class="card lhjmq"><h3>🎯 Top Pointeurs</h3><div id="trophyLhjmqPoints"></div></div>
+    <div class="card lhjmq"><h3>🤝 Top Passeurs</h3><div id="trophyLhjmqAssists"></div></div>
+    <div class="card lhjmq"><h3>➕ Meilleur +/-</h3><div id="trophyLhjmqPM"></div></div>
+    <div class="card lhjmq"><h3>👊 Meilleur Frappeur (PUN)</h3><div id="trophyLhjmqPIM"></div></div>
+    <div class="card lhjmq"><h3>🥅 Trophée Gardien</h3><div id="trophyLhjmqVezina"></div></div>
   </div>
 </section>
 
@@ -656,20 +830,20 @@
 
 <footer>
   <div class="container">
-    <p>LCHQ · Saison 4 · World of Chel · NHL 26</p>
+    <p>LCHQ · Saison 6 · World of Chel · NHL 26</p>
     <p style="margin-top: 6px;">Bâti avec <span class="heart">♥</span> pour la communauté</p>
   </div>
 </footer>
 
 <script>
 let DATA = null;
-let currentStandingsDiv = 'nhl';
-let currentTeamFilter = 'all';
-let standingsSort = { key: 'pts', dir: 'desc' };
-let playersSort = { key: 'pts', dir: 'desc' };
-let goaliesSort = { key: 'w', dir: 'desc' };
+let standingsNhlSort = { key: 'pts', dir: 'desc' };
+let standingsLhjmqSort = { key: 'pts', dir: 'desc' };
+let playersNhlSort = { key: 'pts', dir: 'desc' };
+let playersLhjmqSort = { key: 'pts', dir: 'desc' };
+let goaliesNhlSort = { key: 'w', dir: 'desc' };
+let goaliesLhjmqSort = { key: 'w', dir: 'desc' };
 
-// LOAD DATA
 async function loadData() {
   try {
     const res = await fetch('data.json');
@@ -683,20 +857,25 @@ async function loadData() {
 }
 
 function initApp() {
-  populateTeamFilter();
+  populateTeamFilters();
   renderHome();
-  renderStandings();
-  renderPlayers();
-  renderGoalies();
-  renderTeamsGrid();
-  renderLeaders();
+  renderStandingsNHL();
+  renderStandingsLHJMQ();
+  renderPlayersNHL();
+  renderPlayersLHJMQ();
+  renderGoaliesNHL();
+  renderGoaliesLHJMQ();
+  renderTeamsGrids();
+  renderTrophiesNHL();
+  renderTrophiesLHJMQ();
   setupSortHandlers();
 }
 
 // NAVIGATION
 function navigate(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const btn = document.querySelector(`.nav-btn[data-page="${page}"]`);
   if (btn) btn.classList.add('active');
@@ -708,16 +887,29 @@ function toggleMenu() {
   document.getElementById('mainNav').classList.toggle('open');
 }
 
+// LOGO HELPER — affiche le vrai logo, fallback sur emoji
+function teamLogoHtml(team, size = 'table') {
+  const cls = size === 'table' ? 'team-logo-table' : 'team-card-logo';
+  if (team.logo) {
+    return `<img src="${team.logo}" alt="${escapeHtml(team.name)}" class="${cls}" onerror="this.outerHTML='<span class=\\'team-emoji-fallback\\'>${team.emoji}</span>'">`;
+  }
+  return `<span class="team-emoji-fallback">${team.emoji}</span>`;
+}
+
 // HOME
 function renderHome() {
-  const sortedG = [...DATA.players].sort((a, b) => b.g - a.g).slice(0, 5);
-  document.getElementById('topScorers').innerHTML = renderLeaderList(sortedG, 'g');
+  const nhlPlayers = DATA.players.filter(p => DATA.teams[p.team].division === 'nhl');
+  const lhjmqPlayers = DATA.players.filter(p => DATA.teams[p.team].division === 'lhjmq');
+  const nhlGoalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'nhl');
+  const lhjmqGoalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'lhjmq');
 
-  const sortedP = [...DATA.players].sort((a, b) => b.pts - a.pts).slice(0, 5);
-  document.getElementById('topPoints').innerHTML = renderLeaderList(sortedP, 'pts');
+  document.getElementById('nhlTopGoals').innerHTML = renderLeaderList([...nhlPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('nhlTopPoints').innerHTML = renderLeaderList([...nhlPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  document.getElementById('nhlTopGoalies').innerHTML = renderGoalieLeaderList([...nhlGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w');
 
-  const sortedGoalies = [...DATA.goalies].sort((a, b) => b.w - a.w).slice(0, 5);
-  document.getElementById('topGoalies').innerHTML = renderGoalieLeaderList(sortedGoalies, 'w');
+  document.getElementById('lhjmqTopGoals').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('lhjmqTopPoints').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  document.getElementById('lhjmqTopGoalies').innerHTML = renderGoalieLeaderList([...lhjmqGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w');
 }
 
 function renderLeaderList(players, statKey) {
@@ -725,12 +917,13 @@ function renderLeaderList(players, statKey) {
   return players.map((p, i) => {
     const team = DATA.teams[p.team];
     const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    const logoHtml = team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji;
     return `
       <div class="leader-row">
         <div class="leader-rank ${rankClass}">${i + 1}</div>
         <div class="leader-info">
           <div class="leader-name">${escapeHtml(p.name)}</div>
-          <div class="leader-team">${team.emoji} ${team.name}</div>
+          <div class="leader-team">${logoHtml} ${team.name}</div>
         </div>
         <div class="leader-stat">${p[statKey]}</div>
       </div>`;
@@ -742,12 +935,13 @@ function renderGoalieLeaderList(goalies, statKey) {
   return goalies.map((g, i) => {
     const team = DATA.teams[g.team];
     const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    const logoHtml = team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji;
     return `
       <div class="leader-row">
         <div class="leader-rank ${rankClass}">${i + 1}</div>
         <div class="leader-info">
           <div class="leader-name">${escapeHtml(g.name)}</div>
-          <div class="leader-team">${team.emoji} ${team.name}</div>
+          <div class="leader-team">${logoHtml} ${team.name}</div>
         </div>
         <div class="leader-stat">${g[statKey]}</div>
       </div>`;
@@ -755,37 +949,25 @@ function renderGoalieLeaderList(goalies, statKey) {
 }
 
 // STANDINGS
-function switchStandingsDiv(div, btn) {
-  currentStandingsDiv = div;
-  document.querySelectorAll('#page-standings .tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  renderStandings();
-}
+function renderStandingsByDivision(division, sort, bodyId) {
+  let teams = Object.entries(DATA.teams)
+    .filter(([_, t]) => t.division === division)
+    .map(([key, t]) => ({ key, ...t, diff: t.record.gf - t.record.ga, ...t.record }));
 
-function renderStandings() {
-  let teams = Object.entries(DATA.teams).map(([key, t]) => ({
-    key, ...t,
-    diff: t.record.gf - t.record.ga,
-    ...t.record
-  }));
-  if (currentStandingsDiv !== 'all') {
-    teams = teams.filter(t => t.division === currentStandingsDiv);
-  }
   teams.sort((a, b) => {
-    let av = a[standingsSort.key], bv = b[standingsSort.key];
-    if (standingsSort.dir === 'desc') return bv - av || b.pts - a.pts;
+    let av = a[sort.key], bv = b[sort.key];
+    if (sort.dir === 'desc') return bv - av || b.pts - a.pts;
     return av - bv || a.pts - b.pts;
   });
 
-  const body = document.getElementById('standingsBody');
-  body.innerHTML = teams.map((t, i) => {
+  document.getElementById(bodyId).innerHTML = teams.map((t, i) => {
     const diffClass = t.diff > 0 ? 'diff-pos' : t.diff < 0 ? 'diff-neg' : '';
     const diffStr = t.diff > 0 ? `+${t.diff}` : t.diff;
     const streakClass = t.record.streak.startsWith('V') ? 'streak-w' : t.record.streak.startsWith('D') ? 'streak-l' : '';
     return `
       <tr onclick="showTeamDetail('${t.key}')">
         <td class="num">${i + 1}</td>
-        <td><div class="team-cell"><span class="team-emoji">${t.emoji}</span><span>${t.name}</span></div></td>
+        <td><div class="team-cell">${teamLogoHtml(t)}<span>${t.name}</span></div></td>
         <td class="num">${t.gp}</td>
         <td class="num">${t.w}</td>
         <td class="num">${t.l}</td>
@@ -800,41 +982,49 @@ function renderStandings() {
   }).join('');
 }
 
+function renderStandingsNHL() { renderStandingsByDivision('nhl', standingsNhlSort, 'standingsNhlBody'); }
+function renderStandingsLHJMQ() { renderStandingsByDivision('lhjmq', standingsLhjmqSort, 'standingsLhjmqBody'); }
+
 // PLAYERS
-function populateTeamFilter() {
-  const sel = document.getElementById('playerTeamFilter');
-  Object.entries(DATA.teams)
-    .sort((a, b) => a[1].name.localeCompare(b[1].name))
-    .forEach(([k, t]) => {
+function populateTeamFilters() {
+  const nhlSel = document.getElementById('playerNhlTeamFilter');
+  const lhjmqSel = document.getElementById('playerLhjmqTeamFilter');
+  Object.entries(DATA.teams).sort((a, b) => a[1].name.localeCompare(b[1].name)).forEach(([k, t]) => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = `${t.emoji} ${t.name}`;
+    if (t.division === 'nhl') nhlSel.appendChild(opt);
+    else lhjmqSel.appendChild(opt.cloneNode(true)) || lhjmqSel.appendChild(opt);
+  });
+  // fix - re-iterate for lhjmq
+  Object.entries(DATA.teams).filter(([_, t]) => t.division === 'lhjmq').sort((a, b) => a[1].name.localeCompare(b[1].name)).forEach(([k, t]) => {
+    if (![...lhjmqSel.options].some(o => o.value === k)) {
       const opt = document.createElement('option');
       opt.value = k;
       opt.textContent = `${t.emoji} ${t.name}`;
-      sel.appendChild(opt);
-    });
+      lhjmqSel.appendChild(opt);
+    }
+  });
 }
 
-function renderPlayers() {
-  const search = document.getElementById('playerSearch').value.toLowerCase();
-  const teamF = document.getElementById('playerTeamFilter').value;
-  const divF = document.getElementById('playerDivFilter').value;
+function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId) {
+  const search = document.getElementById(searchId).value.toLowerCase();
+  const teamF = document.getElementById(teamFilterId).value;
 
   let players = DATA.players.filter(p => {
+    if (DATA.teams[p.team].division !== division) return false;
     if (search && !p.name.toLowerCase().includes(search)) return false;
     if (teamF && p.team !== teamF) return false;
-    if (divF && DATA.teams[p.team].division !== divF) return false;
     return true;
   });
 
   players.sort((a, b) => {
-    let av = a[playersSort.key], bv = b[playersSort.key];
-    if (typeof av === 'string') {
-      return playersSort.dir === 'desc' ? bv.localeCompare(av) : av.localeCompare(bv);
-    }
-    if (playersSort.dir === 'desc') return bv - av;
-    return av - bv;
+    let av = a[sort.key], bv = b[sort.key];
+    if (typeof av === 'string') return sort.dir === 'desc' ? bv.localeCompare(av) : av.localeCompare(bv);
+    return sort.dir === 'desc' ? bv - av : av - bv;
   });
 
-  document.getElementById('playersBody').innerHTML = players.map((p, i) => {
+  document.getElementById(bodyId).innerHTML = players.map((p, i) => {
     const team = DATA.teams[p.team];
     const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
     const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : p.plusminus;
@@ -842,7 +1032,7 @@ function renderPlayers() {
       <tr onclick="showTeamDetail('${p.team}')">
         <td class="num">${i + 1}</td>
         <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
-        <td><div class="team-cell"><span class="team-emoji">${team.emoji}</span><span>${team.name}</span></div></td>
+        <td><div class="team-cell">${teamLogoHtml(team)}<span>${team.name}</span></div></td>
         <td>${p.position}</td>
         <td class="num">${p.gp}</td>
         <td class="num">${p.g}</td>
@@ -858,30 +1048,21 @@ function renderPlayers() {
   }).join('') || '<tr><td colspan="14" class="empty-state">Aucun joueur trouvé.</td></tr>';
 }
 
+function renderPlayersNHL() { renderPlayersByDivision('nhl', playersNhlSort, 'playerNhlSearch', 'playerNhlTeamFilter', 'playersNhlBody'); }
+function renderPlayersLHJMQ() { renderPlayersByDivision('lhjmq', playersLhjmqSort, 'playerLhjmqSearch', 'playerLhjmqTeamFilter', 'playersLhjmqBody'); }
+
 // GOALIES
-function renderGoalies() {
-  const search = document.getElementById('goalieSearch').value.toLowerCase();
-  const divF = document.getElementById('goalieDivFilter').value;
+function renderGoaliesByDivision(division, sort, bodyId) {
+  let goalies = DATA.goalies.filter(g => DATA.teams[g.team].division === division);
+  goalies.sort((a, b) => sort.dir === 'desc' ? b[sort.key] - a[sort.key] : a[sort.key] - b[sort.key]);
 
-  let goalies = DATA.goalies.filter(g => {
-    if (search && !g.name.toLowerCase().includes(search)) return false;
-    if (divF && DATA.teams[g.team].division !== divF) return false;
-    return true;
-  });
-
-  goalies.sort((a, b) => {
-    let av = a[goaliesSort.key], bv = b[goaliesSort.key];
-    if (goaliesSort.dir === 'desc') return bv - av;
-    return av - bv;
-  });
-
-  document.getElementById('goaliesBody').innerHTML = goalies.map((g, i) => {
+  document.getElementById(bodyId).innerHTML = goalies.map((g, i) => {
     const team = DATA.teams[g.team];
     return `
       <tr onclick="showTeamDetail('${g.team}')">
         <td class="num">${i + 1}</td>
         <td style="font-weight: 600;">${escapeHtml(g.name)}</td>
-        <td><div class="team-cell"><span class="team-emoji">${team.emoji}</span><span>${team.name}</span></div></td>
+        <td><div class="team-cell">${teamLogoHtml(team)}<span>${team.name}</span></div></td>
         <td class="num">${g.gp}</td>
         <td class="num pts-cell">${g.w}</td>
         <td class="num">${g.l}</td>
@@ -895,29 +1076,28 @@ function renderGoalies() {
   }).join('') || '<tr><td colspan="12" class="empty-state">Aucun gardien trouvé.</td></tr>';
 }
 
+function renderGoaliesNHL() { renderGoaliesByDivision('nhl', goaliesNhlSort, 'goaliesNhlBody'); }
+function renderGoaliesLHJMQ() { renderGoaliesByDivision('lhjmq', goaliesLhjmqSort, 'goaliesLhjmqBody'); }
+
 // TEAMS GRID
-function filterTeams(div, btn) {
-  currentTeamFilter = div;
-  document.querySelectorAll('#page-teams .tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  renderTeamsGrid();
-}
-
-function renderTeamsGrid() {
-  let teams = Object.entries(DATA.teams);
-  if (currentTeamFilter !== 'all') {
-    teams = teams.filter(([_, t]) => t.division === currentTeamFilter);
-  }
-  teams.sort((a, b) => a[1].name.localeCompare(b[1].name));
-
-  document.getElementById('teamsGrid').innerHTML = teams.map(([key, t]) => `
+function renderTeamCard(key, t) {
+  const logoHtml = t.logo
+    ? `<img src="${t.logo}" alt="${escapeHtml(t.name)}" class="team-card-logo" onerror="this.outerHTML='<div style=\\'font-size:64px;margin-bottom:10px;\\'>${t.emoji}</div>'">`
+    : `<div style="font-size: 64px; margin-bottom: 10px;">${t.emoji}</div>`;
+  return `
     <div class="team-card" style="--team-color: ${t.color}" onclick="showTeamDetail('${key}')">
-      <div class="team-card-emoji">${t.emoji}</div>
+      ${logoHtml}
       <div class="team-card-name">${t.name}</div>
       <div class="team-card-city">${t.city}</div>
       <div class="team-card-record">${t.record.w}V – ${t.record.l}D – ${t.record.otl + t.record.sol}DP · ${t.record.pts} PTS</div>
-    </div>
-  `).join('');
+    </div>`;
+}
+
+function renderTeamsGrids() {
+  const nhlTeams = Object.entries(DATA.teams).filter(([_, t]) => t.division === 'nhl').sort((a, b) => a[1].name.localeCompare(b[1].name));
+  const lhjmqTeams = Object.entries(DATA.teams).filter(([_, t]) => t.division === 'lhjmq').sort((a, b) => a[1].name.localeCompare(b[1].name));
+  document.getElementById('teamsGridNhl').innerHTML = nhlTeams.map(([k, t]) => renderTeamCard(k, t)).join('');
+  document.getElementById('teamsGridLhjmq').innerHTML = lhjmqTeams.map(([k, t]) => renderTeamCard(k, t)).join('');
 }
 
 // TEAM DETAIL
@@ -929,13 +1109,21 @@ function showTeamDetail(teamKey) {
   const goalie = DATA.goalies.find(g => g.team === teamKey);
   const diff = t.record.gf - t.record.ga;
 
+  const teamLogoBig = t.logo
+    ? `<img src="${t.logo}" alt="${escapeHtml(t.name)}" class="team-header-logo" onerror="this.outerHTML='<div style=\\'font-size:80px;\\'>${t.emoji}</div>'">`
+    : `<div style="font-size: 80px;">${t.emoji}</div>`;
+
+  const affiliateLogoMini = affiliate && affiliate.logo
+    ? `<img src="${affiliate.logo}" alt="" onerror="this.outerHTML='<span>${affiliate.emoji}</span>'">`
+    : `<span>${affiliate ? affiliate.emoji : ''}</span>`;
+
   document.getElementById('teamDetail').innerHTML = `
     <div class="team-header" style="--team-color: ${t.color}">
-      <div class="team-header-emoji">${t.emoji}</div>
+      ${teamLogoBig}
       <div class="team-header-info">
         <h2>${t.name}</h2>
         <p>${t.city} · Division ${t.division.toUpperCase()}</p>
-        ${affiliate ? `<div class="affiliate-link" onclick="showTeamDetail('${t.affiliate}')">${t.division === 'nhl' ? 'Filiale ' : 'Club parent '}: ${affiliate.emoji} ${affiliate.name} →</div>` : ''}
+        ${affiliate ? `<div class="affiliate-link" onclick="showTeamDetail('${t.affiliate}')">${affiliateLogoMini} ${t.division === 'nhl' ? 'Filiale ' : 'Club parent '}: ${affiliate.name} →</div>` : ''}
       </div>
       <div class="team-header-stats">
         <div class="stat-block"><div class="stat-block-value">${t.record.pts}</div><div class="stat-block-label">Points</div></div>
@@ -989,76 +1177,61 @@ function showTeamDetail(teamKey) {
   navigate('team-detail');
 }
 
-// LEADERS
-function renderLeaders() {
-  document.getElementById('leaderGoals').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.g - a.g).slice(0, 5), 'g');
-  document.getElementById('leaderPoints').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.pts - a.pts).slice(0, 5), 'pts');
-  document.getElementById('leaderAssists').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.a - a.a).slice(0, 5), 'a');
-  document.getElementById('leaderPlusMinus').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.plusminus - a.plusminus).slice(0, 5), 'plusminus');
-  document.getElementById('leaderPIM').innerHTML = renderLeaderList([...DATA.players].sort((a, b) => b.pim - a.pim).slice(0, 5), 'pim');
-  document.getElementById('leaderVezina').innerHTML = renderGoalieLeaderList([...DATA.goalies].sort((a, b) => (b.svpct - a.svpct) || (b.w - a.w)).slice(0, 5), 'w');
+// TROPHIES
+function renderTrophiesNHL() {
+  const players = DATA.players.filter(p => DATA.teams[p.team].division === 'nhl');
+  const goalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'nhl');
+  document.getElementById('trophyNhlGoals').innerHTML = renderLeaderList([...players].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('trophyNhlPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  document.getElementById('trophyNhlAssists').innerHTML = renderLeaderList([...players].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
+  document.getElementById('trophyNhlPM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.plusminus-a.plusminus).slice(0,5), 'plusminus');
+  document.getElementById('trophyNhlPIM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pim-a.pim).slice(0,5), 'pim');
+  document.getElementById('trophyNhlVezina').innerHTML = renderGoalieLeaderList([...goalies].sort((a,b)=>(b.svpct-a.svpct)||(b.w-a.w)).slice(0,5), 'w');
+}
+
+function renderTrophiesLHJMQ() {
+  const players = DATA.players.filter(p => DATA.teams[p.team].division === 'lhjmq');
+  const goalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'lhjmq');
+  document.getElementById('trophyLhjmqGoals').innerHTML = renderLeaderList([...players].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('trophyLhjmqPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  document.getElementById('trophyLhjmqAssists').innerHTML = renderLeaderList([...players].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
+  document.getElementById('trophyLhjmqPM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.plusminus-a.plusminus).slice(0,5), 'plusminus');
+  document.getElementById('trophyLhjmqPIM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pim-a.pim).slice(0,5), 'pim');
+  document.getElementById('trophyLhjmqVezina').innerHTML = renderGoalieLeaderList([...goalies].sort((a,b)=>(b.svpct-a.svpct)||(b.w-a.w)).slice(0,5), 'w');
 }
 
 // SORTING
 function setupSortHandlers() {
-  document.querySelectorAll('#standingsTable th.sortable').forEach(th => {
-    th.addEventListener('click', () => {
-      const key = th.dataset.key;
-      if (standingsSort.key === key) {
-        standingsSort.dir = standingsSort.dir === 'desc' ? 'asc' : 'desc';
-      } else {
-        standingsSort.key = key;
-        standingsSort.dir = 'desc';
-      }
-      updateSortHeaders('#standingsTable', standingsSort);
-      renderStandings();
-    });
-  });
-  document.querySelectorAll('#playersTable th.sortable').forEach(th => {
-    th.addEventListener('click', () => {
-      const key = th.dataset.key;
-      if (playersSort.key === key) {
-        playersSort.dir = playersSort.dir === 'desc' ? 'asc' : 'desc';
-      } else {
-        playersSort.key = key;
-        playersSort.dir = 'desc';
-      }
-      updateSortHeaders('#playersTable', playersSort);
-      renderPlayers();
-    });
-  });
-  document.querySelectorAll('#goaliesTable th.sortable').forEach(th => {
-    th.addEventListener('click', () => {
-      const key = th.dataset.key;
-      if (goaliesSort.key === key) {
-        goaliesSort.dir = goaliesSort.dir === 'desc' ? 'asc' : 'desc';
-      } else {
-        goaliesSort.key = key;
-        goaliesSort.dir = 'desc';
-      }
-      updateSortHeaders('#goaliesTable', goaliesSort);
-      renderGoalies();
-    });
-  });
+  setupSortFor('#standingsNhlTable', standingsNhlSort, renderStandingsNHL);
+  setupSortFor('#standingsLhjmqTable', standingsLhjmqSort, renderStandingsLHJMQ);
+  setupSortFor('#playersNhlTable', playersNhlSort, renderPlayersNHL);
+  setupSortFor('#playersLhjmqTable', playersLhjmqSort, renderPlayersLHJMQ);
+  setupSortFor('#goaliesNhlTable', goaliesNhlSort, renderGoaliesNHL);
+  setupSortFor('#goaliesLhjmqTable', goaliesLhjmqSort, renderGoaliesLHJMQ);
 }
 
-function updateSortHeaders(tableSel, sort) {
+function setupSortFor(tableSel, sort, rerender) {
   document.querySelectorAll(`${tableSel} th.sortable`).forEach(th => {
-    th.classList.remove('sort-asc', 'sort-desc');
-    if (th.dataset.key === sort.key) {
-      th.classList.add(sort.dir === 'desc' ? 'sort-desc' : 'sort-asc');
-    }
+    th.addEventListener('click', () => {
+      const key = th.dataset.key;
+      if (sort.key === key) sort.dir = sort.dir === 'desc' ? 'asc' : 'desc';
+      else { sort.key = key; sort.dir = 'desc'; }
+      document.querySelectorAll(`${tableSel} th.sortable`).forEach(t => {
+        t.classList.remove('sort-asc', 'sort-desc');
+        if (t.dataset.key === sort.key) t.classList.add(sort.dir === 'desc' ? 'sort-desc' : 'sort-asc');
+      });
+      rerender();
+    });
   });
 }
 
-// UTILS
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-// START
 loadData();
 </script>
 
 </body>
 </html>
+
