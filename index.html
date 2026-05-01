@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LCHQ — Saison 6 | Stats officielles</title>
+<title>LCHQ — Saison 5 | Stats officielles</title>
 <meta name="description" content="Statistiques officielles de la LCHQ — Ligue de hockey World of Chel sur NHL 26">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -824,6 +824,157 @@
   }
   .stats-add-table .pts-cell { font-weight: 700; }
 
+  /* CALENDRIER */
+  .schedule-week {
+    margin-bottom: 30px;
+  }
+  .schedule-week-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, rgba(230,57,70,0.1), rgba(193,18,31,0.05));
+    border: 1px solid var(--red);
+    border-radius: 12px;
+  }
+  .schedule-week-num {
+    font-family: 'Bebas Neue';
+    font-size: 32px;
+    letter-spacing: 1px;
+    color: var(--red-bright);
+  }
+  .schedule-week-title {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .schedule-week-title strong {
+    display: block;
+    font-family: 'Bebas Neue';
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .schedule-day {
+    margin-bottom: 24px;
+  }
+  .schedule-day-header {
+    font-family: 'Bebas Neue';
+    font-size: 18px;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .schedule-day-header .division-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  .schedule-day-header .division-badge.nhl { background: var(--nhl-color); }
+  .schedule-day-header .division-badge.lhjmq { background: var(--lhjmq-color); }
+  .schedule-time-slot {
+    margin-bottom: 14px;
+  }
+  .schedule-time {
+    font-family: 'Bebas Neue';
+    font-size: 16px;
+    color: var(--text-tertiary);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+  .schedule-matches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+  }
+  .match-card {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 8px;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .match-card:hover {
+    border-color: var(--border-bright);
+  }
+  body.admin-mode .match-card {
+    cursor: pointer;
+  }
+  body.admin-mode .match-card:hover {
+    border-color: var(--red);
+    background: rgba(230, 57, 70, 0.05);
+  }
+  .match-team {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+  }
+  .match-team.home { flex-direction: row-reverse; text-align: right; }
+  .match-team img, .match-team .emoji {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .match-team .emoji {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .match-team-name {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .match-center {
+    font-family: 'Bebas Neue';
+    font-size: 16px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    padding: 0 6px;
+  }
+  .match-score {
+    font-family: 'Bebas Neue';
+    font-size: 22px;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+  }
+  .match-score .winner { color: var(--green); }
+  .match-score .loser { color: var(--text-tertiary); }
+  .match-card.played { border-left: 3px solid var(--green); }
+  .match-card.upcoming { border-left: 3px solid var(--text-tertiary); opacity: 0.85; }
+  .match-dp-badge {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 9px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
   /* Nav admin items */
   .nav-btn.admin-nav { display: none; }
   body.admin-mode .nav-btn.admin-nav { display: inline-block; }
@@ -878,7 +1029,7 @@
       <img src="logo.png" alt="LCHQ" class="logo-img" onerror="this.style.display='none'">
       <div class="logo-text">
         <h1>LCHQ</h1>
-        <p>Saison 6 · World of Chel</p>
+        <p>Saison 5 · World of Chel</p>
       </div>
     </div>
     <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
@@ -940,7 +1091,7 @@
     <img src="logo-banner.png" alt="LCHQ Hockey" class="hero-banner" onerror="this.style.display='none'">
     <div class="hero-overlay">
       <p class="subtitle">Ligue de Hockey · World of Chel · NHL 26</p>
-      <div class="badge">⚡ Saison 6 — En cours</div>
+      <div class="badge">⚡ Saison 5 — En cours</div>
     </div>
   </div>
 
@@ -1180,14 +1331,21 @@
 
 <!-- SCHEDULE -->
 <section id="page-schedule" class="page">
-  <h2 class="section-title">Calendrier & Résultats</h2>
-  <div class="card">
-    <div class="empty-state">
-      <div class="empty-state-icon">🏒</div>
-      <p style="font-size: 16px;"><strong>Le calendrier sera bientôt disponible.</strong></p>
-      <p style="margin-top: 8px;">Les matchs joués et à venir apparaîtront ici une fois ajoutés au fichier <code>data.json</code>.</p>
-    </div>
+  <h2 class="section-title">📅 Calendrier & Résultats</h2>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchScheduleDiv('all', this)">Toutes</button>
+    <button class="tab" onclick="switchScheduleDiv('nhl', this)">NHL (jeudi)</button>
+    <button class="tab" onclick="switchScheduleDiv('lhjmq', this)">LHJMQ (mercredi)</button>
   </div>
+
+  <div class="tabs" style="margin-bottom: 20px;">
+    <button class="tab active" onclick="switchScheduleStatus('all', this)">Tous les matchs</button>
+    <button class="tab" onclick="switchScheduleStatus('played', this)">Joués</button>
+    <button class="tab" onclick="switchScheduleStatus('upcoming', this)">À venir</button>
+  </div>
+
+  <div id="scheduleContent"></div>
 </section>
 
 <!-- STATS GLOBAL -->
@@ -1562,9 +1720,57 @@
   </div>
 </div>
 
+<!-- Modal: Rentrer/Modifier score d'un match -->
+<div class="modal-overlay" id="matchModal">
+  <div class="modal" style="max-width:550px;">
+    <h3 id="matchModalTitle">🏒 Score du match</h3>
+    <div class="modal-info" id="matchModalSubtitle"></div>
+
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:20px 0;">
+      <div style="text-align:center;">
+        <div id="matchAwayLogo" style="display:flex;justify-content:center;margin-bottom:10px;"></div>
+        <div id="matchAwayName" style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-primary);margin-bottom:8px;"></div>
+        <div style="font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Visiteur</div>
+        <input type="number" id="matchAwayScore" min="0" value="0" style="width:80px;background:var(--bg-card);border:2px solid var(--border);color:var(--text-primary);padding:10px;border-radius:10px;font-family:'Bebas Neue';font-size:32px;text-align:center;font-weight:700;">
+      </div>
+      <div style="font-family:'Bebas Neue';font-size:32px;color:var(--text-tertiary);">@</div>
+      <div style="text-align:center;">
+        <div id="matchHomeLogo" style="display:flex;justify-content:center;margin-bottom:10px;"></div>
+        <div id="matchHomeName" style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-primary);margin-bottom:8px;"></div>
+        <div style="font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Domicile</div>
+        <input type="number" id="matchHomeScore" min="0" value="0" style="width:80px;background:var(--bg-card);border:2px solid var(--border);color:var(--text-primary);padding:10px;border-radius:10px;font-family:'Bebas Neue';font-size:32px;text-align:center;font-weight:700;">
+      </div>
+    </div>
+
+    <div class="modal-form-group">
+      <label>Type de fin de match</label>
+      <div class="status-options">
+        <label class="status-option">
+          <input type="radio" name="matchType" value="reg" checked>
+          <span><strong>⏱️ Temps régulier</strong></span>
+        </label>
+        <label class="status-option">
+          <input type="radio" name="matchType" value="dp">
+          <span><strong>🔥 Prolongation (DP)</strong></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
+      💡 Le classement des équipes ne sera <u>pas mis à jour automatiquement</u>. Pense à modifier le classement séparément!
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('matchModal')">Annuler</button>
+      <button class="btn btn-danger" id="matchClearBtn" onclick="clearMatchScore()" style="display:none;">🗑️ Effacer score</button>
+      <button class="btn btn-primary" onclick="saveMatchScore()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="container">
-    <p>LCHQ · Saison 6 · World of Chel · NHL 26</p>
+    <p>LCHQ · Saison 5 · World of Chel · NHL 26</p>
     <p style="margin-top: 6px;">Bâti avec <span class="heart">♥</span> pour la communauté</p>
   </div>
 </footer>
@@ -1603,6 +1809,7 @@ function initApp() {
   renderTrophiesNHL();
   renderTrophiesLHJMQ();
   renderStatsPage();
+  renderSchedule();
   setupSortHandlers();
 }
 
@@ -2628,6 +2835,251 @@ function downloadDataJson() {
 
 // ===== RE-RENDU GLOBAL =====
 
+// ============ CALENDRIER ============
+
+let currentScheduleDiv = 'all';
+let currentScheduleStatus = 'all';
+let editingMatchId = null;
+
+// Configuration de la saison
+const SEASON_CONFIG = {
+  startDateLhjmq: new Date('2026-04-29'),  // Mercredi
+  startDateNhl: new Date('2026-04-30'),    // Jeudi
+  weeks: 8,
+  timeSlots: ['20:00', '20:30', '21:00']
+};
+
+function switchScheduleDiv(div, btn) {
+  currentScheduleDiv = div;
+  document.querySelectorAll('#page-schedule > .tabs:nth-of-type(1) .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderSchedule();
+}
+
+function switchScheduleStatus(status, btn) {
+  currentScheduleStatus = status;
+  document.querySelectorAll('#page-schedule > .tabs:nth-of-type(2) .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderSchedule();
+}
+
+function formatDateFr(date) {
+  const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+  const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
+}
+
+function getWeekDates(weekNum) {
+  const lhjmqDate = new Date(SEASON_CONFIG.startDateLhjmq);
+  lhjmqDate.setDate(lhjmqDate.getDate() + (weekNum - 1) * 7);
+  const nhlDate = new Date(SEASON_CONFIG.startDateNhl);
+  nhlDate.setDate(nhlDate.getDate() + (weekNum - 1) * 7);
+  return { lhjmq: lhjmqDate, nhl: nhlDate };
+}
+
+function isMatchPlayed(match) {
+  return match.away_score !== null && match.away_score !== undefined && match.home_score !== null && match.home_score !== undefined;
+}
+
+function teamMiniDisplay(teamKey, alignment) {
+  const t = DATA.teams[teamKey];
+  if (!t) return `<div class="match-team ${alignment}"><span class="match-team-name" style="color:var(--text-tertiary);">?</span></div>`;
+  const logo = t.logo
+    ? `<img src="${t.logo}" alt="${escapeHtml(t.name)}" onerror="this.outerHTML='<span class=\\'emoji\\'>${t.emoji}</span>'">`
+    : `<span class="emoji">${t.emoji}</span>`;
+  return `<div class="match-team ${alignment}">${logo}<span class="match-team-name">${escapeHtml(t.name)}</span></div>`;
+}
+
+function renderSchedule() {
+  const schedule = DATA.schedule || { weeks: [] };
+  const container = document.getElementById('scheduleContent');
+
+  if (!schedule.weeks || schedule.weeks.length === 0) {
+    container.innerHTML = `
+      <div class="card">
+        <div class="empty-state">
+          <div class="empty-state-icon">🏒</div>
+          <p style="font-size: 16px;"><strong>Calendrier non disponible.</strong></p>
+          <p style="margin-top: 8px;">Les affrontements seront ajoutés bientôt!</p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  let html = '';
+  schedule.weeks.forEach(week => {
+    const dates = getWeekDates(week.num);
+
+    // Filtrer les matchs selon les filtres actifs
+    let matches = week.matches || [];
+    if (currentScheduleDiv !== 'all') {
+      matches = matches.filter(m => m.division === currentScheduleDiv);
+    }
+    if (currentScheduleStatus === 'played') {
+      matches = matches.filter(m => isMatchPlayed(m));
+    } else if (currentScheduleStatus === 'upcoming') {
+      matches = matches.filter(m => !isMatchPlayed(m));
+    }
+
+    if (matches.length === 0) return;
+
+    html += `<div class="schedule-week">
+      <div class="schedule-week-header">
+        <div class="schedule-week-num">S${week.num}</div>
+        <div class="schedule-week-title">
+          <strong>Semaine ${week.num}</strong>
+          ${formatDateFr(dates.lhjmq)} & ${formatDateFr(dates.nhl)}
+        </div>
+      </div>`;
+
+    // Grouper par division puis par créneau horaire
+    ['lhjmq', 'nhl'].forEach(div => {
+      const divMatches = matches.filter(m => m.division === div);
+      if (divMatches.length === 0) return;
+
+      const dayDate = div === 'lhjmq' ? dates.lhjmq : dates.nhl;
+      const divLabel = div === 'lhjmq' ? 'LHJMQ' : 'NHL';
+
+      html += `<div class="schedule-day">
+        <div class="schedule-day-header">
+          <span class="division-badge ${div}">${divLabel}</span>
+          ${formatDateFr(dayDate)}
+        </div>`;
+
+      // Grouper par horaire
+      SEASON_CONFIG.timeSlots.forEach(time => {
+        const timeMatches = divMatches.filter(m => m.time === time);
+        if (timeMatches.length === 0) return;
+
+        html += `<div class="schedule-time-slot">
+          <div class="schedule-time">⏰ ${time}</div>
+          <div class="schedule-matches">`;
+
+        timeMatches.forEach(m => {
+          html += renderMatchCard(m);
+        });
+
+        html += `</div></div>`;
+      });
+
+      html += `</div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  if (!html) {
+    html = `<div class="card"><div class="empty-state"><p>Aucun match ne correspond aux filtres.</p></div></div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function renderMatchCard(m) {
+  const played = isMatchPlayed(m);
+  const dpBadge = m.is_dp ? '<span class="match-dp-badge">DP</span>' : '';
+  const adminAttr = `onclick="if(document.body.classList.contains('admin-mode'))openMatchModal('${m.id}')"`;
+
+  let center;
+  if (played) {
+    const awayWin = m.away_score > m.home_score;
+    const homeWin = m.home_score > m.away_score;
+    center = `<div class="match-center match-score">
+      <span class="${awayWin ? 'winner' : 'loser'}">${m.away_score}</span>
+      <span style="color:var(--text-tertiary);"> – </span>
+      <span class="${homeWin ? 'winner' : 'loser'}">${m.home_score}</span>
+    </div>`;
+  } else {
+    center = `<div class="match-center">VS</div>`;
+  }
+
+  return `<div class="match-card ${played ? 'played' : 'upcoming'}" ${adminAttr}>
+    ${dpBadge}
+    ${teamMiniDisplay(m.away, 'away')}
+    ${center}
+    ${teamMiniDisplay(m.home, 'home')}
+  </div>`;
+}
+
+function openMatchModal(matchId) {
+  if (!isAdmin) return;
+  // Trouver le match dans toutes les semaines
+  let match = null;
+  let weekNum = null;
+  for (const w of DATA.schedule.weeks) {
+    const found = (w.matches || []).find(m => m.id === matchId);
+    if (found) { match = found; weekNum = w.num; break; }
+  }
+  if (!match) return;
+
+  editingMatchId = matchId;
+  const away = DATA.teams[match.away];
+  const home = DATA.teams[match.home];
+
+  document.getElementById('matchModalTitle').textContent = `🏒 Match #${matchId}`;
+  document.getElementById('matchModalSubtitle').textContent = `Semaine ${weekNum} · ${match.division.toUpperCase()} · ${match.time}`;
+
+  // Logos et noms
+  const awayLogoEl = away.logo
+    ? `<img src="${away.logo}" alt="${escapeHtml(away.name)}" style="width:60px;height:60px;object-fit:contain;" onerror="this.outerHTML='<span style=&quot;font-size:50px;&quot;>${away.emoji}</span>'">`
+    : `<span style="font-size:50px;">${away.emoji}</span>`;
+  const homeLogoEl = home.logo
+    ? `<img src="${home.logo}" alt="${escapeHtml(home.name)}" style="width:60px;height:60px;object-fit:contain;" onerror="this.outerHTML='<span style=&quot;font-size:50px;&quot;>${home.emoji}</span>'">`
+    : `<span style="font-size:50px;">${home.emoji}</span>`;
+
+  document.getElementById('matchAwayLogo').innerHTML = awayLogoEl;
+  document.getElementById('matchHomeLogo').innerHTML = homeLogoEl;
+  document.getElementById('matchAwayName').textContent = away.name;
+  document.getElementById('matchHomeName').textContent = home.name;
+
+  // Pré-remplir les scores si existants
+  document.getElementById('matchAwayScore').value = match.away_score ?? 0;
+  document.getElementById('matchHomeScore').value = match.home_score ?? 0;
+  document.querySelector(`input[name="matchType"][value="${match.is_dp ? 'dp' : 'reg'}"]`).checked = true;
+
+  // Bouton effacer (visible si match déjà joué)
+  document.getElementById('matchClearBtn').style.display = isMatchPlayed(match) ? 'inline-block' : 'none';
+
+  openModal('matchModal');
+}
+
+function saveMatchScore() {
+  const awayScore = +document.getElementById('matchAwayScore').value || 0;
+  const homeScore = +document.getElementById('matchHomeScore').value || 0;
+  const matchType = document.querySelector('input[name="matchType"]:checked').value;
+
+  // Trouver et modifier le match
+  for (const w of DATA.schedule.weeks) {
+    const match = (w.matches || []).find(m => m.id === editingMatchId);
+    if (match) {
+      match.away_score = awayScore;
+      match.home_score = homeScore;
+      match.is_dp = (matchType === 'dp');
+      break;
+    }
+  }
+
+  closeModal('matchModal');
+  renderSchedule();
+}
+
+function clearMatchScore() {
+  if (!confirm('Effacer le score de ce match? Il redeviendra "À venir".')) return;
+  for (const w of DATA.schedule.weeks) {
+    const match = (w.matches || []).find(m => m.id === editingMatchId);
+    if (match) {
+      match.away_score = null;
+      match.home_score = null;
+      match.is_dp = false;
+      break;
+    }
+  }
+  closeModal('matchModal');
+  renderSchedule();
+}
+
+// ============ FIN CALENDRIER ============
+
 function rerenderAll() {
   renderHome();
   renderStandingsNHL();
@@ -2642,6 +3094,7 @@ function rerenderAll() {
   renderSubs();
   renderInactive();
   renderStatsPage();
+  renderSchedule();
 }
 
 loadData();
