@@ -552,7 +552,7 @@
       "id": "p1",
       "name": "Joueur1_AVA",
       "team": "avalanche",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -562,13 +562,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p2",
       "name": "Joueur2_AVA",
       "team": "avalanche",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -578,13 +581,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p3",
       "name": "Joueur3_AVA",
       "team": "avalanche",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -594,13 +600,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p4",
       "name": "Joueur1_BOS",
       "team": "bruins",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -610,13 +619,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p5",
       "name": "Joueur2_BOS",
       "team": "bruins",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -626,13 +638,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p6",
       "name": "Joueur3_BOS",
       "team": "bruins",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -642,13 +657,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p7",
       "name": "Joueur1_MTL",
       "team": "canadiens",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -658,13 +676,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p8",
       "name": "Joueur2_MTL",
       "team": "canadiens",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -674,13 +695,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p9",
       "name": "Joueur3_MTL",
       "team": "canadiens",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -690,13 +714,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p10",
       "name": "Joueur1_VAN",
       "team": "canucks",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -706,13 +733,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p11",
       "name": "Joueur2_VAN",
       "team": "canucks",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -722,13 +752,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p12",
       "name": "Joueur3_VAN",
       "team": "canucks",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -738,13 +771,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p13",
       "name": "Joueur1_WSH",
       "team": "capitals",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -754,13 +790,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p14",
       "name": "Joueur2_WSH",
       "team": "capitals",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -770,13 +809,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p15",
       "name": "Joueur3_WSH",
       "team": "capitals",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -786,13 +828,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p16",
       "name": "Joueur1_LAK",
       "team": "kings",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -802,13 +847,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p17",
       "name": "Joueur2_LAK",
       "team": "kings",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -818,13 +866,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p18",
       "name": "Joueur3_LAK",
       "team": "kings",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -834,13 +885,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p19",
       "name": "Joueur1_SEA",
       "team": "kraken",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -850,13 +904,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p20",
       "name": "Joueur2_SEA",
       "team": "kraken",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -866,13 +923,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p21",
       "name": "Joueur3_SEA",
       "team": "kraken",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -882,13 +942,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p22",
       "name": "Joueur1_FLA",
       "team": "panthers",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -898,13 +961,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p23",
       "name": "Joueur2_FLA",
       "team": "panthers",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -914,13 +980,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p24",
       "name": "Joueur3_FLA",
       "team": "panthers",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -930,13 +999,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p25",
       "name": "Joueur1_NSH",
       "team": "predators",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -946,13 +1018,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p26",
       "name": "Joueur2_NSH",
       "team": "predators",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -962,13 +1037,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p27",
       "name": "Joueur3_NSH",
       "team": "predators",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -978,13 +1056,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p28",
       "name": "Joueur1_NYR",
       "team": "rangers",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -994,13 +1075,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p29",
       "name": "Joueur2_NYR",
       "team": "rangers",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1010,13 +1094,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p30",
       "name": "Joueur3_NYR",
       "team": "rangers",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1026,13 +1113,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p31",
       "name": "Joueur1_SJS",
       "team": "sharks",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1042,13 +1132,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p32",
       "name": "Joueur2_SJS",
       "team": "sharks",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1058,13 +1151,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p33",
       "name": "Joueur3_SJS",
       "team": "sharks",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1074,13 +1170,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p34",
       "name": "Joueur1_MIN",
       "team": "wild",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1090,13 +1189,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p35",
       "name": "Joueur2_MIN",
       "team": "wild",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1106,13 +1208,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p36",
       "name": "Joueur3_MIN",
       "team": "wild",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1122,13 +1227,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p37",
       "name": "Joueur1_ARM",
       "team": "armada",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1138,13 +1246,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p38",
       "name": "Joueur2_ARM",
       "team": "armada",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1154,13 +1265,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p39",
       "name": "Joueur3_ARM",
       "team": "armada",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1170,13 +1284,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p40",
       "name": "Joueur1_TIG",
       "team": "tigres",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1186,13 +1303,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p41",
       "name": "Joueur2_TIG",
       "team": "tigres",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1202,13 +1322,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p42",
       "name": "Joueur3_TIG",
       "team": "tigres",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1218,13 +1341,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p43",
       "name": "Joueur1_REM",
       "team": "remparts",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1234,13 +1360,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p44",
       "name": "Joueur2_REM",
       "team": "remparts",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1250,13 +1379,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p45",
       "name": "Joueur3_REM",
       "team": "remparts",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1266,13 +1398,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p46",
       "name": "Joueur1_SJ",
       "team": "seadogs",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1282,13 +1417,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p47",
       "name": "Joueur2_SJ",
       "team": "seadogs",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1298,13 +1436,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p48",
       "name": "Joueur3_SJ",
       "team": "seadogs",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1314,13 +1455,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p49",
       "name": "Joueur1_PHO",
       "team": "phoenix",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1330,13 +1474,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p50",
       "name": "Joueur2_PHO",
       "team": "phoenix",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1346,13 +1493,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p51",
       "name": "Joueur3_PHO",
       "team": "phoenix",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1362,13 +1512,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p52",
       "name": "Joueur1_SAG",
       "team": "saguenéens",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1378,13 +1531,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p53",
       "name": "Joueur2_SAG",
       "team": "saguenéens",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1394,13 +1550,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p54",
       "name": "Joueur3_SAG",
       "team": "saguenéens",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1410,13 +1569,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p55",
       "name": "Joueur1_DRA",
       "team": "drakkar",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1426,13 +1588,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p56",
       "name": "Joueur2_DRA",
       "team": "drakkar",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1442,13 +1607,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p57",
       "name": "Joueur3_DRA",
       "team": "drakkar",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1458,13 +1626,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p58",
       "name": "Joueur1_WIL",
       "team": "wildcats",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1474,13 +1645,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p59",
       "name": "Joueur2_WIL",
       "team": "wildcats",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1490,13 +1664,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p60",
       "name": "Joueur3_WIL",
       "team": "wildcats",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1506,13 +1683,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p61",
       "name": "Joueur1_HUS",
       "team": "huskies",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1522,13 +1702,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p62",
       "name": "Joueur2_HUS",
       "team": "huskies",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1538,13 +1721,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p63",
       "name": "Joueur3_HUS",
       "team": "huskies",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1554,13 +1740,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p64",
       "name": "Joueur1_VOL",
       "team": "voltigeurs",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1570,13 +1759,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p65",
       "name": "Joueur2_VOL",
       "team": "voltigeurs",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1586,13 +1778,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p66",
       "name": "Joueur3_VOL",
       "team": "voltigeurs",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1602,13 +1797,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p67",
       "name": "Joueur1_OCE",
       "team": "oceanic",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1618,13 +1816,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p68",
       "name": "Joueur2_OCE",
       "team": "oceanic",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1634,13 +1835,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p69",
       "name": "Joueur3_OCE",
       "team": "oceanic",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1650,13 +1854,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p70",
       "name": "Joueur1_HAL",
       "team": "mooseheads",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1666,13 +1873,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p71",
       "name": "Joueur2_HAL",
       "team": "mooseheads",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1682,13 +1892,16 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     },
     {
       "id": "p72",
       "name": "Joueur3_HAL",
       "team": "mooseheads",
-      "position": "F",
+      "position": "C",
       "gp": 0,
       "g": 0,
       "a": 0,
@@ -1698,7 +1911,10 @@
       "shots": 0,
       "shotpct": 0,
       "toi": "0:00",
-      "fopct": 0
+      "fopct": 0,
+      "status": "regular",
+      "position_main": "C",
+      "position_sec": "A"
     }
   ],
   "goalies": [
