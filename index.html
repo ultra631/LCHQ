@@ -861,6 +861,7 @@
 
       <button class="nav-btn" data-page="teams" onclick="navigate('teams')">Équipes</button>
       <button class="nav-btn" data-page="schedule" onclick="navigate('schedule')">Calendrier</button>
+      <button class="nav-btn" data-page="stats" onclick="navigate('stats')">📊 Stats</button>
 
       <div class="nav-group">
         <button class="nav-btn" data-section="trophies">Trophées ▾</button>
@@ -1139,6 +1140,23 @@
   </div>
 </section>
 
+<!-- STATS GLOBAL -->
+<section id="page-stats" class="page">
+  <h2 class="section-title">📊 Stats de la Ligue</h2>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchStatsDiv('all', this)">Tous</button>
+    <button class="tab" onclick="switchStatsDiv('nhl', this)">Division NHL</button>
+    <button class="tab" onclick="switchStatsDiv('lhjmq', this)">Division LHJMQ</button>
+  </div>
+
+  <h3 class="section-title" style="font-size: 26px;">🏒 Patineurs</h3>
+  <div class="grid-3" id="statsSkaters"></div>
+
+  <h3 class="section-title" style="font-size: 26px;">🥅 Gardiens</h3>
+  <div class="grid-3" id="statsGoalies"></div>
+</section>
+
 <!-- TROPHIES NHL -->
 <section id="page-trophies-nhl" class="page">
   <div class="division-banner" style="--division-color: var(--nhl-color)">
@@ -1316,20 +1334,46 @@
       </div>
     </div>
 
-    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">📊 Statistiques</h4>
+    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">📊 Statistiques de base</h4>
     <div class="modal-grid-3">
       <div class="modal-form-group"><label>PJ</label><input type="number" id="pGp" min="0" value="0"></div>
       <div class="modal-form-group"><label>Buts</label><input type="number" id="pG" min="0" value="0"></div>
       <div class="modal-form-group"><label>Passes</label><input type="number" id="pA" min="0" value="0"></div>
       <div class="modal-form-group"><label>+/-</label><input type="number" id="pPM" value="0"></div>
       <div class="modal-form-group"><label>Punitions (PIM)</label><input type="number" id="pPim" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Tirs</label><input type="number" id="pShots" min="0" value="0"></div>
-      <div class="modal-form-group"><label>%Tirs</label><input type="number" id="pShotPct" min="0" max="100" step="0.1" value="0"></div>
       <div class="modal-form-group"><label>TG/Match (mm:ss)</label><input type="text" id="pToi" placeholder="0:00" value="0:00"></div>
-      <div class="modal-form-group"><label>%MAJ</label><input type="number" id="pFoPct" min="0" max="100" step="0.1" value="0"></div>
     </div>
+
+    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">🎯 Tirs</h4>
+    <div class="modal-grid">
+      <div class="modal-form-group"><label>Tirs au but</label><input type="number" id="pShots" min="0" value="0"></div>
+      <div class="modal-form-group"><label>Tirs bloqués (TB)</label><input type="number" id="pTb" min="0" value="0"></div>
+    </div>
+
+    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">🏒 Mises au jeu</h4>
+    <div class="modal-grid">
+      <div class="modal-form-group"><label>MJ Gagnées (MJG)</label><input type="number" id="pMjg" min="0" value="0"></div>
+      <div class="modal-form-group"><label>MJ Faites totales (MJ)</label><input type="number" id="pMjf" min="0" value="0"></div>
+    </div>
+
+    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">📤 Passes</h4>
+    <div class="modal-grid">
+      <div class="modal-form-group"><label>Passes tentées (PT)</label><input type="number" id="pPt" min="0" value="0"></div>
+      <div class="modal-form-group"><label>Passes réussies (PR)</label><input type="number" id="pPr" min="0" value="0"></div>
+    </div>
+
+    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">🛡️ Défense</h4>
+    <div class="modal-grid">
+      <div class="modal-form-group"><label>Interceptions (INT)</label><input type="number" id="pInt" min="0" value="0"></div>
+      <div class="modal-form-group"><label>Pertes de rondelle (PERT)</label><input type="number" id="pPert" min="0" value="0"></div>
+    </div>
+
     <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
-      💡 PTS sera calculé automatiquement (Buts + Passes)
+      ✨ <strong>Calculs automatiques</strong> :<br>
+      • PTS = Buts + Passes<br>
+      • %Tirs = Buts ÷ Tirs × 100<br>
+      • %MAJ = MJG ÷ MJ × 100<br>
+      • %P = PR ÷ PT × 100
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('playerModal')">Annuler</button>
@@ -1446,6 +1490,7 @@ function initApp() {
   renderTeamsGrids();
   renderTrophiesNHL();
   renderTrophiesLHJMQ();
+  renderStatsPage();
   setupSortHandlers();
 }
 
@@ -1795,6 +1840,134 @@ function renderTrophiesLHJMQ() {
   document.getElementById('trophyLhjmqVezina').innerHTML = renderGoalieLeaderList([...goalies].sort((a,b)=>(b.svpct-a.svpct)||(b.w-a.w)).slice(0,5), 'w');
 }
 
+// ============ PAGE STATS GLOBAL ============
+
+let currentStatsDiv = 'all';
+
+function switchStatsDiv(div, btn) {
+  currentStatsDiv = div;
+  document.querySelectorAll('#page-stats .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderStatsPage();
+}
+
+function renderStatsPage() {
+  // Filtrer joueurs actifs (réguliers + remplaçants), exclure inactifs
+  let players = DATA.players.filter(p => (p.status || 'regular') !== 'inactive');
+  let goalies = [...DATA.goalies];
+
+  if (currentStatsDiv !== 'all') {
+    players = players.filter(p => p.team && DATA.teams[p.team] && DATA.teams[p.team].division === currentStatsDiv);
+    goalies = goalies.filter(g => DATA.teams[g.team] && DATA.teams[g.team].division === currentStatsDiv);
+  }
+
+  // Catégories pour les patineurs
+  const skaterCategories = [
+    { title: '🏆 Top Buteurs', key: 'g', format: v => v },
+    { title: '🎯 Top Pointeurs', key: 'pts', format: v => v },
+    { title: '🤝 Top Passeurs', key: 'a', format: v => v },
+    { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
+    { title: '👊 Plus de PUN', key: 'pim', format: v => v },
+    { title: '🎯 Plus de Tirs', key: 'shots', format: v => v },
+    { title: '🔥 Meilleur %Tirs', key: 'shotpct', format: v => v.toFixed(1) + '%', minStat: { key: 'shots', val: 5 } },
+    { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
+    { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
+    { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v },
+    { title: '📊 Meilleur %Passes', key: 'passpct', format: v => v.toFixed(1) + '%', minStat: { key: 'pt', val: 10 } },
+    { title: '🏒 Plus de MJ Gagnées', key: 'mjg', format: v => v },
+    { title: '⚡ Meilleur %MJ', key: 'fopct', format: v => v.toFixed(1) + '%', minStat: { key: 'mjf', val: 10 } },
+    { title: '😬 Plus de Pertes', key: 'pert', format: v => v }
+  ];
+
+  // Render patineurs
+  const skatersHtml = skaterCategories.map(cat => {
+    let filtered = [...players];
+    if (cat.minStat) {
+      filtered = filtered.filter(p => (p[cat.minStat.key] || 0) >= cat.minStat.val);
+    }
+    const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} ${cat.minStat.key === 'shots' ? 'tirs' : cat.minStat.key === 'pt' ? 'passes' : 'MJ'}</div>` : '';
+    return `<div class="card">
+      <h3>${cat.title}</h3>
+      ${minNote}
+      ${renderStatsLeaderList(sorted, cat.key, cat.format)}
+    </div>`;
+  }).join('');
+
+  document.getElementById('statsSkaters').innerHTML = skatersHtml;
+
+  // Catégories pour les gardiens
+  const goalieCategories = [
+    { title: '🏆 Plus de Victoires', key: 'w', format: v => v },
+    { title: '🥅 Meilleure Moy. (GAA)', key: 'gaa', format: v => v.toFixed(2), asc: true, minStat: { key: 'gp', val: 3 } },
+    { title: '⭐ Meilleur %Arrêts', key: 'svpct', format: v => (v * 100).toFixed(1) + '%', minStat: { key: 'gp', val: 3 } },
+    { title: '🛡️ Plus de Blanchissages', key: 'so', format: v => v },
+    { title: '💪 Plus d\'Arrêts Totaux', key: 'sv', format: v => v },
+    { title: '🎯 Plus de Tirs Reçus', key: 'sa', format: v => v }
+  ];
+
+  const goaliesHtml = goalieCategories.map(cat => {
+    let filtered = [...goalies];
+    if (cat.minStat) {
+      filtered = filtered.filter(g => (g[cat.minStat.key] || 0) >= cat.minStat.val);
+    }
+    const sorted = filtered.sort((a, b) => {
+      const av = a[cat.key] || 0;
+      const bv = b[cat.key] || 0;
+      return cat.asc ? av - bv : bv - av;
+    }).slice(0, 10);
+    const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} parties</div>` : '';
+    return `<div class="card">
+      <h3>${cat.title}</h3>
+      ${minNote}
+      ${renderStatsGoalieLeaderList(sorted, cat.key, cat.format)}
+    </div>`;
+  }).join('');
+
+  document.getElementById('statsGoalies').innerHTML = goaliesHtml;
+}
+
+function renderStatsLeaderList(players, statKey, formatter) {
+  if (!players.length) return '<div class="empty-state" style="padding:20px;"><p style="font-size:13px;">Aucune donnée</p></div>';
+  return players.map((p, i) => {
+    const team = p.team ? DATA.teams[p.team] : null;
+    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    const teamLabel = team
+      ? (team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'"> ${team.name}` : `${team.emoji} ${team.name}`)
+      : `<span style="color:#f59e0b;">🔄 Remplaçant</span>`;
+    const subBadge = (p.status === 'sub') ? '<span class="sub-badge" style="font-size:8px;padding:1px 4px;">REMP</span>' : '';
+    return `
+      <div class="leader-row">
+        <div class="leader-rank ${rankClass}">${i + 1}</div>
+        <div class="leader-info">
+          <div class="leader-name">${escapeHtml(p.name)} ${subBadge}</div>
+          <div class="leader-team">${teamLabel}</div>
+        </div>
+        <div class="leader-stat">${formatter(p[statKey] || 0)}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderStatsGoalieLeaderList(goalies, statKey, formatter) {
+  if (!goalies.length) return '<div class="empty-state" style="padding:20px;"><p style="font-size:13px;">Aucune donnée</p></div>';
+  return goalies.map((g, i) => {
+    const team = DATA.teams[g.team];
+    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    const teamLabel = team
+      ? (team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'"> ${team.name}` : `${team.emoji} ${team.name}`)
+      : '';
+    return `
+      <div class="leader-row">
+        <div class="leader-rank ${rankClass}">${i + 1}</div>
+        <div class="leader-info">
+          <div class="leader-name">${escapeHtml(g.name)}</div>
+          <div class="leader-team">${teamLabel}</div>
+        </div>
+        <div class="leader-stat">${formatter(g[statKey] || 0)}</div>
+      </div>`;
+  }).join('');
+}
+
 // SORTING
 function setupSortHandlers() {
   setupSortFor('#standingsNhlTable', standingsNhlSort, renderStandingsNHL);
@@ -1950,15 +2123,25 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pPositionMain').value = p.position_main || p.position || 'C';
     updateSecondaryOptions();
     document.getElementById('pPositionSec').value = p.position_sec || (p.position_main === 'C' ? 'A' : 'C');
-    document.getElementById('pGp').value = p.gp;
-    document.getElementById('pG').value = p.g;
-    document.getElementById('pA').value = p.a;
-    document.getElementById('pPM').value = p.plusminus;
-    document.getElementById('pPim').value = p.pim;
-    document.getElementById('pShots').value = p.shots;
-    document.getElementById('pShotPct').value = p.shotpct;
-    document.getElementById('pToi').value = p.toi;
-    document.getElementById('pFoPct').value = p.fopct;
+    // Stats de base
+    document.getElementById('pGp').value = p.gp || 0;
+    document.getElementById('pG').value = p.g || 0;
+    document.getElementById('pA').value = p.a || 0;
+    document.getElementById('pPM').value = p.plusminus || 0;
+    document.getElementById('pPim').value = p.pim || 0;
+    document.getElementById('pToi').value = p.toi || '0:00';
+    // Tirs
+    document.getElementById('pShots').value = p.shots || 0;
+    document.getElementById('pTb').value = p.tb || 0;
+    // Mises au jeu
+    document.getElementById('pMjg').value = p.mjg || 0;
+    document.getElementById('pMjf').value = p.mjf || 0;
+    // Passes
+    document.getElementById('pPt').value = p.pt || 0;
+    document.getElementById('pPr').value = p.pr || 0;
+    // Défense
+    document.getElementById('pInt').value = p.intc || 0;
+    document.getElementById('pPert').value = p.pert || 0;
   } else {
     document.getElementById('playerModalTitle').textContent = '➕ Nouveau joueur';
     document.getElementById('pName').value = '';
@@ -1967,7 +2150,7 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pPositionMain').value = 'C';
     updateSecondaryOptions();
     document.getElementById('pPositionSec').value = 'A';
-    ['pGp','pG','pA','pPM','pPim','pShots','pShotPct','pFoPct'].forEach(id => document.getElementById(id).value = 0);
+    ['pGp','pG','pA','pPM','pPim','pShots','pTb','pMjg','pMjf','pPt','pPr','pInt','pPert'].forEach(id => document.getElementById(id).value = 0);
     document.getElementById('pToi').value = '0:00';
   }
   updatePlayerFormVisibility();
@@ -1983,7 +2166,7 @@ function savePlayer() {
     alert('Un joueur régulier doit être assigné à une équipe!');
     return;
   }
-  if (status === 'sub') team = '';  // Les remplaçants n'ont pas d'équipe
+  if (status === 'sub') team = '';
 
   const posMain = document.getElementById('pPositionMain').value;
   const posSec = document.getElementById('pPositionSec').value;
@@ -1992,25 +2175,45 @@ function savePlayer() {
     return;
   }
 
+  // Récupérer toutes les stats
   const g = +document.getElementById('pG').value || 0;
   const a = +document.getElementById('pA').value || 0;
+  const shots = +document.getElementById('pShots').value || 0;
+  const mjg = +document.getElementById('pMjg').value || 0;
+  const mjf = +document.getElementById('pMjf').value || 0;
+  const pt = +document.getElementById('pPt').value || 0;
+  const pr = +document.getElementById('pPr').value || 0;
+
+  // Calculs automatiques des pourcentages
+  const shotpct = shots > 0 ? Math.round((g / shots) * 1000) / 10 : 0;
+  const fopct = mjf > 0 ? Math.round((mjg / mjf) * 1000) / 10 : 0;
+  const passpct = pt > 0 ? Math.round((pr / pt) * 1000) / 10 : 0;
+
   const playerData = {
     name: name,
     team: team,
     status: status,
     position_main: posMain,
     position_sec: posSec,
-    position: posMain,  // Pour compatibilité
+    position: posMain,
     gp: +document.getElementById('pGp').value || 0,
     g: g,
     a: a,
     pts: g + a,
     plusminus: +document.getElementById('pPM').value || 0,
     pim: +document.getElementById('pPim').value || 0,
-    shots: +document.getElementById('pShots').value || 0,
-    shotpct: +document.getElementById('pShotPct').value || 0,
     toi: document.getElementById('pToi').value || '0:00',
-    fopct: +document.getElementById('pFoPct').value || 0
+    shots: shots,
+    shotpct: shotpct,
+    tb: +document.getElementById('pTb').value || 0,
+    mjg: mjg,
+    mjf: mjf,
+    fopct: fopct,
+    pt: pt,
+    pr: pr,
+    passpct: passpct,
+    intc: +document.getElementById('pInt').value || 0,
+    pert: +document.getElementById('pPert').value || 0
   };
   if (editingPlayerId) {
     const idx = DATA.players.findIndex(x => x.id === editingPlayerId);
@@ -2254,6 +2457,7 @@ function rerenderAll() {
   renderTrophiesLHJMQ();
   renderSubs();
   renderInactive();
+  renderStatsPage();
 }
 
 loadData();
