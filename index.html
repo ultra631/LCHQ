@@ -1153,6 +1153,9 @@
   <h3 class="section-title" style="font-size: 26px;">🏒 Patineurs</h3>
   <div class="grid-3" id="statsSkaters"></div>
 
+  <h3 class="section-title" style="font-size: 26px;">🛡️ Défenseurs</h3>
+  <div class="grid-3" id="statsDefenders"></div>
+
   <h3 class="section-title" style="font-size: 26px;">🥅 Gardiens</h3>
   <div class="grid-3" id="statsGoalies"></div>
 </section>
@@ -1171,7 +1174,6 @@
     <div class="card nhl"><h3>🎯 Top Pointeurs (Art Ross)</h3><div id="trophyNhlPoints"></div></div>
     <div class="card nhl"><h3>🤝 Top Passeurs</h3><div id="trophyNhlAssists"></div></div>
     <div class="card nhl"><h3>➕ Meilleur +/-</h3><div id="trophyNhlPM"></div></div>
-    <div class="card nhl"><h3>👊 Meilleur Frappeur (PUN)</h3><div id="trophyNhlPIM"></div></div>
     <div class="card nhl"><h3>🥅 Trophée Vézina</h3><div id="trophyNhlVezina"></div></div>
   </div>
 </section>
@@ -1190,7 +1192,6 @@
     <div class="card lhjmq"><h3>🎯 Top Pointeurs</h3><div id="trophyLhjmqPoints"></div></div>
     <div class="card lhjmq"><h3>🤝 Top Passeurs</h3><div id="trophyLhjmqAssists"></div></div>
     <div class="card lhjmq"><h3>➕ Meilleur +/-</h3><div id="trophyLhjmqPM"></div></div>
-    <div class="card lhjmq"><h3>👊 Meilleur Frappeur (PUN)</h3><div id="trophyLhjmqPIM"></div></div>
     <div class="card lhjmq"><h3>🥅 Trophée Gardien</h3><div id="trophyLhjmqVezina"></div></div>
   </div>
 </section>
@@ -1825,7 +1826,6 @@ function renderTrophiesNHL() {
   document.getElementById('trophyNhlPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
   document.getElementById('trophyNhlAssists').innerHTML = renderLeaderList([...players].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
   document.getElementById('trophyNhlPM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.plusminus-a.plusminus).slice(0,5), 'plusminus');
-  document.getElementById('trophyNhlPIM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pim-a.pim).slice(0,5), 'pim');
   document.getElementById('trophyNhlVezina').innerHTML = renderGoalieLeaderList([...goalies].sort((a,b)=>(b.svpct-a.svpct)||(b.w-a.w)).slice(0,5), 'w');
 }
 
@@ -1836,7 +1836,6 @@ function renderTrophiesLHJMQ() {
   document.getElementById('trophyLhjmqPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
   document.getElementById('trophyLhjmqAssists').innerHTML = renderLeaderList([...players].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
   document.getElementById('trophyLhjmqPM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.plusminus-a.plusminus).slice(0,5), 'plusminus');
-  document.getElementById('trophyLhjmqPIM').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pim-a.pim).slice(0,5), 'pim');
   document.getElementById('trophyLhjmqVezina').innerHTML = renderGoalieLeaderList([...goalies].sort((a,b)=>(b.svpct-a.svpct)||(b.w-a.w)).slice(0,5), 'w');
 }
 
@@ -1867,8 +1866,6 @@ function renderStatsPage() {
     { title: '🎯 Top Pointeurs', key: 'pts', format: v => v },
     { title: '🤝 Top Passeurs', key: 'a', format: v => v },
     { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
-    { title: '👊 Plus de PUN', key: 'pim', format: v => v },
-    { title: '🎯 Plus de Tirs', key: 'shots', format: v => v },
     { title: '🔥 Meilleur %Tirs', key: 'shotpct', format: v => v.toFixed(1) + '%', minStat: { key: 'shots', val: 5 } },
     { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
     { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
@@ -1895,6 +1892,34 @@ function renderStatsPage() {
   }).join('');
 
   document.getElementById('statsSkaters').innerHTML = skatersHtml;
+
+  // ============ DÉFENSEURS ============
+  // Filtrer: joueurs ayant D en position principale OU secondaire
+  const defenders = players.filter(p => {
+    const main = p.position_main || p.position;
+    const sec = p.position_sec || '';
+    return main === 'D' || sec === 'D';
+  });
+
+  const defenderCategories = [
+    { title: '🏆 Top Pointeurs (Norris)', key: 'pts', format: v => v },
+    { title: '🥅 Top Buteurs', key: 'g', format: v => v },
+    { title: '🤝 Top Passeurs', key: 'a', format: v => v },
+    { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
+    { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
+    { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
+    { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v }
+  ];
+
+  const defendersHtml = defenderCategories.map(cat => {
+    const sorted = [...defenders].sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    return `<div class="card" style="border-color: rgba(91, 155, 213, 0.3);">
+      <h3 style="color: #5b9bd5;">${cat.title}</h3>
+      ${renderStatsLeaderList(sorted, cat.key, cat.format)}
+    </div>`;
+  }).join('');
+
+  document.getElementById('statsDefenders').innerHTML = defendersHtml || '<div class="empty-state"><p>Aucun défenseur dans cette division</p></div>';
 
   // Catégories pour les gardiens
   const goalieCategories = [
