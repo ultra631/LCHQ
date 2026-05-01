@@ -707,6 +707,79 @@
     line-height: 1.5;
   }
 
+  /* Status options (radio buttons) */
+  .status-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .status-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .status-option:hover { border-color: var(--border-bright); }
+  .status-option input[type="radio"] {
+    margin-top: 2px;
+    accent-color: var(--red);
+  }
+  .status-option:has(input:checked) {
+    border-color: var(--red);
+    background: rgba(230, 57, 70, 0.08);
+  }
+  .status-option span { font-size: 13px; line-height: 1.4; }
+  .status-option small { color: var(--text-tertiary); font-size: 11px; }
+
+  /* Badges de position et statut */
+  .pos-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    font-family: 'Bebas Neue', sans-serif;
+    margin-right: 3px;
+  }
+  .pos-badge-main {
+    background: rgba(230, 57, 70, 0.15);
+    border-color: var(--red);
+    color: var(--red-bright);
+  }
+  .sub-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* Page admin uniquement */
+  .admin-only-page { display: none; }
+  body.admin-mode .admin-only-page { display: block; }
+  body.admin-mode .admin-only-page.page { display: none; }
+  body.admin-mode .admin-only-page.page.active { display: block; }
+
+  /* Nav admin items */
+  .nav-btn.admin-nav { display: none; }
+  body.admin-mode .nav-btn.admin-nav { display: inline-block; }
+  body.admin-mode .nav-group.admin-nav { display: inline-block; }
+  .nav-group.admin-nav { display: none; }
+
   /* MOBILE */
   @media (max-width: 1100px) {
     .nav-btn { padding: 8px 10px; font-size: 11px; }
@@ -794,6 +867,14 @@
         <div class="nav-dropdown">
           <button class="nav-btn" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
           <button class="nav-btn" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
+        </div>
+      </div>
+
+      <div class="nav-group admin-nav">
+        <button class="nav-btn" data-section="admin">🔧 Gestion ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn" data-page="subs" onclick="navigate('subs')">🔄 Remplaçants</button>
+          <button class="nav-btn" data-page="inactive" onclick="navigate('inactive')">🔴 Joueurs inactifs</button>
         </div>
       </div>
     </nav>
@@ -1096,6 +1177,68 @@
   </div>
 </section>
 
+<!-- SUBS (REMPLAÇANTS) — Admin only -->
+<section id="page-subs" class="page admin-only-page">
+  <div class="division-banner" style="--division-color: #f59e0b">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🔄</div>
+    <div class="division-banner-text">
+      <h3>Joueurs Remplaçants</h3>
+      <p>Pool de joueurs disponibles à piger par les DG</p>
+    </div>
+  </div>
+  <div class="filters">
+    <input type="text" id="subSearch" class="filter-input" placeholder="🔎 Rechercher un remplaçant..." oninput="renderSubs()">
+    <select id="subPosFilter" class="filter-select" onchange="renderSubs()">
+      <option value="">Toutes les positions</option>
+      <option value="C">C — Centre</option>
+      <option value="A">A — Ailier</option>
+      <option value="D">D — Défenseur</option>
+      <option value="G">G — Gardien</option>
+    </select>
+  </div>
+  <button class="admin-add-btn" onclick="openPlayerModal(null, null, 'sub')">+ Ajouter un remplaçant</button>
+  <div class="table-wrap">
+    <table id="subsTable">
+      <thead><tr>
+        <th>#</th><th>Joueur</th><th>Position</th>
+        <th class="num sortable" data-key="gp">PJ</th>
+        <th class="num sortable" data-key="g">B</th>
+        <th class="num sortable" data-key="a">A</th>
+        <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        <th class="num sortable" data-key="plusminus">+/-</th>
+        <th class="num sortable" data-key="pim">PUN</th>
+        <th class="num sortable" data-key="shots">TIRS</th>
+      </tr></thead>
+      <tbody id="subsBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- INACTIVE — Admin only -->
+<section id="page-inactive" class="page admin-only-page">
+  <div class="division-banner" style="--division-color: #6b7280">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #6b7280, #4b5563);">🔴</div>
+    <div class="division-banner-text">
+      <h3>Joueurs Inactifs</h3>
+      <p>Joueurs archivés — ne jouent pas dans la ligue actuellement</p>
+    </div>
+  </div>
+  <div class="filters">
+    <input type="text" id="inactiveSearch" class="filter-input" placeholder="🔎 Rechercher un joueur inactif..." oninput="renderInactive()">
+  </div>
+  <button class="admin-add-btn" onclick="openPlayerModal(null, null, 'inactive')">+ Ajouter un joueur inactif</button>
+  <div class="table-wrap">
+    <table id="inactiveTable">
+      <thead><tr>
+        <th>Nom</th><th>Position</th><th>Ancienne équipe</th>
+        <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th>
+        <th>Actions</th>
+      </tr></thead>
+      <tbody id="inactiveBody"></tbody>
+    </table>
+  </div>
+</section>
+
 </main>
 
 <!-- ============ ADMIN UI ============ -->
@@ -1133,19 +1276,46 @@
       <label>Nom du joueur (Gamertag)</label>
       <input type="text" id="pName" placeholder="ex: TonGamertag_PSN">
     </div>
-    <div class="modal-grid">
-      <div class="modal-form-group">
-        <label>Équipe</label>
-        <select id="pTeam"></select>
-      </div>
-      <div class="modal-form-group">
-        <label>Position</label>
-        <select id="pPosition">
-          <option value="F">Attaquant (F)</option>
-          <option value="D">Défenseur (D)</option>
-        </select>
+
+    <div class="modal-form-group">
+      <label>Statut du joueur</label>
+      <div class="status-options">
+        <label class="status-option">
+          <input type="radio" name="pStatus" value="regular" checked onchange="updatePlayerFormVisibility()">
+          <span><strong>🟢 Régulier</strong><br><small>Joueur titulaire d'une équipe</small></span>
+        </label>
+        <label class="status-option">
+          <input type="radio" name="pStatus" value="sub" onchange="updatePlayerFormVisibility()">
+          <span><strong>🔄 Remplaçant</strong><br><small>Disponible pour toutes les équipes</small></span>
+        </label>
+        <label class="status-option">
+          <input type="radio" name="pStatus" value="inactive" onchange="updatePlayerFormVisibility()">
+          <span><strong>🔴 Inactif</strong><br><small>Archivé, ne joue pas</small></span>
+        </label>
       </div>
     </div>
+
+    <div class="modal-form-group" id="pTeamGroup">
+      <label>Équipe</label>
+      <select id="pTeam"></select>
+    </div>
+
+    <div class="modal-grid">
+      <div class="modal-form-group">
+        <label>Position principale</label>
+        <select id="pPositionMain" onchange="updateSecondaryOptions()">
+          <option value="C">C — Centre</option>
+          <option value="A">A — Ailier</option>
+          <option value="D">D — Défenseur</option>
+          <option value="G">G — Gardien</option>
+        </select>
+      </div>
+      <div class="modal-form-group">
+        <label>Position secondaire <small style="color:var(--text-tertiary);font-weight:400;">(différente)</small></label>
+        <select id="pPositionSec"></select>
+      </div>
+    </div>
+
     <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">📊 Statistiques</h4>
     <div class="modal-grid-3">
       <div class="modal-form-group"><label>PJ</label><input type="number" id="pGp" min="0" value="0"></div>
@@ -1306,10 +1476,12 @@ function teamLogoHtml(team, size = 'table') {
 
 // HOME
 function renderHome() {
-  const nhlPlayers = DATA.players.filter(p => DATA.teams[p.team].division === 'nhl');
-  const lhjmqPlayers = DATA.players.filter(p => DATA.teams[p.team].division === 'lhjmq');
-  const nhlGoalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'nhl');
-  const lhjmqGoalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'lhjmq');
+  // Joueurs actifs (réguliers + remplaçants), pas les inactifs
+  const activePlayers = DATA.players.filter(p => (p.status || 'regular') !== 'inactive');
+  const nhlPlayers = activePlayers.filter(p => p.team && DATA.teams[p.team] && DATA.teams[p.team].division === 'nhl');
+  const lhjmqPlayers = activePlayers.filter(p => p.team && DATA.teams[p.team] && DATA.teams[p.team].division === 'lhjmq');
+  const nhlGoalies = DATA.goalies.filter(g => DATA.teams[g.team] && DATA.teams[g.team].division === 'nhl');
+  const lhjmqGoalies = DATA.goalies.filter(g => DATA.teams[g.team] && DATA.teams[g.team].division === 'lhjmq');
 
   document.getElementById('nhlTopGoals').innerHTML = renderLeaderList([...nhlPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
   document.getElementById('nhlTopPoints').innerHTML = renderLeaderList([...nhlPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
@@ -1423,7 +1595,10 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
   const teamF = document.getElementById(teamFilterId).value;
 
   let players = DATA.players.filter(p => {
-    if (DATA.teams[p.team].division !== division) return false;
+    // Seulement les joueurs réguliers (pas remplaçants, pas inactifs)
+    const status = p.status || 'regular';
+    if (status !== 'regular') return false;
+    if (!p.team || !DATA.teams[p.team] || DATA.teams[p.team].division !== division) return false;
     if (search && !p.name.toLowerCase().includes(search)) return false;
     if (teamF && p.team !== teamF) return false;
     return true;
@@ -1448,7 +1623,7 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
         <td class="num">${i + 1}</td>
         <td style="font-weight: 600;">${escapeHtml(p.name)} ${adminActions}</td>
         <td><div class="team-cell">${teamLogoHtml(team)}<span>${team.name}</span></div></td>
-        <td>${p.position}</td>
+        <td>${posBadges(p)}</td>
         <td class="num">${p.gp}</td>
         <td class="num">${p.g}</td>
         <td class="num">${p.a}</td>
@@ -1524,7 +1699,8 @@ function showTeamDetail(teamKey) {
   const t = DATA.teams[teamKey];
   if (!t) return;
   const affiliate = DATA.teams[t.affiliate];
-  const roster = DATA.players.filter(p => p.team === teamKey);
+  // Seulement les joueurs RÉGULIERS de cette équipe
+  const roster = DATA.players.filter(p => p.team === teamKey && (p.status || 'regular') === 'regular');
   const goalie = DATA.goalies.find(g => g.team === teamKey);
   const diff = t.record.gf - t.record.ga;
 
@@ -1564,12 +1740,12 @@ function showTeamDetail(teamKey) {
           </tr>
         </thead>
         <tbody>
-          ${roster.map(p => {
+          ${roster.length ? roster.map(p => {
             const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
             const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : p.plusminus;
             return `<tr>
               <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
-              <td>${p.position}</td>
+              <td>${posBadges(p)}</td>
               <td class="num">${p.gp}</td>
               <td class="num">${p.g}</td>
               <td class="num">${p.a}</td>
@@ -1579,10 +1755,10 @@ function showTeamDetail(teamKey) {
               <td class="num">${p.shots}</td>
               <td class="num">${p.shotpct.toFixed(1)}%</td>
             </tr>`;
-          }).join('')}
+          }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun joueur régulier dans cette équipe.</td></tr>'}
           ${goalie ? `<tr style="background: var(--bg-elevated);">
             <td style="font-weight: 600;">🥅 ${escapeHtml(goalie.name)}</td>
-            <td>G</td>
+            <td><span class="pos-badge pos-badge-main">G</span></td>
             <td class="num">${goalie.gp}</td>
             <td class="num" colspan="2">${goalie.w}V – ${goalie.l}D – ${goalie.otl}DP</td>
             <td class="num">${goalie.gaa.toFixed(2)} MOY</td>
@@ -1598,8 +1774,8 @@ function showTeamDetail(teamKey) {
 
 // TROPHIES
 function renderTrophiesNHL() {
-  const players = DATA.players.filter(p => DATA.teams[p.team].division === 'nhl');
-  const goalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'nhl');
+  const players = DATA.players.filter(p => (p.status||'regular') !== 'inactive' && p.team && DATA.teams[p.team] && DATA.teams[p.team].division === 'nhl');
+  const goalies = DATA.goalies.filter(g => DATA.teams[g.team] && DATA.teams[g.team].division === 'nhl');
   document.getElementById('trophyNhlGoals').innerHTML = renderLeaderList([...players].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
   document.getElementById('trophyNhlPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
   document.getElementById('trophyNhlAssists').innerHTML = renderLeaderList([...players].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
@@ -1609,8 +1785,8 @@ function renderTrophiesNHL() {
 }
 
 function renderTrophiesLHJMQ() {
-  const players = DATA.players.filter(p => DATA.teams[p.team].division === 'lhjmq');
-  const goalies = DATA.goalies.filter(g => DATA.teams[g.team].division === 'lhjmq');
+  const players = DATA.players.filter(p => (p.status||'regular') !== 'inactive' && p.team && DATA.teams[p.team] && DATA.teams[p.team].division === 'lhjmq');
+  const goalies = DATA.goalies.filter(g => DATA.teams[g.team] && DATA.teams[g.team].division === 'lhjmq');
   document.getElementById('trophyLhjmqGoals').innerHTML = renderLeaderList([...players].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
   document.getElementById('trophyLhjmqPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
   document.getElementById('trophyLhjmqAssists').innerHTML = renderLeaderList([...players].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
@@ -1656,18 +1832,30 @@ let editingPlayerId = null;
 let editingGoalieId = null;
 let editingTeamKey = null;
 
+// HELPER: Affichage des badges de position
+function posBadges(p) {
+  const main = p.position_main || p.position || 'C';
+  const sec = p.position_sec || '';
+  let html = `<span class="pos-badge pos-badge-main">${main}</span>`;
+  if (sec) html += `<span class="pos-badge">${sec}</span>`;
+  return html;
+}
+
 function toggleAdminMode() {
   if (isAdmin) {
-    // Sortir du mode admin
     if (confirm('Sortir du mode admin? (Pense à télécharger data.json si tu as fait des modifications!)')) {
       isAdmin = false;
       document.body.classList.remove('admin-mode');
       document.getElementById('adminTrigger').classList.remove('active');
       document.getElementById('adminTrigger').textContent = '🔒 Admin';
       document.getElementById('adminDownloadBtn').classList.remove('show');
+      // Si on est sur une page admin-only, retourner à l'accueil
+      const activePage = document.querySelector('.page.active');
+      if (activePage && activePage.classList.contains('admin-only-page')) {
+        navigate('home');
+      }
     }
   } else {
-    // Ouvrir modal de connexion
     document.getElementById('loginError').style.display = 'none';
     document.getElementById('adminPasswordInput').value = '';
     openModal('loginModal');
@@ -1684,7 +1872,6 @@ function checkPassword() {
     document.getElementById('adminTrigger').textContent = '🔓 Admin actif';
     document.getElementById('adminDownloadBtn').classList.add('show');
     closeModal('loginModal');
-    // Re-rendre toutes les pages pour afficher les boutons admin
     rerenderAll();
   } else {
     document.getElementById('loginError').style.display = 'block';
@@ -1694,7 +1881,6 @@ function checkPassword() {
 function openModal(id) { document.getElementById(id).classList.add('show'); }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
-// Fermer modal en cliquant à l'extérieur
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) {
     e.target.classList.remove('show');
@@ -1705,27 +1891,65 @@ document.addEventListener('click', (e) => {
 
 function populateTeamSelect(selectId, division) {
   const sel = document.getElementById(selectId);
-  sel.innerHTML = '';
+  sel.innerHTML = '<option value="">— Choisir une équipe —</option>';
   Object.entries(DATA.teams)
     .filter(([_, t]) => !division || t.division === division)
     .sort((a, b) => a[1].name.localeCompare(b[1].name))
     .forEach(([k, t]) => {
       const opt = document.createElement('option');
       opt.value = k;
-      opt.textContent = `${t.emoji} ${t.name}`;
+      opt.textContent = `${t.emoji} ${t.name} (${t.division.toUpperCase()})`;
       sel.appendChild(opt);
     });
 }
 
-function openPlayerModal(playerId, division) {
+function updateSecondaryOptions() {
+  const main = document.getElementById('pPositionMain').value;
+  const sec = document.getElementById('pPositionSec');
+  const currentSec = sec.value;
+  sec.innerHTML = '';
+  const positions = [
+    {v: 'C', t: 'C — Centre'},
+    {v: 'A', t: 'A — Ailier'},
+    {v: 'D', t: 'D — Défenseur'},
+    {v: 'G', t: 'G — Gardien'}
+  ];
+  positions.filter(p => p.v !== main).forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.v;
+    opt.textContent = p.t;
+    sec.appendChild(opt);
+  });
+  // Garder le choix précédent s'il est encore valide
+  if (currentSec && currentSec !== main && [...sec.options].some(o => o.value === currentSec)) {
+    sec.value = currentSec;
+  }
+}
+
+function updatePlayerFormVisibility() {
+  const status = document.querySelector('input[name="pStatus"]:checked').value;
+  const teamGroup = document.getElementById('pTeamGroup');
+  if (status === 'sub') {
+    teamGroup.style.display = 'none';
+  } else {
+    teamGroup.style.display = 'block';
+  }
+}
+
+function openPlayerModal(playerId, division, presetStatus) {
   editingPlayerId = playerId;
   populateTeamSelect('pTeam', division);
+
   if (playerId) {
     const p = DATA.players.find(x => x.id === playerId);
     document.getElementById('playerModalTitle').textContent = '✏️ Modifier joueur';
     document.getElementById('pName').value = p.name;
-    document.getElementById('pTeam').value = p.team;
-    document.getElementById('pPosition').value = p.position;
+    document.getElementById('pTeam').value = p.team || '';
+    const status = p.status || 'regular';
+    document.querySelector(`input[name="pStatus"][value="${status}"]`).checked = true;
+    document.getElementById('pPositionMain').value = p.position_main || p.position || 'C';
+    updateSecondaryOptions();
+    document.getElementById('pPositionSec').value = p.position_sec || (p.position_main === 'C' ? 'A' : 'C');
     document.getElementById('pGp').value = p.gp;
     document.getElementById('pG').value = p.g;
     document.getElementById('pA').value = p.a;
@@ -1738,24 +1962,45 @@ function openPlayerModal(playerId, division) {
   } else {
     document.getElementById('playerModalTitle').textContent = '➕ Nouveau joueur';
     document.getElementById('pName').value = '';
-    document.getElementById('pPosition').value = 'F';
+    const status = presetStatus || 'regular';
+    document.querySelector(`input[name="pStatus"][value="${status}"]`).checked = true;
+    document.getElementById('pPositionMain').value = 'C';
+    updateSecondaryOptions();
+    document.getElementById('pPositionSec').value = 'A';
     ['pGp','pG','pA','pPM','pPim','pShots','pShotPct','pFoPct'].forEach(id => document.getElementById(id).value = 0);
     document.getElementById('pToi').value = '0:00';
   }
+  updatePlayerFormVisibility();
   openModal('playerModal');
 }
 
 function savePlayer() {
   const name = document.getElementById('pName').value.trim();
   if (!name) { alert('Le nom est obligatoire!'); return; }
-  const team = document.getElementById('pTeam').value;
-  if (!team) { alert('Sélectionne une équipe!'); return; }
+  const status = document.querySelector('input[name="pStatus"]:checked').value;
+  let team = document.getElementById('pTeam').value;
+  if (status === 'regular' && !team) {
+    alert('Un joueur régulier doit être assigné à une équipe!');
+    return;
+  }
+  if (status === 'sub') team = '';  // Les remplaçants n'ont pas d'équipe
+
+  const posMain = document.getElementById('pPositionMain').value;
+  const posSec = document.getElementById('pPositionSec').value;
+  if (posMain === posSec) {
+    alert('La position secondaire doit être différente de la principale!');
+    return;
+  }
+
   const g = +document.getElementById('pG').value || 0;
   const a = +document.getElementById('pA').value || 0;
   const playerData = {
     name: name,
     team: team,
-    position: document.getElementById('pPosition').value,
+    status: status,
+    position_main: posMain,
+    position_sec: posSec,
+    position: posMain,  // Pour compatibilité
     gp: +document.getElementById('pGp').value || 0,
     g: g,
     a: a,
@@ -1788,6 +2033,90 @@ function confirmDeletePlayer(id) {
     rerenderAll();
   };
   openModal('confirmModal');
+}
+
+// ===== REMPLAÇANTS =====
+
+function renderSubs() {
+  const search = (document.getElementById('subSearch')?.value || '').toLowerCase();
+  const posF = document.getElementById('subPosFilter')?.value || '';
+
+  let subs = DATA.players.filter(p => {
+    const status = p.status || 'regular';
+    if (status !== 'sub') return false;
+    if (search && !p.name.toLowerCase().includes(search)) return false;
+    if (posF) {
+      const main = p.position_main || p.position;
+      const sec = p.position_sec || '';
+      if (main !== posF && sec !== posF) return false;
+    }
+    return true;
+  });
+
+  subs.sort((a, b) => b.pts - a.pts);
+
+  document.getElementById('subsBody').innerHTML = subs.map((p, i) => {
+    const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
+    const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : p.plusminus;
+    return `
+      <tr>
+        <td class="num">${i + 1}</td>
+        <td style="font-weight: 600;">${escapeHtml(p.name)}<span class="sub-badge">REMP</span>
+          <span class="admin-row-actions">
+            <button class="row-action-btn" onclick="openPlayerModal('${p.id}')" title="Modifier">✏️</button>
+            <button class="row-action-btn delete" onclick="confirmDeletePlayer('${p.id}')" title="Supprimer">🗑️</button>
+          </span>
+        </td>
+        <td>${posBadges(p)}</td>
+        <td class="num">${p.gp}</td>
+        <td class="num">${p.g}</td>
+        <td class="num">${p.a}</td>
+        <td class="num pts-cell">${p.pts}</td>
+        <td class="num ${pmClass}">${pmStr}</td>
+        <td class="num">${p.pim}</td>
+        <td class="num">${p.shots}</td>
+      </tr>`;
+  }).join('') || '<tr><td colspan="10" class="empty-state">Aucun remplaçant pour le moment.<br><small>Clique sur "+ Ajouter un remplaçant" pour en créer un.</small></td></tr>';
+}
+
+// ===== INACTIFS =====
+
+function renderInactive() {
+  const search = (document.getElementById('inactiveSearch')?.value || '').toLowerCase();
+
+  let inactive = DATA.players.filter(p => {
+    if ((p.status || 'regular') !== 'inactive') return false;
+    if (search && !p.name.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  inactive.sort((a, b) => a.name.localeCompare(b.name));
+
+  document.getElementById('inactiveBody').innerHTML = inactive.map(p => {
+    const team = p.team ? DATA.teams[p.team] : null;
+    const teamCell = team
+      ? `<div class="team-cell">${teamLogoHtml(team)}<span>${team.name}</span></div>`
+      : '<span style="color:var(--text-tertiary);font-style:italic;">Aucune</span>';
+    return `
+      <tr>
+        <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
+        <td>${posBadges(p)}</td>
+        <td>${teamCell}</td>
+        <td class="num">${p.gp}</td>
+        <td class="num">${p.g}</td>
+        <td class="num">${p.a}</td>
+        <td class="num pts-cell">${p.pts}</td>
+        <td>
+          <button class="btn btn-success" style="padding:6px 12px;font-size:11px;" onclick="reactivatePlayer('${p.id}')">↻ Réactiver</button>
+          <button class="btn btn-danger" style="padding:6px 12px;font-size:11px;margin-left:4px;" onclick="confirmDeletePlayer('${p.id}')">🗑️</button>
+        </td>
+      </tr>`;
+  }).join('') || '<tr><td colspan="8" class="empty-state">Aucun joueur inactif.<br><small>Les joueurs marqués "Inactif" apparaîtront ici.</small></td></tr>';
+}
+
+function reactivatePlayer(id) {
+  // Ouvre le modal avec le joueur pour qu'on choisisse régulier ou remplaçant
+  openPlayerModal(id);
 }
 
 // ===== GARDIENS =====
@@ -1923,6 +2252,8 @@ function rerenderAll() {
   renderTeamsGrids();
   renderTrophiesNHL();
   renderTrophiesLHJMQ();
+  renderSubs();
+  renderInactive();
 }
 
 loadData();
