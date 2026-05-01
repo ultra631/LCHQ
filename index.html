@@ -774,6 +774,56 @@
   body.admin-mode .admin-only-page.page { display: none; }
   body.admin-mode .admin-only-page.page.active { display: block; }
 
+  /* Table d'addition de stats (mode admin) */
+  .stats-table-wrap {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-card);
+  }
+  .stats-add-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .stats-add-table thead {
+    background: var(--bg-elevated);
+  }
+  .stats-add-table th {
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    border-bottom: 1px solid var(--border);
+  }
+  .stats-add-table th.num { text-align: right; }
+  .stats-add-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .stats-add-table td.num { text-align: right; }
+  .stats-add-table tr:last-child td { border-bottom: none; }
+  .stats-add-table input[type="number"] {
+    width: 70px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: #5b9bd5;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    text-align: right;
+    font-weight: 600;
+  }
+  .stats-add-table input[type="number"]:focus {
+    border-color: #5b9bd5;
+    outline: none;
+  }
+  .stats-add-table .pts-cell { font-weight: 700; }
+
   /* Nav admin items */
   .nav-btn.admin-nav { display: none; }
   body.admin-mode .nav-btn.admin-nav { display: inline-block; }
@@ -1335,38 +1385,46 @@
       </div>
     </div>
 
-    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">📊 Statistiques de base</h4>
-    <div class="modal-grid-3">
-      <div class="modal-form-group"><label>PJ</label><input type="number" id="pGp" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Buts</label><input type="number" id="pG" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Passes</label><input type="number" id="pA" min="0" value="0"></div>
-      <div class="modal-form-group"><label>+/-</label><input type="number" id="pPM" value="0"></div>
-      <div class="modal-form-group"><label>Punitions (PIM)</label><input type="number" id="pPim" min="0" value="0"></div>
-      <div class="modal-form-group"><label>TG/Match (mm:ss)</label><input type="text" id="pToi" placeholder="0:00" value="0:00"></div>
+    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;display:flex;justify-content:space-between;align-items:center;">
+      <span>📊 Statistiques</span>
+      <button type="button" class="btn btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="resetWeeklyAdds('player')">🔄 Reset semaine</button>
+    </h4>
+
+    <div class="modal-info" style="background:rgba(91,155,213,0.1);border-color:rgba(91,155,213,0.3);color:#93c5fd;font-size:12px;">
+      💡 <strong>Comment utiliser</strong> : Rentre seulement <u>ce qui s'ajoute cette semaine</u> dans la colonne "+ Sem.". Le nouveau total se calcule automatiquement!
     </div>
 
-    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">🎯 Tirs</h4>
-    <div class="modal-grid">
-      <div class="modal-form-group"><label>Tirs au but</label><input type="number" id="pShots" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Tirs bloqués (TB)</label><input type="number" id="pTb" min="0" value="0"></div>
+    <div class="stats-table-wrap">
+      <table class="stats-add-table">
+        <thead>
+          <tr>
+            <th>Stat</th>
+            <th class="num">Total actuel</th>
+            <th class="num"><span style="color:#5b9bd5;">+ Sem.</span></th>
+            <th class="num">= Nouveau</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>PJ</td><td class="num"><span id="pGpCurrent">0</span></td><td class="num"><input type="number" id="pGpAdd" min="0" value="0" oninput="updateNewTotal('p','Gp')"></td><td class="num"><span id="pGpNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Buts</td><td class="num"><span id="pGCurrent">0</span></td><td class="num"><input type="number" id="pGAdd" min="0" value="0" oninput="updateNewTotal('p','G')"></td><td class="num"><span id="pGNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes</td><td class="num"><span id="pACurrent">0</span></td><td class="num"><input type="number" id="pAAdd" min="0" value="0" oninput="updateNewTotal('p','A')"></td><td class="num"><span id="pANew" class="pts-cell">0</span></td></tr>
+          <tr><td>+/-</td><td class="num"><span id="pPMCurrent">0</span></td><td class="num"><input type="number" id="pPMAdd" value="0" oninput="updateNewTotal('p','PM')"></td><td class="num"><span id="pPMNew" class="pts-cell">0</span></td></tr>
+          <tr><td>PUN</td><td class="num"><span id="pPimCurrent">0</span></td><td class="num"><input type="number" id="pPimAdd" min="0" value="0" oninput="updateNewTotal('p','Pim')"></td><td class="num"><span id="pPimNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Tirs</td><td class="num"><span id="pShotsCurrent">0</span></td><td class="num"><input type="number" id="pShotsAdd" min="0" value="0" oninput="updateNewTotal('p','Shots')"></td><td class="num"><span id="pShotsNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Tirs Bloqués (TB)</td><td class="num"><span id="pTbCurrent">0</span></td><td class="num"><input type="number" id="pTbAdd" min="0" value="0" oninput="updateNewTotal('p','Tb')"></td><td class="num"><span id="pTbNew" class="pts-cell">0</span></td></tr>
+          <tr><td>MJ Gagnées (MJG)</td><td class="num"><span id="pMjgCurrent">0</span></td><td class="num"><input type="number" id="pMjgAdd" min="0" value="0" oninput="updateNewTotal('p','Mjg')"></td><td class="num"><span id="pMjgNew" class="pts-cell">0</span></td></tr>
+          <tr><td>MJ Total (MJ)</td><td class="num"><span id="pMjfCurrent">0</span></td><td class="num"><input type="number" id="pMjfAdd" min="0" value="0" oninput="updateNewTotal('p','Mjf')"></td><td class="num"><span id="pMjfNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes Tentées (PT)</td><td class="num"><span id="pPtCurrent">0</span></td><td class="num"><input type="number" id="pPtAdd" min="0" value="0" oninput="updateNewTotal('p','Pt')"></td><td class="num"><span id="pPtNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes Réussies (PR)</td><td class="num"><span id="pPrCurrent">0</span></td><td class="num"><input type="number" id="pPrAdd" min="0" value="0" oninput="updateNewTotal('p','Pr')"></td><td class="num"><span id="pPrNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Interceptions (INT)</td><td class="num"><span id="pIntCurrent">0</span></td><td class="num"><input type="number" id="pIntAdd" min="0" value="0" oninput="updateNewTotal('p','Int')"></td><td class="num"><span id="pIntNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Pertes (PERT)</td><td class="num"><span id="pPertCurrent">0</span></td><td class="num"><input type="number" id="pPertAdd" min="0" value="0" oninput="updateNewTotal('p','Pert')"></td><td class="num"><span id="pPertNew" class="pts-cell">0</span></td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">🏒 Mises au jeu</h4>
-    <div class="modal-grid">
-      <div class="modal-form-group"><label>MJ Gagnées (MJG)</label><input type="number" id="pMjg" min="0" value="0"></div>
-      <div class="modal-form-group"><label>MJ Faites totales (MJ)</label><input type="number" id="pMjf" min="0" value="0"></div>
-    </div>
-
-    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">📤 Passes</h4>
-    <div class="modal-grid">
-      <div class="modal-form-group"><label>Passes tentées (PT)</label><input type="number" id="pPt" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Passes réussies (PR)</label><input type="number" id="pPr" min="0" value="0"></div>
-    </div>
-
-    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">🛡️ Défense</h4>
-    <div class="modal-grid">
-      <div class="modal-form-group"><label>Interceptions (INT)</label><input type="number" id="pInt" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Pertes de rondelle (PERT)</label><input type="number" id="pPert" min="0" value="0"></div>
+    <div class="modal-form-group" style="margin-top:14px;">
+      <label>TG/Match (mm:ss) <small style="color:var(--text-tertiary);font-weight:400;">— remplace, pas additionné</small></label>
+      <input type="text" id="pToi" placeholder="0:00" value="0:00">
     </div>
 
     <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
@@ -1395,17 +1453,43 @@
       <label>Équipe</label>
       <select id="gTeam"></select>
     </div>
-    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;">🥅 Statistiques</h4>
-    <div class="modal-grid-3">
-      <div class="modal-form-group"><label>PJ</label><input type="number" id="gGp" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Victoires</label><input type="number" id="gW" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Défaites</label><input type="number" id="gL" min="0" value="0"></div>
-      <div class="modal-form-group"><label>DP</label><input type="number" id="gOtl" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Moy. (BC/match)</label><input type="number" id="gGaa" min="0" step="0.01" value="0"></div>
-      <div class="modal-form-group"><label>%Arrêts (0-1)</label><input type="number" id="gSvPct" min="0" max="1" step="0.001" value="0" placeholder="ex: 0.925"></div>
-      <div class="modal-form-group"><label>Blanchissages</label><input type="number" id="gSo" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Tirs reçus</label><input type="number" id="gSa" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Arrêts</label><input type="number" id="gSv" min="0" value="0"></div>
+
+    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;display:flex;justify-content:space-between;align-items:center;">
+      <span>🥅 Statistiques</span>
+      <button type="button" class="btn btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="resetWeeklyAdds('goalie')">🔄 Reset semaine</button>
+    </h4>
+
+    <div class="modal-info" style="background:rgba(91,155,213,0.1);border-color:rgba(91,155,213,0.3);color:#93c5fd;font-size:12px;">
+      💡 Rentre seulement <u>ce qui s'ajoute cette semaine</u> dans la colonne "+ Sem.".
+    </div>
+
+    <div class="stats-table-wrap">
+      <table class="stats-add-table">
+        <thead>
+          <tr>
+            <th>Stat</th>
+            <th class="num">Total actuel</th>
+            <th class="num"><span style="color:#5b9bd5;">+ Sem.</span></th>
+            <th class="num">= Nouveau</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>PJ</td><td class="num"><span id="gGpCurrent">0</span></td><td class="num"><input type="number" id="gGpAdd" min="0" value="0" oninput="updateNewTotal('g','Gp')"></td><td class="num"><span id="gGpNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Victoires</td><td class="num"><span id="gWCurrent">0</span></td><td class="num"><input type="number" id="gWAdd" min="0" value="0" oninput="updateNewTotal('g','W')"></td><td class="num"><span id="gWNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Défaites</td><td class="num"><span id="gLCurrent">0</span></td><td class="num"><input type="number" id="gLAdd" min="0" value="0" oninput="updateNewTotal('g','L')"></td><td class="num"><span id="gLNew" class="pts-cell">0</span></td></tr>
+          <tr><td>DP</td><td class="num"><span id="gOtlCurrent">0</span></td><td class="num"><input type="number" id="gOtlAdd" min="0" value="0" oninput="updateNewTotal('g','Otl')"></td><td class="num"><span id="gOtlNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Blanchissages</td><td class="num"><span id="gSoCurrent">0</span></td><td class="num"><input type="number" id="gSoAdd" min="0" value="0" oninput="updateNewTotal('g','So')"></td><td class="num"><span id="gSoNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Tirs reçus</td><td class="num"><span id="gSaCurrent">0</span></td><td class="num"><input type="number" id="gSaAdd" min="0" value="0" oninput="updateNewTotal('g','Sa')"></td><td class="num"><span id="gSaNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Arrêts</td><td class="num"><span id="gSvCurrent">0</span></td><td class="num"><input type="number" id="gSvAdd" min="0" value="0" oninput="updateNewTotal('g','Sv')"></td><td class="num"><span id="gSvNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Buts alloués</td><td class="num"><span id="gGaCurrent">0</span></td><td class="num"><input type="number" id="gGaAdd" min="0" value="0" oninput="updateNewTotal('g','Ga')"></td><td class="num"><span id="gGaNew" class="pts-cell">0</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
+      ✨ <strong>Calculs automatiques</strong> :<br>
+      • Moy. (GAA) = Buts alloués ÷ PJ<br>
+      • %Arrêts = Arrêts ÷ Tirs reçus
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('goalieModal')">Annuler</button>
@@ -1419,18 +1503,45 @@
   <div class="modal">
     <h3 id="teamModalTitle">✏️ Modifier classement</h3>
     <div class="modal-info" id="teamModalSubtitle"></div>
-    <div class="modal-grid-3">
-      <div class="modal-form-group"><label>PJ (parties jouées)</label><input type="number" id="tGp" min="0" value="0"></div>
-      <div class="modal-form-group"><label>V (victoires)</label><input type="number" id="tW" min="0" value="0"></div>
-      <div class="modal-form-group"><label>D (défaites)</label><input type="number" id="tL" min="0" value="0"></div>
-      <div class="modal-form-group"><label>DP (déf. prol.)</label><input type="number" id="tOtl" min="0" value="0"></div>
-      <div class="modal-form-group"><label>DF (déf. fusil.)</label><input type="number" id="tSol" min="0" value="0"></div>
-      <div class="modal-form-group"><label>BP (buts pour)</label><input type="number" id="tGf" min="0" value="0"></div>
-      <div class="modal-form-group"><label>BC (buts contre)</label><input type="number" id="tGa" min="0" value="0"></div>
-      <div class="modal-form-group"><label>Série (V3, D2, etc.)</label><input type="text" id="tStreak" placeholder="-" value="-"></div>
+
+    <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;display:flex;justify-content:space-between;align-items:center;">
+      <span>📊 Classement</span>
+      <button type="button" class="btn btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="resetWeeklyAdds('team')">🔄 Reset semaine</button>
+    </h4>
+
+    <div class="modal-info" style="background:rgba(91,155,213,0.1);border-color:rgba(91,155,213,0.3);color:#93c5fd;font-size:12px;">
+      💡 Rentre seulement <u>ce qui s'ajoute cette semaine</u> dans la colonne "+ Sem.".
     </div>
+
+    <div class="stats-table-wrap">
+      <table class="stats-add-table">
+        <thead>
+          <tr>
+            <th>Stat</th>
+            <th class="num">Total actuel</th>
+            <th class="num"><span style="color:#5b9bd5;">+ Sem.</span></th>
+            <th class="num">= Nouveau</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>PJ</td><td class="num"><span id="tGpCurrent">0</span></td><td class="num"><input type="number" id="tGpAdd" min="0" value="0" oninput="updateNewTotal('t','Gp')"></td><td class="num"><span id="tGpNew" class="pts-cell">0</span></td></tr>
+          <tr><td>V (victoires)</td><td class="num"><span id="tWCurrent">0</span></td><td class="num"><input type="number" id="tWAdd" min="0" value="0" oninput="updateNewTotal('t','W')"></td><td class="num"><span id="tWNew" class="pts-cell">0</span></td></tr>
+          <tr><td>D (défaites)</td><td class="num"><span id="tLCurrent">0</span></td><td class="num"><input type="number" id="tLAdd" min="0" value="0" oninput="updateNewTotal('t','L')"></td><td class="num"><span id="tLNew" class="pts-cell">0</span></td></tr>
+          <tr><td>DP (déf. prol.)</td><td class="num"><span id="tOtlCurrent">0</span></td><td class="num"><input type="number" id="tOtlAdd" min="0" value="0" oninput="updateNewTotal('t','Otl')"></td><td class="num"><span id="tOtlNew" class="pts-cell">0</span></td></tr>
+          <tr><td>DF (déf. fusil.)</td><td class="num"><span id="tSolCurrent">0</span></td><td class="num"><input type="number" id="tSolAdd" min="0" value="0" oninput="updateNewTotal('t','Sol')"></td><td class="num"><span id="tSolNew" class="pts-cell">0</span></td></tr>
+          <tr><td>BP (buts pour)</td><td class="num"><span id="tGfCurrent">0</span></td><td class="num"><input type="number" id="tGfAdd" min="0" value="0" oninput="updateNewTotal('t','Gf')"></td><td class="num"><span id="tGfNew" class="pts-cell">0</span></td></tr>
+          <tr><td>BC (buts contre)</td><td class="num"><span id="tGaCurrent">0</span></td><td class="num"><input type="number" id="tGaAdd" min="0" value="0" oninput="updateNewTotal('t','Ga')"></td><td class="num"><span id="tGaNew" class="pts-cell">0</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-form-group" style="margin-top:14px;">
+      <label>Série actuelle <small style="color:var(--text-tertiary);font-weight:400;">— remplace, pas additionné</small></label>
+      <input type="text" id="tStreak" placeholder="ex: V3, D2" value="-">
+    </div>
+
     <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
-      💡 PTS calculé auto: V×2 + DP×1 + DF×1
+      ✨ <strong>PTS calculé auto</strong> : V×2 + DP + DF
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('teamModal')">Annuler</button>
@@ -2134,6 +2245,42 @@ function updatePlayerFormVisibility() {
   }
 }
 
+// HELPER: Mettre à jour le total automatiquement quand on tape dans une case "+ Sem."
+function updateNewTotal(prefix, statKey) {
+  const current = parseFloat(document.getElementById(`${prefix}${statKey}Current`).textContent) || 0;
+  const add = parseFloat(document.getElementById(`${prefix}${statKey}Add`).value) || 0;
+  document.getElementById(`${prefix}${statKey}New`).textContent = current + add;
+}
+
+// HELPER: Reset toutes les cases "+ Sem." à 0
+function resetWeeklyAdds(type) {
+  let prefix, keys;
+  if (type === 'player') {
+    prefix = 'p';
+    keys = ['Gp','G','A','PM','Pim','Shots','Tb','Mjg','Mjf','Pt','Pr','Int','Pert'];
+  } else if (type === 'goalie') {
+    prefix = 'g';
+    keys = ['Gp','W','L','Otl','So','Sa','Sv','Ga'];
+  } else if (type === 'team') {
+    prefix = 't';
+    keys = ['Gp','W','L','Otl','Sol','Gf','Ga'];
+  }
+  keys.forEach(k => {
+    document.getElementById(`${prefix}${k}Add`).value = 0;
+    updateNewTotal(prefix, k);
+  });
+}
+
+// HELPER: Charger les valeurs actuelles dans le modal (Total + Reset à 0)
+function loadStatsIntoModal(prefix, data, mapping) {
+  for (const [field, dataKey] of Object.entries(mapping)) {
+    const val = data[dataKey] || 0;
+    document.getElementById(`${prefix}${field}Current`).textContent = val;
+    document.getElementById(`${prefix}${field}Add`).value = 0;
+    document.getElementById(`${prefix}${field}New`).textContent = val;
+  }
+}
+
 function openPlayerModal(playerId, division, presetStatus) {
   editingPlayerId = playerId;
   populateTeamSelect('pTeam', division);
@@ -2148,25 +2295,14 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pPositionMain').value = p.position_main || p.position || 'C';
     updateSecondaryOptions();
     document.getElementById('pPositionSec').value = p.position_sec || (p.position_main === 'C' ? 'A' : 'C');
-    // Stats de base
-    document.getElementById('pGp').value = p.gp || 0;
-    document.getElementById('pG').value = p.g || 0;
-    document.getElementById('pA').value = p.a || 0;
-    document.getElementById('pPM').value = p.plusminus || 0;
-    document.getElementById('pPim').value = p.pim || 0;
     document.getElementById('pToi').value = p.toi || '0:00';
-    // Tirs
-    document.getElementById('pShots').value = p.shots || 0;
-    document.getElementById('pTb').value = p.tb || 0;
-    // Mises au jeu
-    document.getElementById('pMjg').value = p.mjg || 0;
-    document.getElementById('pMjf').value = p.mjf || 0;
-    // Passes
-    document.getElementById('pPt').value = p.pt || 0;
-    document.getElementById('pPr').value = p.pr || 0;
-    // Défense
-    document.getElementById('pInt').value = p.intc || 0;
-    document.getElementById('pPert').value = p.pert || 0;
+
+    // Charger les stats actuelles dans le tableau
+    loadStatsIntoModal('p', p, {
+      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim',
+      'Shots': 'shots', 'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
+      'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Pert': 'pert'
+    });
   } else {
     document.getElementById('playerModalTitle').textContent = '➕ Nouveau joueur';
     document.getElementById('pName').value = '';
@@ -2175,8 +2311,13 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pPositionMain').value = 'C';
     updateSecondaryOptions();
     document.getElementById('pPositionSec').value = 'A';
-    ['pGp','pG','pA','pPM','pPim','pShots','pTb','pMjg','pMjf','pPt','pPr','pInt','pPert'].forEach(id => document.getElementById(id).value = 0);
     document.getElementById('pToi').value = '0:00';
+    // Tous les stats à 0
+    loadStatsIntoModal('p', {}, {
+      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim',
+      'Shots': 'shots', 'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
+      'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Pert': 'pert'
+    });
   }
   updatePlayerFormVisibility();
   openModal('playerModal');
@@ -2200,16 +2341,20 @@ function savePlayer() {
     return;
   }
 
-  // Récupérer toutes les stats
-  const g = +document.getElementById('pG').value || 0;
-  const a = +document.getElementById('pA').value || 0;
-  const shots = +document.getElementById('pShots').value || 0;
-  const mjg = +document.getElementById('pMjg').value || 0;
-  const mjf = +document.getElementById('pMjf').value || 0;
-  const pt = +document.getElementById('pPt').value || 0;
-  const pr = +document.getElementById('pPr').value || 0;
+  // HELPER: récupérer le nouveau total (current + add)
+  const newVal = (key) => {
+    return parseFloat(document.getElementById(`p${key}New`).textContent) || 0;
+  };
 
-  // Calculs automatiques des pourcentages
+  const g = newVal('G');
+  const a = newVal('A');
+  const shots = newVal('Shots');
+  const mjg = newVal('Mjg');
+  const mjf = newVal('Mjf');
+  const pt = newVal('Pt');
+  const pr = newVal('Pr');
+
+  // Calculs automatiques
   const shotpct = shots > 0 ? Math.round((g / shots) * 1000) / 10 : 0;
   const fopct = mjf > 0 ? Math.round((mjg / mjf) * 1000) / 10 : 0;
   const passpct = pt > 0 ? Math.round((pr / pt) * 1000) / 10 : 0;
@@ -2221,24 +2366,24 @@ function savePlayer() {
     position_main: posMain,
     position_sec: posSec,
     position: posMain,
-    gp: +document.getElementById('pGp').value || 0,
+    gp: newVal('Gp'),
     g: g,
     a: a,
     pts: g + a,
-    plusminus: +document.getElementById('pPM').value || 0,
-    pim: +document.getElementById('pPim').value || 0,
+    plusminus: newVal('PM'),
+    pim: newVal('Pim'),
     toi: document.getElementById('pToi').value || '0:00',
     shots: shots,
     shotpct: shotpct,
-    tb: +document.getElementById('pTb').value || 0,
+    tb: newVal('Tb'),
     mjg: mjg,
     mjf: mjf,
     fopct: fopct,
     pt: pt,
     pr: pr,
     passpct: passpct,
-    intc: +document.getElementById('pInt').value || 0,
-    pert: +document.getElementById('pPert').value || 0
+    intc: newVal('Int'),
+    pert: newVal('Pert')
   };
   if (editingPlayerId) {
     const idx = DATA.players.findIndex(x => x.id === editingPlayerId);
@@ -2357,19 +2502,19 @@ function openGoalieModal(goalieId, division) {
     document.getElementById('goalieModalTitle').textContent = '✏️ Modifier gardien';
     document.getElementById('gName').value = g.name;
     document.getElementById('gTeam').value = g.team;
-    document.getElementById('gGp').value = g.gp;
-    document.getElementById('gW').value = g.w;
-    document.getElementById('gL').value = g.l;
-    document.getElementById('gOtl').value = g.otl;
-    document.getElementById('gGaa').value = g.gaa;
-    document.getElementById('gSvPct').value = g.svpct;
-    document.getElementById('gSo').value = g.so;
-    document.getElementById('gSa').value = g.sa;
-    document.getElementById('gSv').value = g.sv;
+    // Estimer les buts alloués: tirs reçus - arrêts (sa - sv)
+    const ga = (g.sa || 0) - (g.sv || 0);
+    loadStatsIntoModal('g', { ...g, ga: ga }, {
+      'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
+      'So': 'so', 'Sa': 'sa', 'Sv': 'sv', 'Ga': 'ga'
+    });
   } else {
     document.getElementById('goalieModalTitle').textContent = '➕ Nouveau gardien';
     document.getElementById('gName').value = '';
-    ['gGp','gW','gL','gOtl','gGaa','gSvPct','gSo','gSa','gSv'].forEach(id => document.getElementById(id).value = 0);
+    loadStatsIntoModal('g', {}, {
+      'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
+      'So': 'so', 'Sa': 'sa', 'Sv': 'sv', 'Ga': 'ga'
+    });
   }
   openModal('goalieModal');
 }
@@ -2379,18 +2524,30 @@ function saveGoalie() {
   if (!name) { alert('Le nom est obligatoire!'); return; }
   const team = document.getElementById('gTeam').value;
   if (!team) { alert('Sélectionne une équipe!'); return; }
+
+  const newVal = (key) => parseFloat(document.getElementById(`g${key}New`).textContent) || 0;
+
+  const gp = newVal('Gp');
+  const sa = newVal('Sa');
+  const sv = newVal('Sv');
+  const ga = newVal('Ga');
+
+  // Calculs automatiques
+  const gaa = gp > 0 ? Math.round((ga / gp) * 100) / 100 : 0;
+  const svpct = sa > 0 ? Math.round((sv / sa) * 1000) / 1000 : 0;
+
   const goalieData = {
     name: name,
     team: team,
-    gp: +document.getElementById('gGp').value || 0,
-    w: +document.getElementById('gW').value || 0,
-    l: +document.getElementById('gL').value || 0,
-    otl: +document.getElementById('gOtl').value || 0,
-    gaa: +document.getElementById('gGaa').value || 0,
-    svpct: +document.getElementById('gSvPct').value || 0,
-    so: +document.getElementById('gSo').value || 0,
-    sa: +document.getElementById('gSa').value || 0,
-    sv: +document.getElementById('gSv').value || 0
+    gp: gp,
+    w: newVal('W'),
+    l: newVal('L'),
+    otl: newVal('Otl'),
+    gaa: gaa,
+    svpct: svpct,
+    so: newVal('So'),
+    sa: sa,
+    sv: sv
   };
   if (editingGoalieId) {
     const idx = DATA.goalies.findIndex(x => x.id === editingGoalieId);
@@ -2422,29 +2579,31 @@ function openTeamModal(teamKey) {
   const t = DATA.teams[teamKey];
   document.getElementById('teamModalTitle').innerHTML = `✏️ ${t.emoji} ${t.name}`;
   document.getElementById('teamModalSubtitle').innerHTML = `${t.city} · Division ${t.division.toUpperCase()}`;
-  document.getElementById('tGp').value = t.record.gp;
-  document.getElementById('tW').value = t.record.w;
-  document.getElementById('tL').value = t.record.l;
-  document.getElementById('tOtl').value = t.record.otl;
-  document.getElementById('tSol').value = t.record.sol;
-  document.getElementById('tGf').value = t.record.gf;
-  document.getElementById('tGa').value = t.record.ga;
-  document.getElementById('tStreak').value = t.record.streak;
+  document.getElementById('tStreak').value = t.record.streak || '-';
+
+  loadStatsIntoModal('t', t.record, {
+    'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl', 'Sol': 'sol',
+    'Gf': 'gf', 'Ga': 'ga'
+  });
+
   openModal('teamModal');
 }
 
 function saveTeam() {
   const t = DATA.teams[editingTeamKey];
-  const w = +document.getElementById('tW').value || 0;
-  const otl = +document.getElementById('tOtl').value || 0;
-  const sol = +document.getElementById('tSol').value || 0;
-  t.record.gp = +document.getElementById('tGp').value || 0;
+  const newVal = (key) => parseFloat(document.getElementById(`t${key}New`).textContent) || 0;
+
+  const w = newVal('W');
+  const otl = newVal('Otl');
+  const sol = newVal('Sol');
+
+  t.record.gp = newVal('Gp');
   t.record.w = w;
-  t.record.l = +document.getElementById('tL').value || 0;
+  t.record.l = newVal('L');
   t.record.otl = otl;
   t.record.sol = sol;
-  t.record.gf = +document.getElementById('tGf').value || 0;
-  t.record.ga = +document.getElementById('tGa').value || 0;
+  t.record.gf = newVal('Gf');
+  t.record.ga = newVal('Ga');
   t.record.streak = document.getElementById('tStreak').value || '-';
   t.record.pts = w * 2 + otl + sol;
   closeModal('teamModal');
