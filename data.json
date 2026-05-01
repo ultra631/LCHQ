@@ -565,7 +565,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p2",
@@ -584,7 +592,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p3",
@@ -603,7 +619,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p4",
@@ -622,7 +646,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p5",
@@ -641,7 +673,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p6",
@@ -660,7 +700,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p7",
@@ -679,7 +727,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p8",
@@ -698,7 +754,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p9",
@@ -717,7 +781,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p10",
@@ -736,7 +808,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p11",
@@ -755,7 +835,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p12",
@@ -774,7 +862,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p13",
@@ -793,7 +889,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p14",
@@ -812,7 +916,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p15",
@@ -831,7 +943,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p16",
@@ -850,7 +970,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p17",
@@ -869,7 +997,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p18",
@@ -888,7 +1024,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p19",
@@ -907,7 +1051,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p20",
@@ -926,7 +1078,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p21",
@@ -945,7 +1105,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p22",
@@ -964,7 +1132,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p23",
@@ -983,7 +1159,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p24",
@@ -1002,7 +1186,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p25",
@@ -1021,7 +1213,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p26",
@@ -1040,7 +1240,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p27",
@@ -1059,7 +1267,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p28",
@@ -1078,7 +1294,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p29",
@@ -1097,7 +1321,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p30",
@@ -1116,7 +1348,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p31",
@@ -1135,7 +1375,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p32",
@@ -1154,7 +1402,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p33",
@@ -1173,7 +1429,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p34",
@@ -1192,7 +1456,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p35",
@@ -1211,7 +1483,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p36",
@@ -1230,7 +1510,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p37",
@@ -1249,7 +1537,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p38",
@@ -1268,7 +1564,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p39",
@@ -1287,7 +1591,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p40",
@@ -1306,7 +1618,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p41",
@@ -1325,7 +1645,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p42",
@@ -1344,7 +1672,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p43",
@@ -1363,7 +1699,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p44",
@@ -1382,7 +1726,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p45",
@@ -1401,7 +1753,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p46",
@@ -1420,7 +1780,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p47",
@@ -1439,7 +1807,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p48",
@@ -1458,7 +1834,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p49",
@@ -1477,7 +1861,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p50",
@@ -1496,7 +1888,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p51",
@@ -1515,7 +1915,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p52",
@@ -1534,7 +1942,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p53",
@@ -1553,7 +1969,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p54",
@@ -1572,7 +1996,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p55",
@@ -1591,7 +2023,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p56",
@@ -1610,7 +2050,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p57",
@@ -1629,7 +2077,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p58",
@@ -1648,7 +2104,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p59",
@@ -1667,7 +2131,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p60",
@@ -1686,7 +2158,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p61",
@@ -1705,7 +2185,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p62",
@@ -1724,7 +2212,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p63",
@@ -1743,7 +2239,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p64",
@@ -1762,7 +2266,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p65",
@@ -1781,7 +2293,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p66",
@@ -1800,7 +2320,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p67",
@@ -1819,7 +2347,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p68",
@@ -1838,7 +2374,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p69",
@@ -1857,7 +2401,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p70",
@@ -1876,7 +2428,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p71",
@@ -1895,7 +2455,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     },
     {
       "id": "p72",
@@ -1914,7 +2482,15 @@
       "fopct": 0,
       "status": "regular",
       "position_main": "C",
-      "position_sec": "A"
+      "position_sec": "A",
+      "mjg": 0,
+      "mjf": 0,
+      "tb": 0,
+      "intc": 0,
+      "pert": 0,
+      "pt": 0,
+      "pr": 0,
+      "passpct": 0
     }
   ],
   "goalies": [
