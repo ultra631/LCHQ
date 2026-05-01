@@ -304,15 +304,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/19.png",
       "emoji": "♠️",
       "record": {
-        "gp": 0,
-        "w": 0,
-        "l": 0,
+        "gp": 3,
+        "w": 1,
+        "l": 2,
         "otl": 0,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 2,
+        "gf": 13,
+        "ga": 19,
+        "streak": "d1"
       }
     },
     "tigres": {
@@ -325,15 +325,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/17.png",
       "emoji": "🐯",
       "record": {
-        "gp": 0,
-        "w": 0,
+        "gp": 3,
+        "w": 3,
         "l": 0,
         "otl": 0,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 6,
+        "gf": 34,
+        "ga": 19,
+        "streak": "v3"
       }
     },
     "remparts": {
@@ -346,15 +346,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/9.png",
       "emoji": "⚜️",
       "record": {
-        "gp": 0,
-        "w": 0,
+        "gp": 3,
+        "w": 2,
         "l": 0,
         "otl": 0,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 4,
+        "gf": 26,
+        "ga": 13,
+        "streak": "d1"
       }
     },
     "seadogs": {
@@ -367,15 +367,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/8.png",
       "emoji": "👻",
       "record": {
-        "gp": 0,
+        "gp": 3,
         "w": 0,
-        "l": 0,
-        "otl": 0,
+        "l": 2,
+        "otl": 1,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 1,
+        "gf": 18,
+        "ga": 29,
+        "streak": "d3"
       }
     },
     "phoenix": {
@@ -388,15 +388,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/60.png",
       "emoji": "🔥",
       "record": {
-        "gp": 0,
-        "w": 0,
+        "gp": 3,
+        "w": 3,
         "l": 0,
         "otl": 0,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 6,
+        "gf": 31,
+        "ga": 16,
+        "streak": "v3"
       }
     },
     "saguenéens": {
@@ -409,15 +409,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/10.png",
       "emoji": "🔱",
       "record": {
-        "gp": 0,
-        "w": 0,
-        "l": 0,
+        "gp": 3,
+        "w": 2,
+        "l": 1,
         "otl": 0,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 4,
+        "gf": 24,
+        "ga": 17,
+        "streak": "v1"
       }
     },
     "drakkar": {
@@ -430,15 +430,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/16.png",
       "emoji": "🐉",
       "record": {
-        "gp": 0,
-        "w": 0,
-        "l": 0,
+        "gp": 3,
+        "w": 1,
+        "l": 2,
         "otl": 0,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 2,
+        "gf": 20,
+        "ga": 24,
+        "streak": "d1"
       }
     },
     "wildcats": {
@@ -451,15 +451,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/1.png",
       "emoji": "🐅",
       "record": {
-        "gp": 0,
-        "w": 0,
-        "l": 0,
+        "gp": 3,
+        "w": 1,
+        "l": 2,
         "otl": 0,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 2,
+        "gf": 14,
+        "ga": 22,
+        "streak": "v1"
       }
     },
     "huskies": {
@@ -472,15 +472,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/11.png",
       "emoji": "🐾",
       "record": {
-        "gp": 0,
-        "w": 0,
-        "l": 0,
-        "otl": 0,
+        "gp": 3,
+        "w": 1,
+        "l": 1,
+        "otl": 1,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 3,
+        "gf": 21,
+        "ga": 24,
+        "streak": "v1"
       }
     },
     "voltigeurs": {
@@ -493,15 +493,15 @@
       "logo": "voltigeurs.png",
       "emoji": "⛑️",
       "record": {
-        "gp": 0,
-        "w": 0,
-        "l": 0,
+        "gp": 3,
+        "w": 2,
+        "l": 1,
         "otl": 0,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 4,
+        "gf": 22,
+        "ga": 21,
+        "streak": "d1"
       }
     },
     "oceanic": {
@@ -514,15 +514,15 @@
       "logo": "oceanic.png",
       "emoji": "🐬",
       "record": {
-        "gp": 0,
-        "w": 0,
-        "l": 0,
+        "gp": 3,
+        "w": 2,
+        "l": 1,
         "otl": 0,
         "sol": 0,
-        "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "pts": 4,
+        "gf": 18,
+        "ga": 21,
+        "streak": "v1"
       }
     },
     "mooseheads": {
@@ -535,15 +535,15 @@
       "logo": "https://assets.leaguestat.com/lhjmq/logos/5_212.png",
       "emoji": "🫎",
       "record": {
-        "gp": 0,
+        "gp": 3,
         "w": 0,
-        "l": 0,
+        "l": 3,
         "otl": 0,
         "sol": 0,
         "pts": 0,
-        "gf": 0,
-        "ga": 0,
-        "streak": "-"
+        "gf": 12,
+        "ga": 28,
+        "streak": "d3"
       }
     }
   },
