@@ -2835,6 +2835,192 @@
   "schedule": {
     "current_week": 1,
     "season_start": "2026-04-29",
-    "weeks": []
+    "weeks": [
+      {
+        "num": 1,
+        "matches": [
+          {
+            "id": "W1L01",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "phoenix",
+            "home": "seadogs",
+            "away_score": 13,
+            "home_score": 6,
+            "is_dp": false
+          },
+          {
+            "id": "W1L02",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "remparts",
+            "home": "armada",
+            "away_score": 9,
+            "home_score": 1,
+            "is_dp": false
+          },
+          {
+            "id": "W1L03",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "voltigeurs",
+            "home": "huskies",
+            "away_score": 9,
+            "home_score": 8,
+            "is_dp": true
+          },
+          {
+            "id": "W1L04",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "saguenéens",
+            "home": "drakkar",
+            "away_score": 10,
+            "home_score": 4,
+            "is_dp": false
+          },
+          {
+            "id": "W1L05",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "mooseheads",
+            "home": "tigres",
+            "away_score": 5,
+            "home_score": 12,
+            "is_dp": false
+          },
+          {
+            "id": "W1L06",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "wildcats",
+            "home": "oceanic",
+            "away_score": 7,
+            "home_score": 8,
+            "is_dp": false
+          },
+          {
+            "id": "W1L07",
+            "division": "lhjmq",
+            "time": "20:30",
+            "away": "oceanic",
+            "home": "phoenix",
+            "away_score": 2,
+            "home_score": 7,
+            "is_dp": false
+          },
+          {
+            "id": "W1L08",
+            "division": "lhjmq",
+            "time": "20:30",
+            "away": "saguenéens",
+            "home": "tigres",
+            "away_score": 6,
+            "home_score": 11,
+            "is_dp": false
+          },
+          {
+            "id": "W1L09",
+            "division": "lhjmq",
+            "time": "20:30",
+            "away": "seadogs",
+            "home": "voltigeurs",
+            "away_score": 5,
+            "home_score": 6,
+            "is_dp": true
+          },
+          {
+            "id": "W1L10",
+            "division": "lhjmq",
+            "time": "20:30",
+            "away": "drakkar",
+            "home": "huskies",
+            "away_score": 8,
+            "home_score": 3,
+            "is_dp": false
+          },
+          {
+            "id": "W1L11",
+            "division": "lhjmq",
+            "time": "20:30",
+            "away": "remparts",
+            "home": "wildcats",
+            "away_score": 9,
+            "home_score": 1,
+            "is_dp": false
+          },
+          {
+            "id": "W1L12",
+            "division": "lhjmq",
+            "time": "20:30",
+            "away": "armada",
+            "home": "mooseheads",
+            "away_score": 10,
+            "home_score": 2,
+            "is_dp": false
+          },
+          {
+            "id": "W1L13",
+            "division": "lhjmq",
+            "time": "21:00",
+            "away": "phoenix",
+            "home": "remparts",
+            "away_score": 11,
+            "home_score": 8,
+            "is_dp": false
+          },
+          {
+            "id": "W1L14",
+            "division": "lhjmq",
+            "time": "21:00",
+            "away": "tigres",
+            "home": "drakkar",
+            "away_score": 11,
+            "home_score": 8,
+            "is_dp": false
+          },
+          {
+            "id": "W1L15",
+            "division": "lhjmq",
+            "time": "21:00",
+            "away": "voltigeurs",
+            "home": "oceanic",
+            "away_score": 7,
+            "home_score": 8,
+            "is_dp": false
+          },
+          {
+            "id": "W1L16",
+            "division": "lhjmq",
+            "time": "21:00",
+            "away": "armada",
+            "home": "saguenéens",
+            "away_score": 2,
+            "home_score": 8,
+            "is_dp": false
+          },
+          {
+            "id": "W1L17",
+            "division": "lhjmq",
+            "time": "21:00",
+            "away": "huskies",
+            "home": "seadogs",
+            "away_score": 10,
+            "home_score": 7,
+            "is_dp": false
+          },
+          {
+            "id": "W1L18",
+            "division": "lhjmq",
+            "time": "21:00",
+            "away": "mooseheads",
+            "home": "wildcats",
+            "away_score": 5,
+            "home_score": 6,
+            "is_dp": false
+          }
+        ]
+      }
+    ]
   }
 }
