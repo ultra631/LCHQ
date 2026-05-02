@@ -824,6 +824,18 @@
   }
   .stats-add-table .pts-cell { font-weight: 700; }
 
+  /* Lignes cliquables dans le classement archives */
+  .archive-team-row {
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .archive-team-row:hover {
+    background: rgba(230, 57, 70, 0.08) !important;
+  }
+  .archive-team-row:hover td {
+    color: var(--text-primary);
+  }
+
   /* CALENDRIER */
   .schedule-week {
     margin-bottom: 30px;
@@ -1731,6 +1743,16 @@
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('teamModal')">Annuler</button>
       <button class="btn btn-primary" onclick="saveTeam()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Fiche détaillée d'une équipe en archive -->
+<div class="modal-overlay" id="archiveTeamModal">
+  <div class="modal" style="max-width: 900px;">
+    <div id="archiveTeamModalContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeModal('archiveTeamModal')">Fermer</button>
     </div>
   </div>
 </div>
@@ -3156,7 +3178,7 @@ function renderArchiveStandings(archive) {
       const diff = (row.gf || 0) - (row.ga || 0);
       const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
       const diffStr = diff > 0 ? `+${diff}` : diff;
-      return `<tr>
+      return `<tr class="archive-team-row" onclick="openArchiveTeam('${row.team_key}')" title="Voir détails ${escapeHtml(team.name)}">
         <td class="num">${i + 1}</td>
         <td>${teamCell}</td>
         <td class="num">${row.gp}</td>
@@ -3173,6 +3195,9 @@ function renderArchiveStandings(archive) {
 
     return `<div style="margin-bottom: 30px;">
       <h3 class="section-title" style="color: ${divColor};">${divLabel}</h3>
+      <div class="modal-info" style="background:rgba(91,155,213,0.1);border-color:rgba(91,155,213,0.3);color:#93c5fd;font-size:12px;margin-bottom:10px;">
+        💡 Clique sur une équipe pour voir sa fiche détaillée
+      </div>
       <div class="table-wrap">
         <table>
           <thead><tr>
@@ -3190,6 +3215,176 @@ function renderArchiveStandings(archive) {
 
   return renderTable(archive.standings.nhl, 'Division NHL', 'var(--nhl-color)') +
          renderTable(archive.standings.lhjmq, 'Division LHJMQ', 'var(--lhjmq-color)');
+}
+
+// Ouvrir la fiche détaillée d'une équipe en archive
+function openArchiveTeam(teamKey) {
+  const archive = (DATA.archives && DATA.archives.season_4) || null;
+  if (!archive) return;
+  const team = DATA.teams[teamKey];
+  if (!team) return;
+
+  // Trouver le classement de l'équipe
+  let standing = null;
+  let rank = 0;
+  let division = null;
+  for (const div of ['nhl', 'lhjmq']) {
+    const idx = (archive.standings[div] || []).findIndex(s => s.team_key === teamKey);
+    if (idx !== -1) {
+      standing = archive.standings[div][idx];
+      rank = idx + 1;
+      division = div;
+      break;
+    }
+  }
+
+  // Joueurs et gardiens de l'équipe
+  const players = (archive.players || []).filter(p => p.team === teamKey).sort((a, b) => (b.pts || 0) - (a.pts || 0));
+  const goalies = (archive.goalies || []).filter(g => g.team === teamKey).sort((a, b) => (b.w || 0) - (a.w || 0));
+
+  // Calcul totaux pour le bilan
+  const totalGoals = players.reduce((s, p) => s + (p.g || 0), 0);
+  const totalAssists = players.reduce((s, p) => s + (p.a || 0), 0);
+  const totalShots = players.reduce((s, p) => s + (p.shots || 0), 0);
+  const totalPim = players.reduce((s, p) => s + (p.pim || 0), 0);
+
+  document.getElementById('archiveTeamModalContent').innerHTML = renderArchiveTeamDetails(team, standing, rank, division, players, goalies, {
+    totalGoals, totalAssists, totalShots, totalPim
+  });
+
+  openModal('archiveTeamModal');
+}
+
+function renderArchiveTeamDetails(team, standing, rank, division, players, goalies, totals) {
+  const logo = team.logo
+    ? `<img src="${team.logo}" alt="${escapeHtml(team.name)}" style="width:80px;height:80px;object-fit:contain;" onerror="this.outerHTML='<div style=&quot;font-size:60px;&quot;>${team.emoji}</div>'">`
+    : `<div style="font-size:60px;">${team.emoji}</div>`;
+
+  const divLabel = division === 'nhl' ? 'Division NHL' : 'Division LHJMQ';
+  const divColor = division === 'nhl' ? 'var(--nhl-color)' : 'var(--lhjmq-color)';
+
+  let header = `<div style="display:flex;align-items:center;gap:20px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border);">
+    <div style="flex-shrink:0;background:var(--bg-card);padding:14px;border-radius:14px;border:2px solid ${team.color || 'var(--border)'};">
+      ${logo}
+    </div>
+    <div style="flex:1;">
+      <div style="font-family:'Bebas Neue';font-size:36px;letter-spacing:1px;color:var(--text-primary);line-height:1;">${escapeHtml(team.name)}</div>
+      <div style="font-size:14px;color:var(--text-tertiary);margin-top:4px;">${escapeHtml(team.city)}</div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <span style="background:${divColor};color:#fff;padding:4px 10px;border-radius:6px;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:700;">${divLabel}</span>
+        <span style="background:var(--bg-elevated);color:var(--text-secondary);padding:4px 10px;border-radius:6px;font-size:11px;letter-spacing:1px;font-weight:700;">📚 SAISON 4</span>
+        ${rank ? `<span style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;padding:4px 10px;border-radius:6px;font-size:11px;letter-spacing:1px;font-weight:700;">RANG #${rank}</span>` : ''}
+      </div>
+    </div>
+  </div>`;
+
+  // Bilan saison
+  let bilan = '';
+  if (standing) {
+    const diff = (standing.gf || 0) - (standing.ga || 0);
+    bilan = `<h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:0 0 12px;">📊 Bilan de la saison</h4>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin-bottom:24px;">
+      ${[
+        ['PJ', standing.gp],
+        ['V', standing.w],
+        ['D', standing.l],
+        ['DP', standing.otl],
+        ['DF', standing.sol],
+        ['BP', standing.gf],
+        ['BC', standing.ga],
+        ['DIFF', diff > 0 ? '+' + diff : diff],
+        ['PTS', standing.pts]
+      ].map(([label, val]) => `
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:10px;color:var(--text-tertiary);letter-spacing:1px;font-weight:700;">${label}</div>
+          <div style="font-family:'Bebas Neue';font-size:24px;color:${label === 'PTS' ? 'var(--red-bright)' : 'var(--text-primary)'};letter-spacing:1px;">${val}</div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  // Stats d'attaque
+  let attack = `<h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 12px;">⚔️ Stats d'attaque</h4>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:24px;">
+    ${[
+      ['🏆 Buts', totals.totalGoals],
+      ['🤝 Passes', totals.totalAssists],
+      ['🎯 Tirs', totals.totalShots],
+      ['👊 PUN', totals.totalPim]
+    ].map(([label, val]) => `
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-tertiary);">${label}</div>
+        <div style="font-family:'Bebas Neue';font-size:22px;color:var(--text-primary);">${val}</div>
+      </div>
+    `).join('')}
+  </div>`;
+
+  // Tableau joueurs
+  let playersTable = '';
+  if (players.length > 0) {
+    const rows = players.map((p, i) => `
+      <tr>
+        <td class="num">${i + 1}</td>
+        <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+        <td class="num">${p.gp || 0}</td>
+        <td class="num">${p.g || 0}</td>
+        <td class="num">${p.a || 0}</td>
+        <td class="num pts-cell">${p.pts || 0}</td>
+        <td class="num ${p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : ''}">${p.plusminus > 0 ? '+' + p.plusminus : (p.plusminus || 0)}</td>
+        <td class="num">${p.pim || 0}</td>
+        <td class="num">${p.shots || 0}</td>
+      </tr>
+    `).join('');
+    playersTable = `<h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 12px;">🏒 Patineurs (${players.length})</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Joueur</th>
+          <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
+          <th class="num">PTS</th><th class="num">+/-</th><th class="num">PUN</th><th class="num">TIRS</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  // Tableau gardiens
+  let goaliesTable = '';
+  if (goalies.length > 0) {
+    const rows = goalies.map((g, i) => `
+      <tr>
+        <td class="num">${i + 1}</td>
+        <td style="font-weight:600;">${escapeHtml(g.name)}</td>
+        <td class="num">${g.gp || 0}</td>
+        <td class="num pts-cell">${g.w || 0}</td>
+        <td class="num">${g.l || 0}</td>
+        <td class="num">${g.otl || 0}</td>
+        <td class="num">${(g.gaa || 0).toFixed(2)}</td>
+        <td class="num">${((g.svpct || 0) * 100).toFixed(1)}%</td>
+        <td class="num">${g.so || 0}</td>
+      </tr>
+    `).join('');
+    goaliesTable = `<h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 12px;">🥅 Gardiens (${goalies.length})</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Gardien</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">MOY</th><th class="num">%ARR</th><th class="num">BL</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  if (players.length === 0 && goalies.length === 0) {
+    playersTable = `<div class="empty-state" style="margin-top:20px;">
+      <div class="empty-state-icon">⏳</div>
+      <p>Stats des joueurs et gardiens pas encore disponibles pour cette équipe.</p>
+    </div>`;
+  }
+
+  return header + bilan + attack + playersTable + goaliesTable;
 }
 
 function renderArchivePlayers(archive) {
