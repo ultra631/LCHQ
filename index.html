@@ -2843,8 +2843,10 @@ let editingMatchId = null;
 
 // Configuration de la saison
 const SEASON_CONFIG = {
-  startDateLhjmq: new Date('2026-04-29'),  // Mercredi
-  startDateNhl: new Date('2026-04-30'),    // Jeudi
+  // Note: utiliser new Date(year, month-1, day) au lieu de new Date('YYYY-MM-DD')
+  // pour éviter les bugs de fuseau horaire
+  startDateLhjmq: new Date(2026, 3, 29),  // Mercredi 29 avril 2026 (mois 3 = avril car 0-indexé)
+  startDateNhl: new Date(2026, 3, 30),    // Jeudi 30 avril 2026
   weeks: 8,
   timeSlots: ['20:00', '20:40', '21:10']
 };
@@ -3102,3 +3104,4 @@ loadData();
 
 </body>
 </html>
+
