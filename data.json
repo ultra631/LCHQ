@@ -545,6 +545,76 @@
         "ga": 0,
         "streak": "-"
       }
+    },
+    "hurricanes_6v6": {
+      "name": "Hurricanes",
+      "full_name": "LCHQ Carolina Hurricanes",
+      "emoji": "🌀",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/car.png",
+      "division": "6v6"
+    },
+    "sabres_6v6": {
+      "name": "Sabres",
+      "full_name": "LCHQ Buffalo Sabres",
+      "emoji": "⚔️",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/buf.png",
+      "division": "6v6"
+    },
+    "jets_6v6": {
+      "name": "Jets",
+      "full_name": "LCHQ Winnipeg Jets",
+      "emoji": "✈️",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/wpg.png",
+      "division": "6v6"
+    },
+    "flyers_6v6": {
+      "name": "Flyers",
+      "full_name": "LCHQ Philadelphia Flyers",
+      "emoji": "🧡",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/phi.png",
+      "division": "6v6"
+    },
+    "penguins_6v6": {
+      "name": "Penguins",
+      "full_name": "LCHQ Pittsburgh Penguins",
+      "emoji": "🐧",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/pit.png",
+      "division": "6v6"
+    },
+    "ducks_6v6": {
+      "name": "Ducks",
+      "full_name": "LCHQ Anaheim Ducks",
+      "emoji": "🦆",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/ana.png",
+      "division": "6v6"
+    },
+    "devils_6v6": {
+      "name": "Devils",
+      "full_name": "LCHQ New Jersey Devils",
+      "emoji": "😈",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/njd.png",
+      "division": "6v6"
+    },
+    "mapleleafs_6v6": {
+      "name": "Maple Leafs",
+      "full_name": "LCHQ Toronto Maple Leafs",
+      "emoji": "🍁",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/tor.png",
+      "division": "6v6"
+    },
+    "senators_6v6": {
+      "name": "Senators",
+      "full_name": "LCHQ Senators Ottawa",
+      "emoji": "🏛️",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/ott.png",
+      "division": "6v6"
+    },
+    "oilers_6v6": {
+      "name": "Oilers",
+      "full_name": "LCHQ Oilers Edmonton",
+      "emoji": "🛢️",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/edm.png",
+      "division": "6v6"
     }
   },
   "players": [
@@ -6415,5 +6485,112 @@
         "lhjmq": null
       }
     }
+  },
+  "season_3_6v6": {
+    "standings": [
+      {
+        "team": "hurricanes_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "sabres_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "jets_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "flyers_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "penguins_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "ducks_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "devils_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "mapleleafs_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "senators_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "oilers_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      }
+    ],
+    "players": [],
+    "goalies": [],
+    "calendar": []
   }
 }
