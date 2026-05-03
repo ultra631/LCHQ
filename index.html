@@ -1605,7 +1605,15 @@
       <p>Analyse et comparaisons · Format 6v6</p>
     </div>
   </div>
-  <div id="stats6s"></div>
+
+  <h3 class="section-title" style="font-size: 26px; color: #3b82f6;">🏒 Patineurs 6S</h3>
+  <div class="grid-3" id="stats6sSkaters"></div>
+
+  <h3 class="section-title" style="font-size: 26px; color: #5b9bd5;">🛡️ Défenseurs 6S</h3>
+  <div class="grid-3" id="stats6sDefenders"></div>
+
+  <h3 class="section-title" style="font-size: 26px; color: #3b82f6;">🥅 Gardiens 6S</h3>
+  <div class="grid-3" id="stats6sGoalies"></div>
 </section>
 
 <section id="page-trophies-6s" class="page">
@@ -4011,11 +4019,13 @@ function renderStats6S() {
   const goalies = DATA.season_3_6v6?.goalies || [];
 
   if (players.length === 0 && goalies.length === 0) {
-    document.getElementById('stats6s').innerHTML = `<div class="empty-state">
+    document.getElementById('stats6sSkaters').innerHTML = `<div class="empty-state">
       <div class="empty-state-icon">📊</div>
       <p style="font-size: 16px;"><strong>Statistiques à venir</strong></p>
       <p style="margin-top: 8px;">Les statistiques avancées 6S seront disponibles une fois les données ajoutées.</p>
     </div>`;
+    document.getElementById('stats6sDefenders').innerHTML = '';
+    document.getElementById('stats6sGoalies').innerHTML = '';
     return;
   }
 
@@ -4050,6 +4060,8 @@ function renderStats6S() {
     </div>`;
   }).join('');
 
+  document.getElementById('stats6sSkaters').innerHTML = skatersHtml;
+
   // Défenseurs
   const defenders = players.filter(p => {
     const main = p.position_main || p.position;
@@ -4074,6 +4086,8 @@ function renderStats6S() {
       ${renderStatsLeaderList(sorted, cat.key, cat.format)}
     </div>`;
   }).join('');
+
+  document.getElementById('stats6sDefenders').innerHTML = defendersHtml || '<div class="empty-state"><p>Aucun défenseur</p></div>';
 
   // Gardiens
   const goalieCategories = [
@@ -4102,16 +4116,7 @@ function renderStats6S() {
     </div>`;
   }).join('');
 
-  document.getElementById('stats6s').innerHTML = `
-    <h2 class="section-title" style="color: #3b82f6;">⚡ Patineurs 6S</h2>
-    <div class="grid-3">${skatersHtml}</div>
-
-    <h2 class="section-title" style="color: #5b9bd5;">🛡️ Défenseurs 6S</h2>
-    <div class="grid-3">${defendersHtml || '<div class="empty-state"><p>Aucun défenseur</p></div>'}</div>
-
-    <h2 class="section-title" style="color: #3b82f6;">🥅 Gardiens 6S</h2>
-    <div class="grid-3">${goaliesHtml}</div>
-  `;
+  document.getElementById('stats6sGoalies').innerHTML = goaliesHtml;
 }
 
 function renderTrophies6S() {
