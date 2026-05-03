@@ -2590,6 +2590,7 @@ let isAdmin = false;
 let editingPlayerId = null;
 let editingGoalieId = null;
 let editingTeamKey = null;
+let editingDivision = null; // Pour savoir si on édite en mode 4S ou 6S
 
 // HELPER: Affichage des badges de position
 function posBadges(p) {
@@ -2733,10 +2734,14 @@ function loadStatsIntoModal(prefix, data, mapping) {
 
 function openPlayerModal(playerId, division, presetStatus) {
   editingPlayerId = playerId;
+  editingDivision = division || 'nhl'; // Stocker la division en cours d'édition
   populateTeamSelect('pTeam', division);
 
+  const isS6s = division === '6s';
+  const players = isS6s ? (DATA.season_3_6v6?.players || []) : DATA.players;
+
   if (playerId) {
-    const p = DATA.players.find(x => x.id === playerId);
+    const p = players.find(x => x.id === playerId);
     document.getElementById('playerModalTitle').textContent = '✏️ Modifier joueur';
     document.getElementById('pName').value = p.name;
     document.getElementById('pTeam').value = p.team || '';
@@ -2754,7 +2759,8 @@ function openPlayerModal(playerId, division, presetStatus) {
       'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Pert': 'pert'
     });
   } else {
-    document.getElementById('playerModalTitle').textContent = '➕ Nouveau joueur';
+    const modeLabel = isS6s ? '6S' : (division === 'lhjmq' ? 'LHJMQ' : 'NHL');
+    document.getElementById('playerModalTitle').textContent = `➕ Nouveau joueur ${modeLabel}`;
     document.getElementById('pName').value = '';
     const status = presetStatus || 'regular';
     document.querySelector(`input[name="pStatus"][value="${status}"]`).checked = true;
@@ -2778,6 +2784,13 @@ function savePlayer() {
   if (!name) { alert('Le nom est obligatoire!'); return; }
   const status = document.querySelector('input[name="pStatus"]:checked').value;
   let team = document.getElementById('pTeam').value;
+  
+  // En mode 6S, tous les joueurs doivent être réguliers avec équipe
+  if (editingDivision === '6s' && !team) {
+    alert('Un joueur 6S doit être assigné à une équipe!');
+    return;
+  }
+  
   if (status === 'regular' && !team) {
     alert('Un joueur régulier doit être assigné à une équipe!');
     return;
@@ -2835,13 +2848,22 @@ function savePlayer() {
     intc: newVal('Int'),
     pert: newVal('Pert')
   };
+
+  const isS6s = editingDivision === '6s';
+  const playersList = isS6s ? (DATA.season_3_6v6.players || []) : DATA.players;
+
   if (editingPlayerId) {
-    const idx = DATA.players.findIndex(x => x.id === editingPlayerId);
-    DATA.players[idx] = { ...DATA.players[idx], ...playerData };
+    const idx = playersList.findIndex(x => x.id === editingPlayerId);
+    playersList[idx] = { ...playersList[idx], ...playerData };
   } else {
-    const newId = 'p' + (Math.max(0, ...DATA.players.map(p => parseInt(p.id.replace('p',''))||0)) + 1);
-    DATA.players.push({ id: newId, ...playerData });
+    const newId = 'p' + (Math.max(0, ...playersList.map(p => parseInt(p.id.replace('p',''))||0)) + 1);
+    playersList.push({ id: newId, ...playerData });
   }
+
+  if (isS6s) {
+    DATA.season_3_6v6.players = playersList;
+  }
+
   closeModal('playerModal');
   rerenderAll();
 }
