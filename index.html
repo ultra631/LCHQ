@@ -1214,7 +1214,7 @@
         <th class="num sortable" data-key="a">A</th>
         <th class="num sortable sort-desc" data-key="pts">PTS</th>
         <th class="num sortable" data-key="plusminus">+/-</th>
-        <th class="num sortable" data-key="pim">PUN</th>
+        <th class="num sortable" data-key="pim">MEC</th>
         <th class="num sortable" data-key="shots">TIRS</th>
         <th class="num sortable" data-key="shotpct">%T</th>
         <th class="num">TG/M</th>
@@ -1250,7 +1250,7 @@
         <th class="num sortable" data-key="a">A</th>
         <th class="num sortable sort-desc" data-key="pts">PTS</th>
         <th class="num sortable" data-key="plusminus">+/-</th>
-        <th class="num sortable" data-key="pim">PUN</th>
+        <th class="num sortable" data-key="pim">MEC</th>
         <th class="num sortable" data-key="shots">TIRS</th>
         <th class="num sortable" data-key="shotpct">%T</th>
         <th class="num">TG/M</th>
@@ -1450,7 +1450,7 @@
         <th class="num sortable" data-key="a">A</th>
         <th class="num sortable sort-desc" data-key="pts">PTS</th>
         <th class="num sortable" data-key="plusminus">+/-</th>
-        <th class="num sortable" data-key="pim">PUN</th>
+        <th class="num sortable" data-key="pim">MEC</th>
         <th class="num sortable" data-key="shots">TIRS</th>
       </tr></thead>
       <tbody id="subsBody"></tbody>
@@ -1604,7 +1604,7 @@
           <tr><td>Buts</td><td class="num"><span id="pGCurrent">0</span></td><td class="num"><input type="number" id="pGAdd" min="0" value="0" oninput="updateNewTotal('p','G')"></td><td class="num"><span id="pGNew" class="pts-cell">0</span></td></tr>
           <tr><td>Passes</td><td class="num"><span id="pACurrent">0</span></td><td class="num"><input type="number" id="pAAdd" min="0" value="0" oninput="updateNewTotal('p','A')"></td><td class="num"><span id="pANew" class="pts-cell">0</span></td></tr>
           <tr><td>+/-</td><td class="num"><span id="pPMCurrent">0</span></td><td class="num"><input type="number" id="pPMAdd" value="0" oninput="updateNewTotal('p','PM')"></td><td class="num"><span id="pPMNew" class="pts-cell">0</span></td></tr>
-          <tr><td>PUN</td><td class="num"><span id="pPimCurrent">0</span></td><td class="num"><input type="number" id="pPimAdd" min="0" value="0" oninput="updateNewTotal('p','Pim')"></td><td class="num"><span id="pPimNew" class="pts-cell">0</span></td></tr>
+          <tr><td>MEC</td><td class="num"><span id="pPimCurrent">0</span></td><td class="num"><input type="number" id="pPimAdd" min="0" value="0" oninput="updateNewTotal('p','Pim')"></td><td class="num"><span id="pPimNew" class="pts-cell">0</span></td></tr>
           <tr><td>Tirs</td><td class="num"><span id="pShotsCurrent">0</span></td><td class="num"><input type="number" id="pShotsAdd" min="0" value="0" oninput="updateNewTotal('p','Shots')"></td><td class="num"><span id="pShotsNew" class="pts-cell">0</span></td></tr>
           <tr><td>Tirs Bloqués (TB)</td><td class="num"><span id="pTbCurrent">0</span></td><td class="num"><input type="number" id="pTbAdd" min="0" value="0" oninput="updateNewTotal('p','Tb')"></td><td class="num"><span id="pTbNew" class="pts-cell">0</span></td></tr>
           <tr><td>MJ Gagnées (MJG)</td><td class="num"><span id="pMjgCurrent">0</span></td><td class="num"><input type="number" id="pMjgAdd" min="0" value="0" oninput="updateNewTotal('p','Mjg')"></td><td class="num"><span id="pMjgNew" class="pts-cell">0</span></td></tr>
@@ -2146,7 +2146,7 @@ function showTeamDetail(teamKey) {
           <tr>
             <th>Joueur</th><th>Pos</th>
             <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th>
-            <th class="num">+/-</th><th class="num">PUN</th><th class="num">TIRS</th><th class="num">%T</th>
+            <th class="num">+/-</th><th class="num">MEC</th><th class="num">TIRS</th><th class="num">%T</th>
           </tr>
         </thead>
         <tbody>
@@ -3334,7 +3334,7 @@ function renderArchiveTeamDetails(team, standing, rank, division, players, goali
         <thead><tr>
           <th>#</th><th>Joueur</th>
           <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
-          <th class="num">PTS</th><th class="num">+/-</th><th class="num">PUN</th><th class="num">TIRS</th>
+          <th class="num">PTS</th><th class="num">+/-</th><th class="num">MEC</th><th class="num">TIRS</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -3418,7 +3418,7 @@ function renderArchivePlayers(archive) {
       <thead><tr>
         <th>#</th><th>Joueur</th><th>Équipe</th>
         <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
-        <th class="num">PTS</th><th class="num">+/-</th><th class="num">PUN</th><th class="num">TIRS</th>
+        <th class="num">PTS</th><th class="num">+/-</th><th class="num">MEC</th><th class="num">TIRS</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
