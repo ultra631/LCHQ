@@ -1147,7 +1147,6 @@
           <th class="num sortable" data-key="w">V</th>
           <th class="num sortable" data-key="l">D</th>
           <th class="num sortable" data-key="otl">DP</th>
-          <th class="num sortable" data-key="sol">DF</th>
           <th class="num sortable" data-key="gf">BP</th>
           <th class="num sortable" data-key="ga">BC</th>
           <th class="num sortable" data-key="diff">DIFF</th>
@@ -1178,7 +1177,6 @@
           <th class="num sortable" data-key="w">V</th>
           <th class="num sortable" data-key="l">D</th>
           <th class="num sortable" data-key="otl">DP</th>
-          <th class="num sortable" data-key="sol">DF</th>
           <th class="num sortable" data-key="gf">BP</th>
           <th class="num sortable" data-key="ga">BC</th>
           <th class="num sortable" data-key="diff">DIFF</th>
@@ -1725,7 +1723,6 @@
           <tr><td>V (victoires)</td><td class="num"><span id="tWCurrent">0</span></td><td class="num"><input type="number" id="tWAdd" min="0" value="0" oninput="updateNewTotal('t','W')"></td><td class="num"><span id="tWNew" class="pts-cell">0</span></td></tr>
           <tr><td>D (défaites)</td><td class="num"><span id="tLCurrent">0</span></td><td class="num"><input type="number" id="tLAdd" min="0" value="0" oninput="updateNewTotal('t','L')"></td><td class="num"><span id="tLNew" class="pts-cell">0</span></td></tr>
           <tr><td>DP (déf. prol.)</td><td class="num"><span id="tOtlCurrent">0</span></td><td class="num"><input type="number" id="tOtlAdd" min="0" value="0" oninput="updateNewTotal('t','Otl')"></td><td class="num"><span id="tOtlNew" class="pts-cell">0</span></td></tr>
-          <tr><td>DF (déf. fusil.)</td><td class="num"><span id="tSolCurrent">0</span></td><td class="num"><input type="number" id="tSolAdd" min="0" value="0" oninput="updateNewTotal('t','Sol')"></td><td class="num"><span id="tSolNew" class="pts-cell">0</span></td></tr>
           <tr><td>BP (buts pour)</td><td class="num"><span id="tGfCurrent">0</span></td><td class="num"><input type="number" id="tGfAdd" min="0" value="0" oninput="updateNewTotal('t','Gf')"></td><td class="num"><span id="tGfNew" class="pts-cell">0</span></td></tr>
           <tr><td>BC (buts contre)</td><td class="num"><span id="tGaCurrent">0</span></td><td class="num"><input type="number" id="tGaAdd" min="0" value="0" oninput="updateNewTotal('t','Ga')"></td><td class="num"><span id="tGaNew" class="pts-cell">0</span></td></tr>
         </tbody>
@@ -1738,7 +1735,7 @@
     </div>
 
     <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
-      ✨ <strong>PTS calculé auto</strong> : V×2 + DP + DF
+      ✨ <strong>PTS calculé auto</strong> : V×2 + DP
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('teamModal')">Annuler</button>
@@ -1969,7 +1966,6 @@ function renderStandingsByDivision(division, sort, bodyId) {
         <td class="num">${t.w}</td>
         <td class="num">${t.l}</td>
         <td class="num">${t.otl}</td>
-        <td class="num">${t.sol}</td>
         <td class="num">${t.gf}</td>
         <td class="num">${t.ga}</td>
         <td class="num ${diffClass}">${diffStr}</td>
@@ -2097,7 +2093,7 @@ function renderTeamCard(key, t) {
       ${logoHtml}
       <div class="team-card-name">${t.name}</div>
       <div class="team-card-city">${t.city}</div>
-      <div class="team-card-record">${t.record.w}V – ${t.record.l}D – ${t.record.otl + t.record.sol}DP · ${t.record.pts} PTS</div>
+      <div class="team-card-record">${t.record.w}V – ${t.record.l}D – ${t.record.otl}DP · ${t.record.pts} PTS</div>
     </div>`;
 }
 
@@ -2136,7 +2132,7 @@ function showTeamDetail(teamKey) {
       </div>
       <div class="team-header-stats">
         <div class="stat-block"><div class="stat-block-value">${t.record.pts}</div><div class="stat-block-label">Points</div></div>
-        <div class="stat-block"><div class="stat-block-value">${t.record.w}–${t.record.l}–${t.record.otl + t.record.sol}</div><div class="stat-block-label">V–D–DP</div></div>
+        <div class="stat-block"><div class="stat-block-value">${t.record.w}–${t.record.l}–${t.record.otl}</div><div class="stat-block-label">V–D–DP</div></div>
         <div class="stat-block"><div class="stat-block-value">${t.record.gf}</div><div class="stat-block-label">Buts pour</div></div>
         <div class="stat-block"><div class="stat-block-value">${t.record.ga}</div><div class="stat-block-label">Buts contre</div></div>
         <div class="stat-block"><div class="stat-block-value">${diff > 0 ? '+' : ''}${diff}</div><div class="stat-block-label">Différentiel</div></div>
@@ -2520,7 +2516,7 @@ function resetWeeklyAdds(type) {
     keys = ['Gp','W','L','Otl','So','Sa','Sv','Ga'];
   } else if (type === 'team') {
     prefix = 't';
-    keys = ['Gp','W','L','Otl','Sol','Gf','Ga'];
+    keys = ['Gp','W','L','Otl','Gf','Ga'];
   }
   keys.forEach(k => {
     document.getElementById(`${prefix}${k}Add`).value = 0;
@@ -2839,7 +2835,7 @@ function openTeamModal(teamKey) {
   document.getElementById('tStreak').value = t.record.streak || '-';
 
   loadStatsIntoModal('t', t.record, {
-    'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl', 'Sol': 'sol',
+    'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
     'Gf': 'gf', 'Ga': 'ga'
   });
 
@@ -2852,17 +2848,16 @@ function saveTeam() {
 
   const w = newVal('W');
   const otl = newVal('Otl');
-  const sol = newVal('Sol');
 
   t.record.gp = newVal('Gp');
   t.record.w = w;
   t.record.l = newVal('L');
   t.record.otl = otl;
-  t.record.sol = sol;
+  t.record.sol = 0;  // Pas de fusillade dans la ligue
   t.record.gf = newVal('Gf');
   t.record.ga = newVal('Ga');
   t.record.streak = document.getElementById('tStreak').value || '-';
-  t.record.pts = w * 2 + otl + sol;
+  t.record.pts = w * 2 + otl;
   closeModal('teamModal');
   rerenderAll();
 }
@@ -3185,7 +3180,6 @@ function renderArchiveStandings(archive) {
         <td class="num">${row.w}</td>
         <td class="num">${row.l}</td>
         <td class="num">${row.otl}</td>
-        <td class="num">${row.sol}</td>
         <td class="num">${row.gf}</td>
         <td class="num">${row.ga}</td>
         <td class="num ${diffClass}">${diffStr}</td>
@@ -3203,7 +3197,7 @@ function renderArchiveStandings(archive) {
           <thead><tr>
             <th>#</th><th>Équipe</th>
             <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
-            <th class="num">DP</th><th class="num">DF</th>
+            <th class="num">DP</th>
             <th class="num">BP</th><th class="num">BC</th><th class="num">DIFF</th>
             <th class="num">PTS</th>
           </tr></thead>
@@ -3289,7 +3283,6 @@ function renderArchiveTeamDetails(team, standing, rank, division, players, goali
         ['V', standing.w],
         ['D', standing.l],
         ['DP', standing.otl],
-        ['DF', standing.sol],
         ['BP', standing.gf],
         ['BC', standing.ga],
         ['DIFF', diff > 0 ? '+' + diff : diff],
