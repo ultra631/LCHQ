@@ -3506,6 +3506,13 @@ function renderArchiveTrophies(archive) {
     </div>`;
   }
 
+  const nhlTeams = ['avalanche','bruins','canadiens','canucks','capitals','kings','kraken','panthers','predators','rangers','sharks','wild'];
+  
+  const nhlPlayers = players.filter(p => nhlTeams.includes(p.team));
+  const lhjmqPlayers = players.filter(p => !nhlTeams.includes(p.team));
+  const nhlGoalies = goalies.filter(g => nhlTeams.includes(g.team));
+  const lhjmqGoalies = goalies.filter(g => !nhlTeams.includes(g.team));
+
   const renderTrophyList = (list, statKey, formatter) => {
     if (list.length === 0) return '<div class="empty-state"><p style="font-size:13px;">Aucune donnée</p></div>';
     return list.slice(0, 5).map((p, i) => {
@@ -3525,19 +3532,27 @@ function renderArchiveTrophies(archive) {
     }).join('');
   };
 
-  const sortedByPts = [...players].sort((a, b) => (b.pts || 0) - (a.pts || 0));
-  const sortedByG = [...players].sort((a, b) => (b.g || 0) - (a.g || 0));
-  const sortedByA = [...players].sort((a, b) => (b.a || 0) - (a.a || 0));
-  const sortedByPM = [...players].sort((a, b) => (b.plusminus || 0) - (a.plusminus || 0));
-  const sortedGoalies = [...goalies].sort((a, b) => (b.svpct || 0) - (a.svpct || 0) || (b.w || 0) - (a.w || 0));
+  const makeTrophySection = (divPlayers, divGoalies, divLabel, divColor) => {
+    const sortedByPts = [...divPlayers].sort((a, b) => (b.pts || 0) - (a.pts || 0));
+    const sortedByG = [...divPlayers].sort((a, b) => (b.g || 0) - (a.g || 0));
+    const sortedByA = [...divPlayers].sort((a, b) => (b.a || 0) - (a.a || 0));
+    const sortedByPM = [...divPlayers].sort((a, b) => (b.plusminus || 0) - (a.plusminus || 0));
+    const sortedGoalies = [...divGoalies].sort((a, b) => (b.svpct || 0) - (a.svpct || 0) || (b.w || 0) - (a.w || 0));
 
-  return `<div class="grid-3">
-    <div class="card"><h3>🏆 Top Buteurs</h3>${renderTrophyList(sortedByG, 'g', v => v)}</div>
-    <div class="card"><h3>🎯 Top Pointeurs</h3>${renderTrophyList(sortedByPts, 'pts', v => v)}</div>
-    <div class="card"><h3>🤝 Top Passeurs</h3>${renderTrophyList(sortedByA, 'a', v => v)}</div>
-    <div class="card"><h3>➕ Meilleur +/-</h3>${renderTrophyList(sortedByPM, 'plusminus', v => v > 0 ? '+' + v : v)}</div>
-    <div class="card"><h3>🥅 Trophée Gardien</h3>${renderTrophyList(sortedGoalies, 'w', v => v)}</div>
-  </div>`;
+    return `<div style="margin-bottom: 40px;">
+      <h3 class="section-title" style="color: ${divColor};">${divLabel}</h3>
+      <div class="grid-3">
+        <div class="card"><h3>🏆 Top Buteurs</h3>${renderTrophyList(sortedByG, 'g', v => v)}</div>
+        <div class="card"><h3>🎯 Top Pointeurs</h3>${renderTrophyList(sortedByPts, 'pts', v => v)}</div>
+        <div class="card"><h3>🤝 Top Passeurs</h3>${renderTrophyList(sortedByA, 'a', v => v)}</div>
+        <div class="card"><h3>➕ Meilleur +/-</h3>${renderTrophyList(sortedByPM, 'plusminus', v => v > 0 ? '+' + v : v)}</div>
+        <div class="card"><h3>🥅 Trophée Gardien</h3>${renderTrophyList(sortedGoalies, 'w', v => v)}</div>
+      </div>
+    </div>`;
+  };
+
+  return makeTrophySection(nhlPlayers, nhlGoalies, 'Division NHL', 'var(--nhl-color)') +
+         makeTrophySection(lhjmqPlayers, lhjmqGoalies, 'Division LHJMQ', 'var(--lhjmq-color)');
 }
 
 // ============ FIN ARCHIVES ============
