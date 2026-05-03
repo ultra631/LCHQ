@@ -4015,10 +4015,13 @@ function renderSchedule6S() {
 }
 
 function renderStats6S() {
+  console.log('🔍 renderStats6S appelée');
   const players = DATA.season_3_6v6?.players || [];
   const goalies = DATA.season_3_6v6?.goalies || [];
+  console.log('📊 Joueurs 6S:', players.length, 'Gardiens 6S:', goalies.length);
 
   if (players.length === 0 && goalies.length === 0) {
+    console.log('⚠️ Aucune donnée - affichage message vide');
     document.getElementById('stats6sSkaters').innerHTML = `<div class="empty-state">
       <div class="empty-state-icon">📊</div>
       <p style="font-size: 16px;"><strong>Statistiques à venir</strong></p>
@@ -4028,6 +4031,8 @@ function renderStats6S() {
     document.getElementById('stats6sGoalies').innerHTML = '';
     return;
   }
+
+  console.log('✅ Rendu des stats en cours...');
 
   // Catégories pour les patineurs
   const skaterCategories = [
