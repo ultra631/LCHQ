@@ -1048,51 +1048,53 @@
     <nav id="mainNav">
       <button class="nav-btn active" data-page="home" onclick="navigate('home')">Accueil</button>
 
-      <div class="nav-group">
-        <button class="nav-btn" data-section="6v6" style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: #fff; font-weight: 700;">⚡ 6v6 ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn" data-page="standings-6v6" onclick="navigate('standings-6v6')">Classement 6v6</button>
-          <button class="nav-btn" data-page="players-6v6" onclick="navigate('players-6v6')">Joueurs 6v6</button>
-          <button class="nav-btn" data-page="goalies-6v6" onclick="navigate('goalies-6v6')">Gardiens 6v6</button>
-          <button class="nav-btn" data-page="stats-6v6" onclick="navigate('stats-6v6')">Stats 6v6</button>
-          <button class="nav-btn" data-page="schedule-6v6" onclick="navigate('schedule-6v6')">Calendrier 6v6</button>
-          <button class="nav-btn" data-page="trophies-6v6" onclick="navigate('trophies-6v6')">Trophées 6v6</button>
-        </div>
+      <div style="display: flex; gap: 8px; border: 1px solid var(--border); border-radius: 8px; padding: 4px; background: var(--bg-elevated);">
+        <button class="nav-btn mode-toggle active" id="mode4s" onclick="setGameMode('4s')" style="padding: 8px 16px; font-size: 12px; font-weight: 700;">🏒 4S</button>
+        <button class="nav-btn mode-toggle" id="mode6s" onclick="setGameMode('6s')" style="padding: 8px 16px; font-size: 12px; font-weight: 700;">⚡ 6S</button>
       </div>
 
       <div class="nav-group">
         <button class="nav-btn" data-section="standings">Classement ▾</button>
         <div class="nav-dropdown">
-          <button class="nav-btn" data-page="standings-nhl" onclick="navigate('standings-nhl')">Division NHL</button>
-          <button class="nav-btn" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">Division LHJMQ</button>
+          <button class="nav-btn mode-4s" data-page="standings-nhl" onclick="navigate('standings-nhl')">Division NHL</button>
+          <button class="nav-btn mode-4s" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">Division LHJMQ</button>
+          <button class="nav-btn mode-6s" data-page="standings-6s" onclick="navigate('standings-6s')" style="display:none;">Classement 6S</button>
         </div>
       </div>
 
       <div class="nav-group">
         <button class="nav-btn" data-section="players">Joueurs ▾</button>
         <div class="nav-dropdown">
-          <button class="nav-btn" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
-          <button class="nav-btn" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
+          <button class="nav-btn mode-4s" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
+          <button class="nav-btn mode-4s" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
+          <button class="nav-btn mode-6s" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">Joueurs 6S</button>
         </div>
       </div>
 
       <div class="nav-group">
         <button class="nav-btn" data-section="goalies">Gardiens ▾</button>
         <div class="nav-dropdown">
-          <button class="nav-btn" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
-          <button class="nav-btn" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
+          <button class="nav-btn mode-4s" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
+          <button class="nav-btn mode-4s" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
+          <button class="nav-btn mode-6s" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">Gardiens 6S</button>
         </div>
       </div>
 
-      <button class="nav-btn" data-page="teams" onclick="navigate('teams')">Équipes</button>
-      <button class="nav-btn" data-page="schedule" onclick="navigate('schedule')">Calendrier</button>
-      <button class="nav-btn" data-page="stats" onclick="navigate('stats')">📊 Stats</button>
+      <button class="nav-btn mode-4s" data-page="teams" onclick="navigate('teams')">Équipes</button>
+      <button class="nav-btn mode-6s" data-page="teams-6s" onclick="navigate('teams-6s')" style="display:none;">Équipes 6S</button>
+      
+      <button class="nav-btn mode-4s" data-page="schedule" onclick="navigate('schedule')">Calendrier</button>
+      <button class="nav-btn mode-6s" data-page="schedule-6s" onclick="navigate('schedule-6s')" style="display:none;">Calendrier 6S</button>
+      
+      <button class="nav-btn mode-4s" data-page="stats" onclick="navigate('stats')">📊 Stats</button>
+      <button class="nav-btn mode-6s" data-page="stats-6s" onclick="navigate('stats-6s')" style="display:none;">📊 Stats 6S</button>
 
       <div class="nav-group">
         <button class="nav-btn" data-section="trophies">Trophées ▾</button>
         <div class="nav-dropdown">
-          <button class="nav-btn" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
-          <button class="nav-btn" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
+          <button class="nav-btn mode-4s" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
+          <button class="nav-btn mode-4s" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
+          <button class="nav-btn mode-6s" data-page="trophies-6s" onclick="navigate('trophies-6s')" style="display:none;">Trophées 6S</button>
         </div>
       </div>
 
@@ -1515,6 +1517,87 @@
   <div id="archiveS4Content"></div>
 </section>
 
+<!-- ============ PAGES 6S ============ -->
+
+<section id="page-standings-6s" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">⚡</div>
+    <div class="division-banner-text">
+      <h3>Classement 6S — Saison 3</h3>
+      <p>10 équipes · Format 6v6 (5 vs 5 + gardien)</p>
+    </div>
+  </div>
+  <div id="standings6s"></div>
+</section>
+
+<section id="page-players-6s" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">🏒</div>
+    <div class="division-banner-text">
+      <h3>Joueurs 6S — Saison 3</h3>
+      <p>Statistiques des patineurs · Format 6v6</p>
+    </div>
+  </div>
+  <button class="admin-add-btn" onclick="openPlayerModal(null, '6s')">➕ Ajouter Joueur 6S</button>
+  <div id="players6s"></div>
+</section>
+
+<section id="page-goalies-6s" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">🥅</div>
+    <div class="division-banner-text">
+      <h3>Gardiens 6S — Saison 3</h3>
+      <p>Statistiques des gardiens · Format 6v6</p>
+    </div>
+  </div>
+  <button class="admin-add-btn" onclick="openGoalieModal(null, '6s')">➕ Ajouter Gardien 6S</button>
+  <div id="goalies6s"></div>
+</section>
+
+<section id="page-teams-6s" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">🏒</div>
+    <div class="division-banner-text">
+      <h3>Équipes 6S — Saison 3</h3>
+      <p>10 équipes · Format 6v6</p>
+    </div>
+  </div>
+  <div id="teams6s"></div>
+</section>
+
+<section id="page-schedule-6s" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">📅</div>
+    <div class="division-banner-text">
+      <h3>Calendrier 6S — Saison 3</h3>
+      <p>Matchs et résultats · Format 6v6</p>
+    </div>
+  </div>
+  <div id="schedule6s"></div>
+</section>
+
+<section id="page-stats-6s" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">📊</div>
+    <div class="division-banner-text">
+      <h3>Statistiques 6S — Saison 3</h3>
+      <p>Analyse et comparaisons · Format 6v6</p>
+    </div>
+  </div>
+  <div id="stats6s"></div>
+</section>
+
+<section id="page-trophies-6s" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">🏆</div>
+    <div class="division-banner-text">
+      <h3>Trophées 6S — Saison 3</h3>
+      <p>Top 5 par catégorie · Format 6v6</p>
+    </div>
+  </div>
+  <div id="trophies6s"></div>
+</section>
+
 </main>
 
 <!-- ============ ADMIN UI ============ -->
@@ -1873,6 +1956,64 @@ function initApp() {
 }
 
 // NAVIGATION
+// GAME MODE TOGGLE — Switch entre 4S et 6S
+let currentGameMode = '4s'; // Par défaut en mode 4S
+
+function setGameMode(mode) {
+  currentGameMode = mode;
+  
+  // Mettre à jour les boutons toggle
+  document.getElementById('mode4s').classList.toggle('active', mode === '4s');
+  document.getElementById('mode6s').classList.toggle('active', mode === '6s');
+  
+  // Cacher tous les boutons du mode opposé
+  document.querySelectorAll('.nav-btn.mode-4s').forEach(btn => {
+    btn.style.display = mode === '4s' ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-btn.mode-6s').forEach(btn => {
+    btn.style.display = mode === '6s' ? '' : 'none';
+  });
+  
+  // Naviguer vers la page appropriée
+  const currentPage = document.querySelector('.page.active')?.id?.replace('page-', '');
+  
+  if (mode === '6s') {
+    // Si on est sur une page 4S, aller vers l'équivalent 6S
+    if (currentPage === 'standings-nhl' || currentPage === 'standings-lhjmq') {
+      navigate('standings-6s');
+    } else if (currentPage === 'players-nhl' || currentPage === 'players-lhjmq') {
+      navigate('players-6s');
+    } else if (currentPage === 'goalies-nhl' || currentPage === 'goalies-lhjmq') {
+      navigate('goalies-6s');
+    } else if (currentPage === 'stats') {
+      navigate('stats-6s');
+    } else if (currentPage === 'teams') {
+      navigate('teams-6s');
+    } else if (currentPage === 'schedule') {
+      navigate('schedule-6s');
+    } else if (currentPage === 'trophies-nhl' || currentPage === 'trophies-lhjmq') {
+      navigate('trophies-6s');
+    }
+  } else {
+    // Si on est sur une page 6S, aller vers l'équivalent 4S (NHL par défaut)
+    if (currentPage === 'standings-6s') {
+      navigate('standings-nhl');
+    } else if (currentPage === 'players-6s') {
+      navigate('players-nhl');
+    } else if (currentPage === 'goalies-6s') {
+      navigate('goalies-nhl');
+    } else if (currentPage === 'stats-6s') {
+      navigate('stats');
+    } else if (currentPage === 'teams-6s') {
+      navigate('teams');
+    } else if (currentPage === 'schedule-6s') {
+      navigate('schedule');
+    } else if (currentPage === 'trophies-6s') {
+      navigate('trophies-nhl');
+    }
+  }
+}
+
 function navigate(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const target = document.getElementById('page-' + page);
@@ -3569,6 +3710,218 @@ function renderArchiveTrophies(archive) {
 
 // ============ FIN ARCHIVES ============
 
+// ============ FONCTIONS RENDER 6S ============
+
+function renderStandings6S() {
+  const standings = DATA.season_3_6v6?.standings || [];
+  const sorted = [...standings].sort((a, b) => {
+    if (b.pts !== a.pts) return b.pts - a.pts;
+    const diffA = (a.gf || 0) - (a.ga || 0);
+    const diffB = (b.gf || 0) - (b.ga || 0);
+    return diffB - diffA;
+  });
+
+  const rows = sorted.map((s, i) => {
+    const team = DATA.teams[s.team];
+    if (!team) return '';
+    const diff = (s.gf || 0) - (s.ga || 0);
+    const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
+    const diffStr = diff > 0 ? `+${diff}` : diff;
+    return `<tr>
+      <td class="num">${i + 1}</td>
+      <td><div class="team-cell">${teamLogoHtml(team)} <span class="team-name">${escapeHtml(team.name)}</span></div></td>
+      <td class="num">${s.gp || 0}</td>
+      <td class="num">${s.w || 0}</td>
+      <td class="num">${s.l || 0}</td>
+      <td class="num">${s.otl || 0}</td>
+      <td class="num pts-cell">${s.pts || 0}</td>
+      <td class="num">${s.gf || 0}</td>
+      <td class="num">${s.ga || 0}</td>
+      <td class="num ${diffClass}">${diffStr}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('standings6s').innerHTML = `<div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th class="num">#</th><th>Équipe</th>
+        <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+        <th class="num">DP</th><th class="num">PTS</th>
+        <th class="num">BP</th><th class="num">BC</th><th class="num">DIFF</th>
+      </tr></thead>
+      <tbody>${rows || '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucune donnée disponible</td></tr>'}</tbody>
+    </table>
+  </div>`;
+}
+
+function renderPlayers6S() {
+  const players = DATA.season_3_6v6?.players || [];
+  const sorted = [...players].sort((a, b) => (b.pts || 0) - (a.pts || 0));
+  
+  const rows = sorted.map((p, i) => {
+    const team = p.team ? DATA.teams[p.team] : null;
+    const teamCell = team
+      ? `<div class="team-cell">${teamLogoHtml(team)} <span>${escapeHtml(team.name)}</span></div>`
+      : '<span style="color:var(--text-tertiary);">—</span>';
+    const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
+    const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
+    const shotPct = p.shots > 0 ? ((p.g / p.shots) * 100).toFixed(1) : '0.0';
+    
+    return `<tr>
+      <td class="num">${i + 1}</td>
+      <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+      <td>${teamCell}</td>
+      <td class="num">${p.gp || 0}</td>
+      <td class="num">${p.g || 0}</td>
+      <td class="num">${p.a || 0}</td>
+      <td class="num pts-cell">${p.pts || 0}</td>
+      <td class="num ${pmClass}">${pmStr}</td>
+      <td class="num">${p.pim || 0}</td>
+      <td class="num">${p.shots || 0}</td>
+      <td class="num">${shotPct}%</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('players6s').innerHTML = `<div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th class="num">#</th><th>Joueur</th><th>Équipe</th>
+        <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
+        <th class="num">PTS</th><th class="num">+/-</th><th class="num">MEC</th>
+        <th class="num">TIRS</th><th class="num">%T</th>
+      </tr></thead>
+      <tbody>${rows || '<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun joueur ajouté</td></tr>'}</tbody>
+    </table>
+  </div>`;
+}
+
+function renderGoalies6S() {
+  const goalies = DATA.season_3_6v6?.goalies || [];
+  const sorted = [...goalies].sort((a, b) => (b.w || 0) - (a.w || 0));
+  
+  const rows = sorted.map((g, i) => {
+    const team = DATA.teams[g.team];
+    const teamCell = team
+      ? `<div class="team-cell">${teamLogoHtml(team)} <span>${escapeHtml(team.name)}</span></div>`
+      : '—';
+    return `<tr>
+      <td class="num">${i + 1}</td>
+      <td style="font-weight:600;">${escapeHtml(g.name)}</td>
+      <td>${teamCell}</td>
+      <td class="num">${g.gp || 0}</td>
+      <td class="num pts-cell">${g.w || 0}</td>
+      <td class="num">${g.l || 0}</td>
+      <td class="num">${g.otl || 0}</td>
+      <td class="num">${(g.gaa || 0).toFixed(2)}</td>
+      <td class="num">${((g.svpct || 0) * 100).toFixed(1)}%</td>
+      <td class="num">${g.so || 0}</td>
+      <td class="num">${g.sa || 0}</td>
+      <td class="num">${g.sv || 0}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('goalies6s').innerHTML = `<div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th class="num">#</th><th>Gardien</th><th>Équipe</th>
+        <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+        <th class="num">DP</th><th class="num">MOY</th><th class="num">%ARR</th>
+        <th class="num">BL</th><th class="num">TC</th><th class="num">ARR</th>
+      </tr></thead>
+      <tbody>${rows || '<tr><td colspan="12" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun gardien ajouté</td></tr>'}</tbody>
+    </table>
+  </div>`;
+}
+
+function renderTeams6S() {
+  const teams6s = Object.entries(DATA.teams).filter(([id, t]) => t.division === '6v6');
+  const standings = DATA.season_3_6v6?.standings || [];
+  
+  const teamCards = teams6s.map(([tid, team]) => {
+    const standing = standings.find(s => s.team === tid) || {};
+    const diff = (standing.gf || 0) - (standing.ga || 0);
+    const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
+    const diffStr = diff > 0 ? `+${diff}` : diff;
+    
+    return `<div class="team-card" onclick="showTeamDetail('${tid}', '6s')" style="cursor:pointer;">
+      ${teamLogoHtml(team, 'card')}
+      <h3 class="team-card-name">${escapeHtml(team.name)}</h3>
+      <div class="team-card-stats">
+        <div class="team-stat"><span class="team-stat-label">PJ</span><span class="team-stat-value">${standing.gp || 0}</span></div>
+        <div class="team-stat"><span class="team-stat-label">V-D-DP</span><span class="team-stat-value">${standing.w || 0}-${standing.l || 0}-${standing.otl || 0}</span></div>
+        <div class="team-stat"><span class="team-stat-label">PTS</span><span class="team-stat-value pts-cell">${standing.pts || 0}</span></div>
+        <div class="team-stat"><span class="team-stat-label">DIFF</span><span class="team-stat-value ${diffClass}">${diffStr}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('teams6s').innerHTML = `<div class="grid-4">${teamCards || '<p style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucune équipe</p>'}</div>`;
+}
+
+function renderSchedule6S() {
+  const games = DATA.season_3_6v6?.calendar || [];
+  document.getElementById('schedule6s').innerHTML = `<div class="empty-state">
+    <div class="empty-state-icon">📅</div>
+    <p style="font-size: 16px;"><strong>Calendrier à venir</strong></p>
+    <p style="margin-top: 8px;">Les matchs de la Saison 3 6S seront ajoutés bientôt.</p>
+  </div>`;
+}
+
+function renderStats6S() {
+  document.getElementById('stats6s').innerHTML = `<div class="empty-state">
+    <div class="empty-state-icon">📊</div>
+    <p style="font-size: 16px;"><strong>Statistiques à venir</strong></p>
+    <p style="margin-top: 8px;">Les statistiques avancées 6S seront disponibles une fois les données ajoutées.</p>
+  </div>`;
+}
+
+function renderTrophies6S() {
+  const players = DATA.season_3_6v6?.players || [];
+  const goalies = DATA.season_3_6v6?.goalies || [];
+
+  if (players.length === 0 && goalies.length === 0) {
+    document.getElementById('trophies6s').innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">🏆</div>
+      <p style="font-size: 16px;"><strong>Trophées à venir</strong></p>
+      <p style="margin-top: 8px;">Les trophées 6S seront affichés une fois les joueurs ajoutés.</p>
+    </div>`;
+    return;
+  }
+
+  const renderTrophyList = (list, statKey, formatter) => {
+    if (list.length === 0) return '<div class="empty-state"><p style="font-size:13px;">Aucune donnée</p></div>';
+    return list.slice(0, 5).map((p, i) => {
+      const team = p.team ? DATA.teams[p.team] : null;
+      const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+      const teamLabel = team
+        ? (team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'"> ${team.name}` : `${team.emoji} ${team.name}`)
+        : '';
+      return `<div class="leader-row">
+        <div class="leader-rank ${rankClass}">${i + 1}</div>
+        <div class="leader-info">
+          <div class="leader-name">${escapeHtml(p.name)}</div>
+          <div class="leader-team">${teamLabel}</div>
+        </div>
+        <div class="leader-stat">${formatter(p[statKey] || 0)}</div>
+      </div>`;
+    }).join('');
+  };
+
+  const sortedByPts = [...players].sort((a, b) => (b.pts || 0) - (a.pts || 0));
+  const sortedByG = [...players].sort((a, b) => (b.g || 0) - (a.g || 0));
+  const sortedByA = [...players].sort((a, b) => (b.a || 0) - (a.a || 0));
+  const sortedByPM = [...players].sort((a, b) => (b.plusminus || 0) - (a.plusminus || 0));
+  const sortedGoalies = [...goalies].sort((a, b) => (b.svpct || 0) - (a.svpct || 0) || (b.w || 0) - (a.w || 0));
+
+  document.getElementById('trophies6s').innerHTML = `<div class="grid-3">
+    <div class="card"><h3>🏆 Top Buteurs</h3>${renderTrophyList(sortedByG, 'g', v => v)}</div>
+    <div class="card"><h3>🎯 Top Pointeurs</h3>${renderTrophyList(sortedByPts, 'pts', v => v)}</div>
+    <div class="card"><h3>🤝 Top Passeurs</h3>${renderTrophyList(sortedByA, 'a', v => v)}</div>
+    <div class="card"><h3>➕ Meilleur +/-</h3>${renderTrophyList(sortedByPM, 'plusminus', v => v > 0 ? '+' + v : v)}</div>
+    <div class="card"><h3>🥅 Trophée Gardien</h3>${renderTrophyList(sortedGoalies, 'w', v => v)}</div>
+  </div>`;
+}
+
 function rerenderAll() {
   renderHome();
   renderStandingsNHL();
@@ -3585,6 +3938,13 @@ function rerenderAll() {
   renderStatsPage();
   renderSchedule();
   renderArchiveS4();
+  renderStandings6S();
+  renderPlayers6S();
+  renderGoalies6S();
+  renderTeams6S();
+  renderSchedule6S();
+  renderStats6S();
+  renderTrophies6S();
 }
 
 loadData();
