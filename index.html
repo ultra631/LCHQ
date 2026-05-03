@@ -3391,38 +3391,50 @@ function renderArchivePlayers(archive) {
     </div>`;
   }
 
-  const sorted = [...archive.players].sort((a, b) => (b.pts || 0) - (a.pts || 0));
-  const rows = sorted.map((p, i) => {
-    const team = p.team ? DATA.teams[p.team] : null;
-    const teamCell = team
-      ? `<div class="team-cell">${team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji}<span>${team.name}</span></div>`
-      : '<span style="color:var(--text-tertiary);">—</span>';
-    const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
-    const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
-    return `<tr>
-      <td class="num">${i + 1}</td>
-      <td style="font-weight:600;">${escapeHtml(p.name)}</td>
-      <td>${teamCell}</td>
-      <td class="num">${p.gp || 0}</td>
-      <td class="num">${p.g || 0}</td>
-      <td class="num">${p.a || 0}</td>
-      <td class="num pts-cell">${p.pts || 0}</td>
-      <td class="num ${pmClass}">${pmStr}</td>
-      <td class="num">${p.pim || 0}</td>
-      <td class="num">${p.shots || 0}</td>
-    </tr>`;
-  }).join('');
+  const nhlTeams = ['avalanche','bruins','canadiens','canucks','capitals','kings','kraken','panthers','predators','rangers','sharks','wild'];
+  
+  const nhlPlayers = archive.players.filter(p => nhlTeams.includes(p.team)).sort((a, b) => (b.pts || 0) - (a.pts || 0));
+  const lhjmqPlayers = archive.players.filter(p => !nhlTeams.includes(p.team)).sort((a, b) => (b.pts || 0) - (a.pts || 0));
 
-  return `<div class="table-wrap">
-    <table>
-      <thead><tr>
-        <th>#</th><th>Joueur</th><th>Équipe</th>
-        <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
-        <th class="num">PTS</th><th class="num">+/-</th><th class="num">MEC</th><th class="num">TIRS</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
+  const makeTable = (players, divLabel, divColor) => {
+    const rows = players.map((p, i) => {
+      const team = p.team ? DATA.teams[p.team] : null;
+      const teamCell = team
+        ? `<div class="team-cell">${team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji}<span>${team.name}</span></div>`
+        : '<span style="color:var(--text-tertiary);">—</span>';
+      const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
+      const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
+      return `<tr>
+        <td class="num">${i + 1}</td>
+        <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+        <td>${teamCell}</td>
+        <td class="num">${p.gp || 0}</td>
+        <td class="num">${p.g || 0}</td>
+        <td class="num">${p.a || 0}</td>
+        <td class="num pts-cell">${p.pts || 0}</td>
+        <td class="num ${pmClass}">${pmStr}</td>
+        <td class="num">${p.pim || 0}</td>
+        <td class="num">${p.shots || 0}</td>
+      </tr>`;
+    }).join('');
+
+    return `<div style="margin-bottom: 30px;">
+      <h3 class="section-title" style="color: ${divColor};">${divLabel}</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>#</th><th>Joueur</th><th>Équipe</th>
+            <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
+            <th class="num">PTS</th><th class="num">+/-</th><th class="num">MEC</th><th class="num">TIRS</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  };
+
+  return makeTable(nhlPlayers, 'Division NHL', 'var(--nhl-color)') + 
+         makeTable(lhjmqPlayers, 'Division LHJMQ', 'var(--lhjmq-color)');
 }
 
 function renderArchiveGoalies(archive) {
@@ -3436,36 +3448,49 @@ function renderArchiveGoalies(archive) {
     </div>`;
   }
 
-  const sorted = [...archive.goalies].sort((a, b) => (b.w || 0) - (a.w || 0));
-  const rows = sorted.map((g, i) => {
-    const team = DATA.teams[g.team];
-    const teamCell = team
-      ? `<div class="team-cell">${team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji}<span>${team.name}</span></div>`
-      : '—';
-    return `<tr>
-      <td class="num">${i + 1}</td>
-      <td style="font-weight:600;">${escapeHtml(g.name)}</td>
-      <td>${teamCell}</td>
-      <td class="num">${g.gp || 0}</td>
-      <td class="num pts-cell">${g.w || 0}</td>
-      <td class="num">${g.l || 0}</td>
-      <td class="num">${g.otl || 0}</td>
-      <td class="num">${(g.gaa || 0).toFixed(2)}</td>
-      <td class="num">${((g.svpct || 0) * 100).toFixed(1)}%</td>
-      <td class="num">${g.so || 0}</td>
-    </tr>`;
-  }).join('');
+  const nhlTeams = ['avalanche','bruins','canadiens','canucks','capitals','kings','kraken','panthers','predators','rangers','sharks','wild'];
+  
+  const nhlGoalies = archive.goalies.filter(g => nhlTeams.includes(g.team)).sort((a, b) => (b.w || 0) - (a.w || 0));
+  const lhjmqGoalies = archive.goalies.filter(g => !nhlTeams.includes(g.team)).sort((a, b) => (b.w || 0) - (a.w || 0));
 
-  return `<div class="table-wrap">
-    <table>
-      <thead><tr>
-        <th>#</th><th>Gardien</th><th>Équipe</th>
-        <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
-        <th class="num">DP</th><th class="num">MOY</th><th class="num">%ARR</th><th class="num">BL</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
+  const makeTable = (goalies, divLabel, divColor) => {
+    const rows = goalies.map((g, i) => {
+      const team = DATA.teams[g.team];
+      const teamCell = team
+        ? `<div class="team-cell">${team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji}<span>${team.name}</span></div>`
+        : '—';
+      return `<tr>
+        <td class="num">${i + 1}</td>
+        <td style="font-weight:600;">${escapeHtml(g.name)}</td>
+        <td>${teamCell}</td>
+        <td class="num">${g.gp || 0}</td>
+        <td class="num pts-cell">${g.w || 0}</td>
+        <td class="num">${g.l || 0}</td>
+        <td class="num">${g.otl || 0}</td>
+        <td class="num">${(g.gaa || 0).toFixed(2)}</td>
+        <td class="num">${((g.svpct || 0) * 100).toFixed(1)}%</td>
+        <td class="num">${g.so || 0}</td>
+      </tr>`;
+    }).join('');
+
+    return `<div style="margin-bottom: 30px;">
+      <h3 class="section-title" style="color: ${divColor};">${divLabel}</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>#</th><th>Gardien</th><th>Équipe</th>
+            <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+            <th class="num">DP</th><th class="num">MOY</th><th class="num">%ARR</th><th class="num">BL</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  };
+
+  return makeTable(nhlGoalies, 'Division NHL', 'var(--nhl-color)') + 
+         makeTable(lhjmqGoalies, 'Division LHJMQ', 'var(--lhjmq-color)');
+}
 }
 
 function renderArchiveTrophies(archive) {
