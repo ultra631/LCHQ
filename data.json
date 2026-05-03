@@ -4720,3 +4720,131 @@
     }
   }
 }
+[
+  {
+    "saison": "4",
+    "ligue": "NHL",
+    "equipes": [
+      {
+        "nom": "Capitals",
+        "joueurs": [
+          {"nom": "Prxtas", "pj": 24, "b": 74, "a": 75, "pts": 149},
+          {"nom": "Tanguay x l40l", "pj": 24, "b": 35, "a": 66, "pts": 101},
+          {"nom": "J0S_ST_ALEX_QC", "pj": 24, "b": 31, "a": 34, "pts": 65},
+          {"nom": "QC_L_E_G_E_N_D", "pj": 24, "b": 18, "a": 41, "pts": 59},
+          {"nom": "I_E-I_R_O-I_N", "pj": 24, "b": 16, "a": 27, "pts": 43}
+        ]
+      },
+      {
+        "nom": "Bruins",
+        "joueurs": [
+          {"nom": "X7-Pietrxngelo-7", "pj": 24, "b": 33, "a": 81, "pts": 114},
+          {"nom": "T-Bone x 8", "pj": 24, "b": 38, "a": 42, "pts": 80},
+          {"nom": "Dany l94l", "pj": 24, "b": 44, "a": 30, "pts": 74},
+          {"nom": "The Real Polak", "pj": 24, "b": 23, "a": 34, "pts": 57},
+          {"nom": "Greener l8l", "pj": 24, "b": 16, "a": 32, "pts": 48}
+        ]
+      },
+      {
+        "nom": "Rangers",
+        "joueurs": [
+          {"nom": "NaPx Algon", "pj": 21, "b": 77, "a": 62, "pts": 139},
+          {"nom": "Le p0is0n qc", "pj": 21, "b": 30, "a": 47, "pts": 77},
+          {"nom": "D_St_Louis_26", "pj": 21, "b": 20, "a": 40, "pts": 60},
+          {"nom": "l7l Touchette", "pj": 18, "b": 12, "a": 23, "pts": 35},
+          {"nom": "v_Hertl_48_v", "pj": 3, "b": 2, "a": 6, "pts": 8}
+        ]
+      },
+      {
+        "nom": "Wild",
+        "joueurs": [
+          {"nom": "Natsubi87", "pj": 24, "b": 69, "a": 55, "pts": 124},
+          {"nom": "Gab_Gally_11", "pj": 24, "b": 44, "a": 61, "pts": 105},
+          {"nom": "The-Real-Brousse", "pj": 24, "b": 28, "a": 41, "pts": 69},
+          {"nom": "The-Real-Spezza", "pj": 24, "b": 33, "a": 33, "pts": 66},
+          {"nom": "X_F_R_A_N_C_O_X", "pj": 24, "b": 18, "a": 20, "pts": 38}
+        ]
+      },
+      {
+        "nom": "Kraken",
+        "joueurs": [
+          {"nom": "Snoxlol", "pj": 24, "b": 88, "a": 46, "pts": 134},
+          {"nom": "L_C_H_Q_1", "pj": 24, "b": 43, "a": 70, "pts": 113},
+          {"nom": "QC-D_A_D-85", "pj": 24, "b": 19, "a": 52, "pts": 71},
+          {"nom": "T_M_A_C_x_1", "pj": 24, "b": 28, "a": 30, "pts": 58},
+          {"nom": "STU_D_S-21", "pj": 24, "b": 12, "a": 16, "pts": 28}
+        ]
+      },
+      {
+        "nom": "Kings",
+        "joueurs": [
+          {"nom": "MADARA x UCHIWA", "pj": 24, "b": 75, "a": 39, "pts": 114},
+          {"nom": "LeBoivin", "pj": 24, "b": 37, "a": 53, "pts": 90},
+          {"nom": "I_N_F_E_R_N_U_S", "pj": 24, "b": 35, "a": 38, "pts": 73},
+          {"nom": "V0p_R_E_B_E_L", "pj": 24, "b": 20, "a": 41, "pts": 61},
+          {"nom": "D-N0S-66", "pj": 24, "b": 19, "a": 19, "pts": 38}
+        ]
+      },
+      {
+        "nom": "Canadiens",
+        "joueurs": [
+          {"nom": "FettiEra", "pj": 18, "b": 46, "a": 34, "pts": 80},
+          {"nom": "M-A_Fleury_29_qc", "pj": 20, "b": 23, "a": 35, "pts": 58},
+          {"nom": "l1l-H-D-l1l", "pj": 20, "b": 23, "a": 27, "pts": 50},
+          {"nom": "Blais_qc_19", "pj": 21, "b": 16, "a": 28, "pts": 44},
+          {"nom": "Le-Gros-Cid", "pj": 21, "b": 18, "a": 20, "pts": 38}
+        ]
+      },
+      {
+        "nom": "Sharks",
+        "joueurs": [
+          {"nom": "xBalto96 C,G,A,D", "pj": 21, "b": 43, "a": 32, "pts": 75},
+          {"nom": "L VeXoR L", "pj": 15, "b": 40, "a": 27, "pts": 67},
+          {"nom": "LCHQ_D1ablo2508", "pj": 14, "b": 28, "a": 22, "pts": 50},
+          {"nom": "McPiche", "pj": 15, "b": 10, "a": 32, "pts": 42},
+          {"nom": "Tinazo_Mazoo", "pj": 3, "b": 5, "a": 2, "pts": 7}
+        ]
+      },
+      {
+        "nom": "Canucks",
+        "joueurs": [
+          {"nom": "AzGod_02", "pj": 18, "b": 10, "a": 38, "pts": 48},
+          {"nom": "achillex87", "pj": 18, "b": 6, "a": 34, "pts": 40},
+          {"nom": "Askarov I30l", "pj": 11, "b": 24, "a": 13, "pts": 37},
+          {"nom": "X-_brownie_-_X", "pj": 2, "b": 4, "a": 2, "pts": 6},
+          {"nom": "chill-chill77", "pj": 2, "b": 1, "a": 3, "pts": 4}
+        ]
+      },
+      {
+        "nom": "Predators",
+        "joueurs": [
+          {"nom": "Wigy1x", "pj": 20, "b": 94, "a": 48, "pts": 142},
+          {"nom": "M_R_I_C_H_1_2", "pj": 21, "b": 35, "a": 71, "pts": 106},
+          {"nom": "The-Real-Brousse", "pj": 21, "b": 30, "a": 33, "pts": 63},
+          {"nom": "Z-F_R_A_N_K-Z", "pj": 21, "b": 15, "a": 27, "pts": 42},
+          {"nom": "Beast-mode-QC", "pj": 21, "b": 16, "a": 21, "pts": 37}
+        ]
+      },
+      {
+        "nom": "Avalanche",
+        "joueurs": [
+          {"nom": "Youkiki07", "pj": 24, "b": 73, "a": 78, "pts": 151},
+          {"nom": "Noob-saibot-qc", "pj": 24, "b": 36, "a": 66, "pts": 102},
+          {"nom": "l7l-Toews-l19l", "pj": 24, "b": 37, "a": 45, "pts": 82},
+          {"nom": "S_T_A_L_L_Y_O_N", "pj": 24, "b": 13, "a": 31, "pts": 44},
+          {"nom": "Y-T-P-0-7", "pj": 24, "b": 12, "a": 19, "pts": 31}
+        ]
+      },
+      {
+        "nom": "Panthers",
+        "joueurs": [
+          {"nom": "TiZz_Creepy", "pj": 24, "b": 48, "a": 80, "pts": 128},
+          {"nom": "x-M-A-G-I-K-x", "pj": 24, "b": 57, "a": 48, "pts": 105},
+          {"nom": "D-R-O-U-I-N-27", "pj": 24, "b": 23, "a": 43, "pts": 66},
+          {"nom": "M-A_Fleury_29_qc", "pj": 24, "b": 16, "a": 41, "pts": 57},
+          {"nom": "The-Real-Spezza", "pj": 24, "b": 27, "a": 26, "pts": 53}
+        ]
+      }
+    ]
+  }
+]
