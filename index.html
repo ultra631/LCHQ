@@ -2652,13 +2652,18 @@ document.addEventListener('click', (e) => {
 function populateTeamSelect(selectId, division) {
   const sel = document.getElementById(selectId);
   sel.innerHTML = '<option value="">— Choisir une équipe —</option>';
+  
+  // Mapper '6s' à '6v6' pour la division dans les équipes
+  const divisionFilter = division === '6s' ? '6v6' : division;
+  
   Object.entries(DATA.teams)
-    .filter(([_, t]) => !division || t.division === division)
+    .filter(([_, t]) => !divisionFilter || t.division === divisionFilter)
     .sort((a, b) => a[1].name.localeCompare(b[1].name))
     .forEach(([k, t]) => {
       const opt = document.createElement('option');
       opt.value = k;
-      opt.textContent = `${t.emoji} ${t.name} (${t.division.toUpperCase()})`;
+      const divLabel = t.division === '6v6' ? '6S' : t.division.toUpperCase();
+      opt.textContent = `${t.emoji} ${t.name} (${divLabel})`;
       sel.appendChild(opt);
     });
 }
@@ -2880,6 +2885,30 @@ function confirmDeletePlayer(id) {
   openModal('confirmModal');
 }
 
+function confirmDeletePlayer6S(id) {
+  const p = DATA.season_3_6v6?.players?.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('confirmMessage').textContent = `Supprimer le joueur 6S "${p.name}"? Cette action ne peut pas être annulée.`;
+  document.getElementById('confirmActionBtn').onclick = () => {
+    DATA.season_3_6v6.players = DATA.season_3_6v6.players.filter(x => x.id !== id);
+    closeModal('confirmModal');
+    rerenderAll();
+  };
+  openModal('confirmModal');
+}
+
+function confirmDeleteGoalie6S(id) {
+  const g = DATA.season_3_6v6?.goalies?.find(x => x.id === id);
+  if (!g) return;
+  document.getElementById('confirmMessage').textContent = `Supprimer le gardien 6S "${g.name}"? Cette action ne peut pas être annulée.`;
+  document.getElementById('confirmActionBtn').onclick = () => {
+    DATA.season_3_6v6.goalies = DATA.season_3_6v6.goalies.filter(x => x.id !== id);
+    closeModal('confirmModal');
+    rerenderAll();
+  };
+  openModal('confirmModal');
+}
+
 // ===== REMPLAÇANTS =====
 
 function renderSubs() {
@@ -2968,9 +2997,14 @@ function reactivatePlayer(id) {
 
 function openGoalieModal(goalieId, division) {
   editingGoalieId = goalieId;
+  editingDivision = division || 'nhl';
   populateTeamSelect('gTeam', division);
+  
+  const isS6s = division === '6s';
+  const goalies = isS6s ? (DATA.season_3_6v6?.goalies || []) : DATA.goalies;
+  
   if (goalieId) {
-    const g = DATA.goalies.find(x => x.id === goalieId);
+    const g = goalies.find(x => x.id === goalieId);
     document.getElementById('goalieModalTitle').textContent = '✏️ Modifier gardien';
     document.getElementById('gName').value = g.name;
     document.getElementById('gTeam').value = g.team;
@@ -2981,7 +3015,8 @@ function openGoalieModal(goalieId, division) {
       'So': 'so', 'Sa': 'sa', 'Sv': 'sv', 'Ga': 'ga'
     });
   } else {
-    document.getElementById('goalieModalTitle').textContent = '➕ Nouveau gardien';
+    const modeLabel = isS6s ? '6S' : (division === 'lhjmq' ? 'LHJMQ' : 'NHL');
+    document.getElementById('goalieModalTitle').textContent = `➕ Nouveau gardien ${modeLabel}`;
     document.getElementById('gName').value = '';
     loadStatsIntoModal('g', {}, {
       'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
@@ -3021,13 +3056,22 @@ function saveGoalie() {
     sa: sa,
     sv: sv
   };
+  
+  const isS6s = editingDivision === '6s';
+  const goaliesList = isS6s ? (DATA.season_3_6v6.goalies || []) : DATA.goalies;
+  
   if (editingGoalieId) {
-    const idx = DATA.goalies.findIndex(x => x.id === editingGoalieId);
-    DATA.goalies[idx] = { ...DATA.goalies[idx], ...goalieData };
+    const idx = goaliesList.findIndex(x => x.id === editingGoalieId);
+    goaliesList[idx] = { ...goaliesList[idx], ...goalieData };
   } else {
-    const newId = 'g' + (Math.max(0, ...DATA.goalies.map(g => parseInt(g.id.replace('g',''))||0)) + 1);
-    DATA.goalies.push({ id: newId, ...goalieData });
+    const newId = 'g' + (Math.max(0, ...goaliesList.map(g => parseInt(g.id.replace('g',''))||0)) + 1);
+    goaliesList.push({ id: newId, ...goalieData });
   }
+  
+  if (isS6s) {
+    DATA.season_3_6v6.goalies = goaliesList;
+  }
+  
   closeModal('goalieModal');
   rerenderAll();
 }
@@ -3833,6 +3877,11 @@ function renderPlayers6S() {
     const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
     const shotPct = p.shots > 0 ? ((p.g / p.shots) * 100).toFixed(1) : '0.0';
     
+    const adminActions = `<td class="admin-row-actions">
+      <button class="row-action-btn" onclick="openPlayerModal('${p.id}', '6s')" title="Modifier">✏️</button>
+      <button class="row-action-btn delete" onclick="confirmDeletePlayer6S('${p.id}')" title="Supprimer">🗑️</button>
+    </td>`;
+    
     return `<tr>
       <td class="num">${i + 1}</td>
       <td style="font-weight:600;">${escapeHtml(p.name)}</td>
@@ -3845,6 +3894,7 @@ function renderPlayers6S() {
       <td class="num">${p.pim || 0}</td>
       <td class="num">${p.shots || 0}</td>
       <td class="num">${shotPct}%</td>
+      ${adminActions}
     </tr>`;
   }).join('');
 
@@ -3855,9 +3905,12 @@ function renderPlayers6S() {
         <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
         <th class="num">PTS</th><th class="num">+/-</th><th class="num">MEC</th>
         <th class="num">TIRS</th><th class="num">%T</th>
+        <th class="admin-only-col"></th>
       </tr></thead>
-      <tbody>${rows || '<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun joueur ajouté</td></tr>'}</tbody>
+      <tbody>${rows || '<tr><td colspan="12" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun joueur ajouté</td></tr>'}</tbody>
     </table>
+  </div>`;
+}
   </div>`;
 }
 
@@ -3870,6 +3923,12 @@ function renderGoalies6S() {
     const teamCell = team
       ? `<div class="team-cell">${teamLogoHtml(team)} <span>${escapeHtml(team.name)}</span></div>`
       : '—';
+    
+    const adminActions = `<td class="admin-row-actions">
+      <button class="row-action-btn" onclick="openGoalieModal('${g.id}', '6s')" title="Modifier">✏️</button>
+      <button class="row-action-btn delete" onclick="confirmDeleteGoalie6S('${g.id}')" title="Supprimer">🗑️</button>
+    </td>`;
+    
     return `<tr>
       <td class="num">${i + 1}</td>
       <td style="font-weight:600;">${escapeHtml(g.name)}</td>
@@ -3883,6 +3942,7 @@ function renderGoalies6S() {
       <td class="num">${g.so || 0}</td>
       <td class="num">${g.sa || 0}</td>
       <td class="num">${g.sv || 0}</td>
+      ${adminActions}
     </tr>`;
   }).join('');
 
@@ -3893,8 +3953,9 @@ function renderGoalies6S() {
         <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
         <th class="num">DP</th><th class="num">MOY</th><th class="num">%ARR</th>
         <th class="num">BL</th><th class="num">TC</th><th class="num">ARR</th>
+        <th class="admin-only-col"></th>
       </tr></thead>
-      <tbody>${rows || '<tr><td colspan="12" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun gardien ajouté</td></tr>'}</tbody>
+      <tbody>${rows || '<tr><td colspan="13" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun gardien ajouté</td></tr>'}</tbody>
     </table>
   </div>`;
 }
