@@ -1120,26 +1120,47 @@
 
 <!-- HOME -->
 <section id="page-home" class="page active">
-  <div class="hero">
-    <img src="logo-banner.png" alt="LCHQ Hockey" class="hero-banner" onerror="this.style.display='none'">
-    <div class="hero-overlay">
-      <p class="subtitle">Ligue de Hockey · World of Chel · NHL 26</p>
-      <div class="badge">⚡ Saison 5 — En cours</div>
+  <!-- VERSION 4S -->
+  <div id="home-4s">
+    <div class="hero">
+      <img src="logo-banner.png" alt="LCHQ Hockey" class="hero-banner" onerror="this.style.display='none'">
+      <div class="hero-overlay">
+        <p class="subtitle">Ligue de Hockey · World of Chel · NHL 26</p>
+        <div class="badge">⚡ Saison 5 — En cours</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Division NHL — Leaders</h2>
+    <div class="grid-3">
+      <div class="card nhl"><h3>🥅 Top Buteurs NHL</h3><div id="nhlTopGoals"></div></div>
+      <div class="card nhl"><h3>🎯 Top Pointeurs NHL</h3><div id="nhlTopPoints"></div></div>
+      <div class="card nhl"><h3>🛡️ Top Gardiens NHL</h3><div id="nhlTopGoalies"></div></div>
+    </div>
+
+    <h2 class="section-title">Division LHJMQ — Leaders</h2>
+    <div class="grid-3">
+      <div class="card lhjmq"><h3>🥅 Top Buteurs LHJMQ</h3><div id="lhjmqTopGoals"></div></div>
+      <div class="card lhjmq"><h3>🎯 Top Pointeurs LHJMQ</h3><div id="lhjmqTopPoints"></div></div>
+      <div class="card lhjmq"><h3>🛡️ Top Gardiens LHJMQ</h3><div id="lhjmqTopGoalies"></div></div>
     </div>
   </div>
 
-  <h2 class="section-title">Division NHL — Leaders</h2>
-  <div class="grid-3">
-    <div class="card nhl"><h3>🥅 Top Buteurs NHL</h3><div id="nhlTopGoals"></div></div>
-    <div class="card nhl"><h3>🎯 Top Pointeurs NHL</h3><div id="nhlTopPoints"></div></div>
-    <div class="card nhl"><h3>🛡️ Top Gardiens NHL</h3><div id="nhlTopGoalies"></div></div>
-  </div>
+  <!-- VERSION 6S -->
+  <div id="home-6s" style="display:none;">
+    <div class="hero">
+      <img src="logo-banner.png" alt="LCHQ Hockey" class="hero-banner" onerror="this.style.display='none'">
+      <div class="hero-overlay">
+        <p class="subtitle">Ligue de Hockey 6v6 · World of Chel · NHL 26</p>
+        <div class="badge" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">⚡ Saison 3 — En cours</div>
+      </div>
+    </div>
 
-  <h2 class="section-title">Division LHJMQ — Leaders</h2>
-  <div class="grid-3">
-    <div class="card lhjmq"><h3>🥅 Top Buteurs LHJMQ</h3><div id="lhjmqTopGoals"></div></div>
-    <div class="card lhjmq"><h3>🎯 Top Pointeurs LHJMQ</h3><div id="lhjmqTopPoints"></div></div>
-    <div class="card lhjmq"><h3>🛡️ Top Gardiens LHJMQ</h3><div id="lhjmqTopGoalies"></div></div>
+    <h2 class="section-title" style="color: #3b82f6;">Ligue 6S — Leaders</h2>
+    <div class="grid-3">
+      <div class="card" style="border-color: #3b82f6;"><h3>🥅 Top Buteurs 6S</h3><div id="sixsTopGoals"></div></div>
+      <div class="card" style="border-color: #3b82f6;"><h3>🎯 Top Pointeurs 6S</h3><div id="sixsTopPoints"></div></div>
+      <div class="card" style="border-color: #3b82f6;"><h3>🛡️ Top Gardiens 6S</h3><div id="sixsTopGoalies"></div></div>
+    </div>
   </div>
 </section>
 
@@ -1966,6 +1987,10 @@ function setGameMode(mode) {
   document.getElementById('mode4s').classList.toggle('active', mode === '4s');
   document.getElementById('mode6s').classList.toggle('active', mode === '6s');
   
+  // Switcher la page d'accueil
+  document.getElementById('home-4s').style.display = mode === '4s' ? '' : 'none';
+  document.getElementById('home-6s').style.display = mode === '6s' ? '' : 'none';
+  
   // Cacher tous les boutons du mode opposé
   document.querySelectorAll('.nav-btn.mode-4s').forEach(btn => {
     btn.style.display = mode === '4s' ? '' : 'none';
@@ -2040,6 +2065,7 @@ function teamLogoHtml(team, size = 'table') {
 
 // HOME
 function renderHome() {
+  // === 4S (Saison 5) ===
   // Joueurs actifs (réguliers + remplaçants), pas les inactifs
   const activePlayers = DATA.players.filter(p => (p.status || 'regular') !== 'inactive');
   const nhlPlayers = activePlayers.filter(p => p.team && DATA.teams[p.team] && DATA.teams[p.team].division === 'nhl');
@@ -2054,6 +2080,24 @@ function renderHome() {
   document.getElementById('lhjmqTopGoals').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
   document.getElementById('lhjmqTopPoints').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
   document.getElementById('lhjmqTopGoalies').innerHTML = renderGoalieLeaderList([...lhjmqGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w');
+
+  // === 6S (Saison 3) ===
+  const sixsPlayers = DATA.season_3_6v6?.players || [];
+  const sixsGoalies = DATA.season_3_6v6?.goalies || [];
+
+  const emptyMsg = '<div class="empty-state"><p style="font-size:13px;color:var(--text-tertiary);">Aucun joueur ajouté</p></div>';
+  
+  document.getElementById('sixsTopGoals').innerHTML = sixsPlayers.length > 0 
+    ? renderLeaderList([...sixsPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g')
+    : emptyMsg;
+  
+  document.getElementById('sixsTopPoints').innerHTML = sixsPlayers.length > 0
+    ? renderLeaderList([...sixsPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts')
+    : emptyMsg;
+  
+  document.getElementById('sixsTopGoalies').innerHTML = sixsGoalies.length > 0
+    ? renderGoalieLeaderList([...sixsGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w')
+    : emptyMsg;
 }
 
 function renderLeaderList(players, statKey) {
