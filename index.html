@@ -3875,7 +3875,9 @@ function renderPlayers6S() {
       : '<span style="color:var(--text-tertiary);">—</span>';
     const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
     const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
-    const shotPct = p.shots > 0 ? ((p.g / p.shots) * 100).toFixed(1) : '0.0';
+    const shotPct = p.shotpct || (p.shots > 0 ? ((p.g / p.shots) * 100).toFixed(1) : 0);
+    const foPct = p.fopct || 0;
+    const passPct = p.passpct || 0;
     
     const adminActions = `<td class="admin-row-actions">
       <button class="row-action-btn" onclick="openPlayerModal('${p.id}', '6s')" title="Modifier">✏️</button>
@@ -3892,7 +3894,16 @@ function renderPlayers6S() {
       <td class="num pts-cell">${p.pts || 0}</td>
       <td class="num ${pmClass}">${pmStr}</td>
       <td class="num">${p.pim || 0}</td>
+      <td class="num">${p.mjg || 0}</td>
+      <td class="num">${p.mjf || 0}</td>
+      <td class="num">${p.tb || 0}</td>
+      <td class="num">${foPct}%</td>
+      <td class="num">${p.intc || 0}</td>
+      <td class="num">${p.pert || 0}</td>
       <td class="num">${p.shots || 0}</td>
+      <td class="num">${p.pt || 0}</td>
+      <td class="num">${p.pr || 0}</td>
+      <td class="num">${passPct}%</td>
       <td class="num">${shotPct}%</td>
       ${adminActions}
     </tr>`;
@@ -3904,10 +3915,13 @@ function renderPlayers6S() {
         <th class="num">#</th><th>Joueur</th><th>Équipe</th>
         <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
         <th class="num">PTS</th><th class="num">+/-</th><th class="num">MEC</th>
-        <th class="num">TIRS</th><th class="num">%T</th>
+        <th class="num">MJG</th><th class="num">MJ</th><th class="num">TB</th>
+        <th class="num">%MJ</th><th class="num">INT</th><th class="num">PERT</th>
+        <th class="num">TIRS</th><th class="num">PT</th><th class="num">PR</th>
+        <th class="num">%PR</th><th class="num">%T</th>
         <th class="admin-only-col"></th>
       </tr></thead>
-      <tbody>${rows || '<tr><td colspan="12" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun joueur ajouté</td></tr>'}</tbody>
+      <tbody>${rows || '<tr><td colspan="21" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun joueur ajouté</td></tr>'}</tbody>
     </table>
   </div>`;
 }
@@ -3995,11 +4009,111 @@ function renderSchedule6S() {
 }
 
 function renderStats6S() {
-  document.getElementById('stats6s').innerHTML = `<div class="empty-state">
-    <div class="empty-state-icon">📊</div>
-    <p style="font-size: 16px;"><strong>Statistiques à venir</strong></p>
-    <p style="margin-top: 8px;">Les statistiques avancées 6S seront disponibles une fois les données ajoutées.</p>
-  </div>`;
+  const players = DATA.season_3_6v6?.players || [];
+  const goalies = DATA.season_3_6v6?.goalies || [];
+
+  if (players.length === 0 && goalies.length === 0) {
+    document.getElementById('stats6s').innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">📊</div>
+      <p style="font-size: 16px;"><strong>Statistiques à venir</strong></p>
+      <p style="margin-top: 8px;">Les statistiques avancées 6S seront disponibles une fois les données ajoutées.</p>
+    </div>`;
+    return;
+  }
+
+  // Catégories pour les patineurs
+  const skaterCategories = [
+    { title: '🏆 Top Buteurs', key: 'g', format: v => v },
+    { title: '🎯 Top Pointeurs', key: 'pts', format: v => v },
+    { title: '🤝 Top Passeurs', key: 'a', format: v => v },
+    { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
+    { title: '🔥 Meilleur %Tirs', key: 'shotpct', format: v => v.toFixed(1) + '%', minStat: { key: 'shots', val: 5 } },
+    { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
+    { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
+    { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v },
+    { title: '📊 Meilleur %Passes', key: 'passpct', format: v => v.toFixed(1) + '%', minStat: { key: 'pt', val: 10 } },
+    { title: '🏒 Plus de MJ Gagnées', key: 'mjg', format: v => v },
+    { title: '⚡ Meilleur %MJ', key: 'fopct', format: v => v.toFixed(1) + '%', minStat: { key: 'mjf', val: 10 } },
+    { title: '😬 Plus de Pertes', key: 'pert', format: v => v }
+  ];
+
+  // Render patineurs
+  const skatersHtml = skaterCategories.map(cat => {
+    let filtered = [...players];
+    if (cat.minStat) {
+      filtered = filtered.filter(p => (p[cat.minStat.key] || 0) >= cat.minStat.val);
+    }
+    const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} ${cat.minStat.key === 'shots' ? 'tirs' : cat.minStat.key === 'pt' ? 'passes' : 'MJ'}</div>` : '';
+    return `<div class="card">
+      <h3>${cat.title}</h3>
+      ${minNote}
+      ${renderStatsLeaderList(sorted, cat.key, cat.format)}
+    </div>`;
+  }).join('');
+
+  // Défenseurs
+  const defenders = players.filter(p => {
+    const main = p.position_main || p.position;
+    const sec = p.position_sec || '';
+    return main === 'D' || sec === 'D';
+  });
+
+  const defenderCategories = [
+    { title: '🏆 Top Pointeurs (Norris)', key: 'pts', format: v => v },
+    { title: '🥅 Top Buteurs', key: 'g', format: v => v },
+    { title: '🤝 Top Passeurs', key: 'a', format: v => v },
+    { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
+    { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
+    { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
+    { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v }
+  ];
+
+  const defendersHtml = defenderCategories.map(cat => {
+    const sorted = [...defenders].sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    return `<div class="card" style="border-color: rgba(91, 155, 213, 0.3);">
+      <h3 style="color: #5b9bd5;">${cat.title}</h3>
+      ${renderStatsLeaderList(sorted, cat.key, cat.format)}
+    </div>`;
+  }).join('');
+
+  // Gardiens
+  const goalieCategories = [
+    { title: '🏆 Plus de Victoires', key: 'w', format: v => v },
+    { title: '🥅 Meilleure Moy. (GAA)', key: 'gaa', format: v => v.toFixed(2), asc: true, minStat: { key: 'gp', val: 3 } },
+    { title: '⭐ Meilleur %Arrêts', key: 'svpct', format: v => (v * 100).toFixed(1) + '%', minStat: { key: 'gp', val: 3 } },
+    { title: '🛡️ Plus de Blanchissages', key: 'so', format: v => v },
+    { title: '💪 Plus d\'Arrêts Totaux', key: 'sv', format: v => v },
+    { title: '🎯 Plus de Tirs Reçus', key: 'sa', format: v => v }
+  ];
+
+  const goaliesHtml = goalieCategories.map(cat => {
+    let filtered = [...goalies];
+    if (cat.minStat) {
+      filtered = filtered.filter(g => (g[cat.minStat.key] || 0) >= cat.minStat.val);
+    }
+    const sorted = filtered.sort((a, b) => {
+      if (cat.asc) return (a[cat.key] || 999) - (b[cat.key] || 999);
+      return (b[cat.key] || 0) - (a[cat.key] || 0);
+    }).slice(0, 10);
+    const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} PJ</div>` : '';
+    return `<div class="card">
+      <h3>${cat.title}</h3>
+      ${minNote}
+      ${renderGoalieStatsLeaderList(sorted, cat.key, cat.format)}
+    </div>`;
+  }).join('');
+
+  document.getElementById('stats6s').innerHTML = `
+    <h2 class="section-title" style="color: #3b82f6;">⚡ Patineurs 6S</h2>
+    <div class="grid-3">${skatersHtml}</div>
+
+    <h2 class="section-title" style="color: #5b9bd5;">🛡️ Défenseurs 6S</h2>
+    <div class="grid-3">${defendersHtml || '<div class="empty-state"><p>Aucun défenseur</p></div>'}</div>
+
+    <h2 class="section-title" style="color: #3b82f6;">🥅 Gardiens 6S</h2>
+    <div class="grid-3">${goaliesHtml}</div>
+  `;
 }
 
 function renderTrophies6S() {
