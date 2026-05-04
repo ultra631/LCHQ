@@ -1497,6 +1497,8 @@
         <th class="num sortable" data-key="pert">PERT</th>
         <th class="num sortable" data-key="shots">TIRS</th>
         <th class="num sortable" data-key="pt">PT</th>
+        <th class="num sortable" data-key="pr">PR</th>
+        <th class="num sortable" data-key="passpct">%PR</th>
         <th class="num sortable" data-key="shotpct">%T</th>
         <th class="num">TG/M</th>
         <th class="num sortable" data-key="fopct">%MAJ</th>
@@ -1536,6 +1538,8 @@
         <th class="num sortable" data-key="pert">PERT</th>
         <th class="num sortable" data-key="shots">TIRS</th>
         <th class="num sortable" data-key="pt">PT</th>
+        <th class="num sortable" data-key="pr">PR</th>
+        <th class="num sortable" data-key="passpct">%PR</th>
         <th class="num sortable" data-key="shotpct">%T</th>
         <th class="num">TG/M</th>
         <th class="num sortable" data-key="fopct">%MAJ</th>
@@ -2503,11 +2507,13 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
         <td class="num">${p.pert || 0}</td>
         <td class="num">${p.shots}</td>
         <td class="num">${p.pt || 0}</td>
+        <td class="num">${p.pr || 0}</td>
+        <td class="num">${p.passpct ? p.passpct.toFixed(1) : '0.0'}%</td>
         <td class="num">${p.shotpct.toFixed(1)}%</td>
         <td class="num">${p.toi}</td>
         <td class="num">${p.fopct.toFixed(1)}%</td>
       </tr>`;
-  }).join('') || '<tr><td colspan="17" class="empty-state">Aucun joueur trouvé.</td></tr>';
+  }).join('') || '<tr><td colspan="19" class="empty-state">Aucun joueur trouvé.</td></tr>';
 }
 
 function renderPlayersNHL() { renderPlayersByDivision('nhl', playersNhlSort, 'playerNhlSearch', 'playerNhlTeamFilter', 'playersNhlBody'); }
