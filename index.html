@@ -2839,10 +2839,12 @@ function renderStatsPage() {
     { title: '🏆 Top Buteurs', key: 'g', format: v => v },
     { title: '🎯 Top Pointeurs', key: 'pts', format: v => v },
     { title: '🤝 Top Passeurs', key: 'a', format: v => v },
+    { title: '📈 Meilleur PPJ', key: 'ppj', format: v => v.toFixed(2), minStat: { key: 'gp', val: 3 }, customCalc: p => (p.gp > 0 ? p.pts / p.gp : 0) },
     { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
     { title: '🏒 Plus de Tirs', key: 'shots', format: v => v },
     { title: '🔥 Meilleur %Tirs', key: 'shotpct', format: v => v.toFixed(1) + '%', minStat: { key: 'shots', val: 5 } },
     { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
+    { title: '💥 Plus de Mises en Échec', key: 'hits', format: v => v },
     { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
     { title: '🎯 Plus de Passes Tentées', key: 'pt', format: v => v },
     { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v },
@@ -2858,6 +2860,10 @@ function renderStatsPage() {
     let filtered = [...players];
     if (cat.minStat) {
       filtered = filtered.filter(p => (p[cat.minStat.key] || 0) >= cat.minStat.val);
+    }
+    // Si customCalc existe, on calcule la valeur avant de trier
+    if (cat.customCalc) {
+      filtered = filtered.map(p => ({ ...p, [cat.key]: cat.customCalc(p) }));
     }
     const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
     const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} ${cat.minStat.key === 'shots' ? 'tirs' : cat.minStat.key === 'pt' ? 'passes' : 'MJ'}</div>` : '';
@@ -4455,10 +4461,12 @@ function renderStats6S() {
     { title: '🏆 Top Buteurs', key: 'g', format: v => v },
     { title: '🎯 Top Pointeurs', key: 'pts', format: v => v },
     { title: '🤝 Top Passeurs', key: 'a', format: v => v },
+    { title: '📈 Meilleur PPJ', key: 'ppj', format: v => v.toFixed(2), minStat: { key: 'gp', val: 3 }, customCalc: p => (p.gp > 0 ? p.pts / p.gp : 0) },
     { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
     { title: '🏒 Plus de Tirs', key: 'shots', format: v => v },
     { title: '🔥 Meilleur %Tirs', key: 'shotpct', format: v => v.toFixed(1) + '%', minStat: { key: 'shots', val: 5 } },
     { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
+    { title: '💥 Plus de Mises en Échec', key: 'hits', format: v => v },
     { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
     { title: '🎯 Plus de Passes Tentées', key: 'pt', format: v => v },
     { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v },
@@ -4474,6 +4482,10 @@ function renderStats6S() {
     let filtered = [...players];
     if (cat.minStat) {
       filtered = filtered.filter(p => (p[cat.minStat.key] || 0) >= cat.minStat.val);
+    }
+    // Si customCalc existe, on calcule la valeur avant de trier
+    if (cat.customCalc) {
+      filtered = filtered.map(p => ({ ...p, [cat.key]: cat.customCalc(p) }));
     }
     const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
     const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} ${cat.minStat.key === 'shots' ? 'tirs' : cat.minStat.key === 'pt' ? 'passes' : 'MJ'}</div>` : '';
