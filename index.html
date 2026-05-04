@@ -1493,7 +1493,10 @@
         <th class="num sortable sort-desc" data-key="pts">PTS</th>
         <th class="num sortable" data-key="plusminus">+/-</th>
         <th class="num sortable" data-key="pim">MEC</th>
+        <th class="num sortable" data-key="intc">INT</th>
+        <th class="num sortable" data-key="pert">PERT</th>
         <th class="num sortable" data-key="shots">TIRS</th>
+        <th class="num sortable" data-key="pt">PT</th>
         <th class="num sortable" data-key="shotpct">%T</th>
         <th class="num">TG/M</th>
         <th class="num sortable" data-key="fopct">%MAJ</th>
@@ -1529,7 +1532,10 @@
         <th class="num sortable sort-desc" data-key="pts">PTS</th>
         <th class="num sortable" data-key="plusminus">+/-</th>
         <th class="num sortable" data-key="pim">MEC</th>
+        <th class="num sortable" data-key="intc">INT</th>
+        <th class="num sortable" data-key="pert">PERT</th>
         <th class="num sortable" data-key="shots">TIRS</th>
+        <th class="num sortable" data-key="pt">PT</th>
         <th class="num sortable" data-key="shotpct">%T</th>
         <th class="num">TG/M</th>
         <th class="num sortable" data-key="fopct">%MAJ</th>
@@ -2493,12 +2499,15 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
         <td class="num pts-cell">${p.pts}</td>
         <td class="num ${pmClass}">${pmStr}</td>
         <td class="num">${p.pim}</td>
+        <td class="num">${p.intc || 0}</td>
+        <td class="num">${p.pert || 0}</td>
         <td class="num">${p.shots}</td>
+        <td class="num">${p.pt || 0}</td>
         <td class="num">${p.shotpct.toFixed(1)}%</td>
         <td class="num">${p.toi}</td>
         <td class="num">${p.fopct.toFixed(1)}%</td>
       </tr>`;
-  }).join('') || '<tr><td colspan="14" class="empty-state">Aucun joueur trouvé.</td></tr>';
+  }).join('') || '<tr><td colspan="17" class="empty-state">Aucun joueur trouvé.</td></tr>';
 }
 
 function renderPlayersNHL() { renderPlayersByDivision('nhl', playersNhlSort, 'playerNhlSearch', 'playerNhlTeamFilter', 'playersNhlBody'); }
