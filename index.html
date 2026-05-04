@@ -2701,6 +2701,7 @@ function renderStatsPage() {
     { title: '🔥 Meilleur %Tirs', key: 'shotpct', format: v => v.toFixed(1) + '%', minStat: { key: 'shots', val: 5 } },
     { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
     { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
+    { title: '🎯 Plus de Passes Tentées', key: 'pt', format: v => v },
     { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v },
     { title: '📊 Meilleur %Passes', key: 'passpct', format: v => v.toFixed(1) + '%', minStat: { key: 'pt', val: 10 } },
     { title: '🏒 Plus de MJ Gagnées', key: 'mjg', format: v => v },
@@ -2740,6 +2741,7 @@ function renderStatsPage() {
     { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
     { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
     { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
+    { title: '🎯 Plus de Passes Tentées', key: 'pt', format: v => v },
     { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v }
   ];
 
