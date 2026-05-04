@@ -1,0 +1,655 @@
+/* ============================================================
+   LCHQ — ANIMATIONS PACK
+   Surcharge propre du index.html sans rien casser
+   ============================================================ */
+
+/* === RESPECTER PREFERENCES UTILISATEUR === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   1. CANVAS DE PARTICULES (fond animé subtil)
+   ============================================================ */
+#lchq-particles {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ============================================================
+   2. HEADER — LOGO HOVER + UNDERLINE NAV
+   ============================================================ */
+.logo-img {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s ease,
+              filter 0.4s ease !important;
+}
+.logo-wrap:hover .logo-img {
+  transform: rotate(-8deg) scale(1.08);
+  box-shadow: 0 0 35px var(--red-glow), 0 0 60px rgba(230, 57, 70, 0.3) !important;
+  filter: brightness(1.15);
+}
+.logo-text h1 {
+  background-size: 200% auto !important;
+  animation: gradient-shift 6s ease infinite;
+}
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Nav underline animée */
+.nav-btn {
+  position: relative;
+  overflow: hidden;
+}
+.nav-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 4px; left: 50%;
+  width: 0; height: 2px;
+  background: var(--red-bright);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-btn:hover::after { width: 70%; }
+.nav-btn.active::after { width: 70%; background: rgba(255,255,255,0.6); }
+
+/* Dropdown apparaît avec slide */
+.nav-dropdown {
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-group:hover .nav-dropdown {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ============================================================
+   3. HERO — INTRO ÉPIQUE
+   ============================================================ */
+.hero {
+  animation: hero-entry 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes hero-entry {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(40px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Lueur qui pulse */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 24px;
+  background: linear-gradient(45deg,
+    transparent 30%,
+    rgba(230, 57, 70, 0.4) 50%,
+    transparent 70%);
+  background-size: 200% 200%;
+  animation: hero-shine 5s linear infinite;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+  opacity: 0.5;
+}
+@keyframes hero-shine {
+  0%   { background-position: 200% 200%; }
+  100% { background-position: -100% -100%; }
+}
+
+/* Badge qui pulse */
+.hero .badge {
+  animation: badge-pulse 2.5s ease-in-out infinite;
+}
+@keyframes badge-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 20px var(--red-glow);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 4px 30px rgba(230, 57, 70, 0.7), 0 0 50px rgba(230, 57, 70, 0.3);
+  }
+}
+
+/* Subtitle slide-in */
+.hero .subtitle {
+  animation: subtitle-in 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards;
+}
+@keyframes subtitle-in {
+  from { opacity: 0; transform: translateY(20px); letter-spacing: 4px; }
+  to   { opacity: 1; transform: translateY(0); letter-spacing: 1px; }
+}
+
+/* ============================================================
+   4. SECTION TITLES — REVEAL DRAMATIQUE
+   ============================================================ */
+.section-title {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.section-title.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.section-title::before {
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+}
+.section-title.is-visible::before {
+  transform: scaleY(1);
+}
+
+/* ============================================================
+   5. CARDS — HOVER 3D + GLOW
+   ============================================================ */
+.card {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s ease,
+              border-color 0.3s ease !important;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(230, 57, 70, 0.5) 50%,
+    transparent 100%);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.card:hover {
+  transform: translateY(-6px) scale(1.01) !important;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(230, 57, 70, 0.25) !important;
+}
+.card:hover::before { opacity: 1; }
+
+/* Reveal au scroll */
+.card.reveal-init {
+  opacity: 0;
+  transform: translateY(40px) scale(0.97);
+}
+.card.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   6. LEADER ROWS — STAGGER
+   ============================================================ */
+.leader-row {
+  position: relative;
+  transition: padding 0.25s ease, background 0.25s ease;
+}
+.leader-row::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--red-bright), var(--red-dark));
+  border-radius: 3px;
+  transform: scaleY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.leader-row:hover {
+  padding-left: 12px;
+  background: linear-gradient(90deg, rgba(230, 57, 70, 0.08), transparent);
+}
+.leader-row:hover::before { transform: scaleY(1); }
+
+.leader-rank.gold {
+  animation: rank-shine 3s ease-in-out infinite;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+@keyframes rank-shine {
+  0%, 100% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.5); }
+  50%      { box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 184, 28, 0.4); }
+}
+
+.leader-stat {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.leader-row:hover .leader-stat {
+  transform: scale(1.15);
+  text-shadow: 0 0 15px var(--red-glow);
+}
+
+/* ============================================================
+   7. TABLES — LIGNES QUI S'ANIMENT
+   ============================================================ */
+tbody tr {
+  position: relative;
+}
+tbody tr::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 0;
+  background: linear-gradient(90deg,
+    rgba(230, 57, 70, 0.15),
+    transparent);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+tbody tr:hover::after { width: 100%; }
+tbody tr:hover .team-logo-table {
+  animation: logo-spin 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes logo-spin {
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.2) rotate(-10deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Header de tableau — sort indicator animé */
+th.sortable {
+  transition: color 0.2s ease, background 0.2s ease;
+}
+th.sort-asc::after, th.sort-desc::after {
+  display: inline-block;
+  animation: sort-bounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes sort-bounce {
+  0%   { transform: translateY(-8px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* PTS / DIFF — pulsation au hover de ligne */
+tbody tr:hover .pts-cell {
+  text-shadow: 0 0 12px var(--red-glow);
+  transform: scale(1.05);
+  display: inline-block;
+  transition: all 0.25s ease;
+}
+
+/* ============================================================
+   8. TEAM CARDS — HOVER 3D AVEC LOGO QUI BOUGE
+   ============================================================ */
+.team-card {
+  perspective: 1000px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s ease,
+              border-color 0.3s ease !important;
+}
+.team-card::before {
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.team-card:hover::before { transform: scaleX(1); }
+
+.team-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at 50% 100%,
+    var(--team-color, var(--red)),
+    transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(20px);
+}
+.team-card:hover::after { opacity: 0.3; }
+
+.team-card > * { position: relative; z-index: 1; }
+
+.team-card-logo {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.4s ease;
+}
+.team-card:hover .team-card-logo {
+  transform: scale(1.15) translateY(-4px) rotate(-5deg);
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5))
+          drop-shadow(0 0 20px var(--team-color, var(--red)));
+}
+
+/* Reveal stagger pour la grille d'équipes */
+.team-card.reveal-init {
+  opacity: 0;
+  transform: translateY(50px) scale(0.92);
+}
+.team-card.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   9. TEAM HEADER (page de détail équipe)
+   ============================================================ */
+.team-header {
+  animation: header-slide 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes header-slide {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.team-header-logo {
+  animation: logo-entry 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+}
+@keyframes logo-entry {
+  from { opacity: 0; transform: scale(0.5) rotate(-180deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0); }
+}
+.team-header-logo {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.team-header:hover .team-header-logo {
+  transform: scale(1.08) rotate(5deg);
+}
+
+.stat-block-value {
+  animation: number-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+.stat-block:nth-child(1) .stat-block-value { animation-delay: 0.4s; }
+.stat-block:nth-child(2) .stat-block-value { animation-delay: 0.5s; }
+.stat-block:nth-child(3) .stat-block-value { animation-delay: 0.6s; }
+.stat-block:nth-child(4) .stat-block-value { animation-delay: 0.7s; }
+@keyframes number-pop {
+  from { opacity: 0; transform: scale(0.3) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ============================================================
+   10. MATCH CARDS (calendrier) — REVEAL & HOVER
+   ============================================================ */
+.match-card.reveal-init {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.match-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.match-card {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.match-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+.match-card.played:hover {
+  border-left-width: 5px;
+  box-shadow: 0 12px 30px rgba(74, 222, 128, 0.2);
+}
+.match-card .match-team img {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.match-card:hover .match-team.away img {
+  transform: scale(1.15) rotate(-8deg);
+}
+.match-card:hover .match-team.home img {
+  transform: scale(1.15) rotate(8deg);
+}
+.match-score .winner {
+  animation: winner-glow 2.5s ease-in-out infinite;
+}
+@keyframes winner-glow {
+  0%, 100% { text-shadow: 0 0 0 transparent; }
+  50%      { text-shadow: 0 0 12px rgba(74, 222, 128, 0.7); }
+}
+.match-dp-badge {
+  animation: dp-blink 2s ease-in-out infinite;
+}
+@keyframes dp-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; box-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
+}
+
+/* ============================================================
+   11. SCHEDULE WEEK HEADER
+   ============================================================ */
+.schedule-week-header {
+  position: relative;
+  overflow: hidden;
+}
+.schedule-week-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(230, 57, 70, 0.15),
+    transparent);
+  animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer {
+  0%   { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* ============================================================
+   12. DIVISION BANNER
+   ============================================================ */
+.division-banner {
+  animation: banner-slide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+@keyframes banner-slide {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.division-banner-icon {
+  animation: icon-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+}
+@keyframes icon-pop {
+  from { opacity: 0; transform: scale(0); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================================
+   13. BUTTONS & MODAL — INTERACTIONS PREMIUM
+   ============================================================ */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+  pointer-events: none;
+}
+.btn:active::before {
+  width: 300px; height: 300px;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--red-glow) !important;
+}
+.btn-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.modal {
+  animation: modal-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(30px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* ============================================================
+   14. ADMIN TRIGGER & DOWNLOAD
+   ============================================================ */
+.admin-trigger {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.admin-trigger:hover {
+  transform: scale(1.05) translateY(-2px);
+}
+.admin-trigger.active {
+  animation: admin-active-pulse 2s ease-in-out infinite;
+}
+@keyframes admin-active-pulse {
+  0%, 100% { box-shadow: 0 4px 30px var(--red-glow); }
+  50%      { box-shadow: 0 4px 40px rgba(230, 57, 70, 0.7), 0 0 60px rgba(230, 57, 70, 0.4); }
+}
+
+/* ============================================================
+   15. EMPTY STATE
+   ============================================================ */
+.empty-state-icon {
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* ============================================================
+   16. COMPTEUR DE NOMBRES (count-up)
+   ============================================================ */
+.lchq-counting {
+  display: inline-block;
+}
+
+/* ============================================================
+   17. CONFETTI / GOAL CELEBRATION (optionnel via JS)
+   ============================================================ */
+.lchq-confetti-piece {
+  position: fixed;
+  width: 10px; height: 10px;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 2px;
+  animation: confetti-fall 2.5s linear forwards;
+}
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) rotate(720deg);
+  }
+}
+
+/* ============================================================
+   18. PAGE TRANSITIONS (override du fadeIn existant)
+   ============================================================ */
+.page.active {
+  animation: page-cinematic 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+@keyframes page-cinematic {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.99);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ============================================================
+   19. ICÔNE TROPHÉE / EMOJIS — ANIMATION
+   ============================================================ */
+.section-title:has(+ * .leader-row) {
+  /* sélecteur :has supporté partout maintenant */
+}
+
+/* Hockey puck animé en arrière-plan du h1 du hero (optionnel) */
+.hero .badge::before {
+  content: '🏒';
+  margin-right: 8px;
+  display: inline-block;
+  animation: stick-swing 4s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes stick-swing {
+  0%, 100% { transform: rotate(-15deg); }
+  50%      { transform: rotate(15deg); }
+}
+
+/* ============================================================
+   20. SCROLLBAR THÉMÉE
+   ============================================================ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--red), var(--red-dark));
+  border-radius: 5px;
+  border: 2px solid var(--bg-primary);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--red-bright), var(--red));
+}
+
+/* ============================================================
+   21. SELECTION
+   ============================================================ */
+::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+/* ============================================================
+   22. FOCUS RINGS PROPRES
+   ============================================================ */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--red-bright);
+  outline-offset: 2px;
+}
