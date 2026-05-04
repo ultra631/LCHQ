@@ -994,6 +994,9 @@
   body.admin-mode .nav-group.admin-nav { display: inline-block; }
   .nav-group.admin-nav { display: none; }
 
+  /* 4S-only items (Archives) - contrôlés par JavaScript setGameMode() */
+  /* Pas de règle CSS par défaut, JavaScript gère la visibilité */
+
   /* MOBILE */
   @media (max-width: 1100px) {
     .nav-btn { padding: 8px 10px; font-size: 11px; }
@@ -2264,6 +2267,7 @@ function setGameMode(mode) {
   // Cacher les éléments 4s-only en mode 6S (ex: Archives)
   document.querySelectorAll('.4s-only').forEach(el => {
     el.style.display = mode === '4s' ? '' : 'none';
+    console.log('4s-only element:', el, 'display:', el.style.display);
   });
   
   // Naviguer vers la page appropriée
