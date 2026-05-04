@@ -1340,7 +1340,7 @@
         </div>
       </div>
 
-      <div class="nav-group">
+      <div class="nav-group 4s-only">
         <button class="nav-btn" data-section="archives">📚 Archives ▾</button>
         <div class="nav-dropdown">
           <button class="nav-btn" data-page="archive-s4" onclick="navigate('archive-s4')">Saison 4</button>
@@ -2247,6 +2247,11 @@ function setGameMode(mode) {
   });
   document.querySelectorAll('.nav-btn.mode-6s').forEach(btn => {
     btn.style.display = mode === '6s' ? '' : 'none';
+  });
+  
+  // Cacher les éléments 4s-only en mode 6S (ex: Archives)
+  document.querySelectorAll('.4s-only').forEach(el => {
+    el.style.display = mode === '4s' ? '' : 'none';
   });
   
   // Naviguer vers la page appropriée
