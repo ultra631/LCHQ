@@ -2312,11 +2312,6 @@ function setGameMode(mode) {
     btn.style.display = mode === '6s' ? '' : 'none';
   });
   
-  // Cacher les éléments 4s-only en mode 6S (ex: Archives)
-  document.querySelectorAll('.4s-only').forEach(el => {
-    el.style.display = mode === '4s' ? '' : 'none';
-  });
-  
   // Naviguer vers la page appropriée
   const currentPage = document.querySelector('.page.active')?.id?.replace('page-', '');
   
@@ -4151,6 +4146,12 @@ function renderArchiveTrophies(archive) {
 // ============ FONCTIONS RENDER 6S ============
 
 function renderStandings6S() {
+  const el = document.getElementById('standings6s');
+  if (!el) {
+    console.error('Element standings6s not found!');
+    return;
+  }
+  
   const standings = DATA.season_3_6v6?.standings || [];
   const sorted = [...standings].sort((a, b) => {
     if (b.pts !== a.pts) return b.pts - a.pts;
@@ -4179,7 +4180,7 @@ function renderStandings6S() {
     </tr>`;
   }).join('');
 
-  document.getElementById('standings6s').innerHTML = `<div class="table-wrap">
+  el.innerHTML = `<div class="table-wrap">
     <table>
       <thead><tr>
         <th class="num">#</th><th>Équipe</th>
