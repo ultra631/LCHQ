@@ -1344,10 +1344,18 @@
         </div>
       </div>
 
-      <div class="nav-group 4s-only">
-        <button class="nav-btn" data-section="archives">📚 Archives ▾</button>
+      <div class="nav-group">
+        <button class="nav-btn mode-4s" data-section="archives-4s">📚 Archives ▾</button>
         <div class="nav-dropdown">
-          <button class="nav-btn" data-page="archive-s4" onclick="navigate('archive-s4')">Saison 4</button>
+          <button class="nav-btn mode-4s" data-page="archive-s4" onclick="navigate('archive-s4')">Saison 4</button>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <button class="nav-btn mode-6s" data-section="archives-6s" style="display:none;">📚 Archives ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn mode-6s" data-page="archive-6s-s1" onclick="navigate('archive-6s-s1')" style="display:none;">Saison 1 (6S)</button>
+          <button class="nav-btn mode-6s" data-page="archive-6s-s2" onclick="navigate('archive-6s-s2')" style="display:none;">Saison 2 (6S)</button>
         </div>
       </div>
 
@@ -1792,6 +1800,38 @@
   </div>
 
   <div id="archiveS4Content"></div>
+</section>
+
+<!-- ARCHIVES 6S - SAISON 1 -->
+<section id="page-archive-6s-s1" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">📚</div>
+    <div class="division-banner-text">
+      <h3>Archives 6S — Saison 1</h3>
+      <p>Statistiques finales de la saison 1 (6v6)</p>
+    </div>
+  </div>
+  <div class="empty-state" style="padding: 60px 20px;">
+    <div class="empty-state-icon">📂</div>
+    <p style="font-size: 18px; margin-top: 20px;">Archives de la Saison 1 (6S)</p>
+    <p style="font-size: 14px; color: var(--text-tertiary); margin-top: 10px;">Cette section sera remplie prochainement</p>
+  </div>
+</section>
+
+<!-- ARCHIVES 6S - SAISON 2 -->
+<section id="page-archive-6s-s2" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">📚</div>
+    <div class="division-banner-text">
+      <h3>Archives 6S — Saison 2</h3>
+      <p>Statistiques finales de la saison 2 (6v6)</p>
+    </div>
+  </div>
+  <div class="empty-state" style="padding: 60px 20px;">
+    <div class="empty-state-icon">📂</div>
+    <p style="font-size: 18px; margin-top: 20px;">Archives de la Saison 2 (6S)</p>
+    <p style="font-size: 14px; color: var(--text-tertiary); margin-top: 10px;">Cette section sera remplie prochainement</p>
+  </div>
 </section>
 
 <!-- ============ PAGES 6S ============ -->
@@ -2267,7 +2307,6 @@ function setGameMode(mode) {
   // Cacher les éléments 4s-only en mode 6S (ex: Archives)
   document.querySelectorAll('.4s-only').forEach(el => {
     el.style.display = mode === '4s' ? '' : 'none';
-    console.log('4s-only element:', el, 'display:', el.style.display);
   });
   
   // Naviguer vers la page appropriée
