@@ -2837,8 +2837,8 @@ function renderStatsPage() {
   // Catégories pour les patineurs
   const skaterCategories = [
     { title: '🏆 Top Buteurs', key: 'g', format: v => v },
-    { title: '🎯 Top Pointeurs', key: 'pts', format: v => v },
     { title: '🤝 Top Passeurs', key: 'a', format: v => v },
+    { title: '🎯 Top Pointeurs', key: 'pts', format: v => v },
     { title: '📈 Meilleur PPJ', key: 'ppj', format: v => v.toFixed(2), minStat: { key: 'gp', val: 3 }, customCalc: p => (p.gp > 0 ? p.pts / p.gp : 0) },
     { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
     { title: '🏒 Plus de Tirs', key: 'shots', format: v => v },
@@ -4459,8 +4459,8 @@ function renderStats6S() {
   // Catégories pour les patineurs
   const skaterCategories = [
     { title: '🏆 Top Buteurs', key: 'g', format: v => v },
-    { title: '🎯 Top Pointeurs', key: 'pts', format: v => v },
     { title: '🤝 Top Passeurs', key: 'a', format: v => v },
+    { title: '🎯 Top Pointeurs', key: 'pts', format: v => v },
     { title: '📈 Meilleur PPJ', key: 'ppj', format: v => v.toFixed(2), minStat: { key: 'gp', val: 3 }, customCalc: p => (p.gp > 0 ? p.pts / p.gp : 0) },
     { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
     { title: '🏒 Plus de Tirs', key: 'shots', format: v => v },
