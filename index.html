@@ -1031,6 +1031,248 @@
     th, td { padding: 10px 8px; font-size: 12px; }
     .team-logo-table { width: 26px; height: 26px; }
   }
+
+  /* ========================================
+     🎬 ANIMATIONS PROFESSIONNELLES
+     ======================================== */
+  
+  /* 1. Keyframes de base */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideInUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+
+  /* 2. Animation des pages */
+  .page {
+    animation: fadeIn 0.4s ease-in-out;
+  }
+
+  /* 3. Animation des cartes en cascade */
+  .card {
+    animation: slideInUp 0.5s ease-out backwards;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .grid-3 .card:nth-child(1) { animation-delay: 0.05s; }
+  .grid-3 .card:nth-child(2) { animation-delay: 0.1s; }
+  .grid-3 .card:nth-child(3) { animation-delay: 0.15s; }
+  .grid-3 .card:nth-child(4) { animation-delay: 0.2s; }
+  .grid-3 .card:nth-child(5) { animation-delay: 0.25s; }
+  .grid-3 .card:nth-child(6) { animation-delay: 0.3s; }
+  .grid-3 .card:nth-child(7) { animation-delay: 0.35s; }
+  .grid-3 .card:nth-child(8) { animation-delay: 0.4s; }
+  .grid-3 .card:nth-child(9) { animation-delay: 0.45s; }
+  .grid-3 .card:nth-child(10) { animation-delay: 0.5s; }
+  .grid-3 .card:nth-child(11) { animation-delay: 0.55s; }
+  .grid-3 .card:nth-child(12) { animation-delay: 0.6s; }
+
+  /* 4. Effet hover sur les cartes */
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  /* 5. Animation des lignes de tableau */
+  tbody tr {
+    animation: slideInRight 0.4s ease-out backwards;
+  }
+  
+  tbody tr:nth-child(1) { animation-delay: 0.05s; }
+  tbody tr:nth-child(2) { animation-delay: 0.08s; }
+  tbody tr:nth-child(3) { animation-delay: 0.11s; }
+  tbody tr:nth-child(4) { animation-delay: 0.14s; }
+  tbody tr:nth-child(5) { animation-delay: 0.17s; }
+  tbody tr:nth-child(6) { animation-delay: 0.2s; }
+  tbody tr:nth-child(7) { animation-delay: 0.23s; }
+  tbody tr:nth-child(8) { animation-delay: 0.26s; }
+  tbody tr:nth-child(9) { animation-delay: 0.29s; }
+  tbody tr:nth-child(10) { animation-delay: 0.32s; }
+
+  /* 6. Effet hover sur les lignes */
+  tbody tr {
+    transition: all 0.2s ease;
+  }
+  
+  tbody tr:hover {
+    background: rgba(59, 130, 246, 0.08);
+    transform: translateX(3px);
+  }
+
+  /* 7. Boutons animés */
+  button, .nav-link {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  button:hover, .nav-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  /* 8. Effet de vague au clic */
+  button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  button:active::after {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* 9. Animation du toggle 4S/6S */
+  .mode-toggle {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mode-toggle:hover {
+    transform: scale(1.05);
+  }
+
+  /* 10. Glow sur le bouton actif */
+  .mode-toggle.active {
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  /* 11. Animation des bannières */
+  .division-banner {
+    animation: slideInUp 0.5s ease-out;
+  }
+
+  /* 12. Animation du logo */
+  .logo-img {
+    transition: transform 0.3s ease;
+  }
+
+  .logo-img:hover {
+    transform: rotate(5deg) scale(1.1);
+  }
+
+  /* 13. Effet shimmer sur les éléments importants */
+  .pts-cell, .team-logo-table {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 14. Animation des stats leaders */
+  .leader-item {
+    animation: slideInRight 0.4s ease-out backwards;
+  }
+
+  .leader-item:nth-child(1) { animation-delay: 0.05s; }
+  .leader-item:nth-child(2) { animation-delay: 0.1s; }
+  .leader-item:nth-child(3) { animation-delay: 0.15s; }
+  .leader-item:nth-child(4) { animation-delay: 0.2s; }
+  .leader-item:nth-child(5) { animation-delay: 0.25s; }
+  .leader-item:nth-child(6) { animation-delay: 0.3s; }
+  .leader-item:nth-child(7) { animation-delay: 0.35s; }
+  .leader-item:nth-child(8) { animation-delay: 0.4s; }
+  .leader-item:nth-child(9) { animation-delay: 0.45s; }
+  .leader-item:nth-child(10) { animation-delay: 0.5s; }
+
+  /* 15. Transition smooth pour le contenu qui change */
+  .table-wrap, .grid-3, .empty-state {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  /* 16. Effet sur les liens de navigation */
+  .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::before {
+    width: 80%;
+  }
+
+  /* 17. Effet sur le dropdown */
+  .dropdown-content {
+    animation: slideInUp 0.3s ease-out;
+  }
+
+  /* 18. Animation des badges/positions */
+  .num, .pts-cell {
+    transition: all 0.2s ease;
+  }
+
+  tr:hover .pts-cell {
+    color: var(--primary);
+    transform: scale(1.1);
+    font-weight: 700;
+  }
+
+  /* 19. Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* 20. Désactiver les animations pour ceux qui préfèrent */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
 </head>
 <body>
