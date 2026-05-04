@@ -2025,6 +2025,7 @@
           <tr><td>Passes</td><td class="num"><span id="pACurrent">0</span></td><td class="num"><input type="number" id="pAAdd" min="0" value="0" oninput="updateNewTotal('p','A')"></td><td class="num"><span id="pANew" class="pts-cell">0</span></td></tr>
           <tr><td>+/-</td><td class="num"><span id="pPMCurrent">0</span></td><td class="num"><input type="number" id="pPMAdd" value="0" oninput="updateNewTotal('p','PM')"></td><td class="num"><span id="pPMNew" class="pts-cell">0</span></td></tr>
           <tr><td>MEC</td><td class="num"><span id="pPimCurrent">0</span></td><td class="num"><input type="number" id="pPimAdd" min="0" value="0" oninput="updateNewTotal('p','Pim')"></td><td class="num"><span id="pPimNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Mises en Échec (HITS)</td><td class="num"><span id="pHitsCurrent">0</span></td><td class="num"><input type="number" id="pHitsAdd" min="0" value="0" oninput="updateNewTotal('p','Hits')"></td><td class="num"><span id="pHitsNew" class="pts-cell">0</span></td></tr>
           <tr><td>Tirs</td><td class="num"><span id="pShotsCurrent">0</span></td><td class="num"><input type="number" id="pShotsAdd" min="0" value="0" oninput="updateNewTotal('p','Shots')"></td><td class="num"><span id="pShotsNew" class="pts-cell">0</span></td></tr>
           <tr><td>Tirs Bloqués (TB)</td><td class="num"><span id="pTbCurrent">0</span></td><td class="num"><input type="number" id="pTbAdd" min="0" value="0" oninput="updateNewTotal('p','Tb')"></td><td class="num"><span id="pTbNew" class="pts-cell">0</span></td></tr>
           <tr><td>MJ Gagnées (MJG)</td><td class="num"><span id="pMjgCurrent">0</span></td><td class="num"><input type="number" id="pMjgAdd" min="0" value="0" oninput="updateNewTotal('p','Mjg')"></td><td class="num"><span id="pMjgNew" class="pts-cell">0</span></td></tr>
@@ -2097,14 +2098,22 @@
           <tr><td>Tirs reçus</td><td class="num"><span id="gSaCurrent">0</span></td><td class="num"><input type="number" id="gSaAdd" min="0" value="0" oninput="updateNewTotal('g','Sa')"></td><td class="num"><span id="gSaNew" class="pts-cell">0</span></td></tr>
           <tr><td>Arrêts</td><td class="num"><span id="gSvCurrent">0</span></td><td class="num"><input type="number" id="gSvAdd" min="0" value="0" oninput="updateNewTotal('g','Sv')"></td><td class="num"><span id="gSvNew" class="pts-cell">0</span></td></tr>
           <tr><td>Buts alloués</td><td class="num"><span id="gGaCurrent">0</span></td><td class="num"><input type="number" id="gGaAdd" min="0" value="0" oninput="updateNewTotal('g','Ga')"></td><td class="num"><span id="gGaNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Buts marqués</td><td class="num"><span id="gGCurrent">0</span></td><td class="num"><input type="number" id="gGAdd" min="0" value="0" oninput="updateNewTotal('g','G')"></td><td class="num"><span id="gGNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes</td><td class="num"><span id="gACurrent">0</span></td><td class="num"><input type="number" id="gAAdd" min="0" value="0" oninput="updateNewTotal('g','A')"></td><td class="num"><span id="gANew" class="pts-cell">0</span></td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="modal-form-group" style="margin-top:14px;">
+      <label>Minutes Jouées (mm:ss) <small style="color:var(--text-tertiary);font-weight:400;">— remplace, pas additionné</small></label>
+      <input type="text" id="gToi" placeholder="0:00" value="0:00">
     </div>
 
     <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
       ✨ <strong>Calculs automatiques</strong> :<br>
       • Moy. (GAA) = Buts alloués ÷ PJ<br>
-      • %Arrêts = Arrêts ÷ Tirs reçus
+      • %Arrêts = Arrêts ÷ Tirs reçus<br>
+      • Points = Buts + Passes
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('goalieModal')">Annuler</button>
@@ -2908,12 +2917,12 @@ function renderStatsPage() {
 
   // Catégories pour les gardiens
   const goalieCategories = [
-    { title: '🏆 Plus de Victoires', key: 'w', format: v => v },
-    { title: '🥅 Meilleure Moy. (GAA)', key: 'gaa', format: v => v.toFixed(2), asc: true, minStat: { key: 'gp', val: 3 } },
-    { title: '⭐ Meilleur %Arrêts', key: 'svpct', format: v => (v * 100).toFixed(1) + '%', minStat: { key: 'gp', val: 3 } },
-    { title: '🛡️ Plus de Blanchissages', key: 'so', format: v => v },
-    { title: '💪 Plus d\'Arrêts Totaux', key: 'sv', format: v => v },
     { title: '🎯 Plus de Tirs Reçus', key: 'sa', format: v => v },
+    { title: '💪 Plus d\'Arrêts Totaux', key: 'sv', format: v => v },
+    { title: '⭐ Meilleur %Arrêts', key: 'svpct', format: v => (v * 100).toFixed(1) + '%', minStat: { key: 'gp', val: 3 } },
+    { title: '🥅 Meilleure Moy. (GAA)', key: 'gaa', format: v => v.toFixed(2), asc: true, minStat: { key: 'gp', val: 3 } },
+    { title: '🏆 Plus de Victoires', key: 'w', format: v => v },
+    { title: '🛡️ Plus de Blanchissages', key: 'so', format: v => v },
     { title: '⚡ Plus de Buts', key: 'g', format: v => v },
     { title: '🌟 Plus de Points', key: 'pts', format: v => v }
   ];
@@ -3185,7 +3194,7 @@ function openPlayerModal(playerId, division, presetStatus) {
 
     // Charger les stats actuelles dans le tableau
     loadStatsIntoModal('p', p, {
-      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim',
+      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim', 'Hits': 'hits',
       'Shots': 'shots', 'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
       'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Pert': 'pert'
     });
@@ -3201,7 +3210,7 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pToi').value = '0:00';
     // Tous les stats à 0
     loadStatsIntoModal('p', {}, {
-      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim',
+      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim', 'Hits': 'hits',
       'Shots': 'shots', 'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
       'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Pert': 'pert'
     });
@@ -3266,6 +3275,7 @@ function savePlayer() {
     pts: g + a,
     plusminus: newVal('PM'),
     pim: newVal('Pim'),
+    hits: newVal('Hits'),
     toi: document.getElementById('pToi').value || '0:00',
     shots: shots,
     shotpct: shotpct,
@@ -3434,19 +3444,21 @@ function openGoalieModal(goalieId, division) {
     document.getElementById('goalieModalTitle').textContent = '✏️ Modifier gardien';
     document.getElementById('gName').value = g.name;
     document.getElementById('gTeam').value = g.team;
+    document.getElementById('gToi').value = g.toi || '0:00';
     // Estimer les buts alloués: tirs reçus - arrêts (sa - sv)
     const ga = (g.sa || 0) - (g.sv || 0);
     loadStatsIntoModal('g', { ...g, ga: ga }, {
       'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
-      'So': 'so', 'Sa': 'sa', 'Sv': 'sv', 'Ga': 'ga'
+      'So': 'so', 'Sa': 'sa', 'Sv': 'sv', 'Ga': 'ga', 'G': 'g', 'A': 'a'
     });
   } else {
     const modeLabel = isS6s ? '6S' : (division === 'lhjmq' ? 'LHJMQ' : 'NHL');
     document.getElementById('goalieModalTitle').textContent = `➕ Nouveau gardien ${modeLabel}`;
     document.getElementById('gName').value = '';
+    document.getElementById('gToi').value = '0:00';
     loadStatsIntoModal('g', {}, {
       'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
-      'So': 'so', 'Sa': 'sa', 'Sv': 'sv', 'Ga': 'ga'
+      'So': 'so', 'Sa': 'sa', 'Sv': 'sv', 'Ga': 'ga', 'G': 'g', 'A': 'a'
     });
   }
   openModal('goalieModal');
@@ -3464,6 +3476,8 @@ function saveGoalie() {
   const sa = newVal('Sa');
   const sv = newVal('Sv');
   const ga = newVal('Ga');
+  const goals = newVal('G');
+  const assists = newVal('A');
 
   // Calculs automatiques
   const gaa = gp > 0 ? Math.round((ga / gp) * 100) / 100 : 0;
@@ -3480,7 +3494,11 @@ function saveGoalie() {
     svpct: svpct,
     so: newVal('So'),
     sa: sa,
-    sv: sv
+    sv: sv,
+    g: goals,
+    a: assists,
+    pts: goals + assists,
+    toi: document.getElementById('gToi').value || '0:00'
   };
   
   const isS6s = editingDivision === '6s';
@@ -4539,12 +4557,12 @@ function renderStats6S() {
 
   // Gardiens
   const goalieCategories = [
-    { title: '🏆 Plus de Victoires', key: 'w', format: v => v },
-    { title: '🥅 Meilleure Moy. (GAA)', key: 'gaa', format: v => v.toFixed(2), asc: true, minStat: { key: 'gp', val: 3 } },
-    { title: '⭐ Meilleur %Arrêts', key: 'svpct', format: v => (v * 100).toFixed(1) + '%', minStat: { key: 'gp', val: 3 } },
-    { title: '🛡️ Plus de Blanchissages', key: 'so', format: v => v },
-    { title: '💪 Plus d\'Arrêts Totaux', key: 'sv', format: v => v },
     { title: '🎯 Plus de Tirs Reçus', key: 'sa', format: v => v },
+    { title: '💪 Plus d\'Arrêts Totaux', key: 'sv', format: v => v },
+    { title: '⭐ Meilleur %Arrêts', key: 'svpct', format: v => (v * 100).toFixed(1) + '%', minStat: { key: 'gp', val: 3 } },
+    { title: '🥅 Meilleure Moy. (GAA)', key: 'gaa', format: v => v.toFixed(2), asc: true, minStat: { key: 'gp', val: 3 } },
+    { title: '🏆 Plus de Victoires', key: 'w', format: v => v },
+    { title: '🛡️ Plus de Blanchissages', key: 'so', format: v => v },
     { title: '⚡ Plus de Buts', key: 'g', format: v => v },
     { title: '🌟 Plus de Points', key: 'pts', format: v => v }
   ];
