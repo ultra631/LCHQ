@@ -4404,16 +4404,24 @@ function renderStats6S() {
     { title: '🤝 Top Passeurs', key: 'a', format: v => v },
     { title: '➕ Meilleur +/-', key: 'plusminus', format: v => v > 0 ? `+${v}` : v },
     { title: '🏒 Plus de Tirs', key: 'shots', format: v => v },
+    { title: '🔥 Meilleur %Tirs', key: 'shotpct', format: v => v.toFixed(1) + '%', minStat: { key: 'shots', val: 5 } },
     { title: '🛡️ Plus de Tirs Bloqués', key: 'tb', format: v => v },
     { title: '🥷 Plus d\'Interceptions', key: 'intc', format: v => v },
     { title: '🎯 Plus de Passes Tentées', key: 'pt', format: v => v },
-    { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v }
+    { title: '✅ Plus de Passes Réussies', key: 'pr', format: v => v },
+    { title: '📊 Meilleur %Passes', key: 'passpct', format: v => v.toFixed(1) + '%', minStat: { key: 'pt', val: 10 } }
   ];
 
   const defendersHtml = defenderCategories.map(cat => {
-    const sorted = [...defenders].sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    let filtered = [...defenders];
+    if (cat.minStat) {
+      filtered = filtered.filter(p => (p[cat.minStat.key] || 0) >= cat.minStat.val);
+    }
+    const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} ${cat.minStat.key === 'shots' ? 'tirs' : 'passes'}</div>` : '';
     return `<div class="card" style="border-color: rgba(91, 155, 213, 0.3);">
       <h3 style="color: #5b9bd5;">${cat.title}</h3>
+      ${minNote}
       ${renderStatsLeaderList(sorted, cat.key, cat.format)}
     </div>`;
   }).join('');
