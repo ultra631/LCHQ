@@ -2221,6 +2221,7 @@ async function loadData() {
 
 function initApp() {
   populateTeamFilters();
+  setGameMode('4s'); // Initialiser le mode 4S et cacher les éléments selon le mode
   renderHome();
   renderStandingsNHL();
   renderStandingsLHJMQ();
