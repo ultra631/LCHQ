@@ -1301,6 +1301,33 @@
     }
   }
 </style>
+
+<!-- Firebase SDK -->
+<script type="module">
+  // Import Firebase modules
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+  import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+  
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyB37dC4YHohZZ5F_qQ8VPvGrm7RlCvcxY0",
+    authDomain: "lchq-4cfb0.firebaseapp.com",
+    projectId: "lchq-4cfb0",
+    storageBucket: "lchq-4cfb0.firebasestorage.app",
+    messagingSenderId: "207724728186",
+    appId: "1:207724728186:web:7791e89d0063838d82d0c3"
+  };
+  
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  
+  // Make Firebase globally available
+  window.firebase = { app, db, doc, getDoc, setDoc, onSnapshot, updateDoc };
+  
+  console.log('🔥 Firebase initialized successfully!');
+</script>
+
 </head>
 <body>
 
@@ -1957,6 +1984,9 @@
 <!-- Boutons flottants admin -->
 <div class="admin-btn-container">
   <button class="admin-download-btn" id="adminDownloadBtn" onclick="downloadDataJson()">💾 Télécharger data.json</button>
+  <div id="firebaseStatus" style="padding: 8px 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; font-size: 11px; color: var(--text-tertiary); display: none;">
+    <span id="firebaseStatusIcon">🔄</span> <span id="firebaseStatusText">Connexion...</span>
+  </div>
   <button class="admin-trigger" id="adminTrigger" onclick="toggleAdminMode()">🔒 Admin</button>
 </div>
 
@@ -2287,16 +2317,150 @@ let playersLhjmqSort = { key: 'pts', dir: 'desc' };
 let goaliesNhlSort = { key: 'w', dir: 'desc' };
 let goaliesLhjmqSort = { key: 'w', dir: 'desc' };
 
+// Firebase sync state
+let firebaseListenerActive = false;
+
 async function loadData() {
+  console.log('📊 Chargement des données...');
+  updateFirebaseStatus('syncing', 'Chargement...');
+  
   try {
+    // Try to load from Firebase first
+    if (window.firebase) {
+      console.log('🔥 Tentative de chargement depuis Firebase...');
+      const { db, doc, getDoc, onSnapshot } = window.firebase;
+      const docRef = doc(db, 'lchq', 'data');
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        DATA = docSnap.data();
+        console.log('✅ Données chargées depuis Firebase!');
+        updateFirebaseStatus('connected', 'Synchronisé');
+        
+        // Setup real-time listener
+        if (!firebaseListenerActive) {
+          onSnapshot(docRef, (snapshot) => {
+            if (snapshot.exists()) {
+              DATA = snapshot.data();
+              console.log('🔄 Données mises à jour en temps réel!');
+              updateFirebaseStatus('syncing', 'Mise à jour...');
+              // Refresh all views
+              if (typeof initApp === 'function') {
+                initApp();
+              }
+              setTimeout(() => updateFirebaseStatus('connected', 'Synchronisé'), 500);
+            }
+          });
+          firebaseListenerActive = true;
+          console.log('👂 Écoute en temps réel activée!');
+        }
+        
+        initApp();
+        return;
+      } else {
+        console.log('⚠️ Aucune donnée dans Firebase, migration depuis localStorage...');
+        await migrateLocalStorageToFirebase();
+      }
+    }
+  } catch (e) {
+    console.warn('⚠️ Firebase non disponible:', e);
+    updateFirebaseStatus('error', 'Hors ligne');
+  }
+  
+  // Fallback to data.json
+  try {
+    console.log('📂 Chargement depuis data.json...');
     const res = await fetch('data.json');
     DATA = await res.json();
+    console.log('✅ Données chargées depuis data.json!');
+    updateFirebaseStatus('offline', 'Mode local');
+    
+    // Upload to Firebase if available
+    if (window.firebase && DATA) {
+      await saveToFirebase();
+    }
   } catch (e) {
-    console.error('Erreur chargement data.json:', e);
-    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#fff;background:#0a0a0f;min-height:100vh;"><h1 style="color:#e63946;">⚠️ Erreur</h1><p>Impossible de charger <code>data.json</code>.</p><p style="margin-top:12px;font-size:13px;color:#7a7a8c;">Assure-toi que le fichier <strong>data.json</strong> est dans le même dossier que <strong>index.html</strong>.</p></div>';
-    return;
+    console.error('❌ Erreur chargement data.json:', e);
+    
+    // Last resort: check localStorage
+    const localData = localStorage.getItem('lchq_data');
+    if (localData) {
+      DATA = JSON.parse(localData);
+      console.log('✅ Données restaurées depuis localStorage!');
+      updateFirebaseStatus('offline', 'Mode local');
+    } else {
+      document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#fff;background:#0a0a0f;min-height:100vh;"><h1 style="color:#e63946;">⚠️ Erreur</h1><p>Impossible de charger les données.</p></div>';
+      return;
+    }
   }
+  
   initApp();
+}
+
+// Save data to Firebase
+async function saveToFirebase() {
+  if (!window.firebase || !DATA) return;
+  
+  try {
+    const { db, doc, setDoc } = window.firebase;
+    await setDoc(doc(db, 'lchq', 'data'), DATA);
+    console.log('✅ Données sauvegardées dans Firebase!');
+    updateFirebaseStatus('connected', 'Synchronisé');
+    
+    // Also save to localStorage as backup
+    localStorage.setItem('lchq_data', JSON.stringify(DATA));
+  } catch (e) {
+    console.error('❌ Erreur sauvegarde Firebase:', e);
+    updateFirebaseStatus('error', 'Erreur sync');
+    // Fallback to localStorage
+    localStorage.setItem('lchq_data', JSON.stringify(DATA));
+  }
+}
+
+// Update Firebase status indicator
+function updateFirebaseStatus(status, text) {
+  const statusEl = document.getElementById('firebaseStatus');
+  const iconEl = document.getElementById('firebaseStatusIcon');
+  const textEl = document.getElementById('firebaseStatusText');
+  
+  if (!statusEl || !iconEl || !textEl) return;
+  
+  statusEl.style.display = 'block';
+  
+  if (status === 'connected') {
+    iconEl.textContent = '🔥';
+    iconEl.style.color = '#4ade80';
+    textEl.textContent = text || 'Connecté';
+  } else if (status === 'syncing') {
+    iconEl.textContent = '🔄';
+    iconEl.style.color = '#fb923c';
+    textEl.textContent = text || 'Synchronisation...';
+  } else if (status === 'error') {
+    iconEl.textContent = '⚠️';
+    iconEl.style.color = '#e63946';
+    textEl.textContent = text || 'Erreur';
+  } else {
+    iconEl.textContent = '⏸️';
+    iconEl.style.color = '#7a7a8c';
+    textEl.textContent = text || 'Hors ligne';
+  }
+}
+
+// Migrate localStorage to Firebase
+async function migrateLocalStorageToFirebase() {
+  const localData = localStorage.getItem('lchq_data');
+  if (localData && window.firebase) {
+    try {
+      DATA = JSON.parse(localData);
+      await saveToFirebase();
+      console.log('✅ Migration localStorage → Firebase réussie!');
+      return true;
+    } catch (e) {
+      console.error('❌ Erreur migration:', e);
+      return false;
+    }
+  }
+  return false;
 }
 
 function initApp() {
@@ -3052,7 +3216,7 @@ function escapeHtml(str) {
 
 // ============ SYSTÈME ADMIN ============
 
-const ADMIN_PASSWORD = 'lchq-admin-2026';
+const ADMIN_PASSWORD = 'admin2026';
 let isAdmin = false;
 let editingPlayerId = null;
 let editingGoalieId = null;
@@ -4689,6 +4853,9 @@ function rerenderAll() {
   renderSchedule6S();
   renderStats6S();
   renderTrophies6S();
+  
+  // Save to Firebase after any change
+  saveToFirebase();
 }
 
 loadData();
