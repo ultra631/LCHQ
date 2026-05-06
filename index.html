@@ -3,8 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LCHQ — Saison 5 | Stats officielles</title>
-<meta name="description" content="Statistiques officielles de la LCHQ — Ligue de hockey World of Chel sur NHL 26">
+
+<!-- SEO Meta Tags -->
+<title>LCHQ — Saison 5 | Statistiques officielles de la ligue</title>
+<meta name="description" content="LCHQ - Ligue de hockey compétitive World of Chel sur NHL 26. Statistiques officielles, classements, joueurs, gardiens et calendrier en temps réel.">
+<meta name="keywords" content="LCHQ, Ligue hockey Québec, World of Chel, NHL 26, statistiques hockey, ligue compétitive, classement hockey, stats joueurs">
+<meta name="author" content="LCHQ">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ultra631.github.io/LCHQ/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ultra631.github.io/LCHQ/">
+<meta property="og:title" content="LCHQ — Statistiques officielles de la ligue">
+<meta property="og:description" content="Ligue de hockey compétitive World of Chel sur NHL 26. Stats, classements et calendrier en temps réel.">
+<meta property="og:site_name" content="LCHQ">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://ultra631.github.io/LCHQ/">
+<meta property="twitter:title" content="LCHQ — Statistiques officielles">
+<meta property="twitter:description" content="Ligue de hockey compétitive World of Chel sur NHL 26">
+
+<!-- Language -->
+<meta http-equiv="content-language" content="fr-CA">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1502,17 +1525,19 @@
         <th class="num sortable" data-key="g">B</th>
         <th class="num sortable" data-key="a">A</th>
         <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        <th class="num sortable" data-key="ppm">PPM</th>
         <th class="num sortable" data-key="plusminus">+/-</th>
-        <th class="num sortable" data-key="pim">MEC</th>
+        <th class="num sortable" data-key="hits">HITS</th>
+        <th class="num sortable" data-key="mjf">MJJ</th>
+        <th class="num sortable" data-key="mjg">MJG</th>
+        <th class="num sortable" data-key="fopct">%MJ</th>
+        <th class="num sortable" data-key="tb">TB</th>
         <th class="num sortable" data-key="intc">INT</th>
+        <th class="num sortable" data-key="prises">PRISES</th>
         <th class="num sortable" data-key="pert">PERT</th>
-        <th class="num sortable" data-key="shots">TIRS</th>
         <th class="num sortable" data-key="pt">PT</th>
         <th class="num sortable" data-key="pr">PR</th>
         <th class="num sortable" data-key="passpct">%PR</th>
-        <th class="num sortable" data-key="shotpct">%T</th>
-        <th class="num">TG/M</th>
-        <th class="num sortable" data-key="fopct">%MAJ</th>
       </tr></thead>
       <tbody id="playersNhlBody"></tbody>
     </table>
@@ -1543,17 +1568,19 @@
         <th class="num sortable" data-key="g">B</th>
         <th class="num sortable" data-key="a">A</th>
         <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        <th class="num sortable" data-key="ppm">PPM</th>
         <th class="num sortable" data-key="plusminus">+/-</th>
-        <th class="num sortable" data-key="pim">MEC</th>
+        <th class="num sortable" data-key="hits">HITS</th>
+        <th class="num sortable" data-key="mjf">MJJ</th>
+        <th class="num sortable" data-key="mjg">MJG</th>
+        <th class="num sortable" data-key="fopct">%MJ</th>
+        <th class="num sortable" data-key="tb">TB</th>
         <th class="num sortable" data-key="intc">INT</th>
+        <th class="num sortable" data-key="prises">PRISES</th>
         <th class="num sortable" data-key="pert">PERT</th>
-        <th class="num sortable" data-key="shots">TIRS</th>
         <th class="num sortable" data-key="pt">PT</th>
         <th class="num sortable" data-key="pr">PR</th>
         <th class="num sortable" data-key="passpct">%PR</th>
-        <th class="num sortable" data-key="shotpct">%T</th>
-        <th class="num">TG/M</th>
-        <th class="num sortable" data-key="fopct">%MAJ</th>
       </tr></thead>
       <tbody id="playersLhjmqBody"></tbody>
     </table>
@@ -2033,6 +2060,7 @@
           <tr><td>Passes Tentées (PT)</td><td class="num"><span id="pPtCurrent">0</span></td><td class="num"><input type="number" id="pPtAdd" min="0" value="0" oninput="updateNewTotal('p','Pt')"></td><td class="num"><span id="pPtNew" class="pts-cell">0</span></td></tr>
           <tr><td>Passes Réussies (PR)</td><td class="num"><span id="pPrCurrent">0</span></td><td class="num"><input type="number" id="pPrAdd" min="0" value="0" oninput="updateNewTotal('p','Pr')"></td><td class="num"><span id="pPrNew" class="pts-cell">0</span></td></tr>
           <tr><td>Interceptions (INT)</td><td class="num"><span id="pIntCurrent">0</span></td><td class="num"><input type="number" id="pIntAdd" min="0" value="0" oninput="updateNewTotal('p','Int')"></td><td class="num"><span id="pIntNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Prises de Possession</td><td class="num"><span id="pPrisesCurrent">0</span></td><td class="num"><input type="number" id="pPrisesAdd" min="0" value="0" oninput="updateNewTotal('p','Prises')"></td><td class="num"><span id="pPrisesNew" class="pts-cell">0</span></td></tr>
           <tr><td>Pertes (PERT)</td><td class="num"><span id="pPertCurrent">0</span></td><td class="num"><input type="number" id="pPertAdd" min="0" value="0" oninput="updateNewTotal('p','Pert')"></td><td class="num"><span id="pPertNew" class="pts-cell">0</span></td></tr>
         </tbody>
       </table>
@@ -2543,6 +2571,9 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
     const team = DATA.teams[p.team];
     const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
     const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : p.plusminus;
+    const ppm = p.gp > 0 ? (p.pts / p.gp).toFixed(2) : '0.00';
+    const foPct = p.fopct ? p.fopct.toFixed(1) : '0.0';
+    const passPct = p.passpct ? p.passpct.toFixed(1) : '0.0';
     const adminActions = `<span class="admin-row-actions">
       <button class="row-action-btn" onclick="event.stopPropagation();openPlayerModal('${p.id}', '${division}')" title="Modifier">✏️</button>
       <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer('${p.id}')" title="Supprimer">🗑️</button>
@@ -2553,23 +2584,25 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
         <td style="font-weight: 600;">${escapeHtml(p.name)} ${adminActions}</td>
         <td><div class="team-cell">${teamLogoHtml(team)}<span>${team.name}</span></div></td>
         <td>${posBadges(p)}</td>
-        <td class="num">${p.gp}</td>
-        <td class="num">${p.g}</td>
-        <td class="num">${p.a}</td>
-        <td class="num pts-cell">${p.pts}</td>
+        <td class="num">${p.gp || 0}</td>
+        <td class="num">${p.g || 0}</td>
+        <td class="num">${p.a || 0}</td>
+        <td class="num pts-cell">${p.pts || 0}</td>
+        <td class="num">${ppm}</td>
         <td class="num ${pmClass}">${pmStr}</td>
-        <td class="num">${p.pim}</td>
+        <td class="num">${p.hits || 0}</td>
+        <td class="num">${p.mjf || 0}</td>
+        <td class="num">${p.mjg || 0}</td>
+        <td class="num">${foPct}%</td>
+        <td class="num">${p.tb || 0}</td>
         <td class="num">${p.intc || 0}</td>
+        <td class="num">${p.prises || 0}</td>
         <td class="num">${p.pert || 0}</td>
-        <td class="num">${p.shots}</td>
         <td class="num">${p.pt || 0}</td>
         <td class="num">${p.pr || 0}</td>
-        <td class="num">${p.passpct ? p.passpct.toFixed(1) : '0.0'}%</td>
-        <td class="num">${p.shotpct.toFixed(1)}%</td>
-        <td class="num">${p.toi}</td>
-        <td class="num">${p.fopct.toFixed(1)}%</td>
+        <td class="num">${passPct}%</td>
       </tr>`;
-  }).join('') || '<tr><td colspan="19" class="empty-state">Aucun joueur trouvé.</td></tr>';
+  }).join('') || '<tr><td colspan="21" class="empty-state">Aucun joueur trouvé.</td></tr>';
 }
 
 function renderPlayersNHL() { renderPlayersByDivision('nhl', playersNhlSort, 'playerNhlSearch', 'playerNhlTeamFilter', 'playersNhlBody'); }
@@ -3196,7 +3229,7 @@ function openPlayerModal(playerId, division, presetStatus) {
     loadStatsIntoModal('p', p, {
       'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim', 'Hits': 'hits',
       'Shots': 'shots', 'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
-      'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Pert': 'pert'
+      'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Prises': 'prises', 'Pert': 'pert'
     });
   } else {
     const modeLabel = isS6s ? '6S' : (division === 'lhjmq' ? 'LHJMQ' : 'NHL');
@@ -3212,7 +3245,7 @@ function openPlayerModal(playerId, division, presetStatus) {
     loadStatsIntoModal('p', {}, {
       'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim', 'Hits': 'hits',
       'Shots': 'shots', 'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
-      'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Pert': 'pert'
+      'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Prises': 'prises', 'Pert': 'pert'
     });
   }
   updatePlayerFormVisibility();
@@ -3287,6 +3320,7 @@ function savePlayer() {
     pr: pr,
     passpct: passpct,
     intc: newVal('Int'),
+    prises: newVal('Prises'),
     pert: newVal('Pert')
   };
 
@@ -4325,9 +4359,9 @@ function renderPlayers6S() {
       : '<span style="color:var(--text-tertiary);">—</span>';
     const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
     const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
-    const shotPct = p.shotpct || (p.shots > 0 ? ((p.g / p.shots) * 100).toFixed(1) : 0);
-    const foPct = p.fopct || 0;
-    const passPct = p.passpct || 0;
+    const ppm = p.gp > 0 ? (p.pts / p.gp).toFixed(2) : '0.00';
+    const foPct = p.fopct ? p.fopct.toFixed(1) : '0.0';
+    const passPct = p.passpct ? p.passpct.toFixed(1) : '0.0';
     
     const adminActions = `<td class="admin-row-actions">
       <button class="row-action-btn" onclick="openPlayerModal('${p.id}', '6s')" title="Modifier">✏️</button>
@@ -4342,19 +4376,19 @@ function renderPlayers6S() {
       <td class="num">${p.g || 0}</td>
       <td class="num">${p.a || 0}</td>
       <td class="num pts-cell">${p.pts || 0}</td>
+      <td class="num">${ppm}</td>
       <td class="num ${pmClass}">${pmStr}</td>
-      <td class="num">${p.pim || 0}</td>
-      <td class="num">${p.mjg || 0}</td>
+      <td class="num">${p.hits || 0}</td>
       <td class="num">${p.mjf || 0}</td>
-      <td class="num">${p.tb || 0}</td>
+      <td class="num">${p.mjg || 0}</td>
       <td class="num">${foPct}%</td>
+      <td class="num">${p.tb || 0}</td>
       <td class="num">${p.intc || 0}</td>
+      <td class="num">${p.prises || 0}</td>
       <td class="num">${p.pert || 0}</td>
-      <td class="num">${p.shots || 0}</td>
       <td class="num">${p.pt || 0}</td>
       <td class="num">${p.pr || 0}</td>
       <td class="num">${passPct}%</td>
-      <td class="num">${shotPct}%</td>
       ${adminActions}
     </tr>`;
   }).join('');
@@ -4364,11 +4398,11 @@ function renderPlayers6S() {
       <thead><tr>
         <th class="num">#</th><th>Joueur</th><th>Équipe</th>
         <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
-        <th class="num">PTS</th><th class="num">+/-</th><th class="num">MEC</th>
-        <th class="num">MJG</th><th class="num">MJ</th><th class="num">TB</th>
-        <th class="num">%MJ</th><th class="num">INT</th><th class="num">PERT</th>
-        <th class="num">TIRS</th><th class="num">PT</th><th class="num">PR</th>
-        <th class="num">%PR</th><th class="num">%T</th>
+        <th class="num">PTS</th><th class="num">PPM</th><th class="num">+/-</th>
+        <th class="num">HITS</th><th class="num">MJJ</th><th class="num">MJG</th>
+        <th class="num">%MJ</th><th class="num">TB</th><th class="num">INT</th>
+        <th class="num">PRISES</th><th class="num">PERT</th><th class="num">PT</th>
+        <th class="num">PR</th><th class="num">%PR</th>
         <th class="admin-only-col"></th>
       </tr></thead>
       <tbody>${rows || '<tr><td colspan="21" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun joueur ajouté</td></tr>'}</tbody>
