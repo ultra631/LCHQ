@@ -1040,7 +1040,7 @@
       left: 0; 
       right: 0;
       flex-direction: column; 
-      gap: 8px;
+      gap: 6px;
       background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
       border-bottom: 3px solid var(--red);
       padding: 16px;
@@ -1060,7 +1060,7 @@
     .nav-btn { 
       width: 100%; 
       text-align: left; 
-      padding: 16px 12px;
+      padding: 14px 16px;
       font-size: 15px;
       font-weight: 600;
       border-radius: 8px;
@@ -1074,43 +1074,6 @@
       background: var(--bg-card-hover);
       border-color: var(--red);
       transform: translateX(4px);
-    }
-    
-    /* Séparateurs visuels */
-    .nav-group {
-      margin-bottom: 12px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .nav-group:last-child {
-      border-bottom: none;
-    }
-    
-    /* Dropdown dans le menu mobile - TOUJOURS VISIBLE */
-    .nav-group .nav-dropdown { 
-      display: flex !important; /* Force l'affichage */
-      flex-direction: column; 
-      position: static; 
-      box-shadow: none; 
-      padding: 8px 0 0 16px;
-      margin-top: 8px;
-      min-width: auto; 
-      border: none; 
-      border-left: 2px solid var(--red);
-      background: transparent;
-      gap: 6px;
-    }
-    
-    /* Masquer le bouton parent de catégorie sur mobile */
-    .nav-group > .nav-btn[data-section] {
-      display: none;
-    }
-    
-    .nav-group .nav-dropdown .nav-btn {
-      font-size: 14px;
-      padding: 12px;
-      background: var(--bg-elevated);
     }
     
     /* Toggle mode 4S/6S dans menu mobile */
@@ -1478,65 +1441,42 @@
         <button class="nav-btn mode-toggle" id="mode6s" onclick="setGameMode('6s')" style="padding: 8px 16px; font-size: 12px; font-weight: 700;">⚡ 6S</button>
       </div>
 
-      <div class="nav-group">
-        <button class="nav-btn" data-section="standings">Classement ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="standings-nhl" onclick="navigate('standings-nhl')">Division NHL</button>
-          <button class="nav-btn mode-4s" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">Division LHJMQ</button>
-          <button class="nav-btn mode-6s" data-page="standings-6s" onclick="navigate('standings-6s')" style="display:none;">Classement 6S</button>
-        </div>
-      </div>
+      <!-- Classement -->
+      <button class="nav-btn mode-4s" data-page="standings-nhl" onclick="navigate('standings-nhl')">📊 Division NHL</button>
+      <button class="nav-btn mode-4s" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">📊 Division LHJMQ</button>
+      <button class="nav-btn mode-6s" data-page="standings-6s" onclick="navigate('standings-6s')" style="display:none;">📊 Classement 6S</button>
 
-      <div class="nav-group">
-        <button class="nav-btn" data-section="players">Joueurs ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
-          <button class="nav-btn mode-4s" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
-          <button class="nav-btn mode-6s" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">Joueurs 6S</button>
-        </div>
-      </div>
+      <!-- Joueurs -->
+      <button class="nav-btn mode-4s" data-page="players-nhl" onclick="navigate('players-nhl')">👤 Joueurs NHL</button>
+      <button class="nav-btn mode-4s" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">👤 Joueurs LHJMQ</button>
+      <button class="nav-btn mode-6s" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">👤 Joueurs 6S</button>
 
-      <div class="nav-group">
-        <button class="nav-btn" data-section="goalies">Gardiens ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
-          <button class="nav-btn mode-4s" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
-          <button class="nav-btn mode-6s" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">Gardiens 6S</button>
-        </div>
-      </div>
+      <!-- Gardiens -->
+      <button class="nav-btn mode-4s" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">🧤 Gardiens NHL</button>
+      <button class="nav-btn mode-4s" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">🧤 Gardiens LHJMQ</button>
+      <button class="nav-btn mode-6s" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">🧤 Gardiens 6S</button>
 
-      <button class="nav-btn mode-4s" data-page="teams" onclick="navigate('teams')">Équipes</button>
-      <button class="nav-btn mode-6s" data-page="teams-6s" onclick="navigate('teams-6s')" style="display:none;">Équipes 6S</button>
+      <!-- Équipes -->
+      <button class="nav-btn mode-4s" data-page="teams" onclick="navigate('teams')">🏒 Équipes</button>
+      <button class="nav-btn mode-6s" data-page="teams-6s" onclick="navigate('teams-6s')" style="display:none;">🏒 Équipes 6S</button>
       
-      <button class="nav-btn mode-4s" data-page="schedule" onclick="navigate('schedule')">Calendrier</button>
-      <button class="nav-btn mode-6s" data-page="schedule-6s" onclick="navigate('schedule-6s')" style="display:none;">Calendrier 6S</button>
+      <!-- Calendrier -->
+      <button class="nav-btn mode-4s" data-page="schedule" onclick="navigate('schedule')">📅 Calendrier</button>
+      <button class="nav-btn mode-6s" data-page="schedule-6s" onclick="navigate('schedule-6s')" style="display:none;">📅 Calendrier 6S</button>
       
-      <button class="nav-btn mode-4s" data-page="stats" onclick="navigate('stats')">📊 Stats</button>
-      <button class="nav-btn mode-6s" data-page="stats-6s" onclick="navigate('stats-6s')" style="display:none;">📊 Stats 6S</button>
+      <!-- Stats -->
+      <button class="nav-btn mode-4s" data-page="stats" onclick="navigate('stats')">📈 Stats</button>
+      <button class="nav-btn mode-6s" data-page="stats-6s" onclick="navigate('stats-6s')" style="display:none;">📈 Stats 6S</button>
 
-      <div class="nav-group">
-        <button class="nav-btn" data-section="trophies">Trophées ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
-          <button class="nav-btn mode-4s" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
-          <button class="nav-btn mode-6s" data-page="trophies-6s" onclick="navigate('trophies-6s')" style="display:none;">Trophées 6S</button>
-        </div>
-      </div>
+      <!-- Trophées -->
+      <button class="nav-btn mode-4s" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">🏆 Trophées NHL</button>
+      <button class="nav-btn mode-4s" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">🏆 Trophées LHJMQ</button>
+      <button class="nav-btn mode-6s" data-page="trophies-6s" onclick="navigate('trophies-6s')" style="display:none;">🏆 Trophées 6S</button>
 
-      <div class="nav-group">
-        <button class="nav-btn mode-4s" data-section="archives-4s">📚 Archives ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="archive-s4" onclick="navigate('archive-s4')">Saison 4</button>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-btn mode-6s" data-section="archives-6s" style="display:none;">📚 Archives ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-6s" data-page="archive-6s-s1" onclick="navigate('archive-6s-s1')" style="display:none;">Saison 1 (6S)</button>
-          <button class="nav-btn mode-6s" data-page="archive-6s-s2" onclick="navigate('archive-6s-s2')" style="display:none;">Saison 2 (6S)</button>
-        </div>
-      </div>
+      <!-- Archives -->
+      <button class="nav-btn mode-4s" data-page="archive-s4" onclick="navigate('archive-s4')">📚 Archives S4</button>
+      <button class="nav-btn mode-6s" data-page="archive-6s-s1" onclick="navigate('archive-6s-s1')" style="display:none;">📚 Archives 6S S1</button>
+      <button class="nav-btn mode-6s" data-page="archive-6s-s2" onclick="navigate('archive-6s-s2')" style="display:none;">📚 Archives 6S S2</button>
 
       <div class="nav-group admin-nav">
         <button class="nav-btn" data-section="admin">🔧 Gestion ▾</button>
