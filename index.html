@@ -135,7 +135,11 @@
     z-index: 200;
   }
   .nav-group:hover .nav-dropdown { display: flex; flex-direction: column; gap: 2px; }
-  .nav-dropdown .nav-btn { width: 100%; text-align: left; }
+  .nav-dropdown .nav-btn { 
+    width: 100%; 
+    text-align: left; 
+    color: var(--text-primary);
+  }
 
   .mobile-menu-btn { display: none; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 20px; }
 
@@ -1088,10 +1092,16 @@
       transition: all 0.2s;
     }
     
+    /* Forcer AUSSI pour les dropdown */
+    .nav-dropdown .nav-btn {
+      color: #ffffff !important;
+    }
+    
     .nav-btn:hover,
     .nav-btn.active {
       background: var(--bg-card-hover);
       border-color: var(--red);
+      color: #ffffff !important;
       transform: translateX(4px);
     }
     
