@@ -2354,7 +2354,10 @@ async function loadData() {
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
-        DATA = docSnap.data();
+        const rawData = docSnap.data();
+        // Remove admin key from data (security)
+        const { _adminKey, ...cleanData } = rawData;
+        DATA = cleanData;
         console.log('✅ Données chargées depuis Firebase!');
         updateFirebaseStatus('connected', 'Synchronisé');
         
@@ -2362,7 +2365,9 @@ async function loadData() {
         if (!firebaseListenerActive) {
           onSnapshot(docRef, (snapshot) => {
             if (snapshot.exists()) {
-              DATA = snapshot.data();
+              const rawData = snapshot.data();
+              const { _adminKey, ...cleanData } = rawData;
+              DATA = cleanData;
               console.log('🔄 Données mises à jour en temps réel!');
               updateFirebaseStatus('syncing', 'Mise à jour...');
               // Refresh all views
@@ -2432,11 +2437,18 @@ async function saveToFirebase() {
   
   try {
     const { db, doc, setDoc } = window.firebase;
-    await setDoc(doc(db, 'lchq', 'data'), DATA);
+    
+    // Add admin key for security (required by Firestore rules)
+    const dataWithKey = {
+      ...DATA,
+      _adminKey: 'lchq-secure-2026-firebase'
+    };
+    
+    await setDoc(doc(db, 'lchq', 'data'), dataWithKey);
     console.log('✅ Données sauvegardées dans Firebase!');
     updateFirebaseStatus('connected', 'Synchronisé');
     
-    // Also save to localStorage as backup
+    // Also save to localStorage as backup (without the key)
     localStorage.setItem('lchq_data', JSON.stringify(DATA));
   } catch (e) {
     console.error('❌ Erreur sauvegarde Firebase:', e);
