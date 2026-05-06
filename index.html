@@ -1080,6 +1080,7 @@
     
     /* Boutons du menu mobile */
     .nav-btn { 
+      color: #ffffff !important;
       width: 100%; 
       text-align: left; 
       padding: 14px 16px;
@@ -1088,7 +1089,6 @@
       border-radius: 8px;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      color: #ffffff !important;
       transition: all 0.2s;
     }
     
@@ -1097,11 +1097,19 @@
       color: #ffffff !important;
     }
     
+    /* Forcer pour TOUS les nav-btn dans nav sur mobile */
+    nav .nav-btn,
+    nav .nav-dropdown .nav-btn,
+    nav .nav-group .nav-btn,
+    nav .nav-group .nav-dropdown .nav-btn {
+      color: #ffffff !important;
+    }
+    
     .nav-btn:hover,
     .nav-btn.active {
+      color: #ffffff !important;
       background: var(--bg-card-hover);
       border-color: var(--red);
-      color: #ffffff !important;
       transform: translateX(4px);
     }
     
