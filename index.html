@@ -1064,6 +1064,9 @@
     /* TOUS les boutons de navigation sur mobile */
     nav button,
     nav .nav-btn {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
       width: 100%;
       text-align: left;
       padding: 14px;
@@ -1072,7 +1075,15 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       margin-bottom: 8px;
-      color: #fff;
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+    }
+    
+    /* Forcer aussi pour les éléments enfants */
+    nav button *,
+    nav .nav-btn * {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
     }
     
     /* Cacher les titres de dropdown sur mobile */
@@ -5074,6 +5085,13 @@ function rerenderAll() {
 }
 
 loadData();
+
+// FORCER couleur blanche sur mobile pour les nav-btn
+if (window.innerWidth <= 900) {
+  document.querySelectorAll('nav button, nav .nav-btn').forEach(btn => {
+    btn.style.color = '#ffffff';
+  });
+}
 </script>
  <script src="lchq-animations.js"></script>
 
