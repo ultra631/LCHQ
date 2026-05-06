@@ -1511,7 +1511,11 @@
     </div>
     <div class="grid-3">
       <div class="card nhl"><h3>📈 Top PPM NHL</h3><div id="nhlTopPPM"></div></div>
-      <div class="card nhl"><h3>🛡️ Top Gardiens NHL</h3><div id="nhlTopGoalies"></div></div>
+      <div class="card nhl"><h3>🛡️ Top Victoires NHL</h3><div id="nhlTopGoalies"></div></div>
+      <div class="card nhl"><h3>📊 Top % Efficacité NHL</h3><div id="nhlTopSavePct"></div></div>
+    </div>
+    <div class="grid-3">
+      <div class="card nhl"><h3>🎯 Meilleure Moy NHL</h3><div id="nhlTopGAA"></div></div>
     </div>
 
     <h2 class="section-title">Division LHJMQ — Leaders</h2>
@@ -1522,7 +1526,11 @@
     </div>
     <div class="grid-3">
       <div class="card lhjmq"><h3>📈 Top PPM LHJMQ</h3><div id="lhjmqTopPPM"></div></div>
-      <div class="card lhjmq"><h3>🛡️ Top Gardiens LHJMQ</h3><div id="lhjmqTopGoalies"></div></div>
+      <div class="card lhjmq"><h3>🛡️ Top Victoires LHJMQ</h3><div id="lhjmqTopGoalies"></div></div>
+      <div class="card lhjmq"><h3>📊 Top % Efficacité LHJMQ</h3><div id="lhjmqTopSavePct"></div></div>
+    </div>
+    <div class="grid-3">
+      <div class="card lhjmq"><h3>🎯 Meilleure Moy LHJMQ</h3><div id="lhjmqTopGAA"></div></div>
     </div>
   </div>
 
@@ -1544,7 +1552,11 @@
     </div>
     <div class="grid-3">
       <div class="card" style="border-color: #3b82f6;"><h3>📈 Top PPM 6S</h3><div id="sixsTopPPM"></div></div>
-      <div class="card" style="border-color: #3b82f6;"><h3>🛡️ Top Gardiens 6S</h3><div id="sixsTopGoalies"></div></div>
+      <div class="card" style="border-color: #3b82f6;"><h3>🛡️ Top Victoires 6S</h3><div id="sixsTopGoalies"></div></div>
+      <div class="card" style="border-color: #3b82f6;"><h3>📊 Top % Efficacité 6S</h3><div id="sixsTopSavePct"></div></div>
+    </div>
+    <div class="grid-3">
+      <div class="card" style="border-color: #3b82f6;"><h3>🎯 Meilleure Moy 6S</h3><div id="sixsTopGAA"></div></div>
     </div>
   </div>
 </section>
@@ -2715,6 +2727,8 @@ function renderHome() {
   const nhlPPM = nhlPlayers.filter(p => p.gp >= 3).map(p => ({...p, ppm: p.gp > 0 ? p.pts / p.gp : 0})).sort((a,b)=>b.ppm-a.ppm).slice(0,5);
   document.getElementById('nhlTopPPM').innerHTML = renderLeaderList(nhlPPM, 'ppm');
   document.getElementById('nhlTopGoalies').innerHTML = renderGoalieLeaderList([...nhlGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w');
+  document.getElementById('nhlTopSavePct').innerHTML = renderGoalieLeaderList([...nhlGoalies].filter(g => g.sa >= 30).sort((a,b)=>b.svpct-a.svpct).slice(0,5), 'svpct');
+  document.getElementById('nhlTopGAA').innerHTML = renderGoalieLeaderList([...nhlGoalies].filter(g => g.gp >= 3).sort((a,b)=>a.gaa-b.gaa).slice(0,5), 'gaa');
 
   document.getElementById('lhjmqTopGoals').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
   document.getElementById('lhjmqTopAssists').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
@@ -2722,6 +2736,8 @@ function renderHome() {
   const lhjmqPPM = lhjmqPlayers.filter(p => p.gp >= 3).map(p => ({...p, ppm: p.gp > 0 ? p.pts / p.gp : 0})).sort((a,b)=>b.ppm-a.ppm).slice(0,5);
   document.getElementById('lhjmqTopPPM').innerHTML = renderLeaderList(lhjmqPPM, 'ppm');
   document.getElementById('lhjmqTopGoalies').innerHTML = renderGoalieLeaderList([...lhjmqGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w');
+  document.getElementById('lhjmqTopSavePct').innerHTML = renderGoalieLeaderList([...lhjmqGoalies].filter(g => g.sa >= 30).sort((a,b)=>b.svpct-a.svpct).slice(0,5), 'svpct');
+  document.getElementById('lhjmqTopGAA').innerHTML = renderGoalieLeaderList([...lhjmqGoalies].filter(g => g.gp >= 3).sort((a,b)=>a.gaa-b.gaa).slice(0,5), 'gaa');
 
   // === 6S (Saison 3) ===
   const sixsPlayers = DATA.season_3_6v6?.players || [];
@@ -2750,6 +2766,14 @@ function renderHome() {
   
   document.getElementById('sixsTopGoalies').innerHTML = sixsGoalies.length > 0
     ? renderGoalieLeaderList([...sixsGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w')
+    : emptyMsg;
+  
+  document.getElementById('sixsTopSavePct').innerHTML = sixsGoalies.length > 0
+    ? renderGoalieLeaderList([...sixsGoalies].filter(g => g.sa >= 30).sort((a,b)=>b.svpct-a.svpct).slice(0,5), 'svpct')
+    : emptyMsg;
+  
+  document.getElementById('sixsTopGAA').innerHTML = sixsGoalies.length > 0
+    ? renderGoalieLeaderList([...sixsGoalies].filter(g => g.gp >= 3).sort((a,b)=>a.gaa-b.gaa).slice(0,5), 'gaa')
     : emptyMsg;
 }
 
@@ -2781,6 +2805,15 @@ function renderGoalieLeaderList(goalies, statKey) {
     const team = DATA.teams[g.team];
     const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
     const logoHtml = team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji;
+    
+    // Format stat value
+    let statValue = g[statKey];
+    if (statKey === 'svpct') {
+      statValue = (g[statKey] * 100).toFixed(1) + '%';
+    } else if (statKey === 'gaa') {
+      statValue = g[statKey].toFixed(2);
+    }
+    
     return `
       <div class="leader-row">
         <div class="leader-rank ${rankClass}">${i + 1}</div>
@@ -2788,7 +2821,10 @@ function renderGoalieLeaderList(goalies, statKey) {
           <div class="leader-name">${escapeHtml(g.name)}</div>
           <div class="leader-team">${logoHtml} ${team.name}</div>
         </div>
-        <div class="leader-stat">${g[statKey]}</div>
+        <div class="leader-stat">${statValue}</div>
+      </div>`;
+  }).join('');
+}
       </div>`;
   }).join('');
 }
