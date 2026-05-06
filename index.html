@@ -2319,15 +2319,36 @@ let goaliesLhjmqSort = { key: 'w', dir: 'desc' };
 
 // Firebase sync state
 let firebaseListenerActive = false;
+let firebaseReady = false;
+
+// Wait for Firebase to be ready
+function waitForFirebase(timeout = 5000) {
+  return new Promise((resolve) => {
+    const startTime = Date.now();
+    const checkFirebase = setInterval(() => {
+      if (window.firebase && window.firebase.db) {
+        clearInterval(checkFirebase);
+        firebaseReady = true;
+        resolve(true);
+      } else if (Date.now() - startTime > timeout) {
+        clearInterval(checkFirebase);
+        resolve(false);
+      }
+    }, 100);
+  });
+}
 
 async function loadData() {
   console.log('📊 Chargement des données...');
   updateFirebaseStatus('syncing', 'Chargement...');
   
-  try {
-    // Try to load from Firebase first
-    if (window.firebase) {
-      console.log('🔥 Tentative de chargement depuis Firebase...');
+  // Wait for Firebase to be ready
+  console.log('⏳ Attente de Firebase...');
+  const firebaseAvailable = await waitForFirebase();
+  
+  if (firebaseAvailable) {
+    try {
+      console.log('🔥 Chargement depuis Firebase...');
       const { db, doc, getDoc, onSnapshot } = window.firebase;
       const docRef = doc(db, 'lchq', 'data');
       const docSnap = await getDoc(docRef);
@@ -2358,13 +2379,20 @@ async function loadData() {
         initApp();
         return;
       } else {
-        console.log('⚠️ Aucune donnée dans Firebase, migration depuis localStorage...');
-        await migrateLocalStorageToFirebase();
+        console.log('⚠️ Aucune donnée dans Firebase, migration...');
+        const migrated = await migrateLocalStorageToFirebase();
+        if (migrated && DATA) {
+          initApp();
+          return;
+        }
       }
+    } catch (e) {
+      console.error('❌ Erreur Firebase:', e);
+      updateFirebaseStatus('error', 'Erreur');
     }
-  } catch (e) {
-    console.warn('⚠️ Firebase non disponible:', e);
-    updateFirebaseStatus('error', 'Hors ligne');
+  } else {
+    console.warn('⚠️ Firebase timeout');
+    updateFirebaseStatus('error', 'Timeout');
   }
   
   // Fallback to data.json
@@ -2376,7 +2404,8 @@ async function loadData() {
     updateFirebaseStatus('offline', 'Mode local');
     
     // Upload to Firebase if available
-    if (window.firebase && DATA) {
+    if (firebaseReady && DATA) {
+      console.log('📤 Upload vers Firebase...');
       await saveToFirebase();
     }
   } catch (e) {
