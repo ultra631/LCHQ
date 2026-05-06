@@ -1033,8 +1033,23 @@
       padding: 8px 12px;
     }
     
-    /* CACHER COMPLÈTEMENT les nav-group sur mobile */
-    .nav-group { display: none !important; }
+    /* Sur mobile: cacher le bouton parent (Classement ▾, Joueurs ▾, etc.) */
+    .nav-group > .nav-btn[data-section] {
+      display: none;
+    }
+    
+    /* Afficher directement les liens du dropdown */
+    .nav-group .nav-dropdown {
+      display: flex !important;
+      flex-direction: column;
+      position: static;
+      box-shadow: none;
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      gap: 6px;
+    }
     
     /* Menu mobile amélioré */
     nav {
@@ -1445,22 +1460,9 @@
         <button class="nav-btn mode-toggle" id="mode6s" onclick="setGameMode('6s')" style="padding: 8px 16px; font-size: 12px; font-weight: 700;">⚡ 6S</button>
       </div>
 
-      <!-- LIENS DIRECTS MOBILE (visible seulement <900px car nav-group est caché) -->
-      <button class="nav-btn mode-4s" data-page="standings-nhl" onclick="navigate('standings-nhl')">Division NHL</button>
-      <button class="nav-btn mode-4s" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">Division LHJMQ</button>
-      <button class="nav-btn mode-6s" data-page="standings-6s" onclick="navigate('standings-6s')" style="display:none;">Classement 6S</button>
-      
-      <button class="nav-btn mode-4s" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
-      <button class="nav-btn mode-4s" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
-      <button class="nav-btn mode-6s" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">Joueurs 6S</button>
-      
-      <button class="nav-btn mode-4s" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
-      <button class="nav-btn mode-4s" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
-      <button class="nav-btn mode-6s" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">Gardiens 6S</button>
-
-      <!-- NAV-GROUP DESKTOP (caché sur mobile, visible >900px avec dropdowns) -->
+      <!-- Classement -->
       <div class="nav-group">
-        <button class="nav-btn desktop-only" data-section="standings">Classement ▾</button>
+        <button class="nav-btn" data-section="standings">Classement ▾</button>
         <div class="nav-dropdown">
           <button class="nav-btn mode-4s" data-page="standings-nhl" onclick="navigate('standings-nhl')">Division NHL</button>
           <button class="nav-btn mode-4s" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">Division LHJMQ</button>
@@ -1470,7 +1472,7 @@
 
       <!-- Joueurs -->
       <div class="nav-group">
-        <button class="nav-btn desktop-only" data-section="players">Joueurs ▾</button>
+        <button class="nav-btn" data-section="players">Joueurs ▾</button>
         <div class="nav-dropdown">
           <button class="nav-btn mode-4s" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
           <button class="nav-btn mode-4s" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
@@ -1480,7 +1482,7 @@
 
       <!-- Gardiens -->
       <div class="nav-group">
-        <button class="nav-btn desktop-only" data-section="goalies">Gardiens ▾</button>
+        <button class="nav-btn" data-section="goalies">Gardiens ▾</button>
         <div class="nav-dropdown">
           <button class="nav-btn mode-4s" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
           <button class="nav-btn mode-4s" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
