@@ -1087,9 +1087,9 @@
       border-bottom: none;
     }
     
-    /* Dropdown dans le menu mobile */
+    /* Dropdown dans le menu mobile - TOUJOURS VISIBLE */
     .nav-group .nav-dropdown { 
-      display: flex; 
+      display: flex !important; /* Force l'affichage */
       flex-direction: column; 
       position: static; 
       box-shadow: none; 
@@ -1100,6 +1100,11 @@
       border-left: 2px solid var(--red);
       background: transparent;
       gap: 6px;
+    }
+    
+    /* Masquer le bouton parent de catégorie sur mobile */
+    .nav-group > .nav-btn[data-section] {
+      display: none;
     }
     
     .nav-group .nav-dropdown .nav-btn {
@@ -1561,14 +1566,22 @@
     <h2 class="section-title">Division NHL — Leaders</h2>
     <div class="grid-3">
       <div class="card nhl"><h3>🥅 Top Buteurs NHL</h3><div id="nhlTopGoals"></div></div>
+      <div class="card nhl"><h3>🤝 Top Passeurs NHL</h3><div id="nhlTopAssists"></div></div>
       <div class="card nhl"><h3>🎯 Top Pointeurs NHL</h3><div id="nhlTopPoints"></div></div>
+    </div>
+    <div class="grid-3">
+      <div class="card nhl"><h3>📈 Top PPM NHL</h3><div id="nhlTopPPM"></div></div>
       <div class="card nhl"><h3>🛡️ Top Gardiens NHL</h3><div id="nhlTopGoalies"></div></div>
     </div>
 
     <h2 class="section-title">Division LHJMQ — Leaders</h2>
     <div class="grid-3">
       <div class="card lhjmq"><h3>🥅 Top Buteurs LHJMQ</h3><div id="lhjmqTopGoals"></div></div>
+      <div class="card lhjmq"><h3>🤝 Top Passeurs LHJMQ</h3><div id="lhjmqTopAssists"></div></div>
       <div class="card lhjmq"><h3>🎯 Top Pointeurs LHJMQ</h3><div id="lhjmqTopPoints"></div></div>
+    </div>
+    <div class="grid-3">
+      <div class="card lhjmq"><h3>📈 Top PPM LHJMQ</h3><div id="lhjmqTopPPM"></div></div>
       <div class="card lhjmq"><h3>🛡️ Top Gardiens LHJMQ</h3><div id="lhjmqTopGoalies"></div></div>
     </div>
   </div>
@@ -1586,7 +1599,11 @@
     <h2 class="section-title" style="color: #3b82f6;">Ligue 6S — Leaders</h2>
     <div class="grid-3">
       <div class="card" style="border-color: #3b82f6;"><h3>🥅 Top Buteurs 6S</h3><div id="sixsTopGoals"></div></div>
+      <div class="card" style="border-color: #3b82f6;"><h3>🤝 Top Passeurs 6S</h3><div id="sixsTopAssists"></div></div>
       <div class="card" style="border-color: #3b82f6;"><h3>🎯 Top Pointeurs 6S</h3><div id="sixsTopPoints"></div></div>
+    </div>
+    <div class="grid-3">
+      <div class="card" style="border-color: #3b82f6;"><h3>📈 Top PPM 6S</h3><div id="sixsTopPPM"></div></div>
       <div class="card" style="border-color: #3b82f6;"><h3>🛡️ Top Gardiens 6S</h3><div id="sixsTopGoalies"></div></div>
     </div>
   </div>
@@ -2753,11 +2770,17 @@ function renderHome() {
   const lhjmqGoalies = DATA.goalies.filter(g => DATA.teams[g.team] && DATA.teams[g.team].division === 'lhjmq');
 
   document.getElementById('nhlTopGoals').innerHTML = renderLeaderList([...nhlPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('nhlTopAssists').innerHTML = renderLeaderList([...nhlPlayers].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
   document.getElementById('nhlTopPoints').innerHTML = renderLeaderList([...nhlPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  const nhlPPM = nhlPlayers.filter(p => p.gp >= 3).map(p => ({...p, ppm: p.gp > 0 ? p.pts / p.gp : 0})).sort((a,b)=>b.ppm-a.ppm).slice(0,5);
+  document.getElementById('nhlTopPPM').innerHTML = renderLeaderList(nhlPPM, 'ppm');
   document.getElementById('nhlTopGoalies').innerHTML = renderGoalieLeaderList([...nhlGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w');
 
   document.getElementById('lhjmqTopGoals').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
+  document.getElementById('lhjmqTopAssists').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.a-a.a).slice(0,5), 'a');
   document.getElementById('lhjmqTopPoints').innerHTML = renderLeaderList([...lhjmqPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
+  const lhjmqPPM = lhjmqPlayers.filter(p => p.gp >= 3).map(p => ({...p, ppm: p.gp > 0 ? p.pts / p.gp : 0})).sort((a,b)=>b.ppm-a.ppm).slice(0,5);
+  document.getElementById('lhjmqTopPPM').innerHTML = renderLeaderList(lhjmqPPM, 'ppm');
   document.getElementById('lhjmqTopGoalies').innerHTML = renderGoalieLeaderList([...lhjmqGoalies].sort((a,b)=>b.w-a.w).slice(0,5), 'w');
 
   // === 6S (Saison 3) ===
@@ -2770,8 +2793,19 @@ function renderHome() {
     ? renderLeaderList([...sixsPlayers].sort((a,b)=>b.g-a.g).slice(0,5), 'g')
     : emptyMsg;
   
+  document.getElementById('sixsTopAssists').innerHTML = sixsPlayers.length > 0
+    ? renderLeaderList([...sixsPlayers].sort((a,b)=>b.a-a.a).slice(0,5), 'a')
+    : emptyMsg;
+  
   document.getElementById('sixsTopPoints').innerHTML = sixsPlayers.length > 0
     ? renderLeaderList([...sixsPlayers].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts')
+    : emptyMsg;
+  
+  const sixsPPM = sixsPlayers.length > 0 
+    ? sixsPlayers.filter(p => p.gp >= 3).map(p => ({...p, ppm: p.gp > 0 ? p.pts / p.gp : 0})).sort((a,b)=>b.ppm-a.ppm).slice(0,5)
+    : [];
+  document.getElementById('sixsTopPPM').innerHTML = sixsPPM.length > 0
+    ? renderLeaderList(sixsPPM, 'ppm')
     : emptyMsg;
   
   document.getElementById('sixsTopGoalies').innerHTML = sixsGoalies.length > 0
@@ -2785,6 +2819,10 @@ function renderLeaderList(players, statKey) {
     const team = DATA.teams[p.team];
     const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
     const logoHtml = team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji;
+    
+    // Format stat value (2 decimals for PPM)
+    const statValue = statKey === 'ppm' ? p[statKey].toFixed(2) : p[statKey];
+    
     return `
       <div class="leader-row">
         <div class="leader-rank ${rankClass}">${i + 1}</div>
@@ -2792,7 +2830,7 @@ function renderLeaderList(players, statKey) {
           <div class="leader-name">${escapeHtml(p.name)}</div>
           <div class="leader-team">${logoHtml} ${team.name}</div>
         </div>
-        <div class="leader-stat">${p[statKey]}</div>
+        <div class="leader-stat">${statValue}</div>
       </div>`;
   }).join('');
 }
