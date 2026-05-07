@@ -3115,6 +3115,13 @@ function navigate(page) {
   if (btn) btn.classList.add('active');
   document.getElementById('mainNav').classList.remove('open');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  // Appeler les fonctions de rendu pour les pages d'archives
+  if (page === 'archive-s3') {
+    renderArchiveS3();
+  } else if (page === 'archive-s4') {
+    renderArchiveS4();
+  }
 }
 
 function toggleMenu() {
@@ -6205,19 +6212,231 @@ function renderArchiveS3() {
   }
 
   if (currentArchiveS3Section === 'standings') {
-    // Pour le classement, on peut réutiliser la fonction existante
-    const archiveS4Format = {
-      standings: {
-        nhl: archive.standings_nhl || [],
-        lhjmq: archive.standings_lhjmq || []
-      }
-    };
-    container.innerHTML = renderArchiveStandings(archiveS4Format);
+    container.innerHTML = renderArchiveS3Standings(archive);
   } else if (currentArchiveS3Section === 'players') {
     container.innerHTML = renderArchiveS3Players(archive);
   } else if (currentArchiveS3Section === 'goalies') {
     container.innerHTML = renderArchiveS3Goalies(archive);
   }
+}
+
+function renderArchiveS3Standings(archive) {
+  const renderTable = (teams, divLabel, divColor) => {
+    if (!teams || teams.length === 0) {
+      return `<div class="card"><h3>${divLabel}</h3><div class="empty-state"><p>Données non disponibles</p></div></div>`;
+    }
+    const rows = teams.map((row, i) => {
+      const team = DATA.teams[row.team_key];
+      if (!team) return '';
+      const teamCell = team.logo
+        ? `<div class="team-cell"><img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'"><span>${team.name}</span></div>`
+        : `<div class="team-cell">${team.emoji} ${team.name}</div>`;
+      const diff = (row.gf || 0) - (row.ga || 0);
+      const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
+      const diffStr = diff > 0 ? `+${diff}` : diff;
+      return `<tr class="archive-team-row" onclick="openArchiveS3Team('${row.team_key}')" title="Voir détails ${escapeHtml(team.name)}">
+        <td class="num">${i + 1}</td>
+        <td>${teamCell}</td>
+        <td class="num">${row.gp}</td>
+        <td class="num">${row.w}</td>
+        <td class="num">${row.l}</td>
+        <td class="num">${row.otl}</td>
+        <td class="num">${row.gf}</td>
+        <td class="num">${row.ga}</td>
+        <td class="num ${diffClass}">${diffStr}</td>
+        <td class="num pts-cell">${row.pts}</td>
+      </tr>`;
+    }).join('');
+
+    return `<div style="margin-bottom: 30px;">
+      <h3 class="section-title" style="color: ${divColor};">${divLabel}</h3>
+      <div class="modal-info" style="background:rgba(91,155,213,0.1);border-color:rgba(91,155,213,0.3);color:#93c5fd;font-size:12px;margin-bottom:10px;">
+        💡 Clique sur une équipe pour voir sa fiche détaillée
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>#</th><th>Équipe</th>
+            <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+            <th class="num">DP</th>
+            <th class="num">BP</th><th class="num">BC</th><th class="num">DIFF</th>
+            <th class="num">PTS</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  };
+
+  return renderTable(archive.standings_nhl, 'Division NHL', 'var(--nhl-color)') +
+         renderTable(archive.standings_lhjmq, 'Division LHJMQ', 'var(--lhjmq-color)');
+}
+
+function openArchiveS3Team(teamKey) {
+  const archive = (DATA.archives && DATA.archives.season_3) || null;
+  if (!archive) return;
+  const team = DATA.teams[teamKey];
+  if (!team) return;
+
+  // Trouver le classement de l'équipe dans S3
+  let standing = null;
+  let rank = 0;
+  let division = null;
+  
+  // Chercher dans NHL
+  let idx = (archive.standings_nhl || []).findIndex(s => s.team_key === teamKey);
+  if (idx !== -1) {
+    standing = archive.standings_nhl[idx];
+    rank = idx + 1;
+    division = 'nhl';
+  } else {
+    // Chercher dans LHJMQ
+    idx = (archive.standings_lhjmq || []).findIndex(s => s.team_key === teamKey);
+    if (idx !== -1) {
+      standing = archive.standings_lhjmq[idx];
+      rank = idx + 1;
+      division = 'lhjmq';
+    }
+  }
+
+  // Joueurs et gardiens de l'équipe (utiliser team_key au lieu de team)
+  const players = (archive.top_players || []).filter(p => p.team_key === teamKey).sort((a, b) => (b.pts || 0) - (a.pts || 0));
+  const goalies = (archive.top_goalies || []).filter(g => g.team_key === teamKey).sort((a, b) => (b.w || 0) - (a.w || 0));
+
+  // Calcul totaux pour le bilan
+  const totalGoals = players.reduce((s, p) => s + (p.g || 0), 0);
+  const totalAssists = players.reduce((s, p) => s + (p.a || 0), 0);
+  const totalShots = 0; // Pas de données shots en S3
+  const totalPim = 0; // Pas de données pim en S3
+
+  document.getElementById('archiveTeamModalContent').innerHTML = renderArchiveS3TeamDetails(team, standing, rank, division, players, goalies, {
+    totalGoals, totalAssists, totalShots, totalPim
+  });
+
+  openModal('archiveTeamModal');
+}
+
+function renderArchiveS3TeamDetails(team, standing, rank, division, players, goalies, totals) {
+  const logo = team.logo
+    ? `<img src="${team.logo}" alt="${escapeHtml(team.name)}" style="width:80px;height:80px;object-fit:contain;" onerror="this.outerHTML='<div style=&quot;font-size:60px;&quot;>${team.emoji}</div>'">`
+    : `<div style="font-size:60px;">${team.emoji}</div>`;
+
+  const divColor = division === 'nhl' ? 'var(--nhl-color)' : 'var(--lhjmq-color)';
+  const divLabel = division === 'nhl' ? 'NHL' : 'LHJMQ';
+
+  let standingHtml = '';
+  if (standing) {
+    const diff = (standing.gf || 0) - (standing.ga || 0);
+    const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
+    const diffStr = diff > 0 ? `+${diff}` : diff;
+    standingHtml = `<div style="margin-bottom: 30px;">
+      <h3 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 12px;">📊 Classement Final</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;">
+        ${[
+          ['RANG', `#${rank}`],
+          ['DIVISION', divLabel],
+          ['PJ', standing.gp],
+          ['V', standing.w],
+          ['D', standing.l],
+          ['DP', standing.otl],
+          ['BP', standing.gf],
+          ['BC', standing.ga],
+          ['DIFF', diffStr],
+          ['PTS', standing.pts]
+        ].map(([label, val]) => `
+          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:var(--text-tertiary);letter-spacing:1px;font-weight:700;">${label}</div>
+            <div style="font-family:'Bebas Neue';font-size:24px;color:${label === 'PTS' ? 'var(--red-bright)' : 'var(--text-primary)'};letter-spacing:1px;">${val}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Stats d'attaque (simplifiées pour S3)
+  let attack = `<h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 12px;">⚔️ Stats d'attaque</h4>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:24px;">
+    ${[
+      ['🏆 Buts', totals.totalGoals],
+      ['🤝 Passes', totals.totalAssists]
+    ].map(([label, val]) => `
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-tertiary);">${label}</div>
+        <div style="font-family:'Bebas Neue';font-size:22px;color:var(--text-primary);">${val}</div>
+      </div>
+    `).join('')}
+  </div>`;
+
+  // Tableau joueurs
+  let playersTable = '';
+  if (players.length > 0) {
+    const rows = players.map((p, i) => `
+      <tr>
+        <td class="num">${i + 1}</td>
+        <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+        <td class="num">${p.gp || 0}</td>
+        <td class="num">${p.g || 0}</td>
+        <td class="num">${p.a || 0}</td>
+        <td class="num pts-cell">${p.pts || 0}</td>
+      </tr>
+    `).join('');
+    playersTable = `<h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 12px;">🏒 Patineurs (${players.length})</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Joueur</th>
+          <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  // Tableau gardiens
+  let goaliesTable = '';
+  if (goalies.length > 0) {
+    const rows = goalies.map((g, i) => {
+      const gaa = g.gaa ? g.gaa.toFixed(2) : '0.00';
+      const svpct = g.svpct ? (g.svpct * 100).toFixed(1) : '0.0';
+      return `
+      <tr>
+        <td class="num">${i + 1}</td>
+        <td style="font-weight:600;">🥅 ${escapeHtml(g.name)}</td>
+        <td class="num">${g.gp || 0}</td>
+        <td class="num">${g.w || 0}</td>
+        <td class="num">${g.l || 0}</td>
+        <td class="num">${g.otl || 0}</td>
+        <td class="num">${gaa}</td>
+        <td class="num">${svpct}%</td>
+        <td class="num">${g.so || 0}</td>
+      </tr>
+    `}).join('');
+    goaliesTable = `<h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 12px;">🥅 Gardiens (${goalies.length})</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Gardien</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">MOY</th><th class="num">%ARR</th><th class="num">BL</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  return `
+    <div style="text-align:center;margin-bottom:30px;">
+      ${logo}
+      <h2 style="font-family:'Bebas Neue';font-size:32px;margin:16px 0 8px;letter-spacing:1px;">${escapeHtml(team.name)}</h2>
+      <div style="display:inline-block;background:${divColor};color:#fff;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:1px;">
+        DIVISION ${divLabel.toUpperCase()}
+      </div>
+    </div>
+    ${standingHtml}
+    ${attack}
+    ${playersTable}
+    ${goaliesTable}
+  `;
 }
 
 function renderArchiveS3Players(archive) {
