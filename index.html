@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+A<!DOCTYPE html>
 <html lang="fr-CA">
 <head>
 <meta charset="UTF-8">
@@ -2216,8 +2216,17 @@
         </select>
       </div>
       <div class="modal-form-group">
-        <label>Position secondaire <small style="color:var(--text-tertiary);font-weight:400;">(différente)</small></label>
+        <label>Position 2 <small style="color:var(--text-tertiary);font-weight:400;">(différente)</small></label>
         <select id="pPositionSec"></select>
+      </div>
+      <div class="modal-form-group">
+        <label>Position 3 <small style="color:var(--text-tertiary);font-weight:400;">(optionnel)</small></label>
+        <select id="pPositionTer">
+          <option value="">— Aucune —</option>
+          <option value="C">C — Centre</option>
+          <option value="A">A — Ailier</option>
+          <option value="D">D — Défenseur</option>
+        </select>
       </div>
     </div>
 
@@ -3717,6 +3726,7 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pPositionMain').value = p.position_main || p.position || 'C';
     updateSecondaryOptions();
     document.getElementById('pPositionSec').value = p.position_sec || (p.position_main === 'C' ? 'A' : 'C');
+    document.getElementById('pPositionTer').value = p.position_ter || '';
     document.getElementById('pToi').value = p.toi || '0:00';
 
     // Charger les stats actuelles dans le tableau
@@ -3734,6 +3744,7 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pPositionMain').value = 'C';
     updateSecondaryOptions();
     document.getElementById('pPositionSec').value = 'A';
+    document.getElementById('pPositionTer').value = '';
     document.getElementById('pToi').value = '0:00';
     // Tous les stats à 0
     loadStatsIntoModal('p', {}, {
@@ -3767,6 +3778,7 @@ function savePlayer() {
 
   const posMain = document.getElementById('pPositionMain').value;
   const posSec = document.getElementById('pPositionSec').value;
+  const posTer = document.getElementById('pPositionTer').value;
   if (posMain === posSec) {
     alert('La position secondaire doit être différente de la principale!');
     return;
@@ -3796,6 +3808,7 @@ function savePlayer() {
     status: status,
     position_main: posMain,
     position_sec: posSec,
+    position_ter: posTer,
     position: posMain,
     gp: newVal('Gp'),
     g: g,
