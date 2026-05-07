@@ -4612,14 +4612,18 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
   // TABLEAU GARDIENS SEULEMENT
   if (goalies.length > 0) {
     html += `<div class="stats-table-wrap" style="overflow-x:auto;margin-top:20px;">
-      <table class="stats-table" style="min-width:600px;">
+      <table class="stats-table" style="min-width:700px;">
         <thead>
           <tr>
             <th style="position:sticky;left:0;background:var(--bg-secondary);z-index:2;">Gardien</th>
+            <th class="num">V</th>
+            <th class="num">D</th>
             <th class="num">Arrêts</th>
             <th class="num">Tirs reçus</th>
-            <th class="num">Buts alloués</th>
+            <th class="num">BA</th>
             <th class="num">% Arrêts</th>
+            <th class="num">Moy</th>
+            <th class="num">Blanch.</th>
             ${isEditMode ? '<th class="num" style="position:sticky;right:0;background:var(--bg-secondary);z-index:2;">⚙️</th>' : ''}
           </tr>
         </thead>
@@ -4630,23 +4634,33 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
       if (!goalie) return;
       
       const svpct = (p.sa || 0) > 0 ? Math.round(((p.sv || 0) / p.sa) * 1000) / 10 : 0;
+      const gaa = (p.ga || 0).toFixed(2); // Moyenne pour ce match
+      const isShutout = (p.ga || 0) === 0;
       
       if (isEditMode) {
         html += `<tr>
           <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${goalie.name}</strong></td>
+          <td class="num"><input type="checkbox" ${p.w ? 'checked' : ''} onchange="updatePlayerMatchStat('${p.playerId}','w',this.checked?1:0)" style="width:20px;height:20px;cursor:pointer;" title="Victoire"></td>
+          <td class="num"><input type="checkbox" ${p.l ? 'checked' : ''} onchange="updatePlayerMatchStat('${p.playerId}','l',this.checked?1:0)" style="width:20px;height:20px;cursor:pointer;" title="Défaite"></td>
           <td class="num"><input type="number" min="0" value="${p.sv || 0}" onchange="updatePlayerMatchStat('${p.playerId}','sv',this.value)" style="width:60px;"></td>
           <td class="num"><input type="number" min="0" value="${p.sa || 0}" onchange="updatePlayerMatchStat('${p.playerId}','sa',this.value)" style="width:60px;"></td>
           <td class="num"><input type="number" min="0" value="${p.ga || 0}" onchange="updatePlayerMatchStat('${p.playerId}','ga',this.value)" style="width:60px;"></td>
           <td class="num"><strong>${svpct.toFixed(1)}%</strong></td>
+          <td class="num"><strong>${gaa}</strong></td>
+          <td class="num"><strong style="color:${isShutout ? '#00d084' : 'var(--text-secondary)'};">${isShutout ? '✓ Oui' : 'Non'}</strong></td>
           <td class="num" style="position:sticky;right:0;background:var(--bg-card);z-index:1;"><button class="btn btn-danger" style="padding:4px 8px;font-size:12px;" onclick="removePlayerFromMatch('${p.playerId}')">🗑️</button></td>
         </tr>`;
       } else {
         html += `<tr>
           <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${goalie.name}</strong></td>
+          <td class="num">${p.w ? '✓' : '—'}</td>
+          <td class="num">${p.l ? '✓' : '—'}</td>
           <td class="num">${p.sv || 0}</td>
           <td class="num">${p.sa || 0}</td>
           <td class="num">${p.ga || 0}</td>
           <td class="num"><strong>${svpct.toFixed(1)}%</strong></td>
+          <td class="num"><strong>${gaa}</strong></td>
+          <td class="num"><strong style="color:${isShutout ? '#00d084' : 'var(--text-secondary)'};">${isShutout ? '✓ Oui' : 'Non'}</strong></td>
         </tr>`;
       }
     });
@@ -4702,6 +4716,8 @@ function addPlayerToMatchStats(playerId) {
     matchStats.players.push({
       playerId: playerId,
       team: playerTeam,
+      w: 0,
+      l: 0,
       sv: 0,
       sa: 0,
       ga: 0
