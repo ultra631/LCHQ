@@ -2403,18 +2403,18 @@
         <thead>
           <tr>
             <th>Stat</th>
-            <th class="num">Total actuel</th>
+            <th class="num">Total actuel <small style="color:var(--text-tertiary);font-size:10px;">✏️</small></th>
             <th class="num"><span style="color:#5b9bd5;">+ Sem.</span></th>
             <th class="num">= Nouveau</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>PJ</td><td class="num"><span id="tGpCurrent">0</span></td><td class="num"><input type="number" id="tGpAdd" min="0" value="0" oninput="updateNewTotal('t','Gp')"></td><td class="num"><span id="tGpNew" class="pts-cell">0</span></td></tr>
-          <tr><td>V (victoires)</td><td class="num"><span id="tWCurrent">0</span></td><td class="num"><input type="number" id="tWAdd" min="0" value="0" oninput="updateNewTotal('t','W')"></td><td class="num"><span id="tWNew" class="pts-cell">0</span></td></tr>
-          <tr><td>D (défaites)</td><td class="num"><span id="tLCurrent">0</span></td><td class="num"><input type="number" id="tLAdd" min="0" value="0" oninput="updateNewTotal('t','L')"></td><td class="num"><span id="tLNew" class="pts-cell">0</span></td></tr>
-          <tr><td>DP (déf. prol.)</td><td class="num"><span id="tOtlCurrent">0</span></td><td class="num"><input type="number" id="tOtlAdd" min="0" value="0" oninput="updateNewTotal('t','Otl')"></td><td class="num"><span id="tOtlNew" class="pts-cell">0</span></td></tr>
-          <tr><td>BP (buts pour)</td><td class="num"><span id="tGfCurrent">0</span></td><td class="num"><input type="number" id="tGfAdd" min="0" value="0" oninput="updateNewTotal('t','Gf')"></td><td class="num"><span id="tGfNew" class="pts-cell">0</span></td></tr>
-          <tr><td>BC (buts contre)</td><td class="num"><span id="tGaCurrent">0</span></td><td class="num"><input type="number" id="tGaAdd" min="0" value="0" oninput="updateNewTotal('t','Ga')"></td><td class="num"><span id="tGaNew" class="pts-cell">0</span></td></tr>
+          <tr><td>PJ</td><td class="num"><span id="tGpCurrent" class="editable-stat" onclick="makeStatEditable('t','Gp')">0</span></td><td class="num"><input type="number" id="tGpAdd" min="0" value="0" oninput="updateNewTotal('t','Gp')"></td><td class="num"><span id="tGpNew" class="pts-cell">0</span></td></tr>
+          <tr><td>V (victoires)</td><td class="num"><span id="tWCurrent" class="editable-stat" onclick="makeStatEditable('t','W')">0</span></td><td class="num"><input type="number" id="tWAdd" min="0" value="0" oninput="updateNewTotal('t','W')"></td><td class="num"><span id="tWNew" class="pts-cell">0</span></td></tr>
+          <tr><td>D (défaites)</td><td class="num"><span id="tLCurrent" class="editable-stat" onclick="makeStatEditable('t','L')">0</span></td><td class="num"><input type="number" id="tLAdd" min="0" value="0" oninput="updateNewTotal('t','L')"></td><td class="num"><span id="tLNew" class="pts-cell">0</span></td></tr>
+          <tr><td>DP (déf. prol.)</td><td class="num"><span id="tOtlCurrent" class="editable-stat" onclick="makeStatEditable('t','Otl')">0</span></td><td class="num"><input type="number" id="tOtlAdd" min="0" value="0" oninput="updateNewTotal('t','Otl')"></td><td class="num"><span id="tOtlNew" class="pts-cell">0</span></td></tr>
+          <tr><td>BP (buts pour)</td><td class="num"><span id="tGfCurrent" class="editable-stat" onclick="makeStatEditable('t','Gf')">0</span></td><td class="num"><input type="number" id="tGfAdd" min="0" value="0" oninput="updateNewTotal('t','Gf')"></td><td class="num"><span id="tGfNew" class="pts-cell">0</span></td></tr>
+          <tr><td>BC (buts contre)</td><td class="num"><span id="tGaCurrent" class="editable-stat" onclick="makeStatEditable('t','Ga')">0</span></td><td class="num"><input type="number" id="tGaAdd" min="0" value="0" oninput="updateNewTotal('t','Ga')"></td><td class="num"><span id="tGaNew" class="pts-cell">0</span></td></tr>
         </tbody>
       </table>
     </div>
