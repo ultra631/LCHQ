@@ -963,6 +963,14 @@
   .match-card:hover {
     border-color: var(--border-bright);
   }
+  .match-card.played {
+    cursor: pointer;
+  }
+  .match-card.played:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
   body.admin-mode .match-card {
     cursor: pointer;
   }
@@ -1023,24 +1031,6 @@
     border-radius: 4px;
     letter-spacing: 1px;
     font-weight: 700;
-  }
-  .match-stats-btn {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    background: rgba(91, 155, 213, 0.15);
-    border: 1px solid rgba(91, 155, 213, 0.4);
-    color: #5b9bd5;
-    font-size: 16px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .match-stats-btn:hover {
-    background: rgba(91, 155, 213, 0.25);
-    border-color: #5b9bd5;
-    transform: scale(1.1);
   }
 
   /* Nav admin items */
@@ -2505,6 +2495,7 @@
 
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('matchStatsModal')">Fermer</button>
+      <button class="btn btn-secondary admin-only" onclick="openMatchModalFromStats()" style="display:none;">⚙️ Modifier score</button>
       <button class="btn btn-primary admin-only" onclick="saveMatchStats()" style="display:none;">💾 Enregistrer stats</button>
     </div>
   </div>
@@ -4270,7 +4261,14 @@ function renderSchedule() {
 function renderMatchCard(m) {
   const played = isMatchPlayed(m);
   const dpBadge = m.is_dp ? '<span class="match-dp-badge">DP</span>' : '';
-  const adminAttr = `onclick="if(document.body.classList.contains('admin-mode'))openMatchModal('${m.id}')"`;
+  
+  // Clic sur match ouvre stats si joué, modal score si admin
+  let clickAttr = '';
+  if (played) {
+    clickAttr = `onclick="openMatchStatsModal('${m.id}')"`;
+  } else if (isAdmin) {
+    clickAttr = `onclick="openMatchModal('${m.id}')"`;
+  }
 
   let center;
   if (played) {
@@ -4284,13 +4282,9 @@ function renderMatchCard(m) {
   } else {
     center = `<div class="match-center">VS</div>`;
   }
-  
-  // Bouton Stats pour les matchs joués
-  const statsBtn = played ? `<button class="match-stats-btn" onclick="event.stopPropagation();openMatchStatsModal('${m.id}')" title="Voir les stats du match">📊</button>` : '';
 
-  return `<div class="match-card ${played ? 'played' : 'upcoming'}" ${adminAttr}>
+  return `<div class="match-card ${played ? 'played' : 'upcoming'}" ${clickAttr}>
     ${dpBadge}
-    ${statsBtn}
     ${teamMiniDisplay(m.away, 'away')}
     ${center}
     ${teamMiniDisplay(m.home, 'home')}
@@ -4411,9 +4405,10 @@ function openMatchStatsModal(matchId) {
   // Afficher contenu
   renderMatchStatsContent(match, away, home);
   
-  // Bouton sauvegarder visible seulement en mode admin
-  const saveBtn = document.querySelector('#matchStatsModal .admin-only');
-  if (saveBtn) saveBtn.style.display = isAdmin ? 'inline-block' : 'none';
+  // Boutons admin visibles seulement en mode admin
+  document.querySelectorAll('#matchStatsModal .admin-only').forEach(btn => {
+    btn.style.display = isAdmin ? 'inline-block' : 'none';
+  });
   
   openModal('matchStatsModal');
 }
@@ -4613,6 +4608,11 @@ function saveMatchStats() {
   alert('✅ Stats du match sauvegardées!');
   closeModal('matchStatsModal');
   saveToFirebase();
+}
+
+function openMatchModalFromStats() {
+  closeModal('matchStatsModal');
+  openMatchModal(currentMatchStats);
 }
 
 // ============ FIN CALENDRIER ============
