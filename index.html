@@ -3059,6 +3059,10 @@ function editTeamStanding6S(teamId) {
     return;
   }
   
+  // Marquer qu'on édite une équipe 6S
+  editingTeamKey = teamId;
+  editingTeam6S = true;
+  
   // Trouver ou créer standings
   if (!DATA.season_3_6v6) DATA.season_3_6v6 = {};
   if (!DATA.season_3_6v6.standings) DATA.season_3_6v6.standings = [];
@@ -3072,46 +3076,17 @@ function editTeamStanding6S(teamId) {
   }
   
   const team = DATA.teams[teamId];
-  const teamName = team ? team.name : teamId;
+  document.getElementById('teamModalTitle').innerHTML = `✏️ ${team.emoji} ${team.name}`;
+  document.getElementById('teamModalSubtitle').innerHTML = `${team.city} · 6 vs 6`;
+  document.getElementById('tStreak').value = teamStanding.streak || '-';
   
-  // Créer un prompt simple pour modifier
-  const newGP = prompt(`${teamName} - Matchs joués (PJ):`, teamStanding.gp || 0);
-  if (newGP === null) return;
+  // Charger les stats dans le modal
+  loadStatsIntoModal('t', teamStanding, {
+    'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
+    'Gf': 'gf', 'Ga': 'ga'
+  });
   
-  const newW = prompt(`${teamName} - Victoires (V):`, teamStanding.w || 0);
-  if (newW === null) return;
-  
-  const newL = prompt(`${teamName} - Défaites (D):`, teamStanding.l || 0);
-  if (newL === null) return;
-  
-  const newOTL = prompt(`${teamName} - Défaites prolongation (DP):`, teamStanding.otl || 0);
-  if (newOTL === null) return;
-  
-  const newGF = prompt(`${teamName} - Buts pour (BP):`, teamStanding.gf || 0);
-  if (newGF === null) return;
-  
-  const newGA = prompt(`${teamName} - Buts contre (BC):`, teamStanding.ga || 0);
-  if (newGA === null) return;
-  
-  const newStreak = prompt(`${teamName} - Série (ex: V3, D2):`, teamStanding.streak || '');
-  if (newStreak === null) return;
-  
-  // Mettre à jour
-  teamStanding.gp = parseInt(newGP) || 0;
-  teamStanding.w = parseInt(newW) || 0;
-  teamStanding.l = parseInt(newL) || 0;
-  teamStanding.otl = parseInt(newOTL) || 0;
-  teamStanding.gf = parseInt(newGF) || 0;
-  teamStanding.ga = parseInt(newGA) || 0;
-  teamStanding.streak = newStreak;
-  
-  // Calculer points: V=2pts, DP=1pt, D=0pt
-  teamStanding.pts = (teamStanding.w * 2) + (teamStanding.otl * 1);
-  
-  // Sauvegarder et rafraîchir
-  saveToFirebase();
-  renderStandings6SNew();
-  alert('✅ Stats mises à jour!');
+  openModal('teamModal');
 }
 
 // PLAYERS
@@ -3646,6 +3621,7 @@ let isAdmin = false;
 let editingPlayerId = null;
 let editingGoalieId = null;
 let editingTeamKey = null;
+let editingTeam6S = false;
 let editingDivision = null; // Pour savoir si on édite en mode 4S ou 6S
 
 // HELPER: Affichage des badges de position
@@ -4225,23 +4201,52 @@ function openTeamModal(teamKey) {
 }
 
 function saveTeam() {
-  const t = DATA.teams[editingTeamKey];
   const newVal = (key) => parseFloat(document.getElementById(`t${key}New`).textContent) || 0;
-
   const w = newVal('W');
   const otl = newVal('Otl');
-
-  t.record.gp = newVal('Gp');
-  t.record.w = w;
-  t.record.l = newVal('L');
-  t.record.otl = otl;
-  t.record.sol = 0;  // Pas de fusillade dans la ligue
-  t.record.gf = newVal('Gf');
-  t.record.ga = newVal('Ga');
-  t.record.streak = document.getElementById('tStreak').value || '-';
-  t.record.pts = w * 2 + otl;
-  closeModal('teamModal');
-  rerenderAll();
+  
+  if (editingTeam6S) {
+    // MODE 6S
+    if (!DATA.season_3_6v6) DATA.season_3_6v6 = {};
+    if (!DATA.season_3_6v6.standings) DATA.season_3_6v6.standings = [];
+    
+    let teamStanding = DATA.season_3_6v6.standings.find(s => s.team === editingTeamKey);
+    if (!teamStanding) {
+      teamStanding = { team: editingTeamKey };
+      DATA.season_3_6v6.standings.push(teamStanding);
+    }
+    
+    teamStanding.gp = newVal('Gp');
+    teamStanding.w = w;
+    teamStanding.l = newVal('L');
+    teamStanding.otl = otl;
+    teamStanding.gf = newVal('Gf');
+    teamStanding.ga = newVal('Ga');
+    teamStanding.streak = document.getElementById('tStreak').value || '-';
+    teamStanding.pts = w * 2 + otl;
+    
+    editingTeam6S = false;
+    closeModal('teamModal');
+    saveToFirebase();
+    renderStandings6SNew();
+    
+  } else {
+    // MODE 4S (NHL/LHJMQ)
+    const t = DATA.teams[editingTeamKey];
+    
+    t.record.gp = newVal('Gp');
+    t.record.w = w;
+    t.record.l = newVal('L');
+    t.record.otl = otl;
+    t.record.sol = 0;
+    t.record.gf = newVal('Gf');
+    t.record.ga = newVal('Ga');
+    t.record.streak = document.getElementById('tStreak').value || '-';
+    t.record.pts = w * 2 + otl;
+    
+    closeModal('teamModal');
+    rerenderAll();
+  }
 }
 
 // ===== TÉLÉCHARGEMENT data.json =====
