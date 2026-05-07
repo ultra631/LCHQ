@@ -5560,14 +5560,14 @@ function renderPlayers6S() {
     const foPct = p.fopct ? p.fopct.toFixed(1) : '0.0';
     const passPct = p.passpct ? p.passpct.toFixed(1) : '0.0';
     
-    const adminActions = `<td class="admin-row-actions">
-      <button class="row-action-btn" onclick="openPlayerModal('${p.id}', '6s')" title="Modifier">✏️</button>
-      <button class="row-action-btn delete" onclick="confirmDeletePlayer6S('${p.id}')" title="Supprimer">🗑️</button>
-    </td>`;
+    const adminActions = `<span class="admin-row-actions">
+      <button class="row-action-btn" onclick="event.stopPropagation();openPlayerModal('${p.id}', '6s')" title="Modifier">✏️</button>
+      <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer6S('${p.id}')" title="Supprimer">🗑️</button>
+    </span>`;
     
     return `<tr onclick="if(${!p.team ? 'false' : 'true'})showTeamDetail6S('${p.team || ''}')" style="${p.team ? 'cursor:pointer;' : ''}">
       <td class="num">${i + 1}</td>
-      <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+      <td style="font-weight:600;">${escapeHtml(p.name)} ${adminActions}</td>
       <td>${teamCell}</td>
       <td class="num">${p.gp || 0}</td>
       <td class="num">${p.g || 0}</td>
@@ -5586,7 +5586,6 @@ function renderPlayers6S() {
       <td class="num">${p.pt || 0}</td>
       <td class="num">${p.pr || 0}</td>
       <td class="num">${passPct}%</td>
-      ${adminActions}
     </tr>`;
   }).join('');
 
@@ -5600,7 +5599,6 @@ function renderPlayers6S() {
         <th class="num">%MJ</th><th class="num">TB</th><th class="num">INT</th>
         <th class="num">PRISES</th><th class="num">PERT</th><th class="num">PT</th>
         <th class="num">PR</th><th class="num">%PR</th>
-        <th class="admin-only-col"></th>
       </tr></thead>
       <tbody>${rows || '<tr><td colspan="21" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun joueur ajouté</td></tr>'}</tbody>
     </table>
@@ -5617,14 +5615,14 @@ function renderGoalies6S() {
       ? `<div class="team-cell">${teamLogoHtml(team)} <span>${escapeHtml(team.name)}</span></div>`
       : '—';
     
-    const adminActions = `<td class="admin-row-actions">
-      <button class="row-action-btn" onclick="openGoalieModal('${g.id}', '6s')" title="Modifier">✏️</button>
-      <button class="row-action-btn delete" onclick="confirmDeleteGoalie6S('${g.id}')" title="Supprimer">🗑️</button>
-    </td>`;
+    const adminActions = `<span class="admin-row-actions">
+      <button class="row-action-btn" onclick="event.stopPropagation();openGoalieModal('${g.id}', '6s')" title="Modifier">✏️</button>
+      <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeleteGoalie6S('${g.id}')" title="Supprimer">🗑️</button>
+    </span>`;
     
     return `<tr onclick="if(${!g.team ? 'false' : 'true'})showTeamDetail6S('${g.team || ''}')" style="${g.team ? 'cursor:pointer;' : ''}">
       <td class="num">${i + 1}</td>
-      <td style="font-weight:600;">${escapeHtml(g.name)}</td>
+      <td style="font-weight:600;">${escapeHtml(g.name)} ${adminActions}</td>
       <td>${teamCell}</td>
       <td class="num">${g.gp || 0}</td>
       <td class="num pts-cell">${g.w || 0}</td>
@@ -5635,7 +5633,6 @@ function renderGoalies6S() {
       <td class="num">${g.so || 0}</td>
       <td class="num">${g.sa || 0}</td>
       <td class="num">${g.sv || 0}</td>
-      ${adminActions}
     </tr>`;
   }).join('');
 
@@ -5646,7 +5643,6 @@ function renderGoalies6S() {
         <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
         <th class="num">DP</th><th class="num">MOY</th><th class="num">%ARR</th>
         <th class="num">BL</th><th class="num">TC</th><th class="num">ARR</th>
-        <th class="admin-only-col"></th>
       </tr></thead>
       <tbody>${rows || '<tr><td colspan="13" style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucun gardien ajouté</td></tr>'}</tbody>
     </table>
