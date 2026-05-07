@@ -1024,6 +1024,24 @@
     letter-spacing: 1px;
     font-weight: 700;
   }
+  .match-stats-btn {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(91, 155, 213, 0.15);
+    border: 1px solid rgba(91, 155, 213, 0.4);
+    color: #5b9bd5;
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .match-stats-btn:hover {
+    background: rgba(91, 155, 213, 0.25);
+    border-color: #5b9bd5;
+    transform: scale(1.1);
+  }
 
   /* Nav admin items */
   .nav-btn.admin-nav { display: none; }
@@ -2453,6 +2471,41 @@
       <button class="btn btn-secondary" onclick="closeModal('matchModal')">Annuler</button>
       <button class="btn btn-danger" id="matchClearBtn" onclick="clearMatchScore()" style="display:none;">🗑️ Effacer score</button>
       <button class="btn btn-primary" onclick="saveMatchScore()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Stats du match -->
+<div class="modal-overlay" id="matchStatsModal">
+  <div class="modal" style="max-width:900px;">
+    <h3 id="matchStatsTitle">📊 Statistiques du match</h3>
+    <div class="modal-info" id="matchStatsSubtitle" style="margin-bottom:20px;"></div>
+
+    <div class="match-stats-container">
+      <!-- En-tête avec score -->
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;margin-bottom:30px;padding:20px;background:var(--bg-card);border-radius:12px;">
+        <div style="text-align:center;">
+          <div id="statsAwayLogo" style="font-size:48px;margin-bottom:8px;"></div>
+          <div id="statsAwayName" style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;"></div>
+          <div id="statsAwayScore" style="font-family:'Bebas Neue';font-size:48px;color:var(--red);margin-top:8px;"></div>
+        </div>
+        <div style="font-family:'Bebas Neue';font-size:40px;color:var(--text-tertiary);">@</div>
+        <div style="text-align:center;">
+          <div id="statsHomeLogo" style="font-size:48px;margin-bottom:8px;"></div>
+          <div id="statsHomeName" style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;"></div>
+          <div id="statsHomeScore" style="font-family:'Bebas Neue';font-size:48px;color:var(--red);margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <!-- Contenu -->
+      <div id="matchStatsContent">
+        <!-- Sera rempli dynamiquement -->
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('matchStatsModal')">Fermer</button>
+      <button class="btn btn-primary admin-only" onclick="saveMatchStats()" style="display:none;">💾 Enregistrer stats</button>
     </div>
   </div>
 </div>
@@ -4231,9 +4284,13 @@ function renderMatchCard(m) {
   } else {
     center = `<div class="match-center">VS</div>`;
   }
+  
+  // Bouton Stats pour les matchs joués
+  const statsBtn = played ? `<button class="match-stats-btn" onclick="event.stopPropagation();openMatchStatsModal('${m.id}')" title="Voir les stats du match">📊</button>` : '';
 
   return `<div class="match-card ${played ? 'played' : 'upcoming'}" ${adminAttr}>
     ${dpBadge}
+    ${statsBtn}
     ${teamMiniDisplay(m.away, 'away')}
     ${center}
     ${teamMiniDisplay(m.home, 'home')}
@@ -4315,6 +4372,247 @@ function clearMatchScore() {
   }
   closeModal('matchModal');
   renderSchedule();
+}
+
+// ============ STATS DE MATCH ============
+
+let currentMatchStats = null;
+
+function openMatchStatsModal(matchId) {
+  // Trouver le match
+  let match = null;
+  let weekNum = null;
+  for (const w of DATA.schedule.weeks) {
+    const found = (w.matches || []).find(m => m.id === matchId);
+    if (found) { match = found; weekNum = w.num; break; }
+  }
+  if (!match) return;
+  
+  currentMatchStats = matchId;
+  const away = DATA.teams[match.away];
+  const home = DATA.teams[match.home];
+  
+  // Header
+  document.getElementById('matchStatsTitle').textContent = `📊 Statistiques du match`;
+  document.getElementById('matchStatsSubtitle').textContent = `Semaine ${weekNum} · ${match.division.toUpperCase()} · ${match.time}`;
+  
+  // Logos et scores
+  document.getElementById('statsAwayLogo').textContent = away.emoji;
+  document.getElementById('statsHomeLogo').textContent = home.emoji;
+  document.getElementById('statsAwayName').textContent = away.name;
+  document.getElementById('statsHomeName').textContent = home.name;
+  document.getElementById('statsAwayScore').textContent = match.away_score ?? 0;
+  document.getElementById('statsHomeScore').textContent = match.home_score ?? 0;
+  
+  // Initialiser la structure de données si elle n'existe pas
+  if (!DATA.matchStats) DATA.matchStats = {};
+  if (!DATA.matchStats[matchId]) DATA.matchStats[matchId] = { players: [] };
+  
+  // Afficher contenu
+  renderMatchStatsContent(match, away, home);
+  
+  // Bouton sauvegarder visible seulement en mode admin
+  const saveBtn = document.querySelector('#matchStatsModal .admin-only');
+  if (saveBtn) saveBtn.style.display = isAdmin ? 'inline-block' : 'none';
+  
+  openModal('matchStatsModal');
+}
+
+function renderMatchStatsContent(match, awayTeam, homeTeam) {
+  const isEditMode = isAdmin;
+  const matchStats = DATA.matchStats[currentMatchStats] || { players: [] };
+  
+  let html = '';
+  
+  if (isEditMode) {
+    // MODE ADMIN: Formulaire pour entrer les stats
+    html += `<div class="modal-info" style="background:rgba(91,155,213,0.1);border-color:rgba(91,155,213,0.3);color:#93c5fd;margin-bottom:20px;">
+      ⚠️ <strong>Mode Admin</strong> : Rentre les stats des joueurs qui ont participé au match.
+    </div>`;
+    
+    // Sélecteur de joueur
+    html += `<div class="modal-form-group">
+      <label>Ajouter un joueur au match</label>
+      <select id="addPlayerToMatch" onchange="addPlayerToMatchStats(this.value)">
+        <option value="">— Sélectionner un joueur —</option>`;
+    
+    // Liste des joueurs des deux équipes + remplaçants
+    const allPlayers = DATA.players.filter(p => 
+      p.team === match.away || p.team === match.home || p.status === 'sub'
+    );
+    
+    allPlayers.forEach(p => {
+      const teamLabel = p.team ? DATA.teams[p.team]?.name : 'Remplaçant';
+      html += `<option value="${p.id}">${p.name} (${teamLabel})</option>`;
+    });
+    
+    html += `</select></div>`;
+  }
+  
+  // Afficher les joueurs avec stats
+  if (matchStats.players.length === 0) {
+    html += `<div class="empty-state" style="padding:40px 20px;">
+      <div class="empty-state-icon">🏒</div>
+      <p><strong>Aucune statistique enregistrée</strong></p>
+      ${isEditMode ? '<p style="margin-top:8px;color:var(--text-tertiary);">Ajoute des joueurs ci-dessus pour commencer.</p>' : ''}
+    </div>`;
+  } else {
+    // Grouper par équipe
+    const awayPlayers = matchStats.players.filter(p => {
+      const player = DATA.players.find(pl => pl.id === p.playerId);
+      return player && (player.team === match.away || (player.status === 'sub' && p.team === match.away));
+    });
+    
+    const homePlayers = matchStats.players.filter(p => {
+      const player = DATA.players.find(pl => pl.id === p.playerId);
+      return player && (player.team === match.home || (player.status === 'sub' && p.team === match.home));
+    });
+    
+    // Tableau visiteur
+    if (awayPlayers.length > 0) {
+      html += renderTeamStatsTable(awayPlayers, awayTeam, isEditMode, 'away');
+    }
+    
+    // Tableau domicile
+    if (homePlayers.length > 0) {
+      html += renderTeamStatsTable(homePlayers, homeTeam, isEditMode, 'home');
+    }
+  }
+  
+  document.getElementById('matchStatsContent').innerHTML = html;
+}
+
+function renderTeamStatsTable(players, team, isEditMode, side) {
+  let html = `<div style="margin-bottom:30px;">
+    <h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+      <span>${team.emoji}</span>
+      <span>${team.name}</span>
+    </h4>
+    <div class="stats-table-wrap">
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th>Joueur</th>
+            <th class="num">B</th>
+            <th class="num">A</th>
+            <th class="num">PTS</th>
+            <th class="num">+/-</th>
+            <th class="num">Tirs</th>
+            ${isEditMode ? '<th class="num">Actions</th>' : ''}
+          </tr>
+        </thead>
+        <tbody>`;
+  
+  players.forEach(p => {
+    const player = DATA.players.find(pl => pl.id === p.playerId);
+    if (!player) return;
+    
+    const pts = (p.g || 0) + (p.a || 0);
+    
+    if (isEditMode) {
+      html += `<tr>
+        <td><strong>${player.name}</strong></td>
+        <td class="num"><input type="number" min="0" value="${p.g || 0}" onchange="updatePlayerMatchStat('${p.playerId}','g',this.value)" style="width:50px;"></td>
+        <td class="num"><input type="number" min="0" value="${p.a || 0}" onchange="updatePlayerMatchStat('${p.playerId}','a',this.value)" style="width:50px;"></td>
+        <td class="num"><strong>${pts}</strong></td>
+        <td class="num"><input type="number" value="${p.pm || 0}" onchange="updatePlayerMatchStat('${p.playerId}','pm',this.value)" style="width:50px;"></td>
+        <td class="num"><input type="number" min="0" value="${p.shots || 0}" onchange="updatePlayerMatchStat('${p.playerId}','shots',this.value)" style="width:50px;"></td>
+        <td class="num"><button class="btn btn-danger" style="padding:4px 8px;font-size:12px;" onclick="removePlayerFromMatch('${p.playerId}')">🗑️</button></td>
+      </tr>`;
+    } else {
+      html += `<tr>
+        <td><strong>${player.name}</strong></td>
+        <td class="num">${p.g || 0}</td>
+        <td class="num">${p.a || 0}</td>
+        <td class="num"><strong>${pts}</strong></td>
+        <td class="num">${p.pm > 0 ? '+' : ''}${p.pm || 0}</td>
+        <td class="num">${p.shots || 0}</td>
+      </tr>`;
+    }
+  });
+  
+  html += `</tbody></table></div></div>`;
+  return html;
+}
+
+function addPlayerToMatchStats(playerId) {
+  if (!playerId) return;
+  
+  const matchStats = DATA.matchStats[currentMatchStats];
+  
+  // Vérifier si déjà ajouté
+  if (matchStats.players.find(p => p.playerId === playerId)) {
+    alert('Ce joueur est déjà dans le match!');
+    document.getElementById('addPlayerToMatch').value = '';
+    return;
+  }
+  
+  // Déterminer l'équipe
+  const player = DATA.players.find(p => p.id === playerId);
+  let match = null;
+  for (const w of DATA.schedule.weeks) {
+    const found = (w.matches || []).find(m => m.id === currentMatchStats);
+    if (found) { match = found; break; }
+  }
+  
+  let playerTeam = player.team;
+  
+  // Si c'est un remplaçant sans équipe, demander pour quelle équipe il joue
+  if (player.status === 'sub' && !playerTeam) {
+    const awayTeam = DATA.teams[match.away];
+    const homeTeam = DATA.teams[match.home];
+    const choice = confirm(`${player.name} joue pour ${awayTeam.name}?\n\nOK = ${awayTeam.name}\nAnnuler = ${homeTeam.name}`);
+    playerTeam = choice ? match.away : match.home;
+  }
+  
+  // Ajouter le joueur
+  matchStats.players.push({
+    playerId: playerId,
+    team: playerTeam,
+    g: 0,
+    a: 0,
+    pm: 0,
+    shots: 0
+  });
+  
+  document.getElementById('addPlayerToMatch').value = '';
+  
+  // Recharger l'affichage
+  const away = DATA.teams[match.away];
+  const home = DATA.teams[match.home];
+  renderMatchStatsContent(match, away, home);
+}
+
+function updatePlayerMatchStat(playerId, stat, value) {
+  const matchStats = DATA.matchStats[currentMatchStats];
+  const playerStat = matchStats.players.find(p => p.playerId === playerId);
+  if (playerStat) {
+    playerStat[stat] = parseFloat(value) || 0;
+  }
+}
+
+function removePlayerFromMatch(playerId) {
+  if (!confirm('Retirer ce joueur du match?')) return;
+  
+  const matchStats = DATA.matchStats[currentMatchStats];
+  matchStats.players = matchStats.players.filter(p => p.playerId !== playerId);
+  
+  // Recharger
+  let match = null;
+  for (const w of DATA.schedule.weeks) {
+    const found = (w.matches || []).find(m => m.id === currentMatchStats);
+    if (found) { match = found; break; }
+  }
+  const away = DATA.teams[match.away];
+  const home = DATA.teams[match.home];
+  renderMatchStatsContent(match, away, home);
+}
+
+function saveMatchStats() {
+  // Les données sont déjà dans DATA.matchStats grâce aux updatePlayerMatchStat
+  alert('✅ Stats du match sauvegardées!');
+  closeModal('matchStatsModal');
+  saveToFirebase();
 }
 
 // ============ FIN CALENDRIER ============
