@@ -6204,155 +6204,23 @@ function renderArchiveS3() {
     return;
   }
 
-  if (currentArchiveS3Section === 'standings') {
-    container.innerHTML = renderArchiveS3Standings(archive);
-  } else if (currentArchiveS3Section === 'players') {
-    container.innerHTML = renderArchiveS3Players(archive);
-  } else if (currentArchiveS3Section === 'goalies') {
-    container.innerHTML = renderArchiveS3Goalies(archive);
-  }
-}
-
-function renderArchiveS3Standings(archive) {
-  const nhlHtml = renderArchiveS3Division(archive.standings_nhl, 'Division NHL', 'var(--nhl-color)');
-  const lhjmqHtml = renderArchiveS3Division(archive.standings_lhjmq, 'Division LHJMQ', 'var(--lhjmq-color)');
-  return nhlHtml + lhjmqHtml;
-}
-
-function renderArchiveS3Division(teams, divLabel, divColor) {
-  if (!teams || teams.length === 0) {
-    return `<div class="card"><h3>${divLabel}</h3><div class="empty-state"><p>Données non disponibles</p></div></div>`;
-  }
-  
-  const rows = teams.map((row, i) => {
-    const team = DATA.teams[row.team_key];
-    if (!team) return '';
-    const teamCell = team.logo
-      ? `<div class="team-cell"><img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'"><span>${team.name}</span></div>`
-      : `<div class="team-cell">${team.emoji} ${team.name}</div>`;
-    const diff = (row.gf || 0) - (row.ga || 0);
-    const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
-    const diffStr = diff > 0 ? `+${diff}` : diff;
-    return `<tr>
-      <td class="num">${i + 1}</td>
-      <td>${teamCell}</td>
-      <td class="num">${row.gp}</td>
-      <td class="num">${row.w}</td>
-      <td class="num">${row.l}</td>
-      <td class="num">${row.otl}</td>
-      <td class="num">${row.gf}</td>
-      <td class="num">${row.ga}</td>
-      <td class="num ${diffClass}">${diffStr}</td>
-      <td class="num pts-cell">${row.pts}</td>
-    </tr>`;
-  }).join('');
-
-  return `<div style="margin-bottom: 30px;">
-    <h3 class="section-title" style="color: ${divColor};">${divLabel}</h3>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>#</th><th>Équipe</th><th class="num">PJ</th><th class="num">V</th><th class="num">D</th><th class="num">DP</th><th class="num">BP</th><th class="num">BC</th><th class="num">DIFF</th><th class="num">PTS</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-  </div>`;
-}
-
-function renderArchiveS3Players(archive) {
-  const players = archive.top_players || [];
-  if (players.length === 0) {
-    return '<div class="card"><div class="empty-state"><p>Aucune donnée de joueur disponible</p></div></div>';
-  }
-
-  const topScorers = [...players].sort((a, b) => (b.g || 0) - (a.g || 0)).slice(0, 10);
-  const topAssists = [...players].sort((a, b) => (b.a || 0) - (a.a || 0)).slice(0, 10);
-  const topPoints = [...players].sort((a, b) => (b.pts || 0) - (a.pts || 0)).slice(0, 10);
-
-  const renderPlayerList = (list, statKey, statLabel) => {
-    return list.map((p, i) => {
-      const team = DATA.teams[p.team_key];
-      const teamName = team ? team.name : 'Sans équipe';
-      return `<tr>
-        <td class="num">${i + 1}</td>
-        <td><strong>${escapeHtml(p.name)}</strong></td>
-        <td style="color:var(--text-tertiary);font-size:12px;">${teamName}</td>
-        <td class="num">${p.gp || 0}</td>
-        <td class="num pts-cell">${p[statKey] || 0}</td>
-      </tr>`;
-    }).join('');
+  // Transformer les données S3 au format S4
+  const archiveS4Format = {
+    standings: {
+      nhl: archive.standings_nhl || [],
+      lhjmq: archive.standings_lhjmq || []
+    },
+    players: archive.top_players || [],
+    goalies: archive.top_goalies || []
   };
 
-  return `<div class="grid-3">
-    <div class="card">
-      <h3>🏒 Top 10 Buteurs</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Joueur</th><th>Équipe</th><th class="num">PJ</th><th class="num">B</th></tr></thead>
-          <tbody>${renderPlayerList(topScorers, 'g', 'B')}</tbody>
-        </table>
-      </div>
-    </div>
-    <div class="card">
-      <h3>🤝 Top 10 Passeurs</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Joueur</th><th>Équipe</th><th class="num">PJ</th><th class="num">A</th></tr></thead>
-          <tbody>${renderPlayerList(topAssists, 'a', 'A')}</tbody>
-        </table>
-      </div>
-    </div>
-    <div class="card">
-      <h3>🎯 Top 10 Pointeurs</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Joueur</th><th>Équipe</th><th class="num">PJ</th><th class="num">PTS</th></tr></thead>
-          <tbody>${renderPlayerList(topPoints, 'pts', 'PTS')}</tbody>
-        </table>
-      </div>
-    </div>
-  </div>`;
-}
-
-function renderArchiveS3Goalies(archive) {
-  const goalies = archive.top_goalies || [];
-  if (goalies.length === 0) {
-    return '<div class="card"><div class="empty-state"><p>Aucune donnée de gardien disponible</p></div></div>';
+  if (currentArchiveS3Section === 'standings') {
+    container.innerHTML = renderArchiveStandings(archiveS4Format);
+  } else if (currentArchiveS3Section === 'players') {
+    container.innerHTML = renderArchivePlayers(archiveS4Format);
+  } else if (currentArchiveS3Section === 'goalies') {
+    container.innerHTML = renderArchiveGoalies(archiveS4Format);
   }
-
-  const topGoalies = [...goalies].sort((a, b) => (b.w || 0) - (a.w || 0)).slice(0, 10);
-
-  const rows = topGoalies.map((g, i) => {
-    const team = DATA.teams[g.team_key];
-    const teamName = team ? team.name : 'Sans équipe';
-    const gaa = g.gaa ? g.gaa.toFixed(2) : '0.00';
-    const svpct = g.svpct ? (g.svpct * 100).toFixed(1) : '0.0';
-    return `<tr>
-      <td class="num">${i + 1}</td>
-      <td><strong>🥅 ${escapeHtml(g.name)}</strong></td>
-      <td style="color:var(--text-tertiary);font-size:12px;">${teamName}</td>
-      <td class="num">${g.gp || 0}</td>
-      <td class="num">${g.w || 0}</td>
-      <td class="num">${g.l || 0}</td>
-      <td class="num">${g.otl || 0}</td>
-      <td class="num">${gaa}</td>
-      <td class="num">${svpct}%</td>
-      <td class="num">${g.so || 0}</td>
-    </tr>`;
-  }).join('');
-
-  return `<div class="card">
-    <h3>🥅 Top 10 Gardiens</h3>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>#</th><th>Gardien</th><th>Équipe</th><th class="num">PJ</th><th class="num">V</th><th class="num">D</th><th class="num">DP</th><th class="num">MOY</th><th class="num">%ARR</th><th class="num">BL</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-  </div>`;
 }
 
 // ============ IMPORT ARCHIVES ============
