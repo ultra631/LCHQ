@@ -2181,7 +2181,7 @@
         </label>
         <label class="status-option">
           <input type="radio" name="pStatus" value="sub" onchange="updatePlayerFormVisibility()">
-          <span><strong>🔄 Remplaçant</strong><br><small>Disponible pour toutes les équipes</small></span>
+          <span><strong>🔄 Remplaçant</strong><br><small>Peut jouer pour n'importe quelle équipe</small></span>
         </label>
         <label class="status-option">
           <input type="radio" name="pStatus" value="inactive" onchange="updatePlayerFormVisibility()">
@@ -2191,8 +2191,10 @@
     </div>
 
     <div class="modal-form-group" id="pTeamGroup">
-      <label>Équipe</label>
-      <select id="pTeam"></select>
+      <label>Équipe <small style="color:var(--text-tertiary);font-weight:400;" id="pTeamLabel">(obligatoire pour réguliers)</small></label>
+      <select id="pTeam">
+        <option value="">— Aucune équipe —</option>
+      </select>
     </div>
 
     <div class="modal-grid">
@@ -2296,7 +2298,7 @@
         <thead>
           <tr>
             <th>Stat</th>
-            <th class="num">Total actuel</th>
+            <th class="num">Total actuel <small style="color:var(--text-tertiary);font-size:10px;">✏️</small></th>
             <th class="num"><span style="color:#5b9bd5;">+ Sem.</span></th>
             <th class="num">= Nouveau</th>
           </tr>
@@ -3562,10 +3564,18 @@ function updateSecondaryOptions() {
 function updatePlayerFormVisibility() {
   const status = document.querySelector('input[name="pStatus"]:checked').value;
   const teamGroup = document.getElementById('pTeamGroup');
+  const teamLabel = document.getElementById('pTeamLabel');
+  
+  // Toujours afficher le champ équipe
+  teamGroup.style.display = 'block';
+  
+  // Changer le label selon le statut
   if (status === 'sub') {
-    teamGroup.style.display = 'none';
+    teamLabel.textContent = '(optionnel - pour assigner à une équipe temporairement)';
+  } else if (status === 'regular') {
+    teamLabel.textContent = '(obligatoire pour réguliers)';
   } else {
-    teamGroup.style.display = 'block';
+    teamLabel.textContent = '(optionnel)';
   }
 }
 
@@ -3708,7 +3718,8 @@ function savePlayer() {
     alert('Un joueur régulier doit être assigné à une équipe!');
     return;
   }
-  if (status === 'sub') team = '';
+  // Les remplaçants peuvent avoir une équipe (optionnel)
+  // Si pas d'équipe, team reste vide
 
   const posMain = document.getElementById('pPositionMain').value;
   const posSec = document.getElementById('pPositionSec').value;
