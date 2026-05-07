@@ -812,6 +812,10 @@
   body.admin-mode .admin-only-page.page { display: none; }
   body.admin-mode .admin-only-page.page.active { display: block; }
 
+  /* Boutons/éléments admin uniquement */
+  .admin-only { display: none !important; }
+  body.admin-mode .admin-only { display: inline-block !important; }
+
   /* Table d'addition de stats (mode admin) */
   .stats-table-wrap {
     border: 1px solid var(--border);
@@ -6576,6 +6580,12 @@ function renderArchiveS3Goalies(archive) {
 let currentEditingSeason = null;
 
 function openEditArchiveModal(seasonKey) {
+  // Vérifier si on est en mode admin
+  if (!document.body.classList.contains('admin-mode')) {
+    console.warn('🔒 Accès refusé: mode admin requis');
+    return;
+  }
+  
   currentEditingSeason = seasonKey;
   const archive = DATA.archives && DATA.archives[seasonKey];
   
@@ -6591,6 +6601,12 @@ function openEditArchiveModal(seasonKey) {
 }
 
 async function saveEditedArchive() {
+  // Vérifier si on est en mode admin
+  if (!document.body.classList.contains('admin-mode')) {
+    alert('🔒 Accès refusé: vous devez être en mode admin pour sauvegarder');
+    return;
+  }
+  
   const jsonInput = document.getElementById('editArchiveJsonInput').value.trim();
   const statusDiv = document.getElementById('editArchiveStatus');
   
