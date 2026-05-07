@@ -4502,65 +4502,122 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
 }
 
 function renderTeamStatsTable(players, team, isEditMode, side) {
-  // Séparer joueurs et gardiens
-  const regularPlayers = players.filter(p => {
-    const player = DATA.players.find(pl => pl.id === p.playerId);
-    const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
-    const person = player || goalie;
-    return person && person.position_main !== 'G' && person.position !== 'G';
-  });
-  
-  const goalies = players.filter(p => {
-    const player = DATA.players.find(pl => pl.id === p.playerId);
-    const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
-    const person = player || goalie;
-    return person && (person.position_main === 'G' || person.position === 'G');
-  });
-  
   let html = `<div style="margin-bottom:30px;">
     <h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
       <span>${team.emoji}</span>
       <span>${team.name}</span>
     </h4>`;
   
-  // Tableau joueurs
-  if (regularPlayers.length > 0) {
-    html += `<div class="stats-table-wrap" style="overflow-x:auto;">
-      <table class="stats-table" style="min-width:1100px;">
-        <thead>
-          <tr>
-            <th style="position:sticky;left:0;background:var(--bg-secondary);z-index:2;">Joueur</th>
-            <th class="num">B</th>
-            <th class="num">A</th>
-            <th class="num">PTS</th>
-            <th class="num">+/-</th>
-            <th class="num">Hits</th>
-            <th class="num">TB</th>
-            <th class="num">MJG</th>
-            <th class="num">MJ</th>
-            <th class="num">%MEJ</th>
-            <th class="num">PT</th>
-            <th class="num">PR</th>
-            <th class="num">%P</th>
-            <th class="num">INT</th>
-            <th class="num">Prises</th>
-            <th class="num">Pert</th>
-            ${isEditMode ? '<th class="num" style="position:sticky;right:0;background:var(--bg-secondary);z-index:2;">Actions</th>' : ''}
-          </tr>
-        </thead>
-        <tbody>`;
+  if (players.length === 0) return html + `</div>`;
+  
+  // Tableau unique pour joueurs ET gardiens
+  html += `<div class="stats-table-wrap" style="overflow-x:auto;">
+    <table class="stats-table" style="min-width:1400px;">
+      <thead>
+        <tr>
+          <th style="position:sticky;left:0;background:var(--bg-secondary);z-index:2;">Nom</th>
+          <th class="num">Pos</th>
+          <th class="num">B</th>
+          <th class="num">A</th>
+          <th class="num">PTS</th>
+          <th class="num">+/-</th>
+          <th class="num">Hits</th>
+          <th class="num">TB</th>
+          <th class="num">MJG</th>
+          <th class="num">MJ</th>
+          <th class="num">%MEJ</th>
+          <th class="num">PT</th>
+          <th class="num">PR</th>
+          <th class="num">%P</th>
+          <th class="num">INT</th>
+          <th class="num">Prises</th>
+          <th class="num">Pert</th>
+          <th class="num">Arrêts</th>
+          <th class="num">Tirs reçus</th>
+          <th class="num">BA</th>
+          <th class="num">%Arr</th>
+          <th class="num">Blanch.</th>
+          ${isEditMode ? '<th class="num" style="position:sticky;right:0;background:var(--bg-secondary);z-index:2;">Actions</th>' : ''}
+        </tr>
+      </thead>
+      <tbody>`;
+  
+  players.forEach(p => {
+    const player = DATA.players.find(pl => pl.id === p.playerId);
+    const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
+    const person = player || goalie;
+    if (!person) return;
     
-    regularPlayers.forEach(p => {
-      const player = DATA.players.find(pl => pl.id === p.playerId);
-      if (!player) return;
+    const isGoalie = goalie !== undefined;
+    const position = person.position_main || person.position || '?';
+    
+    if (isGoalie) {
+      // Ligne gardien
+      const svpct = (p.sa || 0) > 0 ? Math.round(((p.sv || 0) / p.sa) * 1000) / 10 : 0;
+      const shutout = (p.ga || 0) === 0 ? 'Oui' : 'Non';
       
+      if (isEditMode) {
+        html += `<tr style="background:rgba(91,155,213,0.05);">
+          <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${person.name}</strong></td>
+          <td class="num"><strong>G</strong></td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num"><input type="number" min="0" value="${p.sv || 0}" onchange="updatePlayerMatchStat('${p.playerId}','sv',this.value)" style="width:60px;"></td>
+          <td class="num"><input type="number" min="0" value="${p.sa || 0}" onchange="updatePlayerMatchStat('${p.playerId}','sa',this.value)" style="width:60px;"></td>
+          <td class="num"><input type="number" min="0" value="${p.ga || 0}" onchange="updatePlayerMatchStat('${p.playerId}','ga',this.value)" style="width:60px;"></td>
+          <td class="num"><strong>${svpct.toFixed(1)}%</strong></td>
+          <td class="num"><strong>${shutout}</strong></td>
+          <td class="num" style="position:sticky;right:0;background:var(--bg-card);z-index:1;"><button class="btn btn-danger" style="padding:4px 8px;font-size:12px;" onclick="removePlayerFromMatch('${p.playerId}')">🗑️</button></td>
+        </tr>`;
+      } else {
+        html += `<tr style="background:rgba(91,155,213,0.05);">
+          <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${person.name}</strong></td>
+          <td class="num"><strong>G</strong></td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num">${p.sv || 0}</td>
+          <td class="num">${p.sa || 0}</td>
+          <td class="num">${p.ga || 0}</td>
+          <td class="num"><strong>${svpct.toFixed(1)}%</strong></td>
+          <td class="num"><strong>${shutout}</strong></td>
+        </tr>`;
+      }
+    } else {
+      // Ligne joueur
       const pts = (p.g || 0) + (p.a || 0);
       const fopct = (p.mjf || 0) > 0 ? Math.round(((p.mjg || 0) / p.mjf) * 1000) / 10 : 0;
       const passpct = (p.pt || 0) > 0 ? Math.round(((p.pr || 0) / p.pt) * 1000) / 10 : 0;
       
       if (isEditMode) {
         html += `<tr>
-          <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${player.name}</strong></td>
+          <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${person.name}</strong></td>
+          <td class="num">${position}</td>
           <td class="num"><input type="number" min="0" value="${p.g || 0}" onchange="updatePlayerMatchStat('${p.playerId}','g',this.value)" style="width:50px;"></td>
           <td class="num"><input type="number" min="0" value="${p.a || 0}" onchange="updatePlayerMatchStat('${p.playerId}','a',this.value)" style="width:50px;"></td>
           <td class="num"><strong>${pts}</strong></td>
@@ -4576,11 +4633,17 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
           <td class="num"><input type="number" min="0" value="${p.intc || 0}" onchange="updatePlayerMatchStat('${p.playerId}','intc',this.value)" style="width:50px;"></td>
           <td class="num"><input type="number" min="0" value="${p.prises || 0}" onchange="updatePlayerMatchStat('${p.playerId}','prises',this.value)" style="width:50px;"></td>
           <td class="num"><input type="number" min="0" value="${p.pert || 0}" onchange="updatePlayerMatchStat('${p.playerId}','pert',this.value)" style="width:50px;"></td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
           <td class="num" style="position:sticky;right:0;background:var(--bg-card);z-index:1;"><button class="btn btn-danger" style="padding:4px 8px;font-size:12px;" onclick="removePlayerFromMatch('${p.playerId}')">🗑️</button></td>
         </tr>`;
       } else {
         html += `<tr>
-          <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${player.name}</strong></td>
+          <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${person.name}</strong></td>
+          <td class="num">${position}</td>
           <td class="num">${p.g || 0}</td>
           <td class="num">${p.a || 0}</td>
           <td class="num"><strong>${pts}</strong></td>
@@ -4596,63 +4659,17 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
           <td class="num">${p.intc || 0}</td>
           <td class="num">${p.prises || 0}</td>
           <td class="num">${p.pert || 0}</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
+          <td class="num" style="color:var(--text-tertiary);">-</td>
         </tr>`;
       }
-    });
-    
-    html += `</tbody></table></div>`;
-  }
+    }
+  });
   
-  // Tableau gardiens
-  if (goalies.length > 0) {
-    html += `<div class="stats-table-wrap" style="overflow-x:auto;margin-top:20px;">
-      <table class="stats-table" style="min-width:600px;">
-        <thead>
-          <tr>
-            <th style="position:sticky;left:0;background:var(--bg-secondary);z-index:2;">Gardien</th>
-            <th class="num">Arrêts</th>
-            <th class="num">Tirs reçus</th>
-            <th class="num">Buts alloués</th>
-            <th class="num">% Arrêts</th>
-            <th class="num">Blanchissage</th>
-            ${isEditMode ? '<th class="num" style="position:sticky;right:0;background:var(--bg-secondary);z-index:2;">Actions</th>' : ''}
-          </tr>
-        </thead>
-        <tbody>`;
-    
-    goalies.forEach(p => {
-      const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
-      if (!goalie) return;
-      
-      const svpct = (p.sa || 0) > 0 ? Math.round(((p.sv || 0) / p.sa) * 1000) / 10 : 0;
-      const shutout = (p.ga || 0) === 0 ? 'Oui' : 'Non';
-      
-      if (isEditMode) {
-        html += `<tr>
-          <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${goalie.name}</strong></td>
-          <td class="num"><input type="number" min="0" value="${p.sv || 0}" onchange="updatePlayerMatchStat('${p.playerId}','sv',this.value)" style="width:60px;"></td>
-          <td class="num"><input type="number" min="0" value="${p.sa || 0}" onchange="updatePlayerMatchStat('${p.playerId}','sa',this.value)" style="width:60px;"></td>
-          <td class="num"><input type="number" min="0" value="${p.ga || 0}" onchange="updatePlayerMatchStat('${p.playerId}','ga',this.value)" style="width:60px;"></td>
-          <td class="num"><strong>${svpct.toFixed(1)}%</strong></td>
-          <td class="num"><strong>${shutout}</strong></td>
-          <td class="num" style="position:sticky;right:0;background:var(--bg-card);z-index:1;"><button class="btn btn-danger" style="padding:4px 8px;font-size:12px;" onclick="removePlayerFromMatch('${p.playerId}')">🗑️</button></td>
-        </tr>`;
-      } else {
-        html += `<tr>
-          <td style="position:sticky;left:0;background:var(--bg-card);z-index:1;"><strong>${goalie.name}</strong></td>
-          <td class="num">${p.sv || 0}</td>
-          <td class="num">${p.sa || 0}</td>
-          <td class="num">${p.ga || 0}</td>
-          <td class="num"><strong>${svpct.toFixed(1)}%</strong></td>
-          <td class="num"><strong>${shutout}</strong></td>
-        </tr>`;
-      }
-    });
-    
-    html += `</tbody></table></div>`;
-  }
-  
-  html += `</div>`;
+  html += `</tbody></table></div></div>`;
   return html;
 }
 
@@ -4675,6 +4692,9 @@ function addPlayerToMatchStats(playerId) {
   
   if (!person) return;
   
+  // Déterminer si c'est un gardien
+  const isGoalie = goalie !== undefined;
+  
   let match = null;
   for (const w of DATA.schedule.weeks) {
     const found = (w.matches || []).find(m => m.id === currentMatchStats);
@@ -4692,7 +4712,7 @@ function addPlayerToMatchStats(playerId) {
   }
   
   // Ajouter avec stats selon le type
-  if (goalie || person.position_main === 'G' || person.position === 'G') {
+  if (isGoalie) {
     // Stats gardien
     matchStats.players.push({
       playerId: playerId,
