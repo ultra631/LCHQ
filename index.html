@@ -3016,8 +3016,6 @@ function renderStandings6SNew() {
   const tbody = document.getElementById(bodyId);
   if (!tbody) return;
   
-  console.log('renderStandings6SNew - isAdmin:', isAdmin);
-  
   const standings = DATA.season_3_6v6?.standings || [];
   const sorted = [...standings].sort((a, b) => {
     if (b.pts !== a.pts) return b.pts - a.pts;
@@ -3035,11 +3033,13 @@ function renderStandings6SNew() {
     const diffStr = diff > 0 ? `+${diff}` : diff;
     const streak = s.streak || '—';
     
-    const canEdit = isAdmin ? `onclick="editTeamStanding('${s.team}', '6s')" style="cursor:pointer;"` : '';
+    const adminActions = `<span class="admin-row-actions">
+      <button class="row-action-btn" onclick="event.stopPropagation();editTeamStanding6S('${s.team}')" title="Modifier classement">✏️</button>
+    </span>`;
     
-    return `<tr ${canEdit}>
+    return `<tr>
       <td class="num">${i + 1}</td>
-      <td><div class="team-cell">${teamLogoHtml(team)} <span class="team-name">${escapeHtml(team.name)}</span></div></td>
+      <td><div class="team-cell">${teamLogoHtml(team)} <span class="team-name">${escapeHtml(team.name)}</span> ${adminActions}</div></td>
       <td class="num">${s.gp || 0}</td>
       <td class="num">${s.w || 0}</td>
       <td class="num">${s.l || 0}</td>
@@ -3053,22 +3053,16 @@ function renderStandings6SNew() {
   }).join('');
 }
 
-function editTeamStanding(teamId, mode) {
-  console.log('editTeamStanding called:', teamId, mode, 'isAdmin:', isAdmin);
-  
+function editTeamStanding6S(teamId) {
   if (!isAdmin) {
     alert('Accès admin requis');
     return;
   }
   
-  // Trouver les standings selon le mode
-  let standings, standingsKey;
-  if (mode === '6s') {
-    if (!DATA.season_3_6v6) DATA.season_3_6v6 = {};
-    if (!DATA.season_3_6v6.standings) DATA.season_3_6v6.standings = [];
-    standings = DATA.season_3_6v6.standings;
-    standingsKey = 'season_3_6v6';
-  }
+  // Trouver ou créer standings
+  if (!DATA.season_3_6v6) DATA.season_3_6v6 = {};
+  if (!DATA.season_3_6v6.standings) DATA.season_3_6v6.standings = [];
+  const standings = DATA.season_3_6v6.standings;
   
   // Trouver ou créer l'entrée pour cette équipe
   let teamStanding = standings.find(s => s.team === teamId);
