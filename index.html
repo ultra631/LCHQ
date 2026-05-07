@@ -4475,12 +4475,16 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
     // Grouper par équipe
     const awayPlayers = matchStats.players.filter(p => {
       const player = DATA.players.find(pl => pl.id === p.playerId);
-      return player && (player.team === match.away || (player.status === 'sub' && p.team === match.away));
+      const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
+      const person = player || goalie;
+      return person && (person.team === match.away || (person.status === 'sub' && p.team === match.away));
     });
     
     const homePlayers = matchStats.players.filter(p => {
       const player = DATA.players.find(pl => pl.id === p.playerId);
-      return player && (player.team === match.home || (player.status === 'sub' && p.team === match.home));
+      const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
+      const person = player || goalie;
+      return person && (person.team === match.home || (person.status === 'sub' && p.team === match.home));
     });
     
     // Tableau visiteur
