@@ -348,6 +348,16 @@
   .team-emoji-fallback { font-size: 24px; }
   .num { text-align: center; font-variant-numeric: tabular-nums; }
   .pts-cell { font-weight: 800; color: var(--red-bright); }
+  .editable-stat {
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .editable-stat:hover {
+    background: rgba(229, 62, 62, 0.15);
+    box-shadow: 0 0 0 1px var(--red);
+  }
   .diff-pos { color: var(--green); font-weight: 700; }
   .diff-neg { color: var(--red-bright); font-weight: 700; }
   .streak-w { color: var(--green); font-weight: 700; }
@@ -2215,27 +2225,27 @@
         <thead>
           <tr>
             <th>Stat</th>
-            <th class="num">Total actuel</th>
+            <th class="num">Total actuel <small style="color:var(--text-tertiary);font-size:10px;">✏️</small></th>
             <th class="num"><span style="color:#5b9bd5;">+ Sem.</span></th>
             <th class="num">= Nouveau</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>PJ</td><td class="num"><span id="pGpCurrent">0</span></td><td class="num"><input type="number" id="pGpAdd" min="0" value="0" oninput="updateNewTotal('p','Gp')"></td><td class="num"><span id="pGpNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Buts</td><td class="num"><span id="pGCurrent">0</span></td><td class="num"><input type="number" id="pGAdd" min="0" value="0" oninput="updateNewTotal('p','G')"></td><td class="num"><span id="pGNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Passes</td><td class="num"><span id="pACurrent">0</span></td><td class="num"><input type="number" id="pAAdd" min="0" value="0" oninput="updateNewTotal('p','A')"></td><td class="num"><span id="pANew" class="pts-cell">0</span></td></tr>
-          <tr><td>+/-</td><td class="num"><span id="pPMCurrent">0</span></td><td class="num"><input type="number" id="pPMAdd" value="0" oninput="updateNewTotal('p','PM')"></td><td class="num"><span id="pPMNew" class="pts-cell">0</span></td></tr>
-          <tr><td>MEC</td><td class="num"><span id="pPimCurrent">0</span></td><td class="num"><input type="number" id="pPimAdd" min="0" value="0" oninput="updateNewTotal('p','Pim')"></td><td class="num"><span id="pPimNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Mises en Échec (HITS)</td><td class="num"><span id="pHitsCurrent">0</span></td><td class="num"><input type="number" id="pHitsAdd" min="0" value="0" oninput="updateNewTotal('p','Hits')"></td><td class="num"><span id="pHitsNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Tirs</td><td class="num"><span id="pShotsCurrent">0</span></td><td class="num"><input type="number" id="pShotsAdd" min="0" value="0" oninput="updateNewTotal('p','Shots')"></td><td class="num"><span id="pShotsNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Tirs Bloqués (TB)</td><td class="num"><span id="pTbCurrent">0</span></td><td class="num"><input type="number" id="pTbAdd" min="0" value="0" oninput="updateNewTotal('p','Tb')"></td><td class="num"><span id="pTbNew" class="pts-cell">0</span></td></tr>
-          <tr><td>MJ Gagnées (MJG)</td><td class="num"><span id="pMjgCurrent">0</span></td><td class="num"><input type="number" id="pMjgAdd" min="0" value="0" oninput="updateNewTotal('p','Mjg')"></td><td class="num"><span id="pMjgNew" class="pts-cell">0</span></td></tr>
-          <tr><td>MJ Total (MJ)</td><td class="num"><span id="pMjfCurrent">0</span></td><td class="num"><input type="number" id="pMjfAdd" min="0" value="0" oninput="updateNewTotal('p','Mjf')"></td><td class="num"><span id="pMjfNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Passes Tentées (PT)</td><td class="num"><span id="pPtCurrent">0</span></td><td class="num"><input type="number" id="pPtAdd" min="0" value="0" oninput="updateNewTotal('p','Pt')"></td><td class="num"><span id="pPtNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Passes Réussies (PR)</td><td class="num"><span id="pPrCurrent">0</span></td><td class="num"><input type="number" id="pPrAdd" min="0" value="0" oninput="updateNewTotal('p','Pr')"></td><td class="num"><span id="pPrNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Interceptions (INT)</td><td class="num"><span id="pIntCurrent">0</span></td><td class="num"><input type="number" id="pIntAdd" min="0" value="0" oninput="updateNewTotal('p','Int')"></td><td class="num"><span id="pIntNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Prises de Possession</td><td class="num"><span id="pPrisesCurrent">0</span></td><td class="num"><input type="number" id="pPrisesAdd" min="0" value="0" oninput="updateNewTotal('p','Prises')"></td><td class="num"><span id="pPrisesNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Pertes (PERT)</td><td class="num"><span id="pPertCurrent">0</span></td><td class="num"><input type="number" id="pPertAdd" min="0" value="0" oninput="updateNewTotal('p','Pert')"></td><td class="num"><span id="pPertNew" class="pts-cell">0</span></td></tr>
+          <tr><td>PJ</td><td class="num"><span id="pGpCurrent" class="editable-stat" onclick="makeStatEditable('p','Gp')">0</span></td><td class="num"><input type="number" id="pGpAdd" min="0" value="0" oninput="updateNewTotal('p','Gp')"></td><td class="num"><span id="pGpNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Buts</td><td class="num"><span id="pGCurrent" class="editable-stat" onclick="makeStatEditable('p','G')">0</span></td><td class="num"><input type="number" id="pGAdd" min="0" value="0" oninput="updateNewTotal('p','G')"></td><td class="num"><span id="pGNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes</td><td class="num"><span id="pACurrent" class="editable-stat" onclick="makeStatEditable('p','A')">0</span></td><td class="num"><input type="number" id="pAAdd" min="0" value="0" oninput="updateNewTotal('p','A')"></td><td class="num"><span id="pANew" class="pts-cell">0</span></td></tr>
+          <tr><td>+/-</td><td class="num"><span id="pPMCurrent" class="editable-stat" onclick="makeStatEditable('p','PM')">0</span></td><td class="num"><input type="number" id="pPMAdd" value="0" oninput="updateNewTotal('p','PM')"></td><td class="num"><span id="pPMNew" class="pts-cell">0</span></td></tr>
+          <tr><td>MEC</td><td class="num"><span id="pPimCurrent" class="editable-stat" onclick="makeStatEditable('p','Pim')">0</span></td><td class="num"><input type="number" id="pPimAdd" min="0" value="0" oninput="updateNewTotal('p','Pim')"></td><td class="num"><span id="pPimNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Mises en Échec (HITS)</td><td class="num"><span id="pHitsCurrent" class="editable-stat" onclick="makeStatEditable('p','Hits')">0</span></td><td class="num"><input type="number" id="pHitsAdd" min="0" value="0" oninput="updateNewTotal('p','Hits')"></td><td class="num"><span id="pHitsNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Tirs</td><td class="num"><span id="pShotsCurrent" class="editable-stat" onclick="makeStatEditable('p','Shots')">0</span></td><td class="num"><input type="number" id="pShotsAdd" min="0" value="0" oninput="updateNewTotal('p','Shots')"></td><td class="num"><span id="pShotsNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Tirs Bloqués (TB)</td><td class="num"><span id="pTbCurrent" class="editable-stat" onclick="makeStatEditable('p','Tb')">0</span></td><td class="num"><input type="number" id="pTbAdd" min="0" value="0" oninput="updateNewTotal('p','Tb')"></td><td class="num"><span id="pTbNew" class="pts-cell">0</span></td></tr>
+          <tr><td>MJ Gagnées (MJG)</td><td class="num"><span id="pMjgCurrent" class="editable-stat" onclick="makeStatEditable('p','Mjg')">0</span></td><td class="num"><input type="number" id="pMjgAdd" min="0" value="0" oninput="updateNewTotal('p','Mjg')"></td><td class="num"><span id="pMjgNew" class="pts-cell">0</span></td></tr>
+          <tr><td>MJ Total (MJ)</td><td class="num"><span id="pMjfCurrent" class="editable-stat" onclick="makeStatEditable('p','Mjf')">0</span></td><td class="num"><input type="number" id="pMjfAdd" min="0" value="0" oninput="updateNewTotal('p','Mjf')"></td><td class="num"><span id="pMjfNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes Tentées (PT)</td><td class="num"><span id="pPtCurrent" class="editable-stat" onclick="makeStatEditable('p','Pt')">0</span></td><td class="num"><input type="number" id="pPtAdd" min="0" value="0" oninput="updateNewTotal('p','Pt')"></td><td class="num"><span id="pPtNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes Réussies (PR)</td><td class="num"><span id="pPrCurrent" class="editable-stat" onclick="makeStatEditable('p','Pr')">0</span></td><td class="num"><input type="number" id="pPrAdd" min="0" value="0" oninput="updateNewTotal('p','Pr')"></td><td class="num"><span id="pPrNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Interceptions (INT)</td><td class="num"><span id="pIntCurrent" class="editable-stat" onclick="makeStatEditable('p','Int')">0</span></td><td class="num"><input type="number" id="pIntAdd" min="0" value="0" oninput="updateNewTotal('p','Int')"></td><td class="num"><span id="pIntNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Prises de Possession</td><td class="num"><span id="pPrisesCurrent" class="editable-stat" onclick="makeStatEditable('p','Prises')">0</span></td><td class="num"><input type="number" id="pPrisesAdd" min="0" value="0" oninput="updateNewTotal('p','Prises')"></td><td class="num"><span id="pPrisesNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Pertes (PERT)</td><td class="num"><span id="pPertCurrent" class="editable-stat" onclick="makeStatEditable('p','Pert')">0</span></td><td class="num"><input type="number" id="pPertAdd" min="0" value="0" oninput="updateNewTotal('p','Pert')"></td><td class="num"><span id="pPertNew" class="pts-cell">0</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -2292,16 +2302,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>PJ</td><td class="num"><span id="gGpCurrent">0</span></td><td class="num"><input type="number" id="gGpAdd" min="0" value="0" oninput="updateNewTotal('g','Gp')"></td><td class="num"><span id="gGpNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Victoires</td><td class="num"><span id="gWCurrent">0</span></td><td class="num"><input type="number" id="gWAdd" min="0" value="0" oninput="updateNewTotal('g','W')"></td><td class="num"><span id="gWNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Défaites</td><td class="num"><span id="gLCurrent">0</span></td><td class="num"><input type="number" id="gLAdd" min="0" value="0" oninput="updateNewTotal('g','L')"></td><td class="num"><span id="gLNew" class="pts-cell">0</span></td></tr>
-          <tr><td>DP</td><td class="num"><span id="gOtlCurrent">0</span></td><td class="num"><input type="number" id="gOtlAdd" min="0" value="0" oninput="updateNewTotal('g','Otl')"></td><td class="num"><span id="gOtlNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Blanchissages</td><td class="num"><span id="gSoCurrent">0</span></td><td class="num"><input type="number" id="gSoAdd" min="0" value="0" oninput="updateNewTotal('g','So')"></td><td class="num"><span id="gSoNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Tirs reçus</td><td class="num"><span id="gSaCurrent">0</span></td><td class="num"><input type="number" id="gSaAdd" min="0" value="0" oninput="updateNewTotal('g','Sa')"></td><td class="num"><span id="gSaNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Arrêts</td><td class="num"><span id="gSvCurrent">0</span></td><td class="num"><input type="number" id="gSvAdd" min="0" value="0" oninput="updateNewTotal('g','Sv')"></td><td class="num"><span id="gSvNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Buts alloués</td><td class="num"><span id="gGaCurrent">0</span></td><td class="num"><input type="number" id="gGaAdd" min="0" value="0" oninput="updateNewTotal('g','Ga')"></td><td class="num"><span id="gGaNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Buts marqués</td><td class="num"><span id="gGCurrent">0</span></td><td class="num"><input type="number" id="gGAdd" min="0" value="0" oninput="updateNewTotal('g','G')"></td><td class="num"><span id="gGNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Passes</td><td class="num"><span id="gACurrent">0</span></td><td class="num"><input type="number" id="gAAdd" min="0" value="0" oninput="updateNewTotal('g','A')"></td><td class="num"><span id="gANew" class="pts-cell">0</span></td></tr>
+          <tr><td>PJ</td><td class="num"><span id="gGpCurrent" class="editable-stat" onclick="makeStatEditable('g','Gp')">0</span></td><td class="num"><input type="number" id="gGpAdd" min="0" value="0" oninput="updateNewTotal('g','Gp')"></td><td class="num"><span id="gGpNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Victoires</td><td class="num"><span id="gWCurrent" class="editable-stat" onclick="makeStatEditable('g','W')">0</span></td><td class="num"><input type="number" id="gWAdd" min="0" value="0" oninput="updateNewTotal('g','W')"></td><td class="num"><span id="gWNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Défaites</td><td class="num"><span id="gLCurrent" class="editable-stat" onclick="makeStatEditable('g','L')">0</span></td><td class="num"><input type="number" id="gLAdd" min="0" value="0" oninput="updateNewTotal('g','L')"></td><td class="num"><span id="gLNew" class="pts-cell">0</span></td></tr>
+          <tr><td>DP</td><td class="num"><span id="gOtlCurrent" class="editable-stat" onclick="makeStatEditable('g','Otl')">0</span></td><td class="num"><input type="number" id="gOtlAdd" min="0" value="0" oninput="updateNewTotal('g','Otl')"></td><td class="num"><span id="gOtlNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Blanchissages</td><td class="num"><span id="gSoCurrent" class="editable-stat" onclick="makeStatEditable('g','So')">0</span></td><td class="num"><input type="number" id="gSoAdd" min="0" value="0" oninput="updateNewTotal('g','So')"></td><td class="num"><span id="gSoNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Tirs reçus</td><td class="num"><span id="gSaCurrent" class="editable-stat" onclick="makeStatEditable('g','Sa')">0</span></td><td class="num"><input type="number" id="gSaAdd" min="0" value="0" oninput="updateNewTotal('g','Sa')"></td><td class="num"><span id="gSaNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Arrêts</td><td class="num"><span id="gSvCurrent" class="editable-stat" onclick="makeStatEditable('g','Sv')">0</span></td><td class="num"><input type="number" id="gSvAdd" min="0" value="0" oninput="updateNewTotal('g','Sv')"></td><td class="num"><span id="gSvNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Buts alloués</td><td class="num"><span id="gGaCurrent" class="editable-stat" onclick="makeStatEditable('g','Ga')">0</span></td><td class="num"><input type="number" id="gGaAdd" min="0" value="0" oninput="updateNewTotal('g','Ga')"></td><td class="num"><span id="gGaNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Buts marqués</td><td class="num"><span id="gGCurrent" class="editable-stat" onclick="makeStatEditable('g','G')">0</span></td><td class="num"><input type="number" id="gGAdd" min="0" value="0" oninput="updateNewTotal('g','G')"></td><td class="num"><span id="gGNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes</td><td class="num"><span id="gACurrent" class="editable-stat" onclick="makeStatEditable('g','A')">0</span></td><td class="num"><input type="number" id="gAAdd" min="0" value="0" oninput="updateNewTotal('g','A')"></td><td class="num"><span id="gANew" class="pts-cell">0</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -3560,6 +3570,46 @@ function updatePlayerFormVisibility() {
 }
 
 // HELPER: Mettre à jour le total automatiquement quand on tape dans une case "+ Sem."
+// Fonction pour rendre une stat éditable manuellement
+function makeStatEditable(prefix, statKey) {
+  const spanEl = document.getElementById(`${prefix}${statKey}Current`);
+  const currentValue = parseFloat(spanEl.textContent) || 0;
+  
+  // Créer un input temporaire
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.value = currentValue;
+  input.style.width = '60px';
+  input.style.padding = '4px';
+  input.style.textAlign = 'center';
+  input.style.background = 'var(--bg-elevated)';
+  input.style.border = '1px solid var(--red)';
+  input.style.borderRadius = '4px';
+  input.style.color = 'var(--text-primary)';
+  input.style.fontWeight = 'bold';
+  
+  // Quand on quitte l'input (blur) ou appuie sur Enter
+  const saveEdit = () => {
+    const newValue = parseFloat(input.value) || 0;
+    spanEl.textContent = newValue;
+    spanEl.style.display = 'inline';
+    input.remove();
+    // Recalculer le nouveau total
+    updateNewTotal(prefix, statKey);
+  };
+  
+  input.addEventListener('blur', saveEdit);
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') saveEdit();
+  });
+  
+  // Remplacer le span par l'input
+  spanEl.style.display = 'none';
+  spanEl.parentNode.appendChild(input);
+  input.focus();
+  input.select();
+}
+
 function updateNewTotal(prefix, statKey) {
   const current = parseFloat(document.getElementById(`${prefix}${statKey}Current`).textContent) || 0;
   const add = parseFloat(document.getElementById(`${prefix}${statKey}Add`).value) || 0;
