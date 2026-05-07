@@ -1537,6 +1537,15 @@
         </div>
       </div>
 
+      <!-- Tournois -->
+      <div class="nav-group">
+        <button class="nav-btn" data-section="tournois">🏆 Tournois ▾</button>
+        <div class="nav-dropdown">
+          <button class="nav-btn mode-4s" data-page="tournois-4s" onclick="navigate('tournois-4s')">Tournois 4S</button>
+          <button class="nav-btn mode-6s" data-page="tournois-6s" onclick="navigate('tournois-6s')" style="display:none;">Tournois 6S</button>
+        </div>
+      </div>
+
       <!-- Archives -->
       <div class="nav-group">
         <button class="nav-btn mode-4s desktop-only" data-section="archives">Archives ▾</button>
@@ -2167,6 +2176,134 @@
     </div>
   </div>
   <div id="trophies6s"></div>
+</section>
+
+<!-- ============ TOURNOIS ============ -->
+
+<!-- TOURNOIS 4S -->
+<section id="page-tournois-4s" class="page">
+  <div class="division-banner" style="--division-color: #f59e0b">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🏆</div>
+    <div class="division-banner-text">
+      <h3>Tournois 4 vs 4</h3>
+      <p>Compétitions spéciales · Format 4S</p>
+    </div>
+  </div>
+
+  <h2 class="section-title" style="color: var(--nhl-color);">Division NHL</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
+          <th class="num">DIFF</th><th class="num">PTS</th>
+        </tr>
+      </thead>
+      <tbody id="tournois4sNhlBody">
+        <tr><td class="num">1</td><td><strong>Équipe 1</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">2</td><td><strong>Équipe 2</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">3</td><td><strong>Équipe 3</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">4</td><td><strong>Équipe 4</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">5</td><td><strong>Équipe 5</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">6</td><td><strong>Équipe 6</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">7</td><td><strong>Équipe 7</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">8</td><td><strong>Équipe 8</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">9</td><td><strong>Équipe 9</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">10</td><td><strong>Équipe 10</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title" style="color: var(--lhjmq-color); margin-top: 40px;">Division LHJMQ</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
+          <th class="num">DIFF</th><th class="num">PTS</th>
+        </tr>
+      </thead>
+      <tbody id="tournois4sLhjmqBody">
+        <tr><td class="num">1</td><td><strong>Équipe 1</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">2</td><td><strong>Équipe 2</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">3</td><td><strong>Équipe 3</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">4</td><td><strong>Équipe 4</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">5</td><td><strong>Équipe 5</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">6</td><td><strong>Équipe 6</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">7</td><td><strong>Équipe 7</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">8</td><td><strong>Équipe 8</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">9</td><td><strong>Équipe 9</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">10</td><td><strong>Équipe 10</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TOURNOIS 6S -->
+<section id="page-tournois-6s" class="page">
+  <div class="division-banner" style="--division-color: #3b82f6">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">🏆</div>
+    <div class="division-banner-text">
+      <h3>Tournois 6 vs 6</h3>
+      <p>Compétitions spéciales · Format 6S</p>
+    </div>
+  </div>
+
+  <h2 class="section-title" style="color: var(--nhl-color);">Division NHL</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
+          <th class="num">DIFF</th><th class="num">PTS</th>
+        </tr>
+      </thead>
+      <tbody id="tournois6sNhlBody">
+        <tr><td class="num">1</td><td><strong>Équipe 1</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">2</td><td><strong>Équipe 2</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">3</td><td><strong>Équipe 3</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">4</td><td><strong>Équipe 4</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">5</td><td><strong>Équipe 5</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">6</td><td><strong>Équipe 6</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">7</td><td><strong>Équipe 7</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">8</td><td><strong>Équipe 8</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">9</td><td><strong>Équipe 9</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">10</td><td><strong>Équipe 10</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title" style="color: var(--lhjmq-color); margin-top: 40px;">Division LHJMQ</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
+          <th class="num">DIFF</th><th class="num">PTS</th>
+        </tr>
+      </thead>
+      <tbody id="tournois6sLhjmqBody">
+        <tr><td class="num">1</td><td><strong>Équipe 1</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">2</td><td><strong>Équipe 2</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">3</td><td><strong>Équipe 3</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">4</td><td><strong>Équipe 4</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">5</td><td><strong>Équipe 5</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">6</td><td><strong>Équipe 6</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">7</td><td><strong>Équipe 7</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">8</td><td><strong>Équipe 8</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">9</td><td><strong>Équipe 9</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+        <tr><td class="num">10</td><td><strong>Équipe 10</strong></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 </main>
