@@ -1562,6 +1562,7 @@
         <div class="nav-dropdown">
           <button class="nav-btn" data-page="subs" onclick="navigate('subs')">🔄 Remplaçants</button>
           <button class="nav-btn" data-page="inactive" onclick="navigate('inactive')">🔴 Joueurs inactifs</button>
+          <button class="nav-btn" onclick="openImportArchiveModal()">📥 Importer Archives</button>
         </div>
       </div>
     </nav>
@@ -2777,6 +2778,28 @@
 
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('addPlayerToTournoisModal')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Importer Archives -->
+<div class="modal-overlay" id="importArchiveModal">
+  <div class="modal" style="max-width:700px;">
+    <h3>📥 Importer des Archives</h3>
+    <div class="modal-info">
+      Collez le contenu JSON des archives ci-dessous. Les données seront automatiquement ajoutées à Firebase.
+    </div>
+    
+    <div class="modal-form-group">
+      <label>Données JSON des archives</label>
+      <textarea id="archiveJsonInput" placeholder='{"archives": {"season_3": {...}}}' style="min-height:300px;font-family:monospace;font-size:12px;"></textarea>
+    </div>
+
+    <div id="importArchiveStatus" style="display:none;margin-top:15px;padding:12px;border-radius:8px;"></div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('importArchiveModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="importArchiveData()">📥 Importer</button>
     </div>
   </div>
 </div>
@@ -6304,6 +6327,83 @@ function renderArchiveS3Goalies(archive) {
       </table>
     </div>
   </div>`;
+}
+
+// ============ IMPORT ARCHIVES ============
+
+function openImportArchiveModal() {
+  openModal('importArchiveModal');
+  document.getElementById('archiveJsonInput').value = '';
+  document.getElementById('importArchiveStatus').style.display = 'none';
+}
+
+async function importArchiveData() {
+  const jsonInput = document.getElementById('archiveJsonInput').value.trim();
+  const statusDiv = document.getElementById('importArchiveStatus');
+  
+  if (!jsonInput) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = 'rgba(239,68,68,0.1)';
+    statusDiv.style.borderColor = 'rgba(239,68,68,0.3)';
+    statusDiv.style.color = '#f87171';
+    statusDiv.innerHTML = '❌ Veuillez coller le JSON des archives';
+    return;
+  }
+  
+  try {
+    // Parse le JSON
+    const importData = JSON.parse(jsonInput);
+    
+    // Vérifier que le JSON contient bien des archives
+    if (!importData.archives) {
+      throw new Error('Le JSON doit contenir un champ "archives"');
+    }
+    
+    // Fusionner avec les données existantes
+    if (!DATA.archives) {
+      DATA.archives = {};
+    }
+    
+    // Ajouter les nouvelles archives
+    Object.assign(DATA.archives, importData.archives);
+    
+    // Sauvegarder dans Firebase
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = 'rgba(59,130,246,0.1)';
+    statusDiv.style.borderColor = 'rgba(59,130,246,0.3)';
+    statusDiv.style.color = '#60a5fa';
+    statusDiv.innerHTML = '⏳ Enregistrement dans Firebase...';
+    
+    await saveToFirebase();
+    
+    // Succès!
+    statusDiv.style.background = 'rgba(74,222,128,0.1)';
+    statusDiv.style.borderColor = 'rgba(74,222,128,0.3)';
+    statusDiv.style.color = '#86efac';
+    statusDiv.innerHTML = '✅ Archives importées avec succès!';
+    
+    // Rafraîchir les pages d'archives
+    if (typeof renderArchiveS3 === 'function') {
+      renderArchiveS3();
+    }
+    if (typeof renderArchiveS4 === 'function') {
+      renderArchiveS4();
+    }
+    
+    // Fermer le modal après 2 secondes
+    setTimeout(() => {
+      closeModal('importArchiveModal');
+      showToast('✅ Archives importées avec succès!');
+    }, 2000);
+    
+  } catch (e) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = 'rgba(239,68,68,0.1)';
+    statusDiv.style.borderColor = 'rgba(239,68,68,0.3)';
+    statusDiv.style.color = '#f87171';
+    statusDiv.innerHTML = `❌ Erreur: ${e.message}`;
+    console.error('Erreur import:', e);
+  }
 }
 
 // ============ TOURNOIS FUNCTIONS ============
