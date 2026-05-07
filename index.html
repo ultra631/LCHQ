@@ -4840,50 +4840,51 @@ function saveMatchStats() {
       
       if (goalie) {
         // CUMULER STATS GARDIEN
-        goalie.wins = (goalie.wins || 0) + (p.w || 0);
-        goalie.losses = (goalie.losses || 0) + (p.l || 0);
-        goalie.saves = (goalie.saves || 0) + (p.sv || 0);
-        goalie.shots_against = (goalie.shots_against || 0) + (p.sa || 0);
-        goalie.goals_against = (goalie.goals_against || 0) + (p.ga || 0);
-        goalie.shutouts = (goalie.shutouts || 0) + ((p.ga || 0) === 0 ? 1 : 0);
-        goalie.goals = (goalie.goals || 0) + (p.g || 0);
-        goalie.assists = (goalie.assists || 0) + (p.a || 0);
-        goalie.games_played = (goalie.games_played || 0) + 1;
+        goalie.w = (goalie.w || 0) + (p.w || 0);
+        goalie.l = (goalie.l || 0) + (p.l || 0);
+        goalie.sv = (goalie.sv || 0) + (p.sv || 0);
+        goalie.sa = (goalie.sa || 0) + (p.sa || 0);
+        goalie.ga = (goalie.ga || 0) + (p.ga || 0);
+        goalie.so = (goalie.so || 0) + ((p.ga || 0) === 0 ? 1 : 0);
+        goalie.g = (goalie.g || 0) + (p.g || 0);
+        goalie.a = (goalie.a || 0) + (p.a || 0);
+        goalie.gp = (goalie.gp || 0) + 1;
         
         // Recalculer moyennes
-        if (goalie.shots_against > 0) {
-          goalie.save_percentage = (goalie.saves / goalie.shots_against * 100).toFixed(1);
+        if (goalie.sa > 0) {
+          goalie.svpct = ((goalie.sv / goalie.sa) * 100).toFixed(1);
         }
-        if (goalie.games_played > 0) {
-          goalie.gaa = (goalie.goals_against / goalie.games_played).toFixed(2);
+        if (goalie.gp > 0) {
+          goalie.gaa = (goalie.ga / goalie.gp).toFixed(2);
         }
         
       } else if (player) {
         // CUMULER STATS JOUEUR
-        player.goals = (player.goals || 0) + (p.g || 0);
-        player.assists = (player.assists || 0) + (p.a || 0);
-        player.plus_minus = (player.plus_minus || 0) + (p.pm || 0);
+        player.g = (player.g || 0) + (p.g || 0);
+        player.a = (player.a || 0) + (p.a || 0);
+        player.pts = (player.pts || 0) + ((p.g || 0) + (p.a || 0));
+        player.plusminus = (player.plusminus || 0) + (p.pm || 0);
         player.hits = (player.hits || 0) + (p.hits || 0);
-        player.blocked_shots = (player.blocked_shots || 0) + (p.tb || 0);
-        player.faceoffs_won = (player.faceoffs_won || 0) + (p.mjg || 0);
-        player.faceoffs_total = (player.faceoffs_total || 0) + (p.mjf || 0);
-        player.passes_total = (player.passes_total || 0) + (p.pt || 0);
-        player.passes_completed = (player.passes_completed || 0) + (p.pr || 0);
-        player.interceptions = (player.interceptions || 0) + (p.intc || 0);
-        player.takeaways = (player.takeaways || 0) + (p.prises || 0);
-        player.giveaways = (player.giveaways || 0) + (p.pert || 0);
-        player.games_played = (player.games_played || 0) + 1;
+        player.tb = (player.tb || 0) + (p.tb || 0);
+        player.mjg = (player.mjg || 0) + (p.mjg || 0);
+        player.mjf = (player.mjf || 0) + (p.mjf || 0);
+        player.pt = (player.pt || 0) + (p.pt || 0);
+        player.pr = (player.pr || 0) + (p.pr || 0);
+        player.intc = (player.intc || 0) + (p.intc || 0);
+        player.prises = (player.prises || 0) + (p.prises || 0);
+        player.pert = (player.pert || 0) + (p.pert || 0);
+        player.gp = (player.gp || 0) + 1;
         
         // Recalculer moyennes
-        if (player.faceoffs_total > 0) {
-          player.faceoff_percentage = (player.faceoffs_won / player.faceoffs_total * 100).toFixed(1);
+        if (player.mjf > 0) {
+          player.fopct = ((player.mjg / player.mjf) * 100).toFixed(1);
         }
-        if (player.passes_total > 0) {
-          player.pass_percentage = (player.passes_completed / player.passes_total * 100).toFixed(1);
+        if (player.pt > 0) {
+          player.passpct = ((player.pr / player.pt) * 100).toFixed(1);
         }
-        if (player.games_played > 0) {
-          player.ppg = (player.goals / player.games_played).toFixed(2);
-          player.ppm = ((player.goals + player.assists) / player.games_played).toFixed(2);
+        if (player.gp > 0) {
+          player.ppg = (player.g / player.gp).toFixed(2);
+          player.ppm = ((player.g + player.a) / player.gp).toFixed(2);
         }
       }
     });
