@@ -4822,10 +4822,88 @@ function filterPlayerDropdown() {
 }
 
 function saveMatchStats() {
-  // Les données sont déjà dans DATA.matchStats grâce aux updatePlayerMatchStat
-  alert('✅ Stats du match sauvegardées!');
+  const matchStats = DATA.matchStats[currentMatchStats];
+  
+  // Vérifier si déjà sauvegardé pour éviter de cumuler 2 fois
+  if (matchStats.saved) {
+    if (!confirm('Les stats de ce match ont déjà été sauvegardées. Voulez-vous les sauvegarder à nouveau? (Cela va les cumuler une 2e fois!)')) {
+      return;
+    }
+  }
+  
+  // Cumuler les stats dans les profils joueurs/gardiens
+  if (matchStats && matchStats.players) {
+    matchStats.players.forEach(p => {
+      // Trouver le joueur ou gardien
+      const player = DATA.players.find(pl => pl.id === p.playerId);
+      const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
+      
+      if (goalie) {
+        // CUMULER STATS GARDIEN
+        goalie.wins = (goalie.wins || 0) + (p.w || 0);
+        goalie.losses = (goalie.losses || 0) + (p.l || 0);
+        goalie.saves = (goalie.saves || 0) + (p.sv || 0);
+        goalie.shots_against = (goalie.shots_against || 0) + (p.sa || 0);
+        goalie.goals_against = (goalie.goals_against || 0) + (p.ga || 0);
+        goalie.shutouts = (goalie.shutouts || 0) + ((p.ga || 0) === 0 ? 1 : 0);
+        goalie.goals = (goalie.goals || 0) + (p.g || 0);
+        goalie.assists = (goalie.assists || 0) + (p.a || 0);
+        goalie.games_played = (goalie.games_played || 0) + 1;
+        
+        // Recalculer moyennes
+        if (goalie.shots_against > 0) {
+          goalie.save_percentage = (goalie.saves / goalie.shots_against * 100).toFixed(1);
+        }
+        if (goalie.games_played > 0) {
+          goalie.gaa = (goalie.goals_against / goalie.games_played).toFixed(2);
+        }
+        
+      } else if (player) {
+        // CUMULER STATS JOUEUR
+        player.goals = (player.goals || 0) + (p.g || 0);
+        player.assists = (player.assists || 0) + (p.a || 0);
+        player.plus_minus = (player.plus_minus || 0) + (p.pm || 0);
+        player.hits = (player.hits || 0) + (p.hits || 0);
+        player.blocked_shots = (player.blocked_shots || 0) + (p.tb || 0);
+        player.faceoffs_won = (player.faceoffs_won || 0) + (p.mjg || 0);
+        player.faceoffs_total = (player.faceoffs_total || 0) + (p.mjf || 0);
+        player.passes_total = (player.passes_total || 0) + (p.pt || 0);
+        player.passes_completed = (player.passes_completed || 0) + (p.pr || 0);
+        player.interceptions = (player.interceptions || 0) + (p.intc || 0);
+        player.takeaways = (player.takeaways || 0) + (p.prises || 0);
+        player.giveaways = (player.giveaways || 0) + (p.pert || 0);
+        player.games_played = (player.games_played || 0) + 1;
+        
+        // Recalculer moyennes
+        if (player.faceoffs_total > 0) {
+          player.faceoff_percentage = (player.faceoffs_won / player.faceoffs_total * 100).toFixed(1);
+        }
+        if (player.passes_total > 0) {
+          player.pass_percentage = (player.passes_completed / player.passes_total * 100).toFixed(1);
+        }
+        if (player.games_played > 0) {
+          player.ppg = (player.goals / player.games_played).toFixed(2);
+          player.ppm = ((player.goals + player.assists) / player.games_played).toFixed(2);
+        }
+      }
+    });
+  }
+  
+  // Marquer comme sauvegardé
+  matchStats.saved = true;
+  matchStats.savedAt = new Date().toISOString();
+  
+  alert('✅ Stats du match sauvegardées et ajoutées aux profils!');
   closeModal('matchStatsModal');
   saveToFirebase();
+  
+  // Recharger les sections Stats et Équipes si elles sont affichées
+  if (document.getElementById('stats-section')?.style.display !== 'none') {
+    showSection('stats');
+  }
+  if (document.getElementById('teams-section')?.style.display !== 'none') {
+    showSection('teams');
+  }
 }
 
 function openMatchModalFromStats() {
