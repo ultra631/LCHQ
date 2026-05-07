@@ -1,4 +1,4 @@
-A<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr-CA">
 <head>
 <meta charset="UTF-8">
@@ -1491,7 +1491,7 @@ A<!DOCTYPE html>
         <div class="nav-dropdown">
           <button class="nav-btn mode-4s" data-page="standings-nhl" onclick="navigate('standings-nhl')">Division NHL</button>
           <button class="nav-btn mode-4s" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">Division LHJMQ</button>
-          <button class="nav-btn mode-6s" data-page="standings-6s" onclick="navigate('standings-6s')" style="display:none;">Classement 6S</button>
+          <button class="nav-btn mode-6s" data-page="standings-6s" onclick="navigate('standings-6s')">Classement 6S</button>
         </div>
       </div>
 
@@ -1686,6 +1686,36 @@ A<!DOCTYPE html>
         </tr>
       </thead>
       <tbody id="standingsLhjmqBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- STANDINGS 6S -->
+<section id="page-standings-6s" class="page">
+  <div class="division-banner" style="--division-color: var(--s6-color)">
+    <div class="division-banner-icon">6S</div>
+    <div class="division-banner-text">
+      <h3>Classement 6 vs 6</h3>
+      <p>Saison en cours</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table id="standings6sTable">
+      <thead>
+        <tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num sortable" data-key="gp">PJ</th>
+          <th class="num sortable" data-key="w">V</th>
+          <th class="num sortable" data-key="l">D</th>
+          <th class="num sortable" data-key="otl">DP</th>
+          <th class="num sortable" data-key="gf">BP</th>
+          <th class="num sortable" data-key="ga">BC</th>
+          <th class="num sortable" data-key="diff">DIFF</th>
+          <th class="num">SÉR.</th>
+          <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        </tr>
+      </thead>
+      <tbody id="standings6sBody"></tbody>
     </table>
   </div>
 </section>
@@ -2719,6 +2749,7 @@ function initApp() {
   renderHome();
   renderStandingsNHL();
   renderStandingsLHJMQ();
+  renderStandings6SNew();
   renderPlayersNHL();
   renderPlayersLHJMQ();
   renderGoaliesNHL();
@@ -2980,6 +3011,110 @@ function renderStandingsByDivision(division, sort, bodyId) {
 
 function renderStandingsNHL() { renderStandingsByDivision('nhl', standingsNhlSort, 'standingsNhlBody'); }
 function renderStandingsLHJMQ() { renderStandingsByDivision('lhjmq', standingsLhjmqSort, 'standingsLhjmqBody'); }
+function renderStandings6SNew() {
+  const bodyId = 'standings6sBody';
+  const tbody = document.getElementById(bodyId);
+  if (!tbody) return;
+  
+  const standings = DATA.season_3_6v6?.standings || [];
+  const sorted = [...standings].sort((a, b) => {
+    if (b.pts !== a.pts) return b.pts - a.pts;
+    const diffA = (a.gf || 0) - (a.ga || 0);
+    const diffB = (b.gf || 0) - (b.ga || 0);
+    return diffB - diffA;
+  });
+  
+  tbody.innerHTML = sorted.map((s, i) => {
+    const team = DATA.teams[s.team];
+    if (!team) return '';
+    
+    const diff = (s.gf || 0) - (s.ga || 0);
+    const diffClass = diff > 0 ? 'positive' : diff < 0 ? 'negative' : '';
+    const diffStr = diff > 0 ? `+${diff}` : diff;
+    const streak = s.streak || '—';
+    
+    const canEdit = isAdmin ? `onclick="editTeamStanding('${s.team}', '6s')" style="cursor:pointer;"` : '';
+    
+    return `<tr ${canEdit}>
+      <td class="num">${i + 1}</td>
+      <td><div class="team-cell">${teamLogoHtml(team)} <span class="team-name">${escapeHtml(team.name)}</span></div></td>
+      <td class="num">${s.gp || 0}</td>
+      <td class="num">${s.w || 0}</td>
+      <td class="num">${s.l || 0}</td>
+      <td class="num">${s.otl || 0}</td>
+      <td class="num">${s.gf || 0}</td>
+      <td class="num">${s.ga || 0}</td>
+      <td class="num ${diffClass}">${diffStr}</td>
+      <td class="num">${streak}</td>
+      <td class="num pts-cell"><strong>${s.pts || 0}</strong></td>
+    </tr>`;
+  }).join('');
+}
+
+function editTeamStanding(teamId, mode) {
+  if (!isAdmin) {
+    alert('Accès admin requis');
+    return;
+  }
+  
+  // Trouver les standings selon le mode
+  let standings, standingsKey;
+  if (mode === '6s') {
+    if (!DATA.season_3_6v6) DATA.season_3_6v6 = {};
+    if (!DATA.season_3_6v6.standings) DATA.season_3_6v6.standings = [];
+    standings = DATA.season_3_6v6.standings;
+    standingsKey = 'season_3_6v6';
+  }
+  
+  // Trouver ou créer l'entrée pour cette équipe
+  let teamStanding = standings.find(s => s.team === teamId);
+  if (!teamStanding) {
+    teamStanding = { team: teamId, gp: 0, w: 0, l: 0, otl: 0, gf: 0, ga: 0, pts: 0, streak: '' };
+    standings.push(teamStanding);
+  }
+  
+  const team = DATA.teams[teamId];
+  const teamName = team ? team.name : teamId;
+  
+  // Créer un prompt simple pour modifier
+  const newGP = prompt(`${teamName} - Matchs joués (PJ):`, teamStanding.gp || 0);
+  if (newGP === null) return;
+  
+  const newW = prompt(`${teamName} - Victoires (V):`, teamStanding.w || 0);
+  if (newW === null) return;
+  
+  const newL = prompt(`${teamName} - Défaites (D):`, teamStanding.l || 0);
+  if (newL === null) return;
+  
+  const newOTL = prompt(`${teamName} - Défaites prolongation (DP):`, teamStanding.otl || 0);
+  if (newOTL === null) return;
+  
+  const newGF = prompt(`${teamName} - Buts pour (BP):`, teamStanding.gf || 0);
+  if (newGF === null) return;
+  
+  const newGA = prompt(`${teamName} - Buts contre (BC):`, teamStanding.ga || 0);
+  if (newGA === null) return;
+  
+  const newStreak = prompt(`${teamName} - Série (ex: V3, D2):`, teamStanding.streak || '');
+  if (newStreak === null) return;
+  
+  // Mettre à jour
+  teamStanding.gp = parseInt(newGP) || 0;
+  teamStanding.w = parseInt(newW) || 0;
+  teamStanding.l = parseInt(newL) || 0;
+  teamStanding.otl = parseInt(newOTL) || 0;
+  teamStanding.gf = parseInt(newGF) || 0;
+  teamStanding.ga = parseInt(newGA) || 0;
+  teamStanding.streak = newStreak;
+  
+  // Calculer points: V=2pts, DP=1pt, D=0pt
+  teamStanding.pts = (teamStanding.w * 2) + (teamStanding.otl * 1);
+  
+  // Sauvegarder et rafraîchir
+  saveToFirebase();
+  renderStandings6SNew();
+  alert('✅ Stats mises à jour!');
+}
 
 // PLAYERS
 function populateTeamFilters() {
