@@ -3345,12 +3345,14 @@ function showTeamDetail6S(teamKey) {
             <th>Joueur</th>
             <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th>
             <th class="num">+/-</th><th class="num">HITS</th><th class="num">TB</th>
+            <th class="num">MJG</th><th class="num">MJ</th><th class="num">%MJ</th>
           </tr>
         </thead>
         <tbody>
           ${roster.length ? roster.map(p => {
             const pmClass = (p.plusminus || 0) > 0 ? 'diff-pos' : (p.plusminus || 0) < 0 ? 'diff-neg' : '';
             const pmStr = (p.plusminus || 0) > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
+            const foPct = (p.mjf || 0) > 0 ? ((p.mjg || 0) / p.mjf * 100).toFixed(1) : '0.0';
             return `<tr>
               <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
               <td class="num">${p.gp || 0}</td>
@@ -3360,8 +3362,11 @@ function showTeamDetail6S(teamKey) {
               <td class="num ${pmClass}">${pmStr}</td>
               <td class="num">${p.hits || 0}</td>
               <td class="num">${p.tb || 0}</td>
+              <td class="num">${p.mjg || 0}</td>
+              <td class="num">${p.mjf || 0}</td>
+              <td class="num">${foPct}%</td>
             </tr>`;
-          }).join('') : '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun joueur dans cette équipe.</td></tr>'}
+          }).join('') : '<tr><td colspan="11" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun joueur dans cette équipe.</td></tr>'}
         </tbody>
       </table>
     </div>
