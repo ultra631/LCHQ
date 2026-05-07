@@ -2054,6 +2054,7 @@
     <button class="tab" onclick="switchArchiveSection('players', this)">🏒 Joueurs</button>
     <button class="tab" onclick="switchArchiveSection('goalies', this)">🥅 Gardiens</button>
     <button class="tab" onclick="switchArchiveSection('trophies', this)">🏆 Trophées</button>
+    <button class="tab admin-only" onclick="openEditArchiveModal('season_4')" style="margin-left:auto;background:var(--accent-color);">✏️ Éditer</button>
   </div>
 
   <div id="archiveS4Content"></div>
@@ -2073,6 +2074,7 @@
     <button class="tab active" onclick="switchArchiveS3Section('standings', this)">📊 Classement</button>
     <button class="tab" onclick="switchArchiveS3Section('players', this)">🏒 Joueurs</button>
     <button class="tab" onclick="switchArchiveS3Section('goalies', this)">🥅 Gardiens</button>
+    <button class="tab admin-only" onclick="openEditArchiveModal('season_3')" style="margin-left:auto;background:var(--accent-color);">✏️ Éditer</button>
   </div>
 
   <div id="archiveS3Content"></div>
@@ -2800,6 +2802,28 @@
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('importArchiveModal')">Annuler</button>
       <button class="btn btn-primary" onclick="importArchiveData()">📥 Importer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Éditer Archives -->
+<div class="modal-overlay" id="editArchiveModal">
+  <div class="modal" style="max-width:900px;max-height:90vh;overflow-y:auto;">
+    <h3>✏️ Éditer les Archives</h3>
+    <div class="modal-info">
+      Modifiez les données JSON directement. Soyez prudent avec le format!
+    </div>
+    
+    <div class="modal-form-group">
+      <label id="editArchiveLabel">Données JSON</label>
+      <textarea id="editArchiveJsonInput" style="min-height:500px;font-family:monospace;font-size:11px;line-height:1.5;"></textarea>
+    </div>
+
+    <div id="editArchiveStatus" style="display:none;margin-top:15px;padding:12px;border-radius:8px;"></div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('editArchiveModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveEditedArchive()">💾 Sauvegarder</button>
     </div>
   </div>
 </div>
@@ -5655,8 +5679,6 @@ function renderArchivePlayers(archive) {
         <td class="num">${p.a || 0}</td>
         <td class="num pts-cell">${p.pts || 0}</td>
         <td class="num ${pmClass}">${pmStr}</td>
-        <td class="num">${p.pim || 0}</td>
-        <td class="num">${p.shots || 0}</td>
       </tr>`;
     }).join('');
 
@@ -5667,7 +5689,7 @@ function renderArchivePlayers(archive) {
           <thead><tr>
             <th>#</th><th>Joueur</th><th>Équipe</th>
             <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
-            <th class="num">PTS</th><th class="num">+/-</th><th class="num">MEC</th><th class="num">TIRS</th>
+            <th class="num">PTS</th><th class="num">+/-</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
@@ -6370,7 +6392,10 @@ function renderArchiveS3TeamDetails(team, standing, rank, division, players, goa
   // Tableau joueurs
   let playersTable = '';
   if (players.length > 0) {
-    const rows = players.map((p, i) => `
+    const rows = players.map((p, i) => {
+      const pmClass = (p.plusminus || 0) > 0 ? 'diff-pos' : (p.plusminus || 0) < 0 ? 'diff-neg' : '';
+      const pmStr = (p.plusminus || 0) > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
+      return `
       <tr>
         <td class="num">${i + 1}</td>
         <td style="font-weight:600;">${escapeHtml(p.name)}</td>
@@ -6378,14 +6403,15 @@ function renderArchiveS3TeamDetails(team, standing, rank, division, players, goa
         <td class="num">${p.g || 0}</td>
         <td class="num">${p.a || 0}</td>
         <td class="num pts-cell">${p.pts || 0}</td>
+        <td class="num ${pmClass}">${pmStr}</td>
       </tr>
-    `).join('');
+    `}).join('');
     playersTable = `<h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 12px;">🏒 Patineurs (${players.length})</h4>
     <div class="table-wrap">
       <table>
         <thead><tr>
           <th>#</th><th>Joueur</th>
-          <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th>
+          <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th><th class="num">+/-</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -6457,6 +6483,9 @@ function renderArchiveS3Players(archive) {
         ? `<div class="team-cell">${team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji}<span>${team.name}</span></div>`
         : '<span style="color:var(--text-tertiary);">—</span>';
       
+      const pmClass = (p.plusminus || 0) > 0 ? 'diff-pos' : (p.plusminus || 0) < 0 ? 'diff-neg' : '';
+      const pmStr = (p.plusminus || 0) > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
+      
       return `<tr>
         <td class="num">${i + 1}</td>
         <td style="font-weight:600;">${escapeHtml(p.name)}</td>
@@ -6465,6 +6494,7 @@ function renderArchiveS3Players(archive) {
         <td class="num">${p.g || 0}</td>
         <td class="num">${p.a || 0}</td>
         <td class="num pts-cell">${p.pts || 0}</td>
+        <td class="num ${pmClass}">${pmStr}</td>
       </tr>`;
     }).join('');
 
@@ -6475,7 +6505,7 @@ function renderArchiveS3Players(archive) {
           <thead><tr>
             <th>#</th><th>Joueur</th><th>Équipe</th>
             <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
-            <th class="num">PTS</th>
+            <th class="num">PTS</th><th class="num">+/-</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
@@ -6542,6 +6572,84 @@ function renderArchiveS3Goalies(archive) {
 }
 
 // ============ IMPORT ARCHIVES ============
+
+let currentEditingSeason = null;
+
+function openEditArchiveModal(seasonKey) {
+  currentEditingSeason = seasonKey;
+  const archive = DATA.archives && DATA.archives[seasonKey];
+  
+  if (!archive) {
+    alert('Aucune archive trouvée pour ' + seasonKey);
+    return;
+  }
+  
+  document.getElementById('editArchiveLabel').textContent = `Éditer ${seasonKey}`;
+  document.getElementById('editArchiveJsonInput').value = JSON.stringify(archive, null, 2);
+  document.getElementById('editArchiveStatus').style.display = 'none';
+  openModal('editArchiveModal');
+}
+
+async function saveEditedArchive() {
+  const jsonInput = document.getElementById('editArchiveJsonInput').value.trim();
+  const statusDiv = document.getElementById('editArchiveStatus');
+  
+  if (!jsonInput || !currentEditingSeason) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = 'rgba(239,68,68,0.1)';
+    statusDiv.style.borderColor = 'rgba(239,68,68,0.3)';
+    statusDiv.style.color = '#f87171';
+    statusDiv.innerHTML = '❌ Données manquantes';
+    return;
+  }
+  
+  try {
+    // Parse le JSON
+    const editedData = JSON.parse(jsonInput);
+    
+    // Mettre à jour dans DATA
+    if (!DATA.archives) {
+      DATA.archives = {};
+    }
+    DATA.archives[currentEditingSeason] = editedData;
+    
+    // Sauvegarder dans Firebase
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = 'rgba(59,130,246,0.1)';
+    statusDiv.style.borderColor = 'rgba(59,130,246,0.3)';
+    statusDiv.style.color = '#60a5fa';
+    statusDiv.innerHTML = '⏳ Enregistrement dans Firebase...';
+    
+    await saveToFirebase();
+    
+    // Succès!
+    statusDiv.style.background = 'rgba(74,222,128,0.1)';
+    statusDiv.style.borderColor = 'rgba(74,222,128,0.3)';
+    statusDiv.style.color = '#86efac';
+    statusDiv.innerHTML = '✅ Modifications sauvegardées!';
+    
+    // Rafraîchir les pages d'archives
+    if (currentEditingSeason === 'season_3' && typeof renderArchiveS3 === 'function') {
+      renderArchiveS3();
+    } else if (currentEditingSeason === 'season_4' && typeof renderArchiveS4 === 'function') {
+      renderArchiveS4();
+    }
+    
+    // Fermer le modal après 2 secondes
+    setTimeout(() => {
+      closeModal('editArchiveModal');
+      showToast('✅ Modifications sauvegardées!');
+    }, 2000);
+    
+  } catch (e) {
+    statusDiv.style.display = 'block';
+    statusDiv.style.background = 'rgba(239,68,68,0.1)';
+    statusDiv.style.borderColor = 'rgba(239,68,68,0.3)';
+    statusDiv.style.color = '#f87171';
+    statusDiv.innerHTML = `❌ Erreur JSON: ${e.message}`;
+    console.error('Erreur édition:', e);
+  }
+}
 
 function openImportArchiveModal() {
   openModal('importArchiveModal');
