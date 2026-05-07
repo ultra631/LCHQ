@@ -2284,9 +2284,7 @@
           <tr><td>Buts</td><td class="num"><span id="pGCurrent" class="editable-stat" onclick="makeStatEditable('p','G')">0</span></td><td class="num"><input type="number" id="pGAdd" min="0" value="0" oninput="updateNewTotal('p','G')"></td><td class="num"><span id="pGNew" class="pts-cell">0</span></td></tr>
           <tr><td>Passes</td><td class="num"><span id="pACurrent" class="editable-stat" onclick="makeStatEditable('p','A')">0</span></td><td class="num"><input type="number" id="pAAdd" min="0" value="0" oninput="updateNewTotal('p','A')"></td><td class="num"><span id="pANew" class="pts-cell">0</span></td></tr>
           <tr><td>+/-</td><td class="num"><span id="pPMCurrent" class="editable-stat" onclick="makeStatEditable('p','PM')">0</span></td><td class="num"><input type="number" id="pPMAdd" value="0" oninput="updateNewTotal('p','PM')"></td><td class="num"><span id="pPMNew" class="pts-cell">0</span></td></tr>
-          <tr><td>MEC</td><td class="num"><span id="pPimCurrent" class="editable-stat" onclick="makeStatEditable('p','Pim')">0</span></td><td class="num"><input type="number" id="pPimAdd" min="0" value="0" oninput="updateNewTotal('p','Pim')"></td><td class="num"><span id="pPimNew" class="pts-cell">0</span></td></tr>
           <tr><td>Mises en Échec (HITS)</td><td class="num"><span id="pHitsCurrent" class="editable-stat" onclick="makeStatEditable('p','Hits')">0</span></td><td class="num"><input type="number" id="pHitsAdd" min="0" value="0" oninput="updateNewTotal('p','Hits')"></td><td class="num"><span id="pHitsNew" class="pts-cell">0</span></td></tr>
-          <tr><td>Tirs</td><td class="num"><span id="pShotsCurrent" class="editable-stat" onclick="makeStatEditable('p','Shots')">0</span></td><td class="num"><input type="number" id="pShotsAdd" min="0" value="0" oninput="updateNewTotal('p','Shots')"></td><td class="num"><span id="pShotsNew" class="pts-cell">0</span></td></tr>
           <tr><td>Tirs Bloqués (TB)</td><td class="num"><span id="pTbCurrent" class="editable-stat" onclick="makeStatEditable('p','Tb')">0</span></td><td class="num"><input type="number" id="pTbAdd" min="0" value="0" oninput="updateNewTotal('p','Tb')"></td><td class="num"><span id="pTbNew" class="pts-cell">0</span></td></tr>
           <tr><td>MJ Gagnées (MJG)</td><td class="num"><span id="pMjgCurrent" class="editable-stat" onclick="makeStatEditable('p','Mjg')">0</span></td><td class="num"><input type="number" id="pMjgAdd" min="0" value="0" oninput="updateNewTotal('p','Mjg')"></td><td class="num"><span id="pMjgNew" class="pts-cell">0</span></td></tr>
           <tr><td>MJ Total (MJ)</td><td class="num"><span id="pMjfCurrent" class="editable-stat" onclick="makeStatEditable('p','Mjf')">0</span></td><td class="num"><input type="number" id="pMjfAdd" min="0" value="0" oninput="updateNewTotal('p','Mjf')"></td><td class="num"><span id="pMjfNew" class="pts-cell">0</span></td></tr>
@@ -2307,7 +2305,6 @@
     <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
       ✨ <strong>Calculs automatiques</strong> :<br>
       • PTS = Buts + Passes<br>
-      • %Tirs = Buts ÷ Tirs × 100<br>
       • %MAJ = MJG ÷ MJ × 100<br>
       • %P = PR ÷ PT × 100
     </div>
@@ -3793,7 +3790,7 @@ function resetWeeklyAdds(type) {
   let prefix, keys;
   if (type === 'player') {
     prefix = 'p';
-    keys = ['Gp','G','A','PM','Pim','Shots','Tb','Mjg','Mjf','Pt','Pr','Int','Pert'];
+    keys = ['Gp','G','A','PM','Hits','Tb','Mjg','Mjf','Pt','Pr','Int','Prises','Pert'];
   } else if (type === 'goalie') {
     prefix = 'g';
     keys = ['Gp','W','L','Otl','So','Sa','Sv','Ga'];
@@ -3840,8 +3837,8 @@ function openPlayerModal(playerId, division, presetStatus) {
 
     // Charger les stats actuelles dans le tableau
     loadStatsIntoModal('p', p, {
-      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim', 'Hits': 'hits',
-      'Shots': 'shots', 'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
+      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Hits': 'hits',
+      'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
       'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Prises': 'prises', 'Pert': 'pert'
     });
   } else {
@@ -3857,8 +3854,8 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pToi').value = '0:00';
     // Tous les stats à 0
     loadStatsIntoModal('p', {}, {
-      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Pim': 'pim', 'Hits': 'hits',
-      'Shots': 'shots', 'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
+      'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Hits': 'hits',
+      'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
       'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Prises': 'prises', 'Pert': 'pert'
     });
   }
@@ -3900,14 +3897,12 @@ function savePlayer() {
 
   const g = newVal('G');
   const a = newVal('A');
-  const shots = newVal('Shots');
   const mjg = newVal('Mjg');
   const mjf = newVal('Mjf');
   const pt = newVal('Pt');
   const pr = newVal('Pr');
 
   // Calculs automatiques
-  const shotpct = shots > 0 ? Math.round((g / shots) * 1000) / 10 : 0;
   const fopct = mjf > 0 ? Math.round((mjg / mjf) * 1000) / 10 : 0;
   const passpct = pt > 0 ? Math.round((pr / pt) * 1000) / 10 : 0;
 
@@ -3924,11 +3919,8 @@ function savePlayer() {
     a: a,
     pts: g + a,
     plusminus: newVal('PM'),
-    pim: newVal('Pim'),
     hits: newVal('Hits'),
     toi: document.getElementById('pToi').value || '0:00',
-    shots: shots,
-    shotpct: shotpct,
     tb: newVal('Tb'),
     mjg: mjg,
     mjf: mjf,
