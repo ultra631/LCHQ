@@ -3016,6 +3016,8 @@ function renderStandings6SNew() {
   const tbody = document.getElementById(bodyId);
   if (!tbody) return;
   
+  console.log('renderStandings6SNew - isAdmin:', isAdmin);
+  
   const standings = DATA.season_3_6v6?.standings || [];
   const sorted = [...standings].sort((a, b) => {
     if (b.pts !== a.pts) return b.pts - a.pts;
@@ -3052,6 +3054,8 @@ function renderStandings6SNew() {
 }
 
 function editTeamStanding(teamId, mode) {
+  console.log('editTeamStanding called:', teamId, mode, 'isAdmin:', isAdmin);
+  
   if (!isAdmin) {
     alert('Accès admin requis');
     return;
