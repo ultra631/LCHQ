@@ -4612,7 +4612,7 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
   // TABLEAU GARDIENS SEULEMENT
   if (goalies.length > 0) {
     html += `<div class="stats-table-wrap" style="overflow-x:auto;margin-top:20px;">
-      <table class="stats-table" style="min-width:700px;">
+      <table class="stats-table" style="min-width:800px;">
         <thead>
           <tr>
             <th style="position:sticky;left:0;background:var(--bg-secondary);z-index:2;">Gardien</th>
@@ -4624,6 +4624,9 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
             <th class="num">% Arrêts</th>
             <th class="num">Moy</th>
             <th class="num">Blanch.</th>
+            <th class="num">B</th>
+            <th class="num">A</th>
+            <th class="num">PTS</th>
             ${isEditMode ? '<th class="num" style="position:sticky;right:0;background:var(--bg-secondary);z-index:2;">⚙️</th>' : ''}
           </tr>
         </thead>
@@ -4634,8 +4637,9 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
       if (!goalie) return;
       
       const svpct = (p.sa || 0) > 0 ? Math.round(((p.sv || 0) / p.sa) * 1000) / 10 : 0;
-      const gaa = (p.ga || 0).toFixed(2); // Moyenne pour ce match
+      const gaa = (p.ga || 0).toFixed(2);
       const isShutout = (p.ga || 0) === 0;
+      const pts = (p.g || 0) + (p.a || 0);
       
       if (isEditMode) {
         html += `<tr>
@@ -4648,6 +4652,9 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
           <td class="num"><strong>${svpct.toFixed(1)}%</strong></td>
           <td class="num"><strong>${gaa}</strong></td>
           <td class="num"><strong style="color:${isShutout ? '#00d084' : 'var(--text-secondary)'};">${isShutout ? '✓ Oui' : 'Non'}</strong></td>
+          <td class="num"><input type="number" min="0" value="${p.g || 0}" onchange="updatePlayerMatchStat('${p.playerId}','g',this.value)" style="width:50px;"></td>
+          <td class="num"><input type="number" min="0" value="${p.a || 0}" onchange="updatePlayerMatchStat('${p.playerId}','a',this.value)" style="width:50px;"></td>
+          <td class="num"><strong>${pts}</strong></td>
           <td class="num" style="position:sticky;right:0;background:var(--bg-card);z-index:1;"><button class="btn btn-danger" style="padding:4px 8px;font-size:12px;" onclick="removePlayerFromMatch('${p.playerId}')">🗑️</button></td>
         </tr>`;
       } else {
@@ -4661,6 +4668,9 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
           <td class="num"><strong>${svpct.toFixed(1)}%</strong></td>
           <td class="num"><strong>${gaa}</strong></td>
           <td class="num"><strong style="color:${isShutout ? '#00d084' : 'var(--text-secondary)'};">${isShutout ? '✓ Oui' : 'Non'}</strong></td>
+          <td class="num">${p.g || 0}</td>
+          <td class="num">${p.a || 0}</td>
+          <td class="num"><strong>${pts}</strong></td>
         </tr>`;
       }
     });
@@ -4720,7 +4730,9 @@ function addPlayerToMatchStats(playerId) {
       l: 0,
       sv: 0,
       sa: 0,
-      ga: 0
+      ga: 0,
+      g: 0,
+      a: 0
     });
   } else {
     // Stats joueur
@@ -4756,8 +4768,8 @@ function updatePlayerMatchStat(playerId, stat, value) {
   if (playerStat) {
     playerStat[stat] = parseFloat(value) || 0;
     
-    // Recalculer et réafficher les pourcentages si c'est MEJ ou Passes
-    if (stat === 'mjg' || stat === 'mjf' || stat === 'pt' || stat === 'pr' || stat === 'sv' || stat === 'sa' || stat === 'ga') {
+    // Recalculer et réafficher les pourcentages si c'est MEJ, Passes, ou stats gardien
+    if (stat === 'mjg' || stat === 'mjf' || stat === 'pt' || stat === 'pr' || stat === 'sv' || stat === 'sa' || stat === 'ga' || stat === 'g' || stat === 'a') {
       // Recharger l'affichage pour mettre à jour les %
       let match = null;
       for (const w of DATA.schedule.weeks) {
