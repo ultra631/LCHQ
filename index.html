@@ -2283,123 +2283,121 @@
     <div class="division-banner-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🏆</div>
     <div class="division-banner-text">
       <h3>Tournois 4 vs 4</h3>
-      <p>Compétitions spéciales · Format 4S</p>
+      <p>Compétitions spéciales · Format 4 vs 4</p>
+    </div>
+    <button class="btn admin-only" onclick="resetTournois('4s')" style="margin-left:auto;background:#dc2626;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;" title="Réinitialiser tout le tournoi">🔄 Réinitialiser</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" style="margin-bottom:24px;">
+    <button class="tab active" onclick="switchTournoisTab('4s','standings',this)">📊 Classement</button>
+    <button class="tab" onclick="switchTournoisTab('4s','schedule',this)">📅 Calendrier</button>
+  </div>
+
+  <!-- CLASSEMENT -->
+  <div id="tournois-4s-standings">
+    <h2 class="section-title" style="color: var(--nhl-color);">Division NHL</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
+          <th class="num">DIFF</th><th class="num pts-cell">PTS</th>
+        </tr></thead>
+        <tbody id="tournois4sNhlBody"></tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title" style="color: var(--lhjmq-color); margin-top: 40px;">Division LHJMQ</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
+          <th class="num">DIFF</th><th class="num pts-cell">PTS</th>
+        </tr></thead>
+        <tbody id="tournois4sLhjmqBody"></tbody>
+      </table>
     </div>
   </div>
 
-  <h2 class="section-title" style="color: var(--nhl-color);">Division NHL</h2>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th><th>Équipe</th>
-          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
-          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
-          <th class="num">DIFF</th><th class="num">PTS</th>
-        </tr>
-      </thead>
-      <tbody id="tournois4sNhlBody">
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',1)"><td class="num">1</td><td><strong>Équipe 1</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',1)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',2)"><td class="num">2</td><td><strong>Équipe 2</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',2)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',3)"><td class="num">3</td><td><strong>Équipe 3</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',3)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',4)"><td class="num">4</td><td><strong>Équipe 4</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',4)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',5)"><td class="num">5</td><td><strong>Équipe 5</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',5)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',6)"><td class="num">6</td><td><strong>Équipe 6</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',6)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',7)"><td class="num">7</td><td><strong>Équipe 7</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',7)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',8)"><td class="num">8</td><td><strong>Équipe 8</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',8)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',9)"><td class="num">9</td><td><strong>Équipe 9</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',9)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','nhl',10)"><td class="num">10</td><td><strong>Équipe 10</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','nhl',10)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- CALENDRIER -->
+  <div id="tournois-4s-schedule" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 class="section-title" style="color: var(--nhl-color);margin:0;">Division NHL</h2>
+      <button class="btn btn-primary admin-only" onclick="addTournoisMatch('4s','nhl')" style="padding:8px 14px;font-size:13px;">➕ Ajouter match</button>
+    </div>
+    <div id="tournois-4s-schedule-nhl"></div>
 
-  <h2 class="section-title" style="color: var(--lhjmq-color); margin-top: 40px;">Division LHJMQ</h2>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th><th>Équipe</th>
-          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
-          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
-          <th class="num">DIFF</th><th class="num">PTS</th>
-        </tr>
-      </thead>
-      <tbody id="tournois4sLhjmqBody">
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',1)"><td class="num">1</td><td><strong>Équipe 1</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',1)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',2)"><td class="num">2</td><td><strong>Équipe 2</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',2)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',3)"><td class="num">3</td><td><strong>Équipe 3</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',3)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',4)"><td class="num">4</td><td><strong>Équipe 4</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',4)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',5)"><td class="num">5</td><td><strong>Équipe 5</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',5)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',6)"><td class="num">6</td><td><strong>Équipe 6</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',6)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',7)"><td class="num">7</td><td><strong>Équipe 7</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',7)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',8)"><td class="num">8</td><td><strong>Équipe 8</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',8)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',9)"><td class="num">9</td><td><strong>Équipe 9</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',9)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('4s','lhjmq',10)"><td class="num">10</td><td><strong>Équipe 10</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('4s','lhjmq',10)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-      </tbody>
-    </table>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:40px;margin-bottom:16px;">
+      <h2 class="section-title" style="color: var(--lhjmq-color);margin:0;">Division LHJMQ</h2>
+      <button class="btn btn-primary admin-only" onclick="addTournoisMatch('4s','lhjmq')" style="padding:8px 14px;font-size:13px;">➕ Ajouter match</button>
+    </div>
+    <div id="tournois-4s-schedule-lhjmq"></div>
   </div>
 </section>
 
 <!-- TOURNOIS 6S -->
 <section id="page-tournois-6s" class="page">
   <div class="division-banner" style="--division-color: #3b82f6">
-    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">🏆</div>
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">🏆</div>
     <div class="division-banner-text">
       <h3>Tournois 6 vs 6</h3>
-      <p>Compétitions spéciales · Format 6S</p>
+      <p>Compétitions spéciales · Format 6 vs 6</p>
+    </div>
+    <button class="btn admin-only" onclick="resetTournois('6s')" style="margin-left:auto;background:#dc2626;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;" title="Réinitialiser tout le tournoi">🔄 Réinitialiser</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" style="margin-bottom:24px;">
+    <button class="tab active" onclick="switchTournoisTab('6s','standings',this)">📊 Classement</button>
+    <button class="tab" onclick="switchTournoisTab('6s','schedule',this)">📅 Calendrier</button>
+  </div>
+
+  <!-- CLASSEMENT -->
+  <div id="tournois-6s-standings">
+    <h2 class="section-title" style="color: var(--nhl-color);">Division NHL</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
+          <th class="num">DIFF</th><th class="num pts-cell">PTS</th>
+        </tr></thead>
+        <tbody id="tournois6sNhlBody"></tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title" style="color: var(--lhjmq-color); margin-top: 40px;">Division LHJMQ</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Équipe</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
+          <th class="num">DIFF</th><th class="num pts-cell">PTS</th>
+        </tr></thead>
+        <tbody id="tournois6sLhjmqBody"></tbody>
+      </table>
     </div>
   </div>
 
-  <h2 class="section-title" style="color: var(--nhl-color);">Division NHL</h2>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th><th>Équipe</th>
-          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
-          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
-          <th class="num">DIFF</th><th class="num">PTS</th>
-        </tr>
-      </thead>
-      <tbody id="tournois6sNhlBody">
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',1)"><td class="num">1</td><td><strong>Équipe 1</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',1)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',2)"><td class="num">2</td><td><strong>Équipe 2</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',2)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',3)"><td class="num">3</td><td><strong>Équipe 3</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',3)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',4)"><td class="num">4</td><td><strong>Équipe 4</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',4)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',5)"><td class="num">5</td><td><strong>Équipe 5</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',5)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',6)"><td class="num">6</td><td><strong>Équipe 6</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',6)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',7)"><td class="num">7</td><td><strong>Équipe 7</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',7)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',8)"><td class="num">8</td><td><strong>Équipe 8</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',8)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',9)"><td class="num">9</td><td><strong>Équipe 9</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',9)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','nhl',10)"><td class="num">10</td><td><strong>Équipe 10</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','nhl',10)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- CALENDRIER -->
+  <div id="tournois-6s-schedule" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 class="section-title" style="color: var(--nhl-color);margin:0;">Division NHL</h2>
+      <button class="btn btn-primary admin-only" onclick="addTournoisMatch('6s','nhl')" style="padding:8px 14px;font-size:13px;">➕ Ajouter match</button>
+    </div>
+    <div id="tournois-6s-schedule-nhl"></div>
 
-  <h2 class="section-title" style="color: var(--lhjmq-color); margin-top: 40px;">Division LHJMQ</h2>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th><th>Équipe</th>
-          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
-          <th class="num">DP</th><th class="num">BP</th><th class="num">BC</th>
-          <th class="num">DIFF</th><th class="num">PTS</th>
-        </tr>
-      </thead>
-      <tbody id="tournois6sLhjmqBody">
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',1)"><td class="num">1</td><td><strong>Équipe 1</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',1)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',2)"><td class="num">2</td><td><strong>Équipe 2</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',2)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',3)"><td class="num">3</td><td><strong>Équipe 3</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',3)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',4)"><td class="num">4</td><td><strong>Équipe 4</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',4)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',5)"><td class="num">5</td><td><strong>Équipe 5</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',5)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',6)"><td class="num">6</td><td><strong>Équipe 6</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',6)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',7)"><td class="num">7</td><td><strong>Équipe 7</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',7)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',8)"><td class="num">8</td><td><strong>Équipe 8</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',8)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',9)"><td class="num">9</td><td><strong>Équipe 9</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',9)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-        <tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('6s','lhjmq',10)"><td class="num">10</td><td><strong>Équipe 10</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('6s','lhjmq',10)" title="Modifier">✏️</button></span></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num pts-cell">0</td></tr>
-      </tbody>
-    </table>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:40px;margin-bottom:16px;">
+      <h2 class="section-title" style="color: var(--lhjmq-color);margin:0;">Division LHJMQ</h2>
+      <button class="btn btn-primary admin-only" onclick="addTournoisMatch('6s','lhjmq')" style="padding:8px 14px;font-size:13px;">➕ Ajouter match</button>
+    </div>
+    <div id="tournois-6s-schedule-lhjmq"></div>
   </div>
 </section>
 
@@ -3467,6 +3465,10 @@ function navigate(page) {
     renderAllPlayers();
   } else if (page === 'goalies-all') {
     renderAllGoalies();
+  } else if (page === 'tournois-4s') {
+    renderTournoisAll('4s');
+  } else if (page === 'tournois-6s') {
+    renderTournoisAll('6s');
   }
 }
 
@@ -8379,10 +8381,10 @@ function saveTournoisTeam() {
   // Calculer les points
   team.pts = (team.w * 2) + team.otl;
   
+  computeTournoisStandings(mode, division);
   saveToFirebase();
-  renderTournoisTable(mode, division);
+  renderTournoisAll(mode);
   closeModal('tournoisTeamModal');
-  
   showToast('✅ Équipe de tournoi enregistrée!');
 }
 
@@ -8394,13 +8396,20 @@ function renderTournoisTable(mode, division) {
   const tbody = document.getElementById(bodyId);
   if (!tbody) return;
   
-  tbody.innerHTML = teams.map(t => {
-    const diff = t.gf - t.ga;
+  // Trier par PTS desc, puis DIFF desc
+  const sorted = [...teams].sort((a, b) => {
+    if ((b.pts||0) !== (a.pts||0)) return (b.pts||0) - (a.pts||0);
+    return ((b.gf||0)-(b.ga||0)) - ((a.gf||0)-(a.ga||0));
+  });
+  
+  tbody.innerHTML = sorted.map((t, i) => {
+    const diff = (t.gf||0) - (t.ga||0);
     const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
     const diffStr = diff > 0 ? `+${diff}` : diff;
+    const isAdmin = document.body.classList.contains('admin-mode');
     
-    return `<tr onclick="if(document.body.classList.contains('admin-mode'))openTournoisTeamModal('${mode}','${division}',${t.teamNum})">
-      <td class="num">${t.teamNum}</td>
+    return `<tr onclick="${isAdmin ? `openTournoisTeamModal('${mode}','${division}',${t.teamNum})` : `openTournoisTeamModal('${mode}','${division}',${t.teamNum})`}" style="cursor:pointer;">
+      <td class="num">${i + 1}</td>
       <td><strong>Équipe ${t.teamNum}</strong> <span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openTournoisTeamModal('${mode}','${division}',${t.teamNum})" title="Modifier">✏️</button></span></td>
       <td class="num">${t.gp || 0}</td>
       <td class="num">${t.w || 0}</td>
@@ -8409,8 +8418,155 @@ function renderTournoisTable(mode, division) {
       <td class="num">${t.gf || 0}</td>
       <td class="num">${t.ga || 0}</td>
       <td class="num ${diffClass}">${diffStr}</td>
-      <td class="num pts-cell">${t.pts || 0}</td>
+      <td class="num pts-cell"><strong>${t.pts || 0}</strong></td>
     </tr>`;
+  }).join('');
+}
+
+
+// ============ TOURNOIS — NOUVELLES FONCTIONS ============
+
+function switchTournoisTab(mode, tab, btn) {
+  document.querySelectorAll(`#page-tournois-${mode} .tab`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(`tournois-${mode}-standings`).style.display = tab === 'standings' ? '' : 'none';
+  document.getElementById(`tournois-${mode}-schedule`).style.display = tab === 'schedule' ? '' : 'none';
+}
+
+function resetTournois(mode) {
+  if (!confirm(`Réinitialiser TOUT le tournoi ${mode.toUpperCase()}?\nCela efface les scores, stats et joueurs de toutes les équipes.`)) return;
+  if (!DATA.tournaments) return;
+  ['nhl','lhjmq'].forEach(div => {
+    if (!DATA.tournaments[mode]?.[div]) return;
+    DATA.tournaments[mode][div] = DATA.tournaments[mode][div].map(t => ({
+      ...t, gp:0, w:0, l:0, otl:0, gf:0, ga:0, pts:0,
+      players:[], player_stats:{}, schedule:[]
+    }));
+  });
+  saveToFirebase();
+  renderTournoisAll(mode);
+  alert('✅ Tournoi réinitialisé!');
+}
+
+function renderTournoisAll(mode) {
+  ['nhl','lhjmq'].forEach(div => {
+    renderTournoisTable(mode, div);
+    renderTournoisSchedule(mode, div);
+  });
+}
+
+function computeTournoisStandings(mode, div) {
+  if (!DATA.tournaments?.[mode]?.[div]) return;
+  const teams = DATA.tournaments[mode][div];
+
+  // Reset
+  teams.forEach(t => { t.gp=0; t.w=0; t.l=0; t.otl=0; t.gf=0; t.ga=0; t.pts=0; });
+
+  // Parcourir tous les matchs
+  teams.forEach(t => {
+    (t.schedule || []).forEach(match => {
+      if (match.away_score === null || match.away_score === undefined) return;
+      const away = teams.find(x => x.teamNum === match.away);
+      const home = teams.find(x => x.teamNum === match.home);
+      if (!away || !home) return;
+      const as = match.away_score, hs = match.home_score, dp = match.is_dp;
+      away.gp++; home.gp++;
+      away.gf += as; away.ga += hs;
+      home.gf += hs; home.ga += as;
+      if (as > hs) {
+        away.w++; away.pts += 2;
+        if (dp) { home.otl++; home.pts += 1; } else { home.l++; }
+      } else if (hs > as) {
+        home.w++; home.pts += 2;
+        if (dp) { away.otl++; away.pts += 1; } else { away.l++; }
+      }
+    });
+  });
+  // Déduplique — chaque match est stocké dans l'équipe visiteur seulement
+}
+
+function addTournoisMatch(mode, div) {
+  if (!DATA.tournaments?.[mode]?.[div]) return;
+  const teams = DATA.tournaments[mode][div];
+
+  const awayNum = parseInt(prompt('Numéro équipe VISITEUR (1-10):'));
+  const homeNum = parseInt(prompt('Numéro équipe LOCALE (1-10):'));
+  if (!awayNum || !homeNum || awayNum === homeNum) { alert('Équipes invalides!'); return; }
+
+  const awayScore = parseInt(prompt('Score VISITEUR:'));
+  const homeScore = parseInt(prompt('Score LOCAL:'));
+  if (isNaN(awayScore) || isNaN(homeScore)) { alert('Score invalide!'); return; }
+  const dp = confirm('Prolongation (DP)?');
+
+  const awayTeam = teams.find(t => t.teamNum === awayNum);
+  if (!awayTeam) return;
+  if (!awayTeam.schedule) awayTeam.schedule = [];
+
+  awayTeam.schedule.push({
+    id: `tm_${Date.now()}`,
+    away: awayNum, home: homeNum,
+    away_score: awayScore, home_score: homeScore,
+    is_dp: dp
+  });
+
+  computeTournoisStandings(mode, div);
+  saveToFirebase();
+  renderTournoisAll(mode);
+}
+
+function deleteTournoisMatch(mode, div, matchId) {
+  if (!confirm('Supprimer ce match?')) return;
+  const teams = DATA.tournaments[mode][div];
+  teams.forEach(t => {
+    if (t.schedule) t.schedule = t.schedule.filter(m => m.id !== matchId);
+  });
+  computeTournoisStandings(mode, div);
+  saveToFirebase();
+  renderTournoisAll(mode);
+}
+
+function renderTournoisSchedule(mode, div) {
+  const teams = DATA.tournaments?.[mode]?.[div] || [];
+  const container = document.getElementById(`tournois-${mode}-schedule-${div}`);
+  if (!container) return;
+
+  // Collecter tous les matchs
+  const allMatches = [];
+  teams.forEach(t => {
+    (t.schedule || []).forEach(m => allMatches.push(m));
+  });
+
+  if (allMatches.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📅</div><p>Aucun match — clique sur ➕ Ajouter match en mode admin.</p></div>`;
+    return;
+  }
+
+  const isAdmin = document.body.classList.contains('admin-mode');
+  container.innerHTML = allMatches.map(m => {
+    const away = teams.find(t => t.teamNum === m.away);
+    const home = teams.find(t => t.teamNum === m.home);
+    const played = m.away_score !== null && m.away_score !== undefined;
+    const awayWin = played && m.away_score > m.home_score;
+    const homeWin = played && m.home_score > m.away_score;
+    const dpBadge = m.is_dp && played ? '<span class="match-dp-badge">DP</span>' : '';
+
+    const center = played
+      ? `<div class="match-center match-score">
+          <span class="${awayWin ? 'winner' : 'loser'}">${m.away_score}</span>
+          <span style="color:var(--text-tertiary);"> – </span>
+          <span class="${homeWin ? 'winner' : 'loser'}">${m.home_score}</span>
+         </div>`
+      : `<div class="match-center">VS</div>`;
+
+    const delBtn = isAdmin ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="position:absolute;top:4px;right:4px;background:none;border:none;cursor:pointer;font-size:14px;" title="Supprimer">🗑️</button>` : '';
+
+    return `<div class="match-card ${played ? 'played' : 'upcoming'}" style="position:relative;margin-bottom:8px;">
+      ${dpBadge}
+      <div class="match-team away"><span class="match-team-name">Équipe ${m.away}</span></div>
+      ${center}
+      <div class="match-team home"><span class="match-team-name">Équipe ${m.home}</span></div>
+      ${delBtn}
+    </div>`;
   }).join('');
 }
 
