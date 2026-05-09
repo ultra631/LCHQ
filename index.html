@@ -3462,7 +3462,7 @@ function renderStandings6SNew() {
       <button class="row-action-btn" onclick="event.stopPropagation();editTeamStanding6S('${s.team}')" title="Modifier classement">✏️</button>
     </span>`;
     
-    return `<tr>
+    return `<tr onclick="if(!document.body.classList.contains('admin-mode'))showTeamDetail6S('${s.team}')" style="cursor:pointer;">
       <td class="num">${i + 1}</td>
       <td><div class="team-cell">${teamLogoHtml(team)} <span class="team-name">${escapeHtml(team.name)}</span> ${adminActions}</div></td>
       <td class="num">${s.gp || 0}</td>
