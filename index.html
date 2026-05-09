@@ -3733,10 +3733,10 @@ function showTeamDetail6S(teamKey) {
   if (!t) return;
   
   // Récupérer les stats de l'équipe depuis season_3_6v6.standings
-  const teamStats = DATA.season_3_6v6?.standings?.find(s => s.team === teamKey);
+  let teamStats = DATA.season_3_6v6?.standings?.find(s => s.team === teamKey);
   if (!teamStats) {
-    console.error('Team stats not found for', teamKey);
-    return;
+    // Créer un record vide si l'équipe n'a pas encore de matchs
+    teamStats = { team: teamKey, gp: 0, w: 0, l: 0, otl: 0, pts: 0, gf: 0, ga: 0, streak: '-' };
   }
   
   // Joueurs de cette équipe en 6S
@@ -6307,7 +6307,7 @@ function renderStandings6S() {
     const diff = (s.gf || 0) - (s.ga || 0);
     const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
     const diffStr = diff > 0 ? `+${diff}` : diff;
-    return `<tr onclick="showTeamDetail6S('${s.team}')" style="cursor:pointer;">
+    return `<tr onclick="if(!document.body.classList.contains('admin-mode'))showTeamDetail6S('${s.team}')" style="cursor:pointer;">
       <td class="num">${i + 1}</td>
       <td><div class="team-cell">${teamLogoHtml(team)} <span class="team-name">${escapeHtml(team.name)}</span></div></td>
       <td class="num">${s.gp || 0}</td>
@@ -6448,7 +6448,7 @@ function renderTeams6S() {
     const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
     const diffStr = diff > 0 ? `+${diff}` : diff;
     
-    return `<div class="team-card" onclick="showTeamDetail('${tid}', '6s')" style="cursor:pointer;">
+    return `<div class="team-card" onclick="if(!document.body.classList.contains('admin-mode'))showTeamDetail6S('${tid}')" style="cursor:pointer;">
       ${teamLogoHtml(team, 'card')}
       <h3 class="team-card-name">${escapeHtml(team.name)}</h3>
       <div class="team-card-stats">
