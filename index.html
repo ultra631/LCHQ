@@ -4854,8 +4854,10 @@ async function saveNewMatch() {
     match.awayScore = parseInt(document.getElementById('matchAwayScore').value) || 0;
   }
   
-  // Ajouter au calendrier
-  if (!DATA.schedule) DATA.schedule = [];
+  // Ajouter au calendrier (s'assurer que c'est un array)
+  if (!DATA.schedule || !Array.isArray(DATA.schedule)) {
+    DATA.schedule = [];
+  }
   DATA.schedule.push(match);
   
   // Sauvegarder dans Firebase
