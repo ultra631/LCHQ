@@ -8619,9 +8619,9 @@ function renderTournoisSchedule(mode, div) {
   // Éliminatoires
   const elimAdminBtns = isAdmin ? `
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-      <button class="btn btn-primary" onclick="editElimMatch('${mode}','${div}','semi1')" style="font-size:12px;padding:6px 10px;">✏️ Demi-finale 1</button>
-      <button class="btn btn-primary" onclick="editElimMatch('${mode}','${div}','semi2')" style="font-size:12px;padding:6px 10px;">✏️ Demi-finale 2</button>
-      <button class="btn btn-primary" onclick="editElimMatch('${mode}','${div}','finale')" style="font-size:12px;padding:6px 10px;">✏️ Finale</button>
+      <button class="btn btn-primary" data-mode="${mode}" data-div="${div}" data-phase="semi1" onclick="editElimMatchBtn(this)" style="font-size:12px;padding:6px 10px;">✏️ Demi-finale 1</button>
+      <button class="btn btn-primary" data-mode="${mode}" data-div="${div}" data-phase="semi2" onclick="editElimMatchBtn(this)" style="font-size:12px;padding:6px 10px;">✏️ Demi-finale 2</button>
+      <button class="btn btn-primary" data-mode="${mode}" data-div="${div}" data-phase="finale" onclick="editElimMatchBtn(this)" style="font-size:12px;padding:6px 10px;">✏️ Finale</button>
     </div>` : '';
 
   html += `
@@ -8652,6 +8652,13 @@ function saveTournoisMatchUniversal() {
   if (currentTournoisSaveMode === 'elim') saveElimMatch();
   else if (currentTournoisSaveMode === 'edit') updateTournoisMatch();
   else saveTournoisMatch();
+}
+
+function editElimMatchBtn(btn) {
+  const mode = btn.getAttribute('data-mode');
+  const div = btn.getAttribute('data-div');
+  const phase = btn.getAttribute('data-phase');
+  editElimMatch(mode, div, phase);
 }
 
 function editElimMatch(mode, div, phase) {
