@@ -6966,11 +6966,10 @@ function renderTournoisRoster() {
     const stats = team.player_stats[playerId] || { gp: 0, g: 0, a: 0, pts: 0, plusminus: 0, pim: 0 };
     
     const isAdmin = document.body.classList.contains('admin-mode');
-    const clickHandler = isAdmin 
-      ? `onclick="openTournoisPlayerStatsModal('${playerId}')" style="cursor:pointer;"` 
-      : `onclick="openTournoisPlayerStatsModal('${playerId}')" style="cursor:pointer;"`;
+    const clickHandler = `onclick="openTournoisPlayerStatsModal('${playerId}')" style="cursor:pointer;"`;
     
-    return `<div ${clickHandler} style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg-elevated);border-radius:8px;margin-bottom:8px;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-card)'" onmouseout="this.style.background='var(--bg-elevated')">\n      <div style="flex:1;">
+    return `<div ${clickHandler} style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg-elevated);border-radius:8px;margin-bottom:8px;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-card)'" onmouseout="this.style.background='var(--bg-elevated)'">
+      <div style="flex:1;">
         <strong>${escapeHtml(player.name)}</strong>
         ${isAdmin ? `<button class="row-action-btn" onclick="event.stopPropagation();removeTournoisPlayer(${idx})" title="Retirer" style="margin-left:8px;">🗑️</button>` : ''}
       </div>
@@ -6984,12 +6983,14 @@ function renderTournoisRoster() {
     </div>`;
   }).join('');
 }
-        <strong>${escapeHtml(player.name)}</strong>
-        <span style="color:var(--text-tertiary);margin-left:10px;">${player.position_main || player.position || 'F'}</span>
-      </div>
-      <button class="btn btn-secondary" onclick="removePlayerFromTournoisTeam(${idx})" style="padding:4px 10px;font-size:12px;">🗑️ Retirer</button>
-    </div>`;
-  }).join('');
+
+function removePlayerFromTournoisTeam(idx) {
+  const { mode, division, teamNum } = currentTournoisTeam;
+  const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
+  if (!team) return;
+  
+  team.players.splice(idx, 1);
+  renderTournoisRoster();
 }
 
 function showAddPlayerToTournoisTeam() {
