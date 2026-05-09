@@ -2664,7 +2664,7 @@
     </div>
 
     <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
-      💡 Le classement des équipes ne sera <u>pas mis à jour automatiquement</u>. Pense à modifier le classement séparément!
+      ✅ Le classement des équipes sera <u>mis à jour automatiquement</u> après enregistrement!
     </div>
 
     <div class="modal-actions">
@@ -5284,16 +5284,26 @@ function clearMatchScore() {
 // ============ STATS DE MATCH ============
 
 let currentMatchStats = null;
+let currentMatchSource = "4s"; // "4s" ou "6s"
 
 function openMatchStatsModal(matchId) {
-  // Trouver le match
+  // Trouver le match (4S ou 6S)
   let match = null;
   let weekNum = null;
+  let matchSource = '4s';
+
   for (const w of DATA.schedule.weeks) {
     const found = (w.matches || []).find(m => m.id === matchId);
-    if (found) { match = found; weekNum = w.num; break; }
+    if (found) { match = found; weekNum = w.num; matchSource = '4s'; break; }
+  }
+  if (!match) {
+    for (const w of (DATA.season_3_6v6?.calendar || [])) {
+      const found = (w.matches || []).find(m => m.id === matchId);
+      if (found) { match = found; weekNum = w.num; matchSource = '6s'; break; }
+    }
   }
   if (!match) return;
+  currentMatchSource = matchSource;
   
   currentMatchStats = matchId;
   const away = DATA.teams[match.away];
@@ -5347,13 +5357,17 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
       <select id="addPlayerToMatch" size="8" onchange="addPlayerToMatchStats(this.value)" 
         style="width:100%;border-radius:8px;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border);">`;
     
-    // Liste des joueurs des deux équipes + remplaçants
-    const allPlayers = DATA.players.filter(p => 
+    // Liste des joueurs des deux équipes + remplaçants (4S ou 6S)
+    const is6S = currentMatchSource === '6s';
+    const playerPool = is6S ? (DATA.season_3_6v6?.players || []) : DATA.players;
+    const goaliePool = is6S ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+
+    const allPlayers = playerPool.filter(p =>
       p.team === match.away || p.team === match.home || p.status === 'sub'
     );
-    
+
     // Liste des gardiens des deux équipes
-    const allGoalies = (DATA.goalies || []).filter(g => 
+    const allGoalies = goaliePool.filter(g =>
       g.team === match.away || g.team === match.home || g.status === 'sub'
     );
     
@@ -5390,15 +5404,21 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   } else {
     // Grouper par équipe
     const awayPlayers = matchStats.players.filter(p => {
-      const player = DATA.players.find(pl => pl.id === p.playerId);
-      const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
+      const is6Ss = currentMatchSource === '6s';
+      const playerPoolS = is6Ss ? (DATA.season_3_6v6?.players || []) : DATA.players;
+      const goaliePoolS = is6Ss ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+      const player = playerPoolS.find(pl => pl.id === p.playerId);
+      const goalie = goaliePoolS.find(gl => gl.id === p.playerId);
       const person = player || goalie;
       return person && (person.team === match.away || (person.status === 'sub' && p.team === match.away));
     });
     
     const homePlayers = matchStats.players.filter(p => {
-      const player = DATA.players.find(pl => pl.id === p.playerId);
-      const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
+      const is6SH = currentMatchSource === '6s';
+      const playerPoolH = is6SH ? (DATA.season_3_6v6?.players || []) : DATA.players;
+      const goaliePoolH = is6SH ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+      const player = playerPoolH.find(pl => pl.id === p.playerId);
+      const goalie = goaliePoolH.find(gl => gl.id === p.playerId);
       const person = player || goalie;
       return person && (person.team === match.home || (person.status === 'sub' && p.team === match.home));
     });
@@ -5419,16 +5439,20 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
 
 function renderTeamStatsTable(players, team, isEditMode, side) {
   // Séparer joueurs et gardiens
+  const is6S = currentMatchSource === '6s';
+  const playerPool = is6S ? (DATA.season_3_6v6?.players || []) : DATA.players;
+  const goaliePool = is6S ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+
   const regularPlayers = players.filter(p => {
-    const player = DATA.players.find(pl => pl.id === p.playerId);
-    const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
+    const player = playerPool.find(pl => pl.id === p.playerId);
+    const goalie = goaliePool.find(gl => gl.id === p.playerId);
     const person = player || goalie;
     const isGoalie = goalie !== undefined;
     return person && !isGoalie;
   });
-  
+
   const goalies = players.filter(p => {
-    const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
+    const goalie = goaliePool.find(gl => gl.id === p.playerId);
     return goalie !== undefined;
   });
   
@@ -5607,18 +5631,23 @@ function addPlayerToMatchStats(playerId) {
     return;
   }
   
-  // Déterminer si c'est un joueur ou un gardien
-  const player = DATA.players.find(p => p.id === playerId);
-  const goalie = DATA.goalies?.find(g => g.id === playerId);
+  // Déterminer si c'est un joueur ou un gardien (4S ou 6S)
+  const is6Sm = currentMatchSource === '6s';
+  const playerPoolM = is6Sm ? (DATA.season_3_6v6?.players || []) : DATA.players;
+  const goaliePoolM = is6Sm ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+
+  const player = playerPoolM.find(p => p.id === playerId);
+  const goalie = goaliePoolM.find(g => g.id === playerId);
   const person = player || goalie;
-  
+
   if (!person) return;
-  
+
   // Déterminer si c'est un gardien
   const isGoalie = goalie !== undefined;
-  
+
   let match = null;
-  for (const w of DATA.schedule.weeks) {
+  const weeksM = is6Sm ? (DATA.season_3_6v6?.calendar || []) : DATA.schedule.weeks;
+  for (const w of weeksM) {
     const found = (w.matches || []).find(m => m.id === currentMatchStats);
     if (found) { match = found; break; }
   }
@@ -6516,7 +6545,17 @@ function openMatchModal6S(matchId) {
   }
   if (!match) return;
 
-  if (!document.body.classList.contains('admin-mode')) return;
+  const played = match.away_score !== null && match.away_score !== undefined;
+  const isAdminMode = document.body.classList.contains('admin-mode');
+
+  // Si match joué: ouvrir modal stats (comme en 4S)
+  if (played) {
+    openMatchStatsModal(matchId);
+    return;
+  }
+
+  // Sinon: modal score en mode admin seulement
+  if (!isAdminMode) return;
 
   editingMatchId = matchId;
   editingMatchSource = '6s'; // marqueur pour savoir que c'est un match 6S
