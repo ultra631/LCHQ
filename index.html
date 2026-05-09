@@ -8448,8 +8448,23 @@ function resetTournois(mode) {
   alert('✅ Tournoi réinitialisé!');
 }
 
+function initTournoisDivision(mode, div) {
+  if (!DATA.tournaments) DATA.tournaments = {};
+  if (!DATA.tournaments[mode]) DATA.tournaments[mode] = {};
+  if (!DATA.tournaments[mode][div] || DATA.tournaments[mode][div].length === 0) {
+    DATA.tournaments[mode][div] = [];
+    for (let i = 1; i <= 10; i++) {
+      DATA.tournaments[mode][div].push({
+        teamNum: i, gp:0, w:0, l:0, otl:0, gf:0, ga:0, pts:0,
+        players:[], player_stats:{}, schedule:[]
+      });
+    }
+  }
+}
+
 function renderTournoisAll(mode) {
   ['nhl','lhjmq'].forEach(div => {
+    initTournoisDivision(mode, div);
     renderTournoisTable(mode, div);
     renderTournoisSchedule(mode, div);
   });
@@ -8485,21 +8500,45 @@ function computeTournoisStandings(mode, div) {
   // Déduplique — chaque match est stocké dans l'équipe visiteur seulement
 }
 
+let currentTournoisMatchContext = { mode: '', div: '' };
+
 function addTournoisMatch(mode, div) {
-  if (!DATA.tournaments?.[mode]?.[div]) return;
+  initTournoisDivision(mode, div);
+  currentTournoisMatchContext = { mode, div };
+
+  // Peupler les dropdowns
   const teams = DATA.tournaments[mode][div];
+  const awayEl = document.getElementById('tmAwayNum');
+  const homeEl = document.getElementById('tmHomeNum');
 
-  const awayNum = parseInt(prompt('Numéro équipe VISITEUR (1-10):'));
-  const homeNum = parseInt(prompt('Numéro équipe LOCALE (1-10):'));
-  if (!awayNum || !homeNum || awayNum === homeNum) { alert('Équipes invalides!'); return; }
+  const options = teams.map(t => `<option value="${t.teamNum}">Équipe ${t.teamNum}</option>`).join('');
+  awayEl.innerHTML = '<option value="">— Visiteur —</option>' + options;
+  homeEl.innerHTML = '<option value="">— Locale —</option>' + options;
 
-  const awayScore = parseInt(prompt('Score VISITEUR:'));
-  const homeScore = parseInt(prompt('Score LOCAL:'));
-  if (isNaN(awayScore) || isNaN(homeScore)) { alert('Score invalide!'); return; }
-  const dp = confirm('Prolongation (DP)?');
+  document.getElementById('tmAwayScore').value = 0;
+  document.getElementById('tmHomeScore').value = 0;
+  document.getElementById('tmIsDP').checked = false;
 
+  const divLabel = div === 'nhl' ? 'Division NHL' : 'Division LHJMQ';
+  document.getElementById('addTournoisMatchSubtitle').textContent = `${mode.toUpperCase()} · ${divLabel}`;
+
+  openModal('addTournoisMatchModal');
+}
+
+function saveTournoisMatch() {
+  const { mode, div } = currentTournoisMatchContext;
+  const awayNum = parseInt(document.getElementById('tmAwayNum').value);
+  const homeNum = parseInt(document.getElementById('tmHomeNum').value);
+
+  if (!awayNum || !homeNum) { alert('Choisis les deux équipes!'); return; }
+  if (awayNum === homeNum) { alert('Les équipes doivent être différentes!'); return; }
+
+  const awayScore = parseInt(document.getElementById('tmAwayScore').value) || 0;
+  const homeScore = parseInt(document.getElementById('tmHomeScore').value) || 0;
+  const dp = document.getElementById('tmIsDP').checked;
+
+  const teams = DATA.tournaments[mode][div];
   const awayTeam = teams.find(t => t.teamNum === awayNum);
-  if (!awayTeam) return;
   if (!awayTeam.schedule) awayTeam.schedule = [];
 
   awayTeam.schedule.push({
@@ -8512,6 +8551,7 @@ function addTournoisMatch(mode, div) {
   computeTournoisStandings(mode, div);
   saveToFirebase();
   renderTournoisAll(mode);
+  closeModal('addTournoisMatchModal');
 }
 
 function deleteTournoisMatch(mode, div, matchId) {
@@ -8581,5 +8621,49 @@ if (window.innerWidth <= 900) {
 </script>
  <script src="lchq-animations.js"></script>
 
+
+<!-- Modal: Ajouter match tournois -->
+<div class="modal-overlay" id="addTournoisMatchModal">
+  <div class="modal" style="max-width:480px;">
+    <h3>➕ Ajouter un match</h3>
+    <div id="addTournoisMatchSubtitle" class="modal-info" style="margin-bottom:16px;"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div class="modal-form-group">
+        <label>Équipe VISITEUR</label>
+        <select id="tmAwayNum" style="width:100%;padding:10px;border-radius:8px;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border);">
+          <option value="">— Choisir —</option>
+        </select>
+      </div>
+      <div class="modal-form-group">
+        <label>Équipe LOCALE</label>
+        <select id="tmHomeNum" style="width:100%;padding:10px;border-radius:8px;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border);">
+          <option value="">— Choisir —</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div class="modal-form-group">
+        <label>Score VISITEUR</label>
+        <input type="number" id="tmAwayScore" min="0" value="0" style="width:100%;padding:10px;border-radius:8px;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border);">
+      </div>
+      <div class="modal-form-group">
+        <label>Score LOCAL</label>
+        <input type="number" id="tmHomeScore" min="0" value="0" style="width:100%;padding:10px;border-radius:8px;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border);">
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;background:var(--bg-elevated);padding:12px;border-radius:8px;">
+      <input type="checkbox" id="tmIsDP" style="width:18px;height:18px;">
+      <label for="tmIsDP" style="cursor:pointer;font-weight:600;">🔥 Prolongation (DP)</label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('addTournoisMatchModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveTournoisMatch()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
