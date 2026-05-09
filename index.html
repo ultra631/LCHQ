@@ -5314,8 +5314,16 @@ function openMatchStatsModal(matchId) {
   document.getElementById('matchStatsSubtitle').textContent = `Semaine ${weekNum} · ${match.division.toUpperCase()} · ${match.time}`;
   
   // Logos et scores
-  document.getElementById('statsAwayLogo').textContent = away.emoji;
-  document.getElementById('statsHomeLogo').textContent = home.emoji;
+  // Logos avec vraies images (comme partout sur le site)
+  const awayLogoHtml = away.logo
+    ? `<img src="${away.logo}" alt="${away.name}" style="width:64px;height:64px;object-fit:contain;" onerror="this.outerHTML='<span style=\'font-size:48px;\'>${away.emoji}</span>'">`
+    : `<span style="font-size:48px;">${away.emoji}</span>`;
+  const homeLogoHtml = home.logo
+    ? `<img src="${home.logo}" alt="${home.name}" style="width:64px;height:64px;object-fit:contain;" onerror="this.outerHTML='<span style=\'font-size:48px;\'>${home.emoji}</span>'">`
+    : `<span style="font-size:48px;">${home.emoji}</span>`;
+
+  document.getElementById('statsAwayLogo').innerHTML = awayLogoHtml;
+  document.getElementById('statsHomeLogo').innerHTML = homeLogoHtml;
   document.getElementById('statsAwayName').textContent = away.name;
   document.getElementById('statsHomeName').textContent = home.name;
   document.getElementById('statsAwayScore').textContent = match.away_score ?? 0;
