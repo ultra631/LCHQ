@@ -3153,6 +3153,7 @@ function initApp() {
   populateTeamFilters();
   setGameMode('4s'); // Initialiser le mode 4S et cacher les éléments selon le mode
   renderHome();
+  computeGoalieStats();
   computeStandingsFromSchedule();
   renderStandingsNHL();
   renderStandingsLHJMQ();
@@ -4614,6 +4615,8 @@ function saveGoalie() {
     DATA.season_3_6v6.goalies = goaliesList;
   }
   
+  // Recalculer GAA et SV% pour tous les gardiens
+  computeGoalieStats();
   closeModal('goalieModal');
   rerenderAll();
 }
@@ -5030,6 +5033,27 @@ function openMatchModal(matchId) {
   document.getElementById('matchClearBtn').style.display = isMatchPlayed(match) ? 'inline-block' : 'none';
 
   openModal('matchModal');
+}
+
+function computeGoalieStats() {
+  // Recalculer GAA et SV% automatiquement pour tous les gardiens
+  const allGoalies = [
+    ...(DATA.goalies || []),
+    ...(DATA.season_3_6v6?.goalies || [])
+  ];
+
+  allGoalies.forEach(g => {
+    const gp = g.gp || 0;
+    const sa = g.sa || 0;
+    const sv = g.sv || 0;
+    const ga = sa - sv; // Buts alloués = Tirs reçus - Arrêts
+
+    // GAA = Buts alloués / Matchs joués (arrondi 2 décimales)
+    g.gaa = gp > 0 ? Math.round((ga / gp) * 100) / 100 : 0;
+
+    // SV% = Arrêts / Tirs reçus (arrondi 3 décimales)
+    g.svpct = sa > 0 ? Math.round((sv / sa) * 1000) / 1000 : 0;
+  });
 }
 
 function computeStandingsFromSchedule() {
