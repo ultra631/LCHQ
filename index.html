@@ -8629,16 +8629,25 @@ function renderTournoisSchedule(mode, div) {
     ${elimAdminBtns}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
       <div>
-        <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:6px;font-weight:700;">DEMI-FINALE 1</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <p style="font-size:12px;color:var(--text-tertiary);font-weight:700;margin:0;">DEMI-FINALE 1</p>
+          ${isAdmin ? `<button onclick="resetElimMatch('${mode}','${div}','semi1')" style="background:none;border:1px solid #dc2626;color:#dc2626;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;" title="Réinitialiser">🔄</button>` : ''}
+        </div>
         ${matchCard(elim.semi1 || {}, 'semi1')}
       </div>
       <div>
-        <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:6px;font-weight:700;">DEMI-FINALE 2</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <p style="font-size:12px;color:var(--text-tertiary);font-weight:700;margin:0;">DEMI-FINALE 2</p>
+          ${isAdmin ? `<button onclick="resetElimMatch('${mode}','${div}','semi2')" style="background:none;border:1px solid #dc2626;color:#dc2626;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;" title="Réinitialiser">🔄</button>` : ''}
+        </div>
         ${matchCard(elim.semi2 || {}, 'semi2')}
       </div>
     </div>
     <div style="max-width:400px;margin:0 auto;">
-      <p style="font-size:12px;color:var(--red-bright);margin-bottom:6px;font-weight:700;text-align:center;">🥇 FINALE</p>
+      <div style="display:flex;justify-content:center;align-items:center;gap:12px;margin-bottom:6px;">
+        <p style="font-size:12px;color:var(--red-bright);font-weight:700;margin:0;text-align:center;">🥇 FINALE</p>
+        ${isAdmin ? `<button onclick="resetElimMatch('${mode}','${div}','finale')" style="background:none;border:1px solid #dc2626;color:#dc2626;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;" title="Réinitialiser">🔄</button>` : ''}
+      </div>
       ${matchCard(elim.finale || {}, 'finale')}
     </div>`;
 
@@ -8652,6 +8661,14 @@ function saveTournoisMatchUniversal() {
   if (currentTournoisSaveMode === 'elim') saveElimMatch();
   else if (currentTournoisSaveMode === 'edit') updateTournoisMatch();
   else saveTournoisMatch();
+}
+
+function resetElimMatch(mode, div, phase) {
+  if (!confirm(`Réinitialiser la ${phase === 'semi1' ? 'Demi-finale 1' : phase === 'semi2' ? 'Demi-finale 2' : 'Finale'}?`)) return;
+  if (!DATA.tournaments[mode][div + '_elim']) return;
+  DATA.tournaments[mode][div + '_elim'][phase] = {};
+  saveToFirebase();
+  renderTournoisAll(mode);
 }
 
 function editElimMatchBtn(btn) {
