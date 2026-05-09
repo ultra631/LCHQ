@@ -3038,37 +3038,39 @@
 
 <!-- Modal: Stats joueur de tournoi -->
 <div class="modal-overlay" id="tournoisPlayerStatsModal">
-  <div class="modal" style="max-width:600px;">
+  <div class="modal" style="max-width:700px;">
     <h3 id="tournoisPlayerName">📊 Stats du joueur</h3>
     <div class="modal-info" id="tournoisPlayerInfo"></div>
-    
-    <div class="modal-form-group">
-      <label>Statistiques</label>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
-        <div>
-          <label style="font-size:12px;color:var(--text-secondary);">Parties jouées (PJ)</label>
-          <input type="number" id="tournoisPlayerGP" min="0" value="0">
-        </div>
-        <div>
-          <label style="font-size:12px;color:var(--text-secondary);">Buts (B)</label>
-          <input type="number" id="tournoisPlayerG" min="0" value="0">
-        </div>
-        <div>
-          <label style="font-size:12px;color:var(--text-secondary);">Passes (A)</label>
-          <input type="number" id="tournoisPlayerA" min="0" value="0">
-        </div>
-        <div>
-          <label style="font-size:12px;color:var(--text-secondary);">Points (PTS)</label>
-          <input type="number" id="tournoisPlayerPTS" min="0" value="0" readonly style="background:var(--bg-elevated);color:var(--text-tertiary);">
-        </div>
-        <div style="grid-column:span 2;">
-          <label style="font-size:12px;color:var(--text-secondary);">+/-</label>
-          <input type="number" id="tournoisPlayerPM" value="0">
-        </div>
-      </div>
-      <div style="margin-top:8px;font-size:12px;color:var(--text-tertiary);">
-        💡 Les points (PTS) sont calculés automatiquement: B + A
-      </div>
+
+    <div class="stats-table-wrap" style="margin-top:16px;">
+      <table class="stats-add-table">
+        <thead>
+          <tr>
+            <th>Stat</th>
+            <th class="num">Total actuel</th>
+            <th class="num">+ Sem.</th>
+            <th class="num">= Nouveau</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>PJ</td><td class="num"><span id="tpGpCur">0</span></td><td class="num"><input type="number" id="tpGpAdd" min="0" value="0" oninput="updateTpTotal('Gp')"></td><td class="num"><span id="tpGpNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Buts (B)</td><td class="num"><span id="tpGCur">0</span></td><td class="num"><input type="number" id="tpGAdd" min="0" value="0" oninput="updateTpTotal('G');updateTpPts()"></td><td class="num"><span id="tpGNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes (A)</td><td class="num"><span id="tpACur">0</span></td><td class="num"><input type="number" id="tpAAdd" min="0" value="0" oninput="updateTpTotal('A');updateTpPts()"></td><td class="num"><span id="tpANew" class="pts-cell">0</span></td></tr>
+          <tr style="background:rgba(239,68,68,0.08);"><td><strong>PTS</strong> <small style="color:var(--text-tertiary);">auto</small></td><td class="num"><span id="tpPtsCur">0</span></td><td class="num">—</td><td class="num"><span id="tpPtsNew" class="pts-cell" style="color:var(--red-bright);">0</span></td></tr>
+          <tr><td>+/-</td><td class="num"><span id="tpPmCur">0</span></td><td class="num"><input type="number" id="tpPmAdd" value="0" oninput="updateTpTotal('Pm')"></td><td class="num"><span id="tpPmNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Mises en Échec (HITS)</td><td class="num"><span id="tpHitsCur">0</span></td><td class="num"><input type="number" id="tpHitsAdd" min="0" value="0" oninput="updateTpTotal('Hits')"></td><td class="num"><span id="tpHitsNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Tirs Bloqués (TB)</td><td class="num"><span id="tpTbCur">0</span></td><td class="num"><input type="number" id="tpTbAdd" min="0" value="0" oninput="updateTpTotal('Tb')"></td><td class="num"><span id="tpTbNew" class="pts-cell">0</span></td></tr>
+          <tr><td>MJ Gagnées (MJG)</td><td class="num"><span id="tpMjgCur">0</span></td><td class="num"><input type="number" id="tpMjgAdd" min="0" value="0" oninput="updateTpTotal('Mjg');updateTpFo()"></td><td class="num"><span id="tpMjgNew" class="pts-cell">0</span></td></tr>
+          <tr><td>MJ Total (MJ)</td><td class="num"><span id="tpMjfCur">0</span></td><td class="num"><input type="number" id="tpMjfAdd" min="0" value="0" oninput="updateTpTotal('Mjf');updateTpFo()"></td><td class="num"><span id="tpMjfNew" class="pts-cell">0</span></td></tr>
+          <tr style="background:rgba(91,155,213,0.08);"><td>%MJ <small style="color:var(--text-tertiary);">auto</small></td><td class="num"><span id="tpFoCur">0.0%</span></td><td class="num">—</td><td class="num"><span id="tpFoNew" class="pts-cell">0.0%</span></td></tr>
+          <tr><td>Passes Tentées (PT)</td><td class="num"><span id="tpPtCur">0</span></td><td class="num"><input type="number" id="tpPtAdd" min="0" value="0" oninput="updateTpTotal('Pt');updateTpPass()"></td><td class="num"><span id="tpPtNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Passes Réussies (PR)</td><td class="num"><span id="tpPrCur">0</span></td><td class="num"><input type="number" id="tpPrAdd" min="0" value="0" oninput="updateTpTotal('Pr');updateTpPass()"></td><td class="num"><span id="tpPrNew" class="pts-cell">0</span></td></tr>
+          <tr style="background:rgba(91,155,213,0.08);"><td>%PR <small style="color:var(--text-tertiary);">auto</small></td><td class="num"><span id="tpPassCur">0.0%</span><td class="num">—</td><td class="num"><span id="tpPassNew" class="pts-cell">0.0%</span></td></tr>
+          <tr><td>Interceptions (INT)</td><td class="num"><span id="tpIntCur">0</span></td><td class="num"><input type="number" id="tpIntAdd" min="0" value="0" oninput="updateTpTotal('Int')"></td><td class="num"><span id="tpIntNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Prises de Possession</td><td class="num"><span id="tpPrisesCur">0</span></td><td class="num"><input type="number" id="tpPrisesAdd" min="0" value="0" oninput="updateTpTotal('Prises')"></td><td class="num"><span id="tpPrisesNew" class="pts-cell">0</span></td></tr>
+          <tr><td>Pertes (PERT)</td><td class="num"><span id="tpPertCur">0</span></td><td class="num"><input type="number" id="tpPertAdd" min="0" value="0" oninput="updateTpTotal('Pert')"></td><td class="num"><span id="tpPertNew" class="pts-cell">0</span></td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="modal-actions">
@@ -8138,12 +8140,15 @@ function renderTournoisRoster() {
         <strong>${escapeHtml(player.name)}</strong>
         ${isAdmin ? `<button class="row-action-btn" onclick="event.stopPropagation();removeTournoisPlayer(${idx})" title="Retirer" style="margin-left:8px;">🗑️</button>` : ''}
       </div>
-      <div style="display:flex;gap:16px;font-size:13px;color:var(--text-secondary);">
+      <div style="display:flex;gap:12px;font-size:13px;color:var(--text-secondary);flex-wrap:wrap;">
         <div title="Parties jouées"><strong>${stats.gp}</strong> PJ</div>
         <div title="Buts"><strong>${stats.g}</strong> B</div>
         <div title="Passes"><strong>${stats.a}</strong> A</div>
-        <div title="Points" style="color:var(--red-bright);"><strong>${stats.pts}</strong> PTS</div>
-        <div title="+/-" class="${stats.plusminus > 0 ? 'diff-pos' : stats.plusminus < 0 ? 'diff-neg' : ''}">${stats.plusminus > 0 ? '+' : ''}${stats.plusminus}</div>
+        <div title="Points" style="color:var(--red-bright);"><strong>${stats.pts || ((stats.g||0)+(stats.a||0))}</strong> PTS</div>
+        <div title="+/-" class="${(stats.plusminus||0) > 0 ? 'diff-pos' : (stats.plusminus||0) < 0 ? 'diff-neg' : ''}">${(stats.plusminus||0) > 0 ? '+' : ''}${stats.plusminus||0}</div>
+        ${stats.hits ? `<div title="HITS"><strong>${stats.hits}</strong> HITS</div>` : ''}
+        ${stats.fopct ? `<div title="%MJ"><strong>${stats.fopct}%</strong> MJ</div>` : ''}
+        ${stats.passpct ? `<div title="%PR"><strong>${stats.passpct}%</strong> PR</div>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -8243,30 +8248,79 @@ function openTournoisPlayerStatsModal(playerId) {
   
   if (!player) return;
   
-  // Récupérer les stats existantes ou créer des stats vides
-  const stats = team.player_stats[playerId] || { gp: 0, g: 0, a: 0, pts: 0, plusminus: 0 };
-  
-  // Remplir le modal
+  const stats = team.player_stats[playerId] || { gp:0,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 };
+
   document.getElementById('tournoisPlayerName').textContent = `📊 ${player.name}`;
   document.getElementById('tournoisPlayerInfo').textContent = `${mode.toUpperCase()} • Division ${division.toUpperCase()} • Équipe ${teamNum}`;
-  
-  document.getElementById('tournoisPlayerGP').value = stats.gp || 0;
-  document.getElementById('tournoisPlayerG').value = stats.g || 0;
-  document.getElementById('tournoisPlayerA').value = stats.a || 0;
-  document.getElementById('tournoisPlayerPTS').value = stats.pts || 0;
-  document.getElementById('tournoisPlayerPM').value = stats.plusminus || 0;
-  
-  // Auto-calculer les points quand on change B ou A
-  document.getElementById('tournoisPlayerG').oninput = updateTournoisPlayerPoints;
-  document.getElementById('tournoisPlayerA').oninput = updateTournoisPlayerPoints;
-  
+
+  loadTpStats(stats);
   openModal('tournoisPlayerStatsModal');
 }
 
 function updateTournoisPlayerPoints() {
-  const g = parseInt(document.getElementById('tournoisPlayerG').value) || 0;
-  const a = parseInt(document.getElementById('tournoisPlayerA').value) || 0;
-  document.getElementById('tournoisPlayerPTS').value = g + a;
+  // Legacy — gardé pour compatibilité
+}
+
+function updateTpTotal(key) {
+  const cur = parseFloat(document.getElementById(`tp${key}Cur`).textContent) || 0;
+  const add = parseFloat(document.getElementById(`tp${key}Add`).value) || 0;
+  document.getElementById(`tp${key}New`).textContent = cur + add;
+}
+
+function updateTpPts() {
+  const gNew = (parseFloat(document.getElementById('tpGCur').textContent) || 0) + (parseFloat(document.getElementById('tpGAdd').value) || 0);
+  const aNew = (parseFloat(document.getElementById('tpACur').textContent) || 0) + (parseFloat(document.getElementById('tpAAdd').value) || 0);
+  const ptsNew = gNew + aNew;
+  const ptsCur = (parseFloat(document.getElementById('tpGCur').textContent) || 0) + (parseFloat(document.getElementById('tpACur').textContent) || 0);
+  document.getElementById('tpPtsCur').textContent = ptsCur;
+  document.getElementById('tpPtsNew').textContent = ptsNew;
+}
+
+function updateTpFo() {
+  const mjgNew = (parseFloat(document.getElementById('tpMjgCur').textContent) || 0) + (parseFloat(document.getElementById('tpMjgAdd').value) || 0);
+  const mjfNew = (parseFloat(document.getElementById('tpMjfCur').textContent) || 0) + (parseFloat(document.getElementById('tpMjfAdd').value) || 0);
+  const foNew = mjfNew > 0 ? (mjgNew / mjfNew * 100).toFixed(1) + '%' : '0.0%';
+  const mjgCur = parseFloat(document.getElementById('tpMjgCur').textContent) || 0;
+  const mjfCur = parseFloat(document.getElementById('tpMjfCur').textContent) || 0;
+  document.getElementById('tpFoCur').textContent = mjfCur > 0 ? (mjgCur / mjfCur * 100).toFixed(1) + '%' : '0.0%';
+  document.getElementById('tpFoNew').textContent = foNew;
+}
+
+function updateTpPass() {
+  const ptNew = (parseFloat(document.getElementById('tpPtCur').textContent) || 0) + (parseFloat(document.getElementById('tpPtAdd').value) || 0);
+  const prNew = (parseFloat(document.getElementById('tpPrCur').textContent) || 0) + (parseFloat(document.getElementById('tpPrAdd').value) || 0);
+  const passNew = ptNew > 0 ? (prNew / ptNew * 100).toFixed(1) + '%' : '0.0%';
+  const ptCur = parseFloat(document.getElementById('tpPtCur').textContent) || 0;
+  const prCur = parseFloat(document.getElementById('tpPrCur').textContent) || 0;
+  document.getElementById('tpPassCur').textContent = ptCur > 0 ? (prCur / ptCur * 100).toFixed(1) + '%' : '0.0%';
+  document.getElementById('tpPassNew').textContent = passNew;
+}
+
+function loadTpStats(stats) {
+  const fields = ['Gp','G','A','Pm','Hits','Tb','Mjg','Mjf','Pt','Pr','Int','Prises','Pert'];
+  const keys   = ['gp','g','a','plusminus','hits','tb','mjg','mjf','pt','pr','intc','prises','pert'];
+  fields.forEach((f, i) => {
+    const cur = document.getElementById(`tp${f}Cur`);
+    const add = document.getElementById(`tp${f}Add`);
+    const nw  = document.getElementById(`tp${f}New`);
+    if (cur) cur.textContent = stats[keys[i]] || 0;
+    if (add) add.value = 0;
+    if (nw)  nw.textContent = stats[keys[i]] || 0;
+  });
+  // PTS auto
+  const g = stats.g || 0, a = stats.a || 0;
+  document.getElementById('tpPtsCur').textContent = g + a;
+  document.getElementById('tpPtsNew').textContent = g + a;
+  // %MJ auto
+  const mjg = stats.mjg || 0, mjf = stats.mjf || 0;
+  const fo = mjf > 0 ? (mjg / mjf * 100).toFixed(1) + '%' : '0.0%';
+  document.getElementById('tpFoCur').textContent = fo;
+  document.getElementById('tpFoNew').textContent = fo;
+  // %PR auto
+  const pt = stats.pt || 0, pr = stats.pr || 0;
+  const pass = pt > 0 ? (pr / pt * 100).toFixed(1) + '%' : '0.0%';
+  document.getElementById('tpPassCur').textContent = pass;
+  document.getElementById('tpPassNew').textContent = pass;
 }
 
 async function saveTournoisPlayerStats() {
@@ -8275,15 +8329,30 @@ async function saveTournoisPlayerStats() {
   if (!team || !currentTournoisPlayer) return;
   
   // Récupérer les valeurs
-  const gp = parseInt(document.getElementById('tournoisPlayerGP').value) || 0;
-  const g = parseInt(document.getElementById('tournoisPlayerG').value) || 0;
-  const a = parseInt(document.getElementById('tournoisPlayerA').value) || 0;
-  const pts = g + a; // Auto-calculé
-  const plusminus = parseInt(document.getElementById('tournoisPlayerPM').value) || 0;
-  
-  // Sauvegarder les stats (sans PIM)
+  const tpNew = (key) => parseFloat(document.getElementById(`tp${key}New`).textContent) || 0;
+  const gp = tpNew('Gp');
+  const g  = tpNew('G');
+  const a  = tpNew('A');
+  const pts    = g + a;
+  const pm     = tpNew('Pm');
+  const hits   = tpNew('Hits');
+  const tb     = tpNew('Tb');
+  const mjg    = tpNew('Mjg');
+  const mjf    = tpNew('Mjf');
+  const pt     = tpNew('Pt');
+  const pr     = tpNew('Pr');
+  const intc   = tpNew('Int');
+  const prises = tpNew('Prises');
+  const pert   = tpNew('Pert');
+  const fopct  = mjf > 0 ? Math.round(mjg / mjf * 1000) / 10 : 0;
+  const passpct= pt  > 0 ? Math.round(pr  / pt  * 1000) / 10 : 0;
+
   if (!team.player_stats) team.player_stats = {};
-  team.player_stats[currentTournoisPlayer] = { gp, g, a, pts, plusminus };
+  team.player_stats[currentTournoisPlayer] = {
+    gp, g, a, pts, plusminus: pm,
+    hits, tb, mjg, mjf, fopct,
+    pt, pr, passpct, intc, prises, pert
+  };
   
   // Sauvegarder dans Firebase
   await saveToFirebase();
