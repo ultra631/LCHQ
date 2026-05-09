@@ -815,6 +815,8 @@
   /* Boutons/éléments admin uniquement */
   .admin-only { display: none !important; }
   body.admin-mode .admin-only { display: inline-block !important; }
+  body.admin-mode .admin-hidden { display: none !important; }
+  body.admin-mode .admin-only-nav { display: inline-block !important; }
 
   /* Table d'addition de stats (mode admin) */
   .stats-table-wrap {
@@ -1503,9 +1505,10 @@
       <div class="nav-group">
         <button class="nav-btn" data-section="players">Joueurs ▾</button>
         <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
-          <button class="nav-btn mode-4s" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
-          <button class="nav-btn mode-6s" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">Joueurs 6S</button>
+          <button class="nav-btn mode-4s admin-hidden" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
+          <button class="nav-btn mode-4s admin-hidden" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
+          <button class="nav-btn mode-6s admin-hidden" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">Joueurs 6S</button>
+          <button class="nav-btn admin-only-nav" data-page="players-all" onclick="navigate('players-all')" style="display:none;">👥 Tous les joueurs</button>
         </div>
       </div>
 
@@ -1513,9 +1516,10 @@
       <div class="nav-group">
         <button class="nav-btn" data-section="goalies">Gardiens ▾</button>
         <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
-          <button class="nav-btn mode-4s" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
-          <button class="nav-btn mode-6s" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">Gardiens 6S</button>
+          <button class="nav-btn mode-4s admin-hidden" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
+          <button class="nav-btn mode-4s admin-hidden" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
+          <button class="nav-btn mode-6s admin-hidden" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">Gardiens 6S</button>
+          <button class="nav-btn admin-only-nav" data-page="goalies-all" onclick="navigate('goalies-all')" style="display:none;">🥅 Tous les gardiens</button>
         </div>
       </div>
 
@@ -2165,6 +2169,38 @@
   </div>
   <button class="admin-add-btn" onclick="openGoalieModal(null, '6s')">➕ Ajouter Gardien 6S</button>
   <div id="goalies6s"></div>
+</section>
+
+<section id="page-players-all" class="page">
+  <div class="division-banner" style="--division-color: #e11d48">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #e11d48, #be123c);">👥</div>
+    <div class="division-banner-text">
+      <h3>Tous les joueurs</h3>
+      <p>Vue admin · 4S + 6S regroupés</p>
+    </div>
+  </div>
+  <button class="admin-add-btn" onclick="openPlayerModal(null, 'nhl')">➕ Ajouter un joueur</button>
+  <div style="margin-bottom:12px;">
+    <input type="text" id="allPlayersSearch" placeholder="🔍 Rechercher un joueur..." oninput="renderAllPlayers()"
+      style="width:100%;max-width:400px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+  </div>
+  <div id="playersAll"></div>
+</section>
+
+<section id="page-goalies-all" class="page">
+  <div class="division-banner" style="--division-color: #e11d48">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #e11d48, #be123c);">🥅</div>
+    <div class="division-banner-text">
+      <h3>Tous les gardiens</h3>
+      <p>Vue admin · 4S + 6S regroupés</p>
+    </div>
+  </div>
+  <button class="admin-add-btn" onclick="openGoalieModal(null, 'nhl')">➕ Ajouter un gardien</button>
+  <div style="margin-bottom:12px;">
+    <input type="text" id="allGoaliesSearch" placeholder="🔍 Rechercher un gardien..." oninput="renderAllGoalies()"
+      style="width:100%;max-width:400px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+  </div>
+  <div id="goaliesAll"></div>
 </section>
 
 <section id="page-teams-6s" class="page">
@@ -3295,6 +3331,10 @@ function navigate(page) {
     renderArchiveS3();
   } else if (page === 'archive-s4') {
     renderArchiveS4();
+  } else if (page === 'players-all') {
+    renderAllPlayers();
+  } else if (page === 'goalies-all') {
+    renderAllGoalies();
   }
 }
 
@@ -3853,6 +3893,131 @@ function showTeamDetail6S(teamKey) {
     </div>
   `;
   navigate('team-detail');
+}
+
+// RENDER ALL PLAYERS (admin)
+function renderAllPlayers() {
+  const search = (document.getElementById('allPlayersSearch')?.value || '').toLowerCase();
+
+  // Fusionner 4S et 6S en une seule liste, en dédupliquant par nom
+  const all4s = DATA.players.map(p => ({ ...p, _source: '4s' }));
+  const all6s = (DATA.season_3_6v6?.players || []).map(p => ({ ...p, _source: '6s' }));
+
+  // Construire liste unique — regrouper par nom
+  const byName = {};
+  all4s.forEach(p => {
+    const key = p.name.toLowerCase().trim();
+    if (!byName[key]) byName[key] = { name: p.name, p4s: null, p6s: null };
+    byName[key].p4s = p;
+  });
+  all6s.forEach(p => {
+    const key = p.name.toLowerCase().trim();
+    if (!byName[key]) byName[key] = { name: p.name, p4s: null, p6s: null };
+    byName[key].p6s = p;
+  });
+
+  let rows = Object.values(byName)
+    .filter(entry => !search || entry.name.toLowerCase().includes(search))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const html = `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>#</th><th>Joueur</th>
+      <th>Équipe 4S</th><th class="num">PTS 4S</th>
+      <th>Équipe 6S</th><th class="num">PTS 6S</th>
+      <th>Actions</th>
+    </tr></thead>
+    <tbody>${rows.map((entry, i) => {
+      const p4 = entry.p4s;
+      const p6 = entry.p6s;
+      const t4 = p4?.team ? DATA.teams[p4.team] : null;
+      const t6 = p6?.team ? DATA.teams[p6.team] : null;
+      const team4Html = t4 ? `<div class="team-cell">${teamLogoHtml(t4)} <span>${t4.name}</span></div>` : '<span style="color:var(--text-tertiary);">—</span>';
+      const team6Html = t6 ? `<div class="team-cell">${teamLogoHtml(t6)} <span>${t6.name}</span></div>` : '<span style="color:var(--text-tertiary);">—</span>';
+      const id = p4?.id || p6?.id;
+      const src = p4 ? '4s' : '6s';
+      return `<tr onclick="showPlayerDetail('${id}', '${src}')" style="cursor:pointer;">
+        <td class="num">${i + 1}</td>
+        <td style="font-weight:600;">${escapeHtml(entry.name)}
+          <span class="admin-row-actions">
+            <button class="row-action-btn" onclick="event.stopPropagation();openPlayerModal('${id}', '${src}')" title="Modifier">✏️</button>
+          </span>
+        </td>
+        <td>${team4Html}</td>
+        <td class="num pts-cell">${p4 ? (p4.pts || 0) : '—'}</td>
+        <td>${team6Html}</td>
+        <td class="num pts-cell">${p6 ? (p6.pts || 0) : '—'}</td>
+        <td>
+          ${p4 ? `<button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer('${p4.id}')" title="Supprimer 4S">🗑️4S</button>` : ''}
+          ${p6 ? `<button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer6S('${p6.id}')" title="Supprimer 6S">🗑️6S</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('')}
+    </tbody></table></div>`;
+
+  document.getElementById('playersAll').innerHTML = html;
+}
+
+function renderAllGoalies() {
+  const search = (document.getElementById('allGoaliesSearch')?.value || '').toLowerCase();
+
+  const all4s = (DATA.goalies || []).map(g => ({ ...g, _source: '4s' }));
+  const all6s = (DATA.season_3_6v6?.goalies || []).map(g => ({ ...g, _source: '6s' }));
+
+  const byName = {};
+  all4s.forEach(g => {
+    const key = g.name.toLowerCase().trim();
+    if (!byName[key]) byName[key] = { name: g.name, g4s: null, g6s: null };
+    byName[key].g4s = g;
+  });
+  all6s.forEach(g => {
+    const key = g.name.toLowerCase().trim();
+    if (!byName[key]) byName[key] = { name: g.name, g4s: null, g6s: null };
+    byName[key].g6s = g;
+  });
+
+  let rows = Object.values(byName)
+    .filter(entry => !search || entry.name.toLowerCase().includes(search))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const html = `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>#</th><th>Gardien</th>
+      <th>Équipe 4S</th><th class="num">MOY 4S</th><th class="num">%ARR 4S</th>
+      <th>Équipe 6S</th><th class="num">MOY 6S</th><th class="num">%ARR 6S</th>
+      <th>Actions</th>
+    </tr></thead>
+    <tbody>${rows.map((entry, i) => {
+      const g4 = entry.g4s;
+      const g6 = entry.g6s;
+      const t4 = g4?.team ? DATA.teams[g4.team] : null;
+      const t6 = g6?.team ? DATA.teams[g6.team] : null;
+      const team4Html = t4 ? `<div class="team-cell">${teamLogoHtml(t4)} <span>${t4.name}</span></div>` : '<span style="color:var(--text-tertiary);">—</span>';
+      const team6Html = t6 ? `<div class="team-cell">${teamLogoHtml(t6)} <span>${t6.name}</span></div>` : '<span style="color:var(--text-tertiary);">—</span>';
+      const id = g4?.id || g6?.id;
+      const src = g4 ? '4s' : '6s';
+      return `<tr style="cursor:default;">
+        <td class="num">${i + 1}</td>
+        <td style="font-weight:600;">🥅 ${escapeHtml(entry.name)}
+          <span class="admin-row-actions">
+            <button class="row-action-btn" onclick="openGoalieModal('${id}', '${src}')" title="Modifier">✏️</button>
+          </span>
+        </td>
+        <td>${team4Html}</td>
+        <td class="num">${g4 ? (g4.gaa || 0).toFixed(2) : '—'}</td>
+        <td class="num">${g4 ? ((g4.svpct || 0) * 100).toFixed(1) + '%' : '—'}</td>
+        <td>${team6Html}</td>
+        <td class="num">${g6 ? (g6.gaa || 0).toFixed(2) : '—'}</td>
+        <td class="num">${g6 ? ((g6.svpct || 0) * 100).toFixed(1) + '%' : '—'}</td>
+        <td>
+          ${g4 ? `<button class="row-action-btn delete" onclick="confirmDeleteGoalie('${g4.id}')" title="Supprimer 4S">🗑️4S</button>` : ''}
+          ${g6 ? `<button class="row-action-btn delete" onclick="confirmDeleteGoalie6S('${g6.id}')" title="Supprimer 6S">🗑️6S</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('')}
+    </tbody></table></div>`;
+
+  document.getElementById('goaliesAll').innerHTML = html;
 }
 
 // PLAYER DETAIL
@@ -7015,6 +7180,8 @@ function rerenderAll() {
   renderPlayersLHJMQ();
   renderGoaliesNHL();
   renderGoaliesLHJMQ();
+  if (document.getElementById('playersAll')) renderAllPlayers();
+  if (document.getElementById('goaliesAll')) renderAllGoalies();
   renderTeamsGrids();
   renderTrophiesNHL();
   renderTrophiesLHJMQ();
