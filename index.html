@@ -1911,7 +1911,10 @@
 
 <!-- SCHEDULE -->
 <section id="page-schedule" class="page">
-  <h2 class="section-title">📅 Calendrier & Résultats</h2>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <h2 class="section-title" style="margin:0;">📅 Calendrier & Résultats</h2>
+    <button class="btn btn-primary admin-only" onclick="openAddMatchModal()" style="display:none;">➕ Ajouter un match</button>
+  </div>
 
   <div class="tabs">
     <button class="tab active" onclick="switchScheduleDiv('all', this)">Toutes</button>
@@ -2848,7 +2851,7 @@
       <label>Statistiques</label>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
         <div>
-          <label style="font-size:12px;color:var(--text-secondary);">PJ</label>
+          <label style="font-size:12px;color:var(--text-secondary);">Parties jouées (PJ)</label>
           <input type="number" id="tournoisPlayerGP" min="0" value="0">
         </div>
         <div>
@@ -2861,22 +2864,84 @@
         </div>
         <div>
           <label style="font-size:12px;color:var(--text-secondary);">Points (PTS)</label>
-          <input type="number" id="tournoisPlayerPTS" min="0" value="0" readonly style="background:var(--bg-elevated);">
+          <input type="number" id="tournoisPlayerPTS" min="0" value="0" readonly style="background:var(--bg-elevated);color:var(--text-tertiary);">
         </div>
-        <div>
+        <div style="grid-column:span 2;">
           <label style="font-size:12px;color:var(--text-secondary);">+/-</label>
           <input type="number" id="tournoisPlayerPM" value="0">
         </div>
-        <div>
-          <label style="font-size:12px;color:var(--text-secondary);">Punitions (PIM)</label>
-          <input type="number" id="tournoisPlayerPIM" min="0" value="0">
-        </div>
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-tertiary);">
+        💡 Les points (PTS) sont calculés automatiquement: B + A
       </div>
     </div>
 
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('tournoisPlayerStatsModal')">Annuler</button>
       <button class="btn btn-primary" onclick="saveTournoisPlayerStats()">💾 Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Ajouter un match -->
+<div class="modal-overlay" id="addMatchModal">
+  <div class="modal" style="max-width:600px;">
+    <h3>➕ Ajouter un match</h3>
+    <div class="modal-info">
+      Créez un nouveau match pour le calendrier.
+    </div>
+    
+    <div class="modal-form-group">
+      <label>Division</label>
+      <select id="matchDivision">
+        <option value="nhl">NHL (Jeudi)</option>
+        <option value="lhjmq">LHJMQ (Mercredi)</option>
+      </select>
+    </div>
+
+    <div class="modal-form-group">
+      <label>Date et heure</label>
+      <input type="datetime-local" id="matchDateTime">
+    </div>
+
+    <div class="modal-form-group">
+      <label>Équipe domicile</label>
+      <select id="matchHomeTeam">
+        <option value="">-- Sélectionner --</option>
+      </select>
+    </div>
+
+    <div class="modal-form-group">
+      <label>Équipe visiteur</label>
+      <select id="matchAwayTeam">
+        <option value="">-- Sélectionner --</option>
+      </select>
+    </div>
+
+    <div class="modal-form-group">
+      <label>Statut</label>
+      <select id="matchStatus">
+        <option value="upcoming">À venir</option>
+        <option value="played">Joué</option>
+      </select>
+    </div>
+
+    <div id="matchScoreSection" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="modal-form-group">
+          <label>Score domicile</label>
+          <input type="number" id="matchHomeScore" min="0" value="0">
+        </div>
+        <div class="modal-form-group">
+          <label>Score visiteur</label>
+          <input type="number" id="matchAwayScore" min="0" value="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('addMatchModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveNewMatch()">💾 Ajouter le match</button>
     </div>
   </div>
 </div>
@@ -4703,6 +4768,105 @@ function teamMiniDisplay(teamKey, alignment) {
     ? `<img src="${t.logo}" alt="${escapeHtml(t.name)}" onerror="this.outerHTML='<span class=\\'emoji\\'>${t.emoji}</span>'">`
     : `<span class="emoji">${t.emoji}</span>`;
   return `<div class="match-team ${alignment}">${logo}<span class="match-team-name">${escapeHtml(t.name)}</span></div>`;
+}
+
+// ============ ADD MATCH FUNCTIONS ============
+
+function openAddMatchModal() {
+  if (!document.body.classList.contains('admin-mode')) return;
+  
+  // Remplir les listes d'équipes
+  updateMatchTeamLists('nhl');
+  
+  // Afficher/cacher la section score selon le statut
+  document.getElementById('matchStatus').onchange = function() {
+    const scoreSection = document.getElementById('matchScoreSection');
+    scoreSection.style.display = this.value === 'played' ? 'block' : 'none';
+  };
+  
+  // Mettre à jour les équipes quand on change de division
+  document.getElementById('matchDivision').onchange = function() {
+    updateMatchTeamLists(this.value);
+  };
+  
+  // Réinitialiser le formulaire
+  document.getElementById('matchDateTime').value = '';
+  document.getElementById('matchStatus').value = 'upcoming';
+  document.getElementById('matchScoreSection').style.display = 'none';
+  document.getElementById('matchHomeScore').value = 0;
+  document.getElementById('matchAwayScore').value = 0;
+  
+  openModal('addMatchModal');
+}
+
+function updateMatchTeamLists(division) {
+  const homeSelect = document.getElementById('matchHomeTeam');
+  const awaySelect = document.getElementById('matchAwayTeam');
+  
+  // Obtenir les équipes de la division
+  const teams = Object.entries(DATA.teams).filter(([key, team]) => {
+    if (division === 'nhl') {
+      return ['capitals','avalanche','canadiens','kings','kraken','rangers','panthers','sharks','bruins','predators','wild','canucks'].includes(key);
+    } else {
+      return !['capitals','avalanche','canadiens','kings','kraken','rangers','panthers','sharks','bruins','predators','wild','canucks'].includes(key) && !key.includes('_6v6');
+    }
+  });
+  
+  const options = '<option value="">-- Sélectionner --</option>' + teams.map(([key, team]) => 
+    `<option value="${key}">${team.name}</option>`
+  ).join('');
+  
+  homeSelect.innerHTML = options;
+  awaySelect.innerHTML = options;
+}
+
+async function saveNewMatch() {
+  if (!document.body.classList.contains('admin-mode')) return;
+  
+  const division = document.getElementById('matchDivision').value;
+  const dateTime = document.getElementById('matchDateTime').value;
+  const homeTeam = document.getElementById('matchHomeTeam').value;
+  const awayTeam = document.getElementById('matchAwayTeam').value;
+  const status = document.getElementById('matchStatus').value;
+  
+  if (!dateTime || !homeTeam || !awayTeam) {
+    alert('Veuillez remplir tous les champs obligatoires');
+    return;
+  }
+  
+  if (homeTeam === awayTeam) {
+    alert('Les deux équipes doivent être différentes');
+    return;
+  }
+  
+  // Créer le match
+  const match = {
+    id: Date.now().toString(),
+    date: dateTime,
+    home: homeTeam,
+    away: awayTeam,
+    division: division,
+    played: status === 'played'
+  };
+  
+  if (status === 'played') {
+    match.homeScore = parseInt(document.getElementById('matchHomeScore').value) || 0;
+    match.awayScore = parseInt(document.getElementById('matchAwayScore').value) || 0;
+  }
+  
+  // Ajouter au calendrier
+  if (!DATA.schedule) DATA.schedule = [];
+  DATA.schedule.push(match);
+  
+  // Sauvegarder dans Firebase
+  await saveToFirebase();
+  
+  // Rafraîchir l'affichage
+  renderSchedule();
+  
+  // Fermer le modal
+  closeModal('addMatchModal');
+  showToast('✅ Match ajouté!');
 }
 
 function renderSchedule() {
@@ -6963,7 +7127,7 @@ function renderTournoisRoster() {
     if (!player) return '';
     
     // Récupérer les stats du joueur
-    const stats = team.player_stats[playerId] || { gp: 0, g: 0, a: 0, pts: 0, plusminus: 0, pim: 0 };
+    const stats = team.player_stats[playerId] || { gp: 0, g: 0, a: 0, pts: 0, plusminus: 0 };
     
     const isAdmin = document.body.classList.contains('admin-mode');
     const clickHandler = `onclick="openTournoisPlayerStatsModal('${playerId}')" style="cursor:pointer;"`;
@@ -7079,7 +7243,7 @@ function openTournoisPlayerStatsModal(playerId) {
   if (!player) return;
   
   // Récupérer les stats existantes ou créer des stats vides
-  const stats = team.player_stats[playerId] || { gp: 0, g: 0, a: 0, pts: 0, plusminus: 0, pim: 0 };
+  const stats = team.player_stats[playerId] || { gp: 0, g: 0, a: 0, pts: 0, plusminus: 0 };
   
   // Remplir le modal
   document.getElementById('tournoisPlayerName').textContent = `📊 ${player.name}`;
@@ -7090,7 +7254,6 @@ function openTournoisPlayerStatsModal(playerId) {
   document.getElementById('tournoisPlayerA').value = stats.a || 0;
   document.getElementById('tournoisPlayerPTS').value = stats.pts || 0;
   document.getElementById('tournoisPlayerPM').value = stats.plusminus || 0;
-  document.getElementById('tournoisPlayerPIM').value = stats.pim || 0;
   
   // Auto-calculer les points quand on change B ou A
   document.getElementById('tournoisPlayerG').oninput = updateTournoisPlayerPoints;
@@ -7114,13 +7277,12 @@ async function saveTournoisPlayerStats() {
   const gp = parseInt(document.getElementById('tournoisPlayerGP').value) || 0;
   const g = parseInt(document.getElementById('tournoisPlayerG').value) || 0;
   const a = parseInt(document.getElementById('tournoisPlayerA').value) || 0;
-  const pts = g + a;
+  const pts = g + a; // Auto-calculé
   const plusminus = parseInt(document.getElementById('tournoisPlayerPM').value) || 0;
-  const pim = parseInt(document.getElementById('tournoisPlayerPIM').value) || 0;
   
-  // Sauvegarder les stats
+  // Sauvegarder les stats (sans PIM)
   if (!team.player_stats) team.player_stats = {};
-  team.player_stats[currentTournoisPlayer] = { gp, g, a, pts, plusminus, pim };
+  team.player_stats[currentTournoisPlayer] = { gp, g, a, pts, plusminus };
   
   // Sauvegarder dans Firebase
   await saveToFirebase();
