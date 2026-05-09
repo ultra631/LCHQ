@@ -823,7 +823,26 @@
     border: 1px solid var(--border);
     border-radius: 10px;
     overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     background: var(--bg-card);
+  }
+  @media (max-width: 768px) {
+    #matchStatsModal .modal {
+      padding: 12px;
+      max-height: 95vh;
+    }
+    #matchStatsModal .stats-table-wrap {
+      overflow-x: auto;
+    }
+    #matchStatsModal table input[type="number"] {
+      width: 52px !important;
+      padding: 4px !important;
+      font-size: 14px !important;
+    }
+    #matchStatsModal table {
+      font-size: 12px;
+    }
   }
   .stats-add-table {
     width: 100%;
@@ -6076,8 +6095,8 @@ function renderTeamStatsTable(players, team, isEditMode, side) {
   
   // TABLEAU JOUEURS SEULEMENT
   if (regularPlayers.length > 0) {
-    html += `<div class="stats-table-wrap" style="overflow-x:auto;">
-      <table class="stats-table" style="min-width:1000px;">
+    html += `<div class="stats-table-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+      <table class="stats-table" style="min-width:900px;">
         <thead>
           <tr>
             <th style="position:sticky;left:0;background:var(--bg-secondary);z-index:2;">Joueur</th>
@@ -8061,6 +8080,24 @@ function openTournoisTeamModal(mode, division, teamNum) {
   document.getElementById('tournoisGF').value = team.gf || 0;
   document.getElementById('tournoisGA').value = team.ga || 0;
   
+  // Mode admin: éditable / Mode non-admin: lecture seule
+  const adminMode = document.body.classList.contains('admin-mode');
+  
+  // Rendre les inputs en lecture seule si non-admin
+  ['tournoisGP','tournoisW','tournoisL','tournoisOTL','tournoisGF','tournoisGA'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.readOnly = !adminMode;
+  });
+  
+  // Cacher boutons admin
+  document.querySelectorAll('#tournoisTeamModal .btn-primary:not(.close-btn), #tournoisTeamModal .admin-only').forEach(btn => {
+    btn.style.display = adminMode ? '' : 'none';
+  });
+  
+  // Changer le titre
+  document.getElementById('tournoisTeamModalTitle').textContent = adminMode ? `🏆 Modifier Équipe ${teamNum}` : `🏆 Équipe ${teamNum}`;
+  document.querySelector('#tournoisTeamModal .modal-actions .btn-secondary').textContent = adminMode ? 'Annuler' : 'Fermer';
+
   renderTournoisRoster();
   openModal('tournoisTeamModal');
 }
