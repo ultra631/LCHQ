@@ -4384,21 +4384,9 @@ function updateSecondaryOptions() {
 }
 
 function updatePlayerFormVisibility() {
-  const status = document.querySelector('input[name="pStatus"]:checked').value;
+  // pTeamLabel n'existe plus, on garde juste la section visible
   const teamGroup = document.getElementById('pTeamGroup');
-  const teamLabel = document.getElementById('pTeamLabel');
-  
-  // Toujours afficher le champ équipe
-  teamGroup.style.display = 'block';
-  
-  // Changer le label selon le statut
-  if (status === 'sub') {
-    teamLabel.textContent = '(optionnel - pour assigner à une équipe temporairement)';
-  } else if (status === 'regular') {
-    teamLabel.textContent = '(obligatoire pour réguliers)';
-  } else {
-    teamLabel.textContent = '(optionnel)';
-  }
+  if (teamGroup) teamGroup.style.display = 'block';
 }
 
 // HELPER: Mettre à jour le total automatiquement quand on tape dans une case "+ Sem."
