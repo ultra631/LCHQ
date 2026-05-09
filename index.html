@@ -2408,10 +2408,33 @@
     </div>
 
     <div class="modal-form-group" id="pTeamGroup">
-      <label>Équipe <small style="color:var(--text-tertiary);font-weight:400;" id="pTeamLabel">(obligatoire pour réguliers)</small></label>
-      <select id="pTeam">
-        <option value="">— Aucune équipe —</option>
-      </select>
+      <label>Modes de jeu <small style="color:var(--text-tertiary);font-weight:400;">(coche les modes auxquels ce joueur participe)</small></label>
+
+      <!-- 4S -->
+      <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px;">
+          <input type="checkbox" id="pMode4s" onchange="toggleModeSection('4s')" style="width:18px;height:18px;">
+          <span style="font-weight:700;">🏒 4S — Division NHL / LHJMQ</span>
+        </label>
+        <div id="pTeamSection4s" style="display:none;">
+          <select id="pTeam4s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+            <option value="">— Choisir une équipe 4S —</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 6S -->
+      <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px;">
+          <input type="checkbox" id="pMode6s" onchange="toggleModeSection('6s')" style="width:18px;height:18px;">
+          <span style="font-weight:700;">⚡ 6S — Format 6 vs 6</span>
+        </label>
+        <div id="pTeamSection6s" style="display:none;">
+          <select id="pTeam6s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+            <option value="">— Choisir une équipe 6S —</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <div class="modal-grid">
@@ -4312,6 +4335,12 @@ document.addEventListener('click', (e) => {
 
 // ===== JOUEURS =====
 
+function toggleModeSection(mode) {
+  const cb = document.getElementById(`pMode${mode}`);
+  const section = document.getElementById(`pTeamSection${mode}`);
+  section.style.display = cb.checked ? 'block' : 'none';
+}
+
 function populateTeamSelect(selectId, division) {
   const sel = document.getElementById(selectId);
   sel.innerHTML = '<option value="">— Choisir une équipe —</option>';
@@ -4450,34 +4479,76 @@ function loadStatsIntoModal(prefix, data, mapping) {
 
 function openPlayerModal(playerId, division, presetStatus) {
   editingPlayerId = playerId;
-  editingDivision = division || 'nhl'; // Stocker la division en cours d'édition
-  populateTeamSelect('pTeam', division);
+  editingDivision = division || 'nhl';
 
-  const isS6s = division === '6s';
-  const players = isS6s ? (DATA.season_3_6v6?.players || []) : DATA.players;
+  // Peupler les dropdowns 4S et 6S
+  populateTeamSelect('pTeam4s', 'nhl'); // 4S = nhl + lhjmq — on va tout mettre
+  // Ajouter aussi lhjmq dans pTeam4s
+  const sel4s = document.getElementById('pTeam4s');
+  sel4s.innerHTML = '<option value="">— Choisir une équipe 4S —</option>';
+  Object.entries(DATA.teams)
+    .filter(([_, t]) => t.division === 'nhl' || t.division === 'lhjmq')
+    .sort((a, b) => a[1].name.localeCompare(b[1].name))
+    .forEach(([k, t]) => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = `${t.emoji} ${t.name} (${t.division.toUpperCase()})`;
+      sel4s.appendChild(opt);
+    });
 
-  if (playerId) {
-    const p = players.find(x => x.id === playerId);
+  populateTeamSelect('pTeam6s', '6s');
+
+  // Chercher le joueur dans les 2 pools
+  const p4s = DATA.players.find(x => x.id === playerId);
+  const p6s = (DATA.season_3_6v6?.players || []).find(x => x.id === playerId);
+  const p = p4s || p6s;
+
+  // Trouver l'équivalent dans l'autre mode par nom ou linked_id
+  let linked4s = p4s;
+  let linked6s = p6s;
+  if (!linked4s && p6s) {
+    linked4s = p6s.linked_id
+      ? DATA.players.find(x => x.id === p6s.linked_id)
+      : DATA.players.find(x => x.name.toLowerCase().trim() === p6s.name.toLowerCase().trim());
+  }
+  if (!linked6s && p4s) {
+    linked6s = p4s.linked_id
+      ? (DATA.season_3_6v6?.players || []).find(x => x.id === p4s.linked_id)
+      : (DATA.season_3_6v6?.players || []).find(x => x.name.toLowerCase().trim() === p4s.name.toLowerCase().trim());
+  }
+
+  if (p) {
     document.getElementById('playerModalTitle').textContent = '✏️ Modifier joueur';
     document.getElementById('pName').value = p.name;
-    document.getElementById('pTeam').value = p.team || '';
     const status = p.status || 'regular';
     document.querySelector(`input[name="pStatus"][value="${status}"]`).checked = true;
     document.getElementById('pPositionMain').value = p.position_main || p.position || 'C';
     updateSecondaryOptions();
-    document.getElementById('pPositionSec').value = p.position_sec || (p.position_main === 'C' ? 'A' : 'C');
+    document.getElementById('pPositionSec').value = p.position_sec || 'A';
     document.getElementById('pPositionTer').value = p.position_ter || '';
     document.getElementById('pToi').value = p.toi || '0:00';
 
-    // Charger les stats actuelles dans le tableau
-    loadStatsIntoModal('p', p, {
+    // Cocher 4S si le joueur existe en 4S
+    document.getElementById('pMode4s').checked = !!linked4s;
+    document.getElementById('pTeamSection4s').style.display = linked4s ? 'block' : 'none';
+    if (linked4s) document.getElementById('pTeam4s').value = linked4s.team || '';
+
+    // Cocher 6S si le joueur existe en 6S
+    document.getElementById('pMode6s').checked = !!linked6s;
+    document.getElementById('pTeamSection6s').style.display = linked6s ? 'block' : 'none';
+    if (linked6s) document.getElementById('pTeam6s').value = linked6s.team || '';
+
+    // Stats: charger selon la source d'origine
+    const statSrc = linked4s || linked6s;
+    loadStatsIntoModal('p', statSrc, {
       'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Hits': 'hits',
       'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
       'Pt': 'pt', 'Pr': 'pr', 'Int': 'intc', 'Prises': 'prises', 'Pert': 'pert'
     });
+
   } else {
-    const modeLabel = isS6s ? '6S' : (division === 'lhjmq' ? 'LHJMQ' : 'NHL');
-    document.getElementById('playerModalTitle').textContent = `➕ Nouveau joueur ${modeLabel}`;
+    // Nouveau joueur
+    document.getElementById('playerModalTitle').textContent = '➕ Nouveau joueur';
     document.getElementById('pName').value = '';
     const status = presetStatus || 'regular';
     document.querySelector(`input[name="pStatus"][value="${status}"]`).checked = true;
@@ -4486,7 +4557,14 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pPositionSec').value = 'A';
     document.getElementById('pPositionTer').value = '';
     document.getElementById('pToi').value = '0:00';
-    // Tous les stats à 0
+
+    // Pré-cocher le mode selon la division d'où on vient
+    const is6s = division === '6s';
+    document.getElementById('pMode4s').checked = !is6s;
+    document.getElementById('pTeamSection4s').style.display = !is6s ? 'block' : 'none';
+    document.getElementById('pMode6s').checked = is6s;
+    document.getElementById('pTeamSection6s').style.display = is6s ? 'block' : 'none';
+
     loadStatsIntoModal('p', {}, {
       'Gp': 'gp', 'G': 'g', 'A': 'a', 'PM': 'plusminus', 'Hits': 'hits',
       'Tb': 'tb', 'Mjg': 'mjg', 'Mjf': 'mjf',
@@ -4501,20 +4579,24 @@ function savePlayer() {
   const name = document.getElementById('pName').value.trim();
   if (!name) { alert('Le nom est obligatoire!'); return; }
   const status = document.querySelector('input[name="pStatus"]:checked').value;
-  let team = document.getElementById('pTeam').value;
-  
-  // En mode 6S, tous les joueurs doivent être réguliers avec équipe
-  if (editingDivision === '6s' && !team) {
-    alert('Un joueur 6S doit être assigné à une équipe!');
+
+  const mode4s = document.getElementById('pMode4s').checked;
+  const mode6s = document.getElementById('pMode6s').checked;
+  const team4s = document.getElementById('pTeam4s').value;
+  const team6s = document.getElementById('pTeam6s').value;
+
+  if (!mode4s && !mode6s) {
+    alert('Le joueur doit participer à au moins un mode (4S ou 6S)!');
     return;
   }
-  
-  if (status === 'regular' && !team) {
-    alert('Un joueur régulier doit être assigné à une équipe!');
+  if (mode4s && status === 'regular' && !team4s) {
+    alert('Un joueur régulier 4S doit avoir une équipe 4S!');
     return;
   }
-  // Les remplaçants peuvent avoir une équipe (optionnel)
-  // Si pas d'équipe, team reste vide
+  if (mode6s && !team6s) {
+    alert('Un joueur 6S doit avoir une équipe 6S!');
+    return;
+  }
 
   const posMain = document.getElementById('pPositionMain').value;
   const posSec = document.getElementById('pPositionSec').value;
@@ -4524,10 +4606,7 @@ function savePlayer() {
     return;
   }
 
-  // HELPER: récupérer le nouveau total (current + add)
-  const newVal = (key) => {
-    return parseFloat(document.getElementById(`p${key}New`).textContent) || 0;
-  };
+  const newVal = (key) => parseFloat(document.getElementById(`p${key}New`).textContent) || 0;
 
   const g = newVal('G');
   const a = newVal('A');
@@ -4536,50 +4615,55 @@ function savePlayer() {
   const pt = newVal('Pt');
   const pr = newVal('Pr');
 
-  // Calculs automatiques
   const fopct = mjf > 0 ? Math.round((mjg / mjf) * 1000) / 10 : 0;
   const passpct = pt > 0 ? Math.round((pr / pt) * 1000) / 10 : 0;
 
-  const playerData = {
-    name: name,
-    team: team,
-    status: status,
-    position_main: posMain,
-    position_sec: posSec,
-    position_ter: posTer,
-    position: posMain,
-    gp: newVal('Gp'),
-    g: g,
-    a: a,
-    pts: g + a,
-    plusminus: newVal('PM'),
-    hits: newVal('Hits'),
+  const baseData = {
+    name, status,
+    position_main: posMain, position_sec: posSec, position_ter: posTer, position: posMain,
+    gp: newVal('Gp'), g, a, pts: g + a,
+    plusminus: newVal('PM'), hits: newVal('Hits'),
     toi: document.getElementById('pToi').value || '0:00',
-    tb: newVal('Tb'),
-    mjg: mjg,
-    mjf: mjf,
-    fopct: fopct,
-    pt: pt,
-    pr: pr,
-    passpct: passpct,
-    intc: newVal('Int'),
-    prises: newVal('Prises'),
-    pert: newVal('Pert')
+    tb: newVal('Tb'), mjg, mjf, fopct, pt, pr, passpct,
+    intc: newVal('Int'), prises: newVal('Prises'), pert: newVal('Pert')
   };
 
-  const isS6s = editingDivision === '6s';
-  const playersList = isS6s ? (DATA.season_3_6v6.players || []) : DATA.players;
+  // Chercher les profils existants dans les 2 pools
+  const existing4s = DATA.players.find(x => x.id === editingPlayerId)
+    || DATA.players.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+  const existing6s = (DATA.season_3_6v6?.players || []).find(x => x.id === editingPlayerId)
+    || (DATA.season_3_6v6?.players || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
 
-  if (editingPlayerId) {
-    const idx = playersList.findIndex(x => x.id === editingPlayerId);
-    playersList[idx] = { ...playersList[idx], ...playerData };
-  } else {
-    const newId = 'p' + (Math.max(0, ...playersList.map(p => parseInt(p.id.replace('p',''))||0)) + 1);
-    playersList.push({ id: newId, ...playerData });
+  // SAUVEGARDER EN 4S
+  if (mode4s) {
+    const data4s = { ...baseData, team: team4s };
+    if (existing4s) {
+      const idx = DATA.players.findIndex(x => x.id === existing4s.id);
+      DATA.players[idx] = { ...DATA.players[idx], ...data4s };
+    } else {
+      const newId = 'p' + (Math.max(0, ...DATA.players.map(p => parseInt(p.id.replace('p',''))||0)) + 1);
+      DATA.players.push({ id: newId, ...data4s });
+    }
+  } else if (existing4s && editingPlayerId === existing4s.id) {
+    // Si on décoche 4S sur un joueur existant, retirer l'équipe mais garder le profil
+    existing4s.team = '';
+    existing4s.status = 'inactive';
   }
 
-  if (isS6s) {
-    DATA.season_3_6v6.players = playersList;
+  // SAUVEGARDER EN 6S
+  if (!DATA.season_3_6v6.players) DATA.season_3_6v6.players = [];
+  if (mode6s) {
+    const data6s = { ...baseData, team: team6s };
+    if (existing6s) {
+      const idx = DATA.season_3_6v6.players.findIndex(x => x.id === existing6s.id);
+      DATA.season_3_6v6.players[idx] = { ...DATA.season_3_6v6.players[idx], ...data6s };
+    } else {
+      const ids6s = DATA.season_3_6v6.players.map(p => parseInt(p.id.replace('p6_',''))||0);
+      const newId = 'p6_' + (Math.max(0, ...ids6s) + 1);
+      DATA.season_3_6v6.players.push({ id: newId, ...data6s });
+    }
+  } else if (existing6s && editingPlayerId === existing6s.id) {
+    existing6s.team = '';
   }
 
   closeModal('playerModal');
