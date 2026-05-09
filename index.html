@@ -4722,6 +4722,7 @@ function downloadDataJson() {
 let currentScheduleDiv = 'all';
 let currentScheduleStatus = 'all';
 let editingMatchId = null;
+let editingMatchSource = "4s"; // "4s" ou "6s"
 
 // Configuration de la saison
 const SEASON_CONFIG = {
@@ -5150,8 +5151,12 @@ function saveMatchScore() {
   const homeScore = +document.getElementById('matchHomeScore').value || 0;
   const matchType = document.querySelector('input[name="matchType"]:checked').value;
 
-  // Trouver et modifier le match
-  for (const w of DATA.schedule.weeks) {
+  // Trouver et modifier le match (4S ou 6S)
+  const weeks = editingMatchSource === '6s'
+    ? (DATA.season_3_6v6?.calendar || [])
+    : DATA.schedule.weeks;
+
+  for (const w of weeks) {
     const match = (w.matches || []).find(m => m.id === editingMatchId);
     if (match) {
       match.away_score = awayScore;
@@ -5165,13 +5170,21 @@ function saveMatchScore() {
   computeStandingsFromSchedule();
 
   closeModal('matchModal');
-  renderSchedule();
+  if (editingMatchSource === '6s') {
+    renderSchedule6S();
+  } else {
+    renderSchedule();
+  }
   saveData();
 }
 
 function clearMatchScore() {
   if (!confirm('Effacer le score de ce match? Il redeviendra "À venir".')) return;
-  for (const w of DATA.schedule.weeks) {
+  const weeksC = editingMatchSource === '6s'
+    ? (DATA.season_3_6v6?.calendar || [])
+    : DATA.schedule.weeks;
+
+  for (const w of weeksC) {
     const match = (w.matches || []).find(m => m.id === editingMatchId);
     if (match) {
       match.away_score = null;
@@ -5183,7 +5196,11 @@ function clearMatchScore() {
   // Recalculer le classement automatiquement
   computeStandingsFromSchedule();
   closeModal('matchModal');
-  renderSchedule();
+  if (editingMatchSource === '6s') {
+    renderSchedule6S();
+  } else {
+    renderSchedule();
+  }
   saveData();
 }
 
@@ -6341,12 +6358,102 @@ function renderTeams6S() {
 }
 
 function renderSchedule6S() {
-  const games = DATA.season_3_6v6?.calendar || [];
-  document.getElementById('schedule6s').innerHTML = `<div class="empty-state">
-    <div class="empty-state-icon">📅</div>
-    <p style="font-size: 16px;"><strong>Calendrier à venir</strong></p>
-    <p style="margin-top: 8px;">Les matchs de la Saison 3 6S seront ajoutés bientôt.</p>
-  </div>`;
+  const weeks = DATA.season_3_6v6?.calendar || [];
+  const container = document.getElementById('schedule6s');
+
+  if (!weeks || weeks.length === 0) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">📅</div>
+      <p style="font-size: 16px;"><strong>Calendrier à venir</strong></p>
+      <p style="margin-top: 8px;">Les matchs de la Saison 3 6S seront ajoutés bientôt.</p>
+    </div>`;
+    return;
+  }
+
+  let html = '';
+
+  weeks.forEach(week => {
+    let matches = week.matches || [];
+    if (matches.length === 0) return;
+
+    html += `<div class="schedule-week">
+      <div class="schedule-week-header">
+        <div class="schedule-week-num">S${week.num}</div>
+        <div class="schedule-week-title"><strong>Semaine ${week.num}</strong></div>
+      </div>`;
+
+    // Grouper par heure
+    const times = [...new Set(matches.map(m => m.time))].sort();
+    times.forEach(time => {
+      const timeMatches = matches.filter(m => m.time === time);
+      html += `<div class="schedule-time-slot">
+        <div class="schedule-time">${time}</div>
+        <div class="schedule-matches">`;
+
+      timeMatches.forEach(m => {
+        const away = DATA.teams[m.away] || { name: m.away, emoji: '🏒', color: '#666' };
+        const home = DATA.teams[m.home] || { name: m.home, emoji: '🏒', color: '#666' };
+        const played = m.away_score !== null && m.away_score !== undefined;
+        const awayWin = played && m.away_score > m.home_score;
+        const homeWin = played && m.home_score > m.away_score;
+
+        const adminBtn = document.body.classList.contains('admin-mode')
+          ? `<button class="match-edit-btn admin-only" onclick="event.stopPropagation();openMatchModal6S('${m.id}')">✏️</button>`
+          : '';
+
+        html += `<div class="schedule-match ${played ? 'played' : 'upcoming'}" onclick="openMatchModal6S('${m.id}')">
+          <div class="match-team away ${awayWin ? 'winner' : played ? 'loser' : ''}">
+            <span class="team-emoji">${away.emoji || '🏒'}</span>
+            <span class="team-name">${away.name}</span>
+            ${played ? `<span class="match-score ${awayWin ? 'winner' : 'loser'}">${m.away_score}</span>` : ''}
+          </div>
+          <div class="match-vs">${played ? '' : 'VS'}${m.is_dp && played ? '<span class="dp-badge">DP</span>' : ''}</div>
+          <div class="match-team home ${homeWin ? 'winner' : played ? 'loser' : ''}">
+            ${played ? `<span class="match-score ${homeWin ? 'winner' : 'loser'}">${m.home_score}</span>` : ''}
+            <span class="team-name">${home.name}</span>
+            <span class="team-emoji">${home.emoji || '🏒'}</span>
+          </div>
+          ${adminBtn}
+        </div>`;
+      });
+
+      html += `</div></div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function openMatchModal6S(matchId) {
+  // Trouver le match dans le calendrier 6S
+  let match = null;
+  for (const w of (DATA.season_3_6v6?.calendar || [])) {
+    const found = (w.matches || []).find(m => m.id === matchId);
+    if (found) { match = found; break; }
+  }
+  if (!match) return;
+
+  if (!document.body.classList.contains('admin-mode')) return;
+
+  editingMatchId = matchId;
+  editingMatchSource = '6s'; // marqueur pour savoir que c'est un match 6S
+
+  const away = DATA.teams[match.away] || { name: match.away };
+  const home = DATA.teams[match.home] || { name: match.home };
+
+  document.getElementById('matchAwayName').textContent = away.name || match.away;
+  document.getElementById('matchHomeName').textContent = home.name || match.home;
+  document.getElementById('matchAwayScore').value = match.away_score ?? 0;
+  document.getElementById('matchHomeScore').value = match.home_score ?? 0;
+
+  const radios = document.querySelectorAll('input[name="matchType"]');
+  radios.forEach(r => r.checked = (r.value === (match.is_dp ? 'dp' : 'regular')));
+
+  document.getElementById('matchClearBtn').style.display = (match.away_score !== null && match.away_score !== undefined) ? 'inline-block' : 'none';
+
+  openModal('matchModal');
 }
 
 function renderStats6S() {
