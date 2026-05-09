@@ -615,6 +615,20 @@
       "emoji": "🛢️",
       "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/edm.png",
       "division": "6v6"
+    },
+    "blues_6v6": {
+      "name": "Blues",
+      "full_name": "LCHQ St-Louis Blues",
+      "emoji": "🎵",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/stl.png",
+      "division": "6v6"
+    },
+    "lightning_6v6": {
+      "name": "Lightning",
+      "full_name": "LCHQ Tampa Bay Lightning",
+      "emoji": "⚡",
+      "logo": "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nhl/500/tb.png",
+      "division": "6v6"
     }
   },
   "players": [
@@ -9167,6 +9181,26 @@
         "pts": 0,
         "gf": 0,
         "ga": 0
+      },
+      {
+        "team": "blues_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
+      },
+      {
+        "team": "lightning_6v6",
+        "gp": 0,
+        "w": 0,
+        "l": 0,
+        "otl": 0,
+        "pts": 0,
+        "gf": 0,
+        "ga": 0
       }
     ],
     "players": [
@@ -9309,6 +9343,1487 @@
         "sv": 180
       }
     ],
-    "calendar": []
+    "calendar": [
+      {
+        "num": 1,
+        "matches": [
+          {
+            "id": "6S-W1L01",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "ducks_6v6",
+            "home": "devils_6v6",
+            "away_score": 5,
+            "home_score": 4,
+            "is_dp": true
+          },
+          {
+            "id": "6S-W1L02",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "jets_6v6",
+            "home": "sabres_6v6",
+            "away_score": 6,
+            "home_score": 5,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L03",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "penguins_6v6",
+            "home": "blues_6v6",
+            "away_score": 5,
+            "home_score": 4,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L04",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "flyers_6v6",
+            "home": "lightning_6v6",
+            "away_score": 5,
+            "home_score": 7,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L05",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "oilers_6v6",
+            "home": "senators_6v6",
+            "away_score": 1,
+            "home_score": 4,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L06",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "mapleleafs_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": 4,
+            "home_score": 5,
+            "is_dp": true
+          },
+          {
+            "id": "6S-W1L07",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "hurricanes_6v6",
+            "home": "ducks_6v6",
+            "away_score": 2,
+            "home_score": 6,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L08",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "lightning_6v6",
+            "home": "jets_6v6",
+            "away_score": 4,
+            "home_score": 3,
+            "is_dp": true
+          },
+          {
+            "id": "6S-W1L09",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "devils_6v6",
+            "home": "penguins_6v6",
+            "away_score": 2,
+            "home_score": 4,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L10",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "blues_6v6",
+            "home": "flyers_6v6",
+            "away_score": 6,
+            "home_score": 2,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L11",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "senators_6v6",
+            "home": "sabres_6v6",
+            "away_score": 7,
+            "home_score": 6,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L12",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "mapleleafs_6v6",
+            "home": "oilers_6v6",
+            "away_score": 5,
+            "home_score": 9,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L13",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "ducks_6v6",
+            "home": "oilers_6v6",
+            "away_score": 7,
+            "home_score": 4,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L14",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "jets_6v6",
+            "home": "senators_6v6",
+            "away_score": 6,
+            "home_score": 7,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L15",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "penguins_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": 2,
+            "home_score": 4,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L16",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "sabres_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": 11,
+            "home_score": 5,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L17",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "flyers_6v6",
+            "home": "devils_6v6",
+            "away_score": 7,
+            "home_score": 5,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W1L18",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "lightning_6v6",
+            "home": "blues_6v6",
+            "away_score": 4,
+            "home_score": 6,
+            "is_dp": false
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "matches": [
+          {
+            "id": "6S-W2L01",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "ducks_6v6",
+            "home": "sabres_6v6",
+            "away_score": 6,
+            "home_score": 2,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L02",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "jets_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": 6,
+            "home_score": 5,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L03",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "penguins_6v6",
+            "home": "oilers_6v6",
+            "away_score": 5,
+            "home_score": 6,
+            "is_dp": true
+          },
+          {
+            "id": "6S-W2L04",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "flyers_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": 3,
+            "home_score": 7,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L05",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "senators_6v6",
+            "home": "lightning_6v6",
+            "away_score": 10,
+            "home_score": 2,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L06",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "devils_6v6",
+            "home": "blues_6v6",
+            "away_score": 5,
+            "home_score": 4,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L07",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "jets_6v6",
+            "home": "ducks_6v6",
+            "away_score": 7,
+            "home_score": 8,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L08",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "hurricanes_6v6",
+            "home": "blues_6v6",
+            "away_score": 5,
+            "home_score": 4,
+            "is_dp": true
+          },
+          {
+            "id": "6S-W2L09",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "sabres_6v6",
+            "home": "penguins_6v6",
+            "away_score": 6,
+            "home_score": 8,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L10",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "mapleleafs_6v6",
+            "home": "senators_6v6",
+            "away_score": 3,
+            "home_score": 6,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L11",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "devils_6v6",
+            "home": "lightning_6v6",
+            "away_score": 0,
+            "home_score": 2,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L12",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "flyers_6v6",
+            "home": "oilers_6v6",
+            "away_score": 7,
+            "home_score": 3,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L13",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "ducks_6v6",
+            "home": "senators_6v6",
+            "away_score": 2,
+            "home_score": 4,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L14",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "devils_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": 0,
+            "home_score": 5,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L15",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "penguins_6v6",
+            "home": "jets_6v6",
+            "away_score": 5,
+            "home_score": 3,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L16",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "sabres_6v6",
+            "home": "flyers_6v6",
+            "away_score": 5,
+            "home_score": 2,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L17",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "blues_6v6",
+            "home": "oilers_6v6",
+            "away_score": 5,
+            "home_score": 4,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W2L18",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "lightning_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": 5,
+            "home_score": 3,
+            "is_dp": false
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "matches": [
+          {
+            "id": "6S-W3L01",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "ducks_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L02",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "jets_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L03",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "penguins_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L04",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "lightning_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L05",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "oilers_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L06",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "sabres_6v6",
+            "home": "blues_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L07",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "lightning_6v6",
+            "home": "ducks_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L08",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "blues_6v6",
+            "home": "jets_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L09",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "mapleleafs_6v6",
+            "home": "penguins_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L10",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "senators_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L11",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "devils_6v6",
+            "home": "sabres_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L12",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "hurricanes_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L13",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "ducks_6v6",
+            "home": "penguins_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L14",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "jets_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L15",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "senators_6v6",
+            "home": "blues_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L16",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "sabres_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L17",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "flyers_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W3L18",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "lightning_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "matches": [
+          {
+            "id": "6S-W4L01",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "ducks_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L02",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "jets_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L03",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "penguins_6v6",
+            "home": "lightning_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L04",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "devils_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L05",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "oilers_6v6",
+            "home": "sabres_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L06",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "mapleleafs_6v6",
+            "home": "blues_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L07",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "blues_6v6",
+            "home": "ducks_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L08",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "oilers_6v6",
+            "home": "jets_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L09",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "flyers_6v6",
+            "home": "penguins_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L10",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "mapleleafs_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L11",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "lightning_6v6",
+            "home": "sabres_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L12",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "hurricanes_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L13",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "ducks_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L14",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "sabres_6v6",
+            "home": "jets_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L15",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "hurricanes_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L16",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "senators_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L17",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "blues_6v6",
+            "home": "penguins_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W4L18",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "lightning_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "matches": [
+          {
+            "id": "6S-W5L01",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "ducks_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L02",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "jets_6v6",
+            "home": "lightning_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L03",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "penguins_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L04",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "flyers_6v6",
+            "home": "blues_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L05",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "sabres_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L06",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "mapleleafs_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L07",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "oilers_6v6",
+            "home": "ducks_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L08",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "senators_6v6",
+            "home": "jets_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L09",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "hurricanes_6v6",
+            "home": "penguins_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L10",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "devils_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L11",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "mapleleafs_6v6",
+            "home": "sabres_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L12",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "blues_6v6",
+            "home": "lightning_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L13",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "ducks_6v6",
+            "home": "sabres_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L14",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "jets_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L15",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "penguins_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L16",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "blues_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L17",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "flyers_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W5L18",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "lightning_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          }
+        ]
+      },
+      {
+        "num": 6,
+        "matches": [
+          {
+            "id": "6S-W6L01",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "ducks_6v6",
+            "home": "jets_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L02",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "devils_6v6",
+            "home": "lightning_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L03",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "penguins_6v6",
+            "home": "sabres_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L04",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "flyers_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L05",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "blues_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L06",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "mapleleafs_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L07",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "senators_6v6",
+            "home": "ducks_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L08",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "hurricanes_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L09",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "jets_6v6",
+            "home": "penguins_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L10",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "sabres_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L11",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "lightning_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L12",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "blues_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L13",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "ducks_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L14",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "jets_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L15",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "penguins_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L16",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "sabres_6v6",
+            "home": "blues_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L17",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "devils_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W6L18",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "lightning_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          }
+        ]
+      },
+      {
+        "num": 7,
+        "matches": [
+          {
+            "id": "6S-W7L01",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "ducks_6v6",
+            "home": "lightning_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L02",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "jets_6v6",
+            "home": "blues_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L03",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "penguins_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L04",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "flyers_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L05",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "oilers_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L06",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "devils_6v6",
+            "home": "sabres_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L07",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "penguins_6v6",
+            "home": "ducks_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L08",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "devils_6v6",
+            "home": "jets_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L09",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "mapleleafs_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L10",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "hurricanes_6v6",
+            "home": "sabres_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L11",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "senators_6v6",
+            "home": "blues_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L12",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "lightning_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L13",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "ducks_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L14",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "jets_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L15",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "penguins_6v6",
+            "home": "lightning_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L16",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "sabres_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L17",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "blues_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W7L18",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "senators_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          }
+        ]
+      },
+      {
+        "num": 8,
+        "matches": [
+          {
+            "id": "6S-W8L01",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "ducks_6v6",
+            "home": "blues_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L02",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "hurricanes_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L03",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "penguins_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L04",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "sabres_6v6",
+            "home": "lightning_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L05",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "oilers_6v6",
+            "home": "jets_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L06",
+            "division": "6v6",
+            "time": "20:00",
+            "away": "mapleleafs_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L07",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "devils_6v6",
+            "home": "ducks_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L08",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "sabres_6v6",
+            "home": "jets_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L09",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "blues_6v6",
+            "home": "penguins_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L10",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "lightning_6v6",
+            "home": "flyers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L11",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "hurricanes_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L12",
+            "division": "6v6",
+            "time": "20:40",
+            "away": "senators_6v6",
+            "home": "oilers_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L13",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "ducks_6v6",
+            "home": "hurricanes_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L14",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "jets_6v6",
+            "home": "lightning_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L15",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "penguins_6v6",
+            "home": "devils_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L16",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "sabres_6v6",
+            "home": "senators_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L17",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "flyers_6v6",
+            "home": "blues_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "6S-W8L18",
+            "division": "6v6",
+            "time": "21:10",
+            "away": "oilers_6v6",
+            "home": "mapleleafs_6v6",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          }
+        ]
+      }
+    ]
   }
 }
