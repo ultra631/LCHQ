@@ -5033,46 +5033,90 @@ function openMatchModal(matchId) {
 }
 
 function computeStandingsFromSchedule() {
-  // Recalculer le classement automatiquement à partir des matchs joués
-  Object.values(DATA.teams).forEach(t => {
+  // Réinitialiser tous les records + historique de résultats
+  const teamHistory = {}; // { teamKey: ['W','L','OTL', ...] } dans l'ordre chronologique
+
+  Object.entries(DATA.teams).forEach(([key, t]) => {
     if (t.division === 'nhl' || t.division === 'lhjmq') {
       t.record = { gp: 0, w: 0, l: 0, otl: 0, sol: 0, pts: 0, gf: 0, ga: 0, streak: '-' };
+      teamHistory[key] = [];
     }
   });
 
-  for (const week of (DATA.schedule.weeks || [])) {
-    for (const match of (week.matches || [])) {
+  // Parcourir les semaines dans l'ordre
+  const sortedWeeks = [...(DATA.schedule.weeks || [])].sort((a, b) => a.num - b.num);
+
+  for (const week of sortedWeeks) {
+    // Trier les matchs par heure dans la semaine
+    const sortedMatches = [...(week.matches || [])].sort((a, b) => a.time.localeCompare(b.time));
+
+    for (const match of sortedMatches) {
       if (match.away_score === null || match.away_score === undefined) continue;
       if (match.home_score === null || match.home_score === undefined) continue;
+
       const away = DATA.teams[match.away];
       const home = DATA.teams[match.home];
       if (!away || !home) continue;
-      if (!away.record) away.record = { gp:0,w:0,l:0,otl:0,sol:0,pts:0,gf:0,ga:0,streak:'-' };
-      if (!home.record) home.record = { gp:0,w:0,l:0,otl:0,sol:0,pts:0,gf:0,ga:0,streak:'-' };
+
       const as = match.away_score;
       const hs = match.home_score;
       const dp = match.is_dp;
+
       away.record.gp++;
       home.record.gp++;
       away.record.gf += as;
       away.record.ga += hs;
       home.record.gf += hs;
       home.record.ga += as;
+
       if (as > hs) {
+        // Visiteur gagne
         away.record.w++;
         away.record.pts += 2;
-        away.record.streak = 'V1';
-        if (dp) { home.record.otl++; home.record.pts += 1; home.record.streak = 'DP'; }
-        else { home.record.l++; home.record.streak = 'D1'; }
+        if (teamHistory[match.away]) teamHistory[match.away].push('W');
+        if (dp) {
+          home.record.otl++;
+          home.record.pts += 1;
+          if (teamHistory[match.home]) teamHistory[match.home].push('OTL');
+        } else {
+          home.record.l++;
+          if (teamHistory[match.home]) teamHistory[match.home].push('L');
+        }
       } else if (hs > as) {
+        // Local gagne
         home.record.w++;
         home.record.pts += 2;
-        home.record.streak = 'V1';
-        if (dp) { away.record.otl++; away.record.pts += 1; away.record.streak = 'DP'; }
-        else { away.record.l++; away.record.streak = 'D1'; }
+        if (teamHistory[match.home]) teamHistory[match.home].push('W');
+        if (dp) {
+          away.record.otl++;
+          away.record.pts += 1;
+          if (teamHistory[match.away]) teamHistory[match.away].push('OTL');
+        } else {
+          away.record.l++;
+          if (teamHistory[match.away]) teamHistory[match.away].push('L');
+        }
       }
     }
   }
+
+  // Calculer la série actuelle pour chaque équipe
+  Object.entries(teamHistory).forEach(([key, history]) => {
+    const t = DATA.teams[key];
+    if (!t || !history.length) { if (t) t.record.streak = '-'; return; }
+
+    const last = history[history.length - 1];
+    let count = 0;
+    for (let i = history.length - 1; i >= 0; i--) {
+      if (history[i] === last) count++;
+      else break;
+    }
+
+    if (last === 'W') t.record.streak = 'V' + count;
+    else if (last === 'L') t.record.streak = 'D' + count;
+    else if (last === 'OTL') t.record.streak = 'DP' + count;
+    else t.record.streak = '-';
+  });
+
   renderStandingsNHL();
   renderStandingsLHJMQ();
 }
