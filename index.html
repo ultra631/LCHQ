@@ -2561,10 +2561,55 @@
       <label>Nom du gardien</label>
       <input type="text" id="gName" placeholder="ex: TonGardien_PSN">
     </div>
+
+    <!-- Modes 4S / 6S -->
     <div class="modal-form-group">
-      <label>Équipe</label>
-      <select id="gTeam"></select>
+      <label>Modes de jeu</label>
+
+      <!-- 4S -->
+      <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px;">
+          <input type="checkbox" id="gMode4s" onchange="toggleGoalieModeSection('4s')" style="width:18px;height:18px;">
+          <span style="font-weight:700;">🏒 4S — Division NHL / LHJMQ</span>
+        </label>
+        <div id="gTeamSection4s" style="display:none;">
+          <select id="gTeam4s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);margin-bottom:10px;">
+            <option value="">— Choisir une équipe 4S —</option>
+          </select>
+          <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:6px;">Position 4S</label>
+          <select id="gPos4s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+            <option value="G">G — Gardien</option>
+            <option value="C">C — Centre</option>
+            <option value="A">A — Ailier</option>
+            <option value="D">D — Défenseur</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 6S -->
+      <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px;">
+          <input type="checkbox" id="gMode6s" onchange="toggleGoalieModeSection('6s')" style="width:18px;height:18px;">
+          <span style="font-weight:700;">⚡ 6S — Format 6 vs 6</span>
+        </label>
+        <div id="gTeamSection6s" style="display:none;">
+          <select id="gTeam6s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);margin-bottom:10px;">
+            <option value="">— Choisir une équipe 6S —</option>
+          </select>
+          <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:6px;">Position 6S</label>
+          <select id="gPos6s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+            <option value="G">G — Gardien</option>
+            <option value="CA">CA — Centre Attaquant</option>
+            <option value="CG">CG — Centre Gauche</option>
+            <option value="DD">DD — Défenseur Droit</option>
+            <option value="DG">DG — Défenseur Gauche</option>
+          </select>
+        </div>
+      </div>
     </div>
+
+    <!-- Champ équipe legacy caché (pour compatibilité saveGoalie) -->
+    <select id="gTeam" style="display:none;"></select>
 
     <h4 style="font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 10px;display:flex;justify-content:space-between;align-items:center;">
       <span>🥅 Statistiques</span>
@@ -4500,6 +4545,12 @@ document.addEventListener('click', (e) => {
 
 // ===== JOUEURS =====
 
+function toggleGoalieModeSection(mode) {
+  const cb = document.getElementById(`gMode${mode}`);
+  const section = document.getElementById(`gTeamSection${mode}`);
+  section.style.display = cb.checked ? 'block' : 'none';
+}
+
 function toggleModeSection(mode) {
   const cb = document.getElementById(`pMode${mode}`);
   const section = document.getElementById(`pTeamSection${mode}`);
@@ -4948,28 +4999,77 @@ function reactivatePlayer(id) {
 function openGoalieModal(goalieId, division) {
   editingGoalieId = goalieId;
   editingDivision = division || 'nhl';
-  populateTeamSelect('gTeam', division);
-  
-  const isS6s = division === '6s';
-  const goalies = isS6s ? (DATA.season_3_6v6?.goalies || []) : DATA.goalies;
-  
-  if (goalieId) {
-    const g = goalies.find(x => x.id === goalieId);
+
+  // Peupler dropdowns 4S et 6S
+  const sel4s = document.getElementById('gTeam4s');
+  sel4s.innerHTML = '<option value="">— Choisir une équipe 4S —</option>';
+  Object.entries(DATA.teams)
+    .filter(([_, t]) => t.division === 'nhl' || t.division === 'lhjmq')
+    .sort((a, b) => a[1].name.localeCompare(b[1].name))
+    .forEach(([k, t]) => {
+      const opt = document.createElement('option');
+      opt.value = k; opt.textContent = `${t.emoji} ${t.name} (${t.division.toUpperCase()})`;
+      sel4s.appendChild(opt);
+    });
+  populateTeamSelect('gTeam6s', '6s');
+
+  // Chercher dans les 2 pools
+  const g4s = DATA.goalies.find(x => x.id === goalieId);
+  const g6s = (DATA.season_3_6v6?.goalies || []).find(x => x.id === goalieId);
+  const g = g4s || g6s;
+
+  // Trouver l'équivalent dans l'autre mode par nom
+  let linked4s = g4s;
+  let linked6s = g6s;
+  if (!linked4s && g6s) {
+    linked4s = g6s.linked_id
+      ? DATA.goalies.find(x => x.id === g6s.linked_id)
+      : DATA.goalies.find(x => x.name.toLowerCase().trim() === g6s.name.toLowerCase().trim());
+  }
+  if (!linked6s && g4s) {
+    linked6s = g4s.linked_id
+      ? (DATA.season_3_6v6?.goalies || []).find(x => x.id === g4s.linked_id)
+      : (DATA.season_3_6v6?.goalies || []).find(x => x.name.toLowerCase().trim() === g4s.name.toLowerCase().trim());
+  }
+
+  if (g) {
     document.getElementById('goalieModalTitle').textContent = '✏️ Modifier gardien';
     document.getElementById('gName').value = g.name;
-    document.getElementById('gTeam').value = g.team;
     document.getElementById('gToi').value = g.toi || '0:00';
-    // Estimer les buts alloués: tirs reçus - arrêts (sa - sv)
-    const ga = (g.sa || 0) - (g.sv || 0);
-    loadStatsIntoModal('g', { ...g, ga: ga }, {
+
+    // Cocher 4S
+    document.getElementById('gMode4s').checked = !!linked4s;
+    document.getElementById('gTeamSection4s').style.display = linked4s ? 'block' : 'none';
+    if (linked4s) {
+      document.getElementById('gTeam4s').value = linked4s.team || '';
+      document.getElementById('gPos4s').value = linked4s.position || 'G';
+    }
+
+    // Cocher 6S
+    document.getElementById('gMode6s').checked = !!linked6s;
+    document.getElementById('gTeamSection6s').style.display = linked6s ? 'block' : 'none';
+    if (linked6s) {
+      document.getElementById('gTeam6s').value = linked6s.team || '';
+      document.getElementById('gPos6s').value = linked6s.position || 'G';
+    }
+
+    const src = linked4s || linked6s;
+    const ga = (src.sa || 0) - (src.sv || 0);
+    loadStatsIntoModal('g', { ...src, ga }, {
       'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
       'So': 'so', 'Sa': 'sa', 'Sv': 'sv', 'Ga': 'ga', 'G': 'g', 'A': 'a'
     });
   } else {
-    const modeLabel = isS6s ? '6S' : (division === 'lhjmq' ? 'LHJMQ' : 'NHL');
-    document.getElementById('goalieModalTitle').textContent = `➕ Nouveau gardien ${modeLabel}`;
+    document.getElementById('goalieModalTitle').textContent = '➕ Nouveau gardien';
     document.getElementById('gName').value = '';
     document.getElementById('gToi').value = '0:00';
+
+    const is6s = division === '6s';
+    document.getElementById('gMode4s').checked = !is6s;
+    document.getElementById('gTeamSection4s').style.display = !is6s ? 'block' : 'none';
+    document.getElementById('gMode6s').checked = is6s;
+    document.getElementById('gTeamSection6s').style.display = is6s ? 'block' : 'none';
+
     loadStatsIntoModal('g', {}, {
       'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
       'So': 'so', 'Sa': 'sa', 'Sv': 'sv', 'Ga': 'ga', 'G': 'g', 'A': 'a'
@@ -4981,8 +5081,17 @@ function openGoalieModal(goalieId, division) {
 function saveGoalie() {
   const name = document.getElementById('gName').value.trim();
   if (!name) { alert('Le nom est obligatoire!'); return; }
-  const team = document.getElementById('gTeam').value;
-  if (!team) { alert('Sélectionne une équipe!'); return; }
+
+  const mode4s = document.getElementById('gMode4s').checked;
+  const mode6s = document.getElementById('gMode6s').checked;
+  const team4s = document.getElementById('gTeam4s').value;
+  const team6s = document.getElementById('gTeam6s').value;
+  const pos4s  = document.getElementById('gPos4s').value;
+  const pos6s  = document.getElementById('gPos6s').value;
+
+  if (!mode4s && !mode6s) { alert('Le gardien doit participer à au moins un mode!'); return; }
+  if (mode4s && !team4s) { alert('Sélectionne une équipe 4S!'); return; }
+  if (mode6s && !team6s) { alert('Sélectionne une équipe 6S!'); return; }
 
   const newVal = (key) => parseFloat(document.getElementById(`g${key}New`).textContent) || 0;
 
@@ -4992,45 +5101,49 @@ function saveGoalie() {
   const ga = newVal('Ga');
   const goals = newVal('G');
   const assists = newVal('A');
-
-  // Calculs automatiques
   const gaa = gp > 0 ? Math.round((ga / gp) * 100) / 100 : 0;
   const svpct = sa > 0 ? Math.round((sv / sa) * 1000) / 1000 : 0;
 
-  const goalieData = {
-    name: name,
-    team: team,
-    gp: gp,
-    w: newVal('W'),
-    l: newVal('L'),
-    otl: newVal('Otl'),
-    gaa: gaa,
-    svpct: svpct,
-    so: newVal('So'),
-    sa: sa,
-    sv: sv,
-    g: goals,
-    a: assists,
+  const baseData = {
+    name, gp, sa, sv, ga, gaa, svpct,
+    w: newVal('W'), l: newVal('L'), otl: newVal('Otl'),
+    so: newVal('So'), g: goals, a: assists,
     pts: goals + assists,
     toi: document.getElementById('gToi').value || '0:00'
   };
-  
-  const isS6s = editingDivision === '6s';
-  const goaliesList = isS6s ? (DATA.season_3_6v6.goalies || []) : DATA.goalies;
-  
-  if (editingGoalieId) {
-    const idx = goaliesList.findIndex(x => x.id === editingGoalieId);
-    goaliesList[idx] = { ...goaliesList[idx], ...goalieData };
-  } else {
-    const newId = 'g' + (Math.max(0, ...goaliesList.map(g => parseInt(g.id.replace('g',''))||0)) + 1);
-    goaliesList.push({ id: newId, ...goalieData });
+
+  // Chercher existants par id ou nom
+  const existing4s = DATA.goalies.find(x => x.id === editingGoalieId)
+    || DATA.goalies.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+  const existing6s = (DATA.season_3_6v6?.goalies || []).find(x => x.id === editingGoalieId)
+    || (DATA.season_3_6v6?.goalies || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+
+  // SAUVEGARDER 4S
+  if (mode4s) {
+    const data4s = { ...baseData, team: team4s, position: pos4s };
+    if (existing4s) {
+      const idx = DATA.goalies.findIndex(x => x.id === existing4s.id);
+      DATA.goalies[idx] = { ...DATA.goalies[idx], ...data4s };
+    } else {
+      const newId = 'g' + (Math.max(0, ...DATA.goalies.map(g => parseInt(g.id.replace('g',''))||0)) + 1);
+      DATA.goalies.push({ id: newId, ...data4s });
+    }
   }
-  
-  if (isS6s) {
-    DATA.season_3_6v6.goalies = goaliesList;
+
+  // SAUVEGARDER 6S
+  if (!DATA.season_3_6v6.goalies) DATA.season_3_6v6.goalies = [];
+  if (mode6s) {
+    const data6s = { ...baseData, team: team6s, position: pos6s };
+    if (existing6s) {
+      const idx = DATA.season_3_6v6.goalies.findIndex(x => x.id === existing6s.id);
+      DATA.season_3_6v6.goalies[idx] = { ...DATA.season_3_6v6.goalies[idx], ...data6s };
+    } else {
+      const ids6s = DATA.season_3_6v6.goalies.map(g => parseInt(g.id.replace('g6_',''))||0);
+      const newId = 'g6_' + (Math.max(0, ...ids6s) + 1);
+      DATA.season_3_6v6.goalies.push({ id: newId, ...data6s });
+    }
   }
-  
-  // Recalculer GAA et SV% pour tous les gardiens
+
   computeGoalieStats();
   closeModal('goalieModal');
   rerenderAll();
