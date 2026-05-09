@@ -2469,15 +2469,43 @@
           <select id="pTeam6s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);margin-bottom:10px;">
             <option value="">— Choisir une équipe 6S —</option>
           </select>
-          <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:6px;">Position 6S</label>
-          <select id="pPos6s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
-            <option value="C">C — Centre</option>
-            <option value="AD">AD — Ailier Droit</option>
-            <option value="AG">AG — Ailier Gauche</option>
-            <option value="DD">DD — Défenseur Droit</option>
-            <option value="DG">DG — Défenseur Gauche</option>
-            <option value="G">G — Gardien</option>
-          </select>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:4px;">Pos. principale</label>
+              <select id="pPos6s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+                <option value="C">C</option>
+                <option value="AD">AD</option>
+                <option value="AG">AG</option>
+                <option value="DD">DD</option>
+                <option value="DG">DG</option>
+                <option value="G">G</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:4px;">Pos. 2</label>
+              <select id="pPos6s2" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+                <option value="">—</option>
+                <option value="C">C</option>
+                <option value="AD">AD</option>
+                <option value="AG">AG</option>
+                <option value="DD">DD</option>
+                <option value="DG">DG</option>
+                <option value="G">G</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:4px;">Pos. 3 (opt.)</label>
+              <select id="pPos6s3" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+                <option value="">—</option>
+                <option value="C">C</option>
+                <option value="AD">AD</option>
+                <option value="AG">AG</option>
+                <option value="DD">DD</option>
+                <option value="DG">DG</option>
+                <option value="G">G</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2605,15 +2633,43 @@
           <select id="gTeam6s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);margin-bottom:10px;">
             <option value="">— Choisir une équipe 6S —</option>
           </select>
-          <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:6px;">Position 6S</label>
-          <select id="gPos6s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
-            <option value="G">G — Gardien</option>
-            <option value="C">C — Centre</option>
-            <option value="AD">AD — Ailier Droit</option>
-            <option value="AG">AG — Ailier Gauche</option>
-            <option value="DD">DD — Défenseur Droit</option>
-            <option value="DG">DG — Défenseur Gauche</option>
-          </select>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:4px;">Pos. principale</label>
+              <select id="gPos6s" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+                <option value="G">G</option>
+                <option value="C">C</option>
+                <option value="AD">AD</option>
+                <option value="AG">AG</option>
+                <option value="DD">DD</option>
+                <option value="DG">DG</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:4px;">Pos. 2</label>
+              <select id="gPos6s2" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+                <option value="">—</option>
+                <option value="G">G</option>
+                <option value="C">C</option>
+                <option value="AD">AD</option>
+                <option value="AG">AG</option>
+                <option value="DD">DD</option>
+                <option value="DG">DG</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:4px;">Pos. 3 (opt.)</label>
+              <select id="gPos6s3" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);">
+                <option value="">—</option>
+                <option value="G">G</option>
+                <option value="C">C</option>
+                <option value="AD">AD</option>
+                <option value="AG">AG</option>
+                <option value="DD">DD</option>
+                <option value="DG">DG</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -4752,7 +4808,9 @@ function openPlayerModal(playerId, division, presetStatus) {
     document.getElementById('pTeamSection6s').style.display = linked6s ? 'block' : 'none';
     if (linked6s) {
       document.getElementById('pTeam6s').value = linked6s.team || '';
-      if (document.getElementById('pPos6s')) document.getElementById('pPos6s').value = linked6s.position_6s || linked6s.position_main || 'C';
+      document.getElementById('pPos6s').value = linked6s.position_6s || 'C';
+      document.getElementById('pPos6s2').value = linked6s.position_6s2 || '';
+      document.getElementById('pPos6s3').value = linked6s.position_6s3 || '';
     }
 
     // Stats: charger selon la source d'origine
@@ -4869,9 +4927,11 @@ function savePlayer() {
 
   // SAUVEGARDER EN 6S
   if (!DATA.season_3_6v6.players) DATA.season_3_6v6.players = [];
-  const pos6s = document.getElementById('pPos6s')?.value || 'C';
+  const pos6s  = document.getElementById('pPos6s')?.value || 'C';
+  const pos6s2 = document.getElementById('pPos6s2')?.value || '';
+  const pos6s3 = document.getElementById('pPos6s3')?.value || '';
   if (mode6s) {
-    const data6s = { ...baseData, team: team6s, position_6s: pos6s };
+    const data6s = { ...baseData, team: team6s, position_6s: pos6s, position_6s2: pos6s2, position_6s3: pos6s3 };
     if (existing6s) {
       const idx = DATA.season_3_6v6.players.findIndex(x => x.id === existing6s.id);
       DATA.season_3_6v6.players[idx] = { ...DATA.season_3_6v6.players[idx], ...data6s };
@@ -5064,7 +5124,9 @@ function openGoalieModal(goalieId, division) {
     document.getElementById('gTeamSection6s').style.display = linked6s ? 'block' : 'none';
     if (linked6s) {
       document.getElementById('gTeam6s').value = linked6s.team || '';
-      document.getElementById('gPos6s').value = linked6s.position || 'G';
+      document.getElementById('gPos6s').value = linked6s.position_6s || linked6s.position || 'G';
+      document.getElementById('gPos6s2').value = linked6s.position_6s2 || '';
+      document.getElementById('gPos6s3').value = linked6s.position_6s3 || '';
     }
 
     const src = linked4s || linked6s;
@@ -5102,6 +5164,8 @@ function saveGoalie() {
   const team6s = document.getElementById('gTeam6s').value;
   const pos4s  = document.getElementById('gPos4s').value;
   const pos6s  = document.getElementById('gPos6s').value;
+  const pos6s2 = document.getElementById('gPos6s2')?.value || '';
+  const gpos6s3 = document.getElementById('gPos6s3')?.value || '';
 
   if (!mode4s && !mode6s) { alert('Le gardien doit participer à au moins un mode!'); return; }
   if (mode4s && !team4s) { alert('Sélectionne une équipe 4S!'); return; }
@@ -5147,7 +5211,7 @@ function saveGoalie() {
   // SAUVEGARDER 6S
   if (!DATA.season_3_6v6.goalies) DATA.season_3_6v6.goalies = [];
   if (mode6s) {
-    const data6s = { ...baseData, team: team6s, position: pos6s };
+    const data6s = { ...baseData, team: team6s, position: pos6s, position_6s: pos6s, position_6s2: pos6s2, position_6s3: gpos6s3 };
     if (existing6s) {
       const idx = DATA.season_3_6v6.goalies.findIndex(x => x.id === existing6s.id);
       DATA.season_3_6v6.goalies[idx] = { ...DATA.season_3_6v6.goalies[idx], ...data6s };
