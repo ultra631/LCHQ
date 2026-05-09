@@ -1909,6 +1909,11 @@
   <div id="teamDetail"></div>
 </section>
 
+<section id="page-player-detail" class="page">
+  <button class="back-btn" id="playerDetailBackBtn" onclick="history.back()">← Retour</button>
+  <div id="playerDetail"></div>
+</section>
+
 <!-- SCHEDULE -->
 <section id="page-schedule" class="page">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
@@ -3568,7 +3573,7 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
       <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer('${p.id}')" title="Supprimer">🗑️</button>
     </span>`;
     return `
-      <tr onclick="if(!document.body.classList.contains('admin-mode'))showTeamDetail('${p.team}')">
+      <tr onclick="if(!document.body.classList.contains('admin-mode'))showPlayerDetail('${p.id}', '4s')" style="cursor:pointer;">
         <td class="num">${i + 1}</td>
         <td style="font-weight: 600;">${escapeHtml(p.name)} ${adminActions}</td>
         <td><div class="team-cell">${teamLogoHtml(team)}<span>${team.name}</span></div></td>
@@ -3825,6 +3830,177 @@ function showTeamDetail6S(teamKey) {
     </div>
   `;
   navigate('team-detail');
+}
+
+// PLAYER DETAIL
+function showPlayerDetail(playerId, source) {
+  // source = '4s' ou '6s' — d'où on vient
+  // Chercher dans les 2 pools
+  const player4s = DATA.players.find(p => p.id === playerId);
+  const player6s = (DATA.season_3_6v6?.players || []).find(p => p.id === playerId);
+
+  const player = player4s || player6s;
+  if (!player) return;
+
+  // Trouver le lien vers l'autre mode
+  // 1. Lien manuel (linked_id)
+  // 2. Lien automatique par nom
+  let linked4s = player4s;
+  let linked6s = player6s;
+
+  if (!linked4s && player6s) {
+    // Chercher par linked_id d'abord, sinon par nom
+    if (player6s.linked_id) {
+      linked4s = DATA.players.find(p => p.id === player6s.linked_id);
+    } else {
+      linked4s = DATA.players.find(p => p.name.toLowerCase().trim() === player6s.name.toLowerCase().trim());
+    }
+  }
+  if (!linked6s && player4s) {
+    if (player4s.linked_id) {
+      linked6s = (DATA.season_3_6v6?.players || []).find(p => p.id === player4s.linked_id);
+    } else {
+      linked6s = (DATA.season_3_6v6?.players || []).find(p => p.name.toLowerCase().trim() === player4s.name.toLowerCase().trim());
+    }
+  }
+
+  const name = player.name;
+  const avatar = player.avatar || '';
+
+  // Bouton retour contextuel
+  const backPage = source === '6s' ? 'players-6s' : (player4s?.team ? (DATA.teams[player4s.team]?.division === 'nhl' ? 'players-nhl' : 'players-lhjmq') : 'players-nhl');
+  document.getElementById('playerDetailBackBtn').setAttribute('onclick', `navigate('${backPage}')`);
+
+  // Section stats 4S
+  const stats4sHtml = linked4s ? (() => {
+    const t = DATA.teams[linked4s.team];
+    const teamHtml = t ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">${teamLogoHtml(t)} <span style="font-weight:700;">${escapeHtml(t.name)}</span> <span style="color:var(--text-tertiary);font-size:13px;">Division ${t.division.toUpperCase()}</span></div>` : '';
+    const pm = linked4s.plusminus || 0;
+    const pmStr = pm > 0 ? `+${pm}` : pm;
+    const pmClass = pm > 0 ? 'diff-pos' : pm < 0 ? 'diff-neg' : '';
+    const foPct = (linked4s.mjf || 0) > 0 ? ((linked4s.mjg || 0) / linked4s.mjf * 100).toFixed(1) : '0.0';
+    const passPct = (linked4s.pt || 0) > 0 ? ((linked4s.pr || 0) / linked4s.pt * 100).toFixed(1) : '0.0';
+    const ppm = (linked4s.gp || 0) > 0 ? ((linked4s.pts || 0) / linked4s.gp).toFixed(2) : '0.00';
+    return `
+      ${teamHtml}
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+        <div class="stat-block"><div class="stat-block-value">${linked4s.gp || 0}</div><div class="stat-block-label">PJ</div></div>
+        <div class="stat-block"><div class="stat-block-value">${linked4s.g || 0}</div><div class="stat-block-label">Buts</div></div>
+        <div class="stat-block"><div class="stat-block-value">${linked4s.a || 0}</div><div class="stat-block-label">Passes</div></div>
+        <div class="stat-block"><div class="stat-block-value pts-cell" style="color:var(--red-bright);">${linked4s.pts || 0}</div><div class="stat-block-label">PTS</div></div>
+        <div class="stat-block"><div class="stat-block-value ${pmClass}">${pmStr}</div><div class="stat-block-label">+/-</div></div>
+        <div class="stat-block"><div class="stat-block-value">${ppm}</div><div class="stat-block-label">PPM</div></div>
+        <div class="stat-block"><div class="stat-block-value">${linked4s.hits || 0}</div><div class="stat-block-label">HITS</div></div>
+        <div class="stat-block"><div class="stat-block-value">${linked4s.tb || 0}</div><div class="stat-block-label">TB</div></div>
+        <div class="stat-block"><div class="stat-block-value">${foPct}%</div><div class="stat-block-label">%MJ</div></div>
+        <div class="stat-block"><div class="stat-block-value">${passPct}%</div><div class="stat-block-label">%Passes</div></div>
+      </div>`;
+  })() : `<p style="color:var(--text-tertiary);padding:20px 0;">Ce joueur ne joue pas en 4S.</p>`;
+
+  // Section stats 6S
+  const stats6sHtml = linked6s ? (() => {
+    const t = DATA.teams[linked6s.team];
+    const teamHtml = t ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">${teamLogoHtml(t)} <span style="font-weight:700;">${escapeHtml(t.name)}</span> <span style="color:var(--text-tertiary);font-size:13px;">6 vs 6</span></div>` : '';
+    const pm = linked6s.plusminus || 0;
+    const pmStr = pm > 0 ? `+${pm}` : pm;
+    const pmClass = pm > 0 ? 'diff-pos' : pm < 0 ? 'diff-neg' : '';
+    const foPct = (linked6s.mjf || 0) > 0 ? ((linked6s.mjg || 0) / linked6s.mjf * 100).toFixed(1) : '0.0';
+    const passPct = (linked6s.pt || 0) > 0 ? ((linked6s.pr || 0) / linked6s.pt * 100).toFixed(1) : '0.0';
+    const ppm = (linked6s.gp || 0) > 0 ? ((linked6s.pts || 0) / linked6s.gp).toFixed(2) : '0.00';
+    return `
+      ${teamHtml}
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+        <div class="stat-block"><div class="stat-block-value">${linked6s.gp || 0}</div><div class="stat-block-label">PJ</div></div>
+        <div class="stat-block"><div class="stat-block-value">${linked6s.g || 0}</div><div class="stat-block-label">Buts</div></div>
+        <div class="stat-block"><div class="stat-block-value">${linked6s.a || 0}</div><div class="stat-block-label">Passes</div></div>
+        <div class="stat-block"><div class="stat-block-value pts-cell" style="color:var(--red-bright);">${linked6s.pts || 0}</div><div class="stat-block-label">PTS</div></div>
+        <div class="stat-block"><div class="stat-block-value ${pmClass}">${pmStr}</div><div class="stat-block-label">+/-</div></div>
+        <div class="stat-block"><div class="stat-block-value">${ppm}</div><div class="stat-block-label">PPM</div></div>
+        <div class="stat-block"><div class="stat-block-value">${linked6s.hits || 0}</div><div class="stat-block-label">HITS</div></div>
+        <div class="stat-block"><div class="stat-block-value">${linked6s.tb || 0}</div><div class="stat-block-label">TB</div></div>
+        <div class="stat-block"><div class="stat-block-value">${foPct}%</div><div class="stat-block-label">%MJ</div></div>
+        <div class="stat-block"><div class="stat-block-value">${passPct}%</div><div class="stat-block-label">%Passes</div></div>
+      </div>`;
+  })() : `<p style="color:var(--text-tertiary);padding:20px 0;">Ce joueur ne joue pas en 6S.</p>`;
+
+  // Section lien manuel (admin seulement)
+  const adminLinkHtml = isAdmin ? (() => {
+    const all4s = DATA.players.map(p => `<option value="${p.id}" ${linked4s?.id === p.id ? 'selected' : ''}>${escapeHtml(p.name)} (${DATA.teams[p.team]?.name || '?'})</option>`).join('');
+    const all6s = (DATA.season_3_6v6?.players || []).map(p => `<option value="${p.id}" ${linked6s?.id === p.id ? 'selected' : ''}>${escapeHtml(p.name)} (${DATA.teams[p.team]?.name || '?'})</option>`).join('');
+    const current4sId = linked4s?.id || '';
+    const current6sId = linked6s?.id || '';
+    return `
+      <div style="background:rgba(91,155,213,0.1);border:1px solid rgba(91,155,213,0.3);border-radius:12px;padding:16px;margin-top:24px;">
+        <h4 style="color:#93c5fd;margin-bottom:12px;">🔗 Lien Admin — Fusionner profils</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:6px;">Profil 4S lié</label>
+            <select id="link4sSelect" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border);">
+              <option value="">— Aucun —</option>
+              ${all4s}
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:6px;">Profil 6S lié</label>
+            <select id="link6sSelect" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border);">
+              <option value="">— Aucun —</option>
+              ${all6s}
+            </select>
+          </div>
+        </div>
+        <button onclick="savePlayerLink('${current4sId}', '${current6sId}')" class="btn btn-primary" style="margin-top:12px;">💾 Sauvegarder le lien</button>
+      </div>`;
+  })() : '';
+
+  document.getElementById('playerDetail').innerHTML = `
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:30px;padding:24px;background:var(--bg-secondary);border-radius:16px;border:1px solid var(--border);">
+      <div style="font-size:64px;width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:var(--bg-elevated);border-radius:50%;">🏒</div>
+      <div>
+        <h2 style="font-family:'Bebas Neue';font-size:36px;letter-spacing:1px;margin:0;">${escapeHtml(name)}</h2>
+        <div style="color:var(--text-tertiary);font-size:14px;margin-top:4px;">
+          ${linked4s ? '🏒 4S' : ''} ${linked4s && linked6s ? '·' : ''} ${linked6s ? '⚡ 6S' : ''}
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div style="background:var(--bg-secondary);border-radius:16px;padding:20px;border:1px solid var(--border);">
+        <h3 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;margin-bottom:16px;color:var(--nhl-color);">🏒 Saison 4S</h3>
+        ${stats4sHtml}
+      </div>
+      <div style="background:var(--bg-secondary);border-radius:16px;padding:20px;border:1px solid #3b82f6;border-left:4px solid #3b82f6;">
+        <h3 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;margin-bottom:16px;color:#3b82f6;">⚡ Saison 6S</h3>
+        ${stats6sHtml}
+      </div>
+    </div>
+    ${adminLinkHtml}
+  `;
+
+  navigate('player-detail');
+}
+
+function savePlayerLink(old4sId, old6sId) {
+  const new4sId = document.getElementById('link4sSelect').value;
+  const new6sId = document.getElementById('link6sSelect').value;
+
+  // Effacer anciens liens
+  if (old4sId) { const p = DATA.players.find(p => p.id === old4sId); if (p) delete p.linked_id; }
+  if (old6sId) { const p = (DATA.season_3_6v6?.players || []).find(p => p.id === old6sId); if (p) delete p.linked_id; }
+
+  // Appliquer nouveaux liens croisés
+  if (new4sId && new6sId) {
+    const p4 = DATA.players.find(p => p.id === new4sId);
+    const p6 = (DATA.season_3_6v6?.players || []).find(p => p.id === new6sId);
+    if (p4) p4.linked_id = new6sId;
+    if (p6) p6.linked_id = new4sId;
+    alert('✅ Lien sauvegardé!');
+    saveData();
+    // Recharger le profil
+    showPlayerDetail(new4sId, '4s');
+  } else {
+    alert('✅ Lien effacé!');
+    saveData();
+  }
 }
 
 // TROPHIES
@@ -6362,7 +6538,7 @@ function renderPlayers6S() {
       <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer6S('${p.id}')" title="Supprimer">🗑️</button>
     </span>`;
     
-    return `<tr onclick="if(${!p.team ? 'false' : 'true'})showTeamDetail6S('${p.team || ''}')" style="${p.team ? 'cursor:pointer;' : ''}">
+    return `<tr onclick="if(!document.body.classList.contains('admin-mode'))showPlayerDetail('${p.id}', '6s')" style="cursor:pointer;">
       <td class="num">${i + 1}</td>
       <td style="font-weight:600;">${escapeHtml(p.name)} ${adminActions}</td>
       <td>${teamCell}</td>
