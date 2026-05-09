@@ -2838,6 +2838,49 @@
   </div>
 </div>
 
+<!-- Modal: Stats joueur de tournoi -->
+<div class="modal-overlay" id="tournoisPlayerStatsModal">
+  <div class="modal" style="max-width:600px;">
+    <h3 id="tournoisPlayerName">📊 Stats du joueur</h3>
+    <div class="modal-info" id="tournoisPlayerInfo"></div>
+    
+    <div class="modal-form-group">
+      <label>Statistiques</label>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);">PJ</label>
+          <input type="number" id="tournoisPlayerGP" min="0" value="0">
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);">Buts (B)</label>
+          <input type="number" id="tournoisPlayerG" min="0" value="0">
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);">Passes (A)</label>
+          <input type="number" id="tournoisPlayerA" min="0" value="0">
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);">Points (PTS)</label>
+          <input type="number" id="tournoisPlayerPTS" min="0" value="0" readonly style="background:var(--bg-elevated);">
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);">+/-</label>
+          <input type="number" id="tournoisPlayerPM" value="0">
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);">Punitions (PIM)</label>
+          <input type="number" id="tournoisPlayerPIM" min="0" value="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('tournoisPlayerStatsModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveTournoisPlayerStats()">💾 Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="container">
     <p>LCHQ · Saison 5 · World of Chel · NHL 26</p>
@@ -6899,6 +6942,9 @@ function renderTournoisRoster() {
   const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
   if (!team) return;
   
+  // Initialiser les stats si elles n'existent pas
+  if (!team.player_stats) team.player_stats = {};
+  
   const roster = team.players || [];
   const rosterDiv = document.getElementById('tournoisTeamRoster');
   
@@ -6912,12 +6958,32 @@ function renderTournoisRoster() {
   rosterDiv.innerHTML = roster.map((playerId, idx) => {
     const player = mode === '4s' 
       ? DATA.players.find(p => p.id === playerId)
-      : DATA.season_3_6v6?.players?.find(p => p.id === playerId);
+      : DATA.players_6s?.find(p => p.id === playerId);
     
     if (!player) return '';
     
-    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg-elevated);border-radius:8px;margin-bottom:8px;">
-      <div>
+    // Récupérer les stats du joueur
+    const stats = team.player_stats[playerId] || { gp: 0, g: 0, a: 0, pts: 0, plusminus: 0, pim: 0 };
+    
+    const isAdmin = document.body.classList.contains('admin-mode');
+    const clickHandler = isAdmin 
+      ? `onclick="openTournoisPlayerStatsModal('${playerId}')" style="cursor:pointer;"` 
+      : `onclick="openTournoisPlayerStatsModal('${playerId}')" style="cursor:pointer;"`;
+    
+    return `<div ${clickHandler} style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg-elevated);border-radius:8px;margin-bottom:8px;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-card)'" onmouseout="this.style.background='var(--bg-elevated')">\n      <div style="flex:1;">
+        <strong>${escapeHtml(player.name)}</strong>
+        ${isAdmin ? `<button class="row-action-btn" onclick="event.stopPropagation();removeTournoisPlayer(${idx})" title="Retirer" style="margin-left:8px;">🗑️</button>` : ''}
+      </div>
+      <div style="display:flex;gap:16px;font-size:13px;color:var(--text-secondary);">
+        <div title="Parties jouées"><strong>${stats.gp}</strong> PJ</div>
+        <div title="Buts"><strong>${stats.g}</strong> B</div>
+        <div title="Passes"><strong>${stats.a}</strong> A</div>
+        <div title="Points" style="color:var(--red-bright);"><strong>${stats.pts}</strong> PTS</div>
+        <div title="+/-" class="${stats.plusminus > 0 ? 'diff-pos' : stats.plusminus < 0 ? 'diff-neg' : ''}">${stats.plusminus > 0 ? '+' : ''}${stats.plusminus}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
         <strong>${escapeHtml(player.name)}</strong>
         <span style="color:var(--text-tertiary);margin-left:10px;">${player.position_main || player.position || 'F'}</span>
       </div>
@@ -6991,6 +7057,79 @@ function removePlayerFromTournoisTeam(idx) {
     team.players.splice(idx, 1);
     renderTournoisRoster();
   }
+}
+
+let currentTournoisPlayer = null;
+
+function openTournoisPlayerStatsModal(playerId) {
+  const { mode, division, teamNum } = currentTournoisTeam;
+  const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
+  if (!team) return;
+  
+  // Initialiser player_stats si nécessaire
+  if (!team.player_stats) team.player_stats = {};
+  
+  currentTournoisPlayer = playerId;
+  
+  const player = mode === '4s' 
+    ? DATA.players.find(p => p.id === playerId)
+    : DATA.players_6s?.find(p => p.id === playerId);
+  
+  if (!player) return;
+  
+  // Récupérer les stats existantes ou créer des stats vides
+  const stats = team.player_stats[playerId] || { gp: 0, g: 0, a: 0, pts: 0, plusminus: 0, pim: 0 };
+  
+  // Remplir le modal
+  document.getElementById('tournoisPlayerName').textContent = `📊 ${player.name}`;
+  document.getElementById('tournoisPlayerInfo').textContent = `${mode.toUpperCase()} • Division ${division.toUpperCase()} • Équipe ${teamNum}`;
+  
+  document.getElementById('tournoisPlayerGP').value = stats.gp || 0;
+  document.getElementById('tournoisPlayerG').value = stats.g || 0;
+  document.getElementById('tournoisPlayerA').value = stats.a || 0;
+  document.getElementById('tournoisPlayerPTS').value = stats.pts || 0;
+  document.getElementById('tournoisPlayerPM').value = stats.plusminus || 0;
+  document.getElementById('tournoisPlayerPIM').value = stats.pim || 0;
+  
+  // Auto-calculer les points quand on change B ou A
+  document.getElementById('tournoisPlayerG').oninput = updateTournoisPlayerPoints;
+  document.getElementById('tournoisPlayerA').oninput = updateTournoisPlayerPoints;
+  
+  openModal('tournoisPlayerStatsModal');
+}
+
+function updateTournoisPlayerPoints() {
+  const g = parseInt(document.getElementById('tournoisPlayerG').value) || 0;
+  const a = parseInt(document.getElementById('tournoisPlayerA').value) || 0;
+  document.getElementById('tournoisPlayerPTS').value = g + a;
+}
+
+async function saveTournoisPlayerStats() {
+  const { mode, division, teamNum } = currentTournoisTeam;
+  const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
+  if (!team || !currentTournoisPlayer) return;
+  
+  // Récupérer les valeurs
+  const gp = parseInt(document.getElementById('tournoisPlayerGP').value) || 0;
+  const g = parseInt(document.getElementById('tournoisPlayerG').value) || 0;
+  const a = parseInt(document.getElementById('tournoisPlayerA').value) || 0;
+  const pts = g + a;
+  const plusminus = parseInt(document.getElementById('tournoisPlayerPM').value) || 0;
+  const pim = parseInt(document.getElementById('tournoisPlayerPIM').value) || 0;
+  
+  // Sauvegarder les stats
+  if (!team.player_stats) team.player_stats = {};
+  team.player_stats[currentTournoisPlayer] = { gp, g, a, pts, plusminus, pim };
+  
+  // Sauvegarder dans Firebase
+  await saveToFirebase();
+  
+  // Rafraîchir l'affichage
+  renderTournoisRoster();
+  
+  // Fermer le modal
+  closeModal('tournoisPlayerStatsModal');
+  showToast('✅ Stats sauvegardées!');
 }
 
 function saveTournoisTeam() {
