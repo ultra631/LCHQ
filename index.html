@@ -1653,6 +1653,7 @@
       <h3>Classement Division NHL</h3>
       <p>12 équipes · Saison régulière</p>
     </div>
+    <button class="btn btn-primary admin-only" onclick="openEditModal('standings_nhl')" style="margin-left:auto;">✏️ Éditer</button>
   </div>
   <div class="table-wrap">
     <table id="standingsNhlTable">
@@ -1683,6 +1684,7 @@
       <h3>Classement Division LHJMQ</h3>
       <p>12 équipes · Saison régulière</p>
     </div>
+    <button class="btn btn-primary admin-only" onclick="openEditModal('standings_lhjmq')" style="margin-left:auto;">✏️ Éditer</button>
   </div>
   <div class="table-wrap">
     <table id="standingsLhjmqTable">
@@ -1713,6 +1715,7 @@
       <h3>Classement 6 vs 6</h3>
       <p>Saison en cours</p>
     </div>
+    <button class="btn btn-primary admin-only" onclick="openEditModal('standings_6s')" style="margin-left:auto;">✏️ Éditer</button>
   </div>
   <div class="table-wrap">
     <table id="standings6sTable">
@@ -1933,6 +1936,7 @@
     <button class="tab active" onclick="switchStatsDiv('all', this)">Tous</button>
     <button class="tab" onclick="switchStatsDiv('nhl', this)">Division NHL</button>
     <button class="tab" onclick="switchStatsDiv('lhjmq', this)">Division LHJMQ</button>
+    <button class="tab admin-only" onclick="openEditModal('stats_4s')" style="margin-left:auto;background:var(--accent-color);">✏️ Éditer</button>
   </div>
 
   <h3 class="section-title" style="font-size: 26px;">🏒 Patineurs</h3>
@@ -2092,6 +2096,7 @@
       <h3>Archives 6S — Saison 1</h3>
       <p>Statistiques finales de la saison 1 (6v6)</p>
     </div>
+    <button class="btn btn-primary admin-only" onclick="openEditModal('season_6s_s1')" style="margin-left:auto;">✏️ Éditer</button>
   </div>
   <div class="empty-state" style="padding: 60px 20px;">
     <div class="empty-state-icon">📂</div>
@@ -2108,6 +2113,7 @@
       <h3>Archives 6S — Saison 2</h3>
       <p>Statistiques finales de la saison 2 (6v6)</p>
     </div>
+    <button class="btn btn-primary admin-only" onclick="openEditModal('season_6s_s2')" style="margin-left:auto;">✏️ Éditer</button>
   </div>
   <div class="empty-state" style="padding: 60px 20px;">
     <div class="empty-state-icon">📂</div>
@@ -2827,7 +2833,7 @@
 
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('editArchiveModal')">Annuler</button>
-      <button class="btn btn-primary" onclick="saveEditedArchive()">💾 Sauvegarder</button>
+      <button class="btn btn-primary" onclick="saveEditedData()">💾 Sauvegarder</button>
     </div>
   </div>
 </div>
@@ -6575,42 +6581,92 @@ function renderArchiveS3Goalies(archive) {
          makeTable(lhjmqGoalies, 'Division LHJMQ', 'var(--lhjmq-color)');
 }
 
-// ============ IMPORT ARCHIVES ============
+// ============ UNIVERSAL EDIT SYSTEM ============
 
-let currentEditingSeason = null;
-
-function openEditArchiveModal(seasonKey) {
+function openEditModal(dataType) {
   // Vérifier si on est en mode admin
   if (!document.body.classList.contains('admin-mode')) {
     console.warn('🔒 Accès refusé: mode admin requis');
     return;
   }
-  
-  currentEditingSeason = seasonKey;
-  const archive = DATA.archives && DATA.archives[seasonKey];
-  
-  if (!archive) {
-    alert('Aucune archive trouvée pour ' + seasonKey);
+
+  let dataToEdit = null;
+  let label = '';
+
+  // Déterminer quelle donnée éditer
+  switch(dataType) {
+    case 'stats_4s':
+      dataToEdit = { players: DATA.players || [], goalies: DATA.goalies || [] };
+      label = 'Stats Saison 4S (Joueurs & Gardiens)';
+      break;
+    case 'standings_nhl':
+      dataToEdit = DATA.standings_nhl || [];
+      label = 'Classement NHL';
+      break;
+    case 'standings_lhjmq':
+      dataToEdit = DATA.standings_lhjmq || [];
+      label = 'Classement LHJMQ';
+      break;
+    case 'standings_6s':
+      dataToEdit = DATA.standings_6s || [];
+      label = 'Classement 6S';
+      break;
+    case 'stats_6s':
+      dataToEdit = { players_6s: DATA.players_6s || [], goalies_6s: DATA.goalies_6s || [] };
+      label = 'Stats 6S (Joueurs & Gardiens)';
+      break;
+    case 'tournois':
+      dataToEdit = DATA.tournois || {};
+      label = 'Tournois';
+      break;
+    default:
+      // Pour TOUTES les archives (season_3, season_4, season_6s_s1, etc.)
+      if (dataType.startsWith('season_')) {
+        dataToEdit = DATA.archives && DATA.archives[dataType];
+        if (!dataToEdit) {
+          // Créer une structure vide si l'archive n'existe pas encore
+          dataToEdit = {
+            standings_nhl: [],
+            standings_lhjmq: [],
+            top_players: [],
+            top_goalies: []
+          };
+          if (!DATA.archives) DATA.archives = {};
+          DATA.archives[dataType] = dataToEdit;
+        }
+        label = `Archive ${dataType.replace(/_/g, ' ').toUpperCase()}`;
+      } else {
+        alert('Type de données inconnu: ' + dataType);
+        return;
+      }
+  }
+
+  if (!dataToEdit) {
+    alert('Aucune donnée trouvée pour ' + label);
     return;
   }
+
+  // Sauvegarder le type pour la sauvegarde
+  window.currentEditType = dataType;
   
-  document.getElementById('editArchiveLabel').textContent = `Éditer ${seasonKey}`;
-  document.getElementById('editArchiveJsonInput').value = JSON.stringify(archive, null, 2);
+  document.getElementById('editArchiveLabel').textContent = `Éditer: ${label}`;
+  document.getElementById('editArchiveJsonInput').value = JSON.stringify(dataToEdit, null, 2);
   document.getElementById('editArchiveStatus').style.display = 'none';
   openModal('editArchiveModal');
 }
 
-async function saveEditedArchive() {
+async function saveEditedData() {
   // Vérifier si on est en mode admin
   if (!document.body.classList.contains('admin-mode')) {
     alert('🔒 Accès refusé: vous devez être en mode admin pour sauvegarder');
     return;
   }
-  
+
   const jsonInput = document.getElementById('editArchiveJsonInput').value.trim();
   const statusDiv = document.getElementById('editArchiveStatus');
+  const dataType = window.currentEditType;
   
-  if (!jsonInput || !currentEditingSeason) {
+  if (!jsonInput || !dataType) {
     statusDiv.style.display = 'block';
     statusDiv.style.background = 'rgba(239,68,68,0.1)';
     statusDiv.style.borderColor = 'rgba(239,68,68,0.3)';
@@ -6623,11 +6679,35 @@ async function saveEditedArchive() {
     // Parse le JSON
     const editedData = JSON.parse(jsonInput);
     
-    // Mettre à jour dans DATA
-    if (!DATA.archives) {
-      DATA.archives = {};
+    // Mettre à jour dans DATA selon le type
+    switch(dataType) {
+      case 'stats_4s':
+        DATA.players = editedData.players || [];
+        DATA.goalies = editedData.goalies || [];
+        break;
+      case 'standings_nhl':
+        DATA.standings_nhl = editedData;
+        break;
+      case 'standings_lhjmq':
+        DATA.standings_lhjmq = editedData;
+        break;
+      case 'standings_6s':
+        DATA.standings_6s = editedData;
+        break;
+      case 'stats_6s':
+        DATA.players_6s = editedData.players_6s || [];
+        DATA.goalies_6s = editedData.goalies_6s || [];
+        break;
+      case 'tournois':
+        DATA.tournois = editedData;
+        break;
+      default:
+        // Archives
+        if (dataType.startsWith('season_')) {
+          if (!DATA.archives) DATA.archives = {};
+          DATA.archives[dataType] = editedData;
+        }
     }
-    DATA.archives[currentEditingSeason] = editedData;
     
     // Sauvegarder dans Firebase
     statusDiv.style.display = 'block';
@@ -6644,12 +6724,8 @@ async function saveEditedArchive() {
     statusDiv.style.color = '#86efac';
     statusDiv.innerHTML = '✅ Modifications sauvegardées!';
     
-    // Rafraîchir les pages d'archives
-    if (currentEditingSeason === 'season_3' && typeof renderArchiveS3 === 'function') {
-      renderArchiveS3();
-    } else if (currentEditingSeason === 'season_4' && typeof renderArchiveS4 === 'function') {
-      renderArchiveS4();
-    }
+    // Rafraîchir la page appropriée
+    refreshPageAfterEdit(dataType);
     
     // Fermer le modal après 2 secondes
     setTimeout(() => {
@@ -6665,6 +6741,38 @@ async function saveEditedArchive() {
     statusDiv.innerHTML = `❌ Erreur JSON: ${e.message}`;
     console.error('Erreur édition:', e);
   }
+}
+
+function refreshPageAfterEdit(dataType) {
+  // Rafraîchir la page selon le type de données
+  if (dataType === 'stats_4s') {
+    if (typeof renderStats === 'function') renderStats();
+  } else if (dataType.startsWith('standings_')) {
+    if (typeof renderStandings === 'function') renderStandings();
+    if (typeof renderStandings6S === 'function') renderStandings6S();
+  } else if (dataType === 'stats_6s') {
+    if (typeof renderStats6S === 'function') renderStats6S();
+  } else if (dataType === 'season_3') {
+    if (typeof renderArchiveS3 === 'function') renderArchiveS3();
+  } else if (dataType === 'season_4') {
+    if (typeof renderArchiveS4 === 'function') renderArchiveS4();
+  } else if (dataType === 'tournois') {
+    if (typeof renderTournois === 'function') renderTournois();
+  }
+}
+
+// ============ IMPORT ARCHIVES ============
+
+let currentEditingSeason = null;
+
+function openEditArchiveModal(seasonKey) {
+  // Rediriger vers le système universel
+  openEditModal(seasonKey);
+}
+
+async function saveEditedArchive() {
+  // Rediriger vers le système universel
+  await saveEditedData();
 }
 
 function openImportArchiveModal() {
