@@ -7348,12 +7348,28 @@ function renderTournoisTable(mode, division) {
 
 loadData();
 
-// FORCER couleur blanche sur mobile pour les nav-btn
-if (window.innerWidth <= 900) {
-  document.querySelectorAll('nav button, nav .nav-btn').forEach(btn => {
-    btn.style.color = '#ffffff';
-  });
+// ========== FIX PERMANENT TEXTE BLANC MOBILE ==========
+function forceWhiteTextMobile() {
+  if (window.innerWidth <= 900) {
+    document.querySelectorAll('nav button, nav .nav-btn, nav .mode-toggle').forEach(btn => {
+      btn.style.setProperty('color', '#ffffff', 'important');
+      btn.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
+    });
+  }
 }
+
+// Appliquer au chargement
+forceWhiteTextMobile();
+
+// Ré-appliquer quand le menu s'ouvre/se modifie
+const nav = document.getElementById('mainNav');
+if (nav) {
+  const observer = new MutationObserver(forceWhiteTextMobile);
+  observer.observe(nav, { attributes: true, childList: true, subtree: true });
+}
+
+// Ré-appliquer au resize
+window.addEventListener('resize', forceWhiteTextMobile);
 </script>
  <script src="lchq-animations.js"></script>
 
