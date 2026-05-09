@@ -2903,7 +2903,7 @@
   ],
   "games": [],
   "schedule": {
-    "current_week": 1,
+    "current_week": 2,
     "season_start": "2026-04-29",
     "weeks": [
       {
@@ -3100,8 +3100,8 @@
             "time": "20:00",
             "away": "phoenix",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 6,
+            "home_score": 0,
             "is_dp": false
           },
           {
@@ -3110,8 +3110,8 @@
             "time": "20:00",
             "away": "tigres",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 9,
+            "home_score": 7,
             "is_dp": false
           },
           {
@@ -3120,9 +3120,9 @@
             "time": "20:00",
             "away": "voltigeurs",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
-            "is_dp": false
+            "away_score": 7,
+            "home_score": 8,
+            "is_dp": true
           },
           {
             "id": "W2L04",
@@ -3130,8 +3130,8 @@
             "time": "20:00",
             "away": "huskies",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 2,
+            "home_score": 5,
             "is_dp": false
           },
           {
@@ -3140,8 +3140,8 @@
             "time": "20:00",
             "away": "mooseheads",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 7,
+            "home_score": 2,
             "is_dp": false
           },
           {
@@ -3150,8 +3150,8 @@
             "time": "20:00",
             "away": "oceanic",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 7,
+            "home_score": 12,
             "is_dp": false
           },
           {
@@ -3160,8 +3160,8 @@
             "time": "20:40",
             "away": "voltigeurs",
             "home": "phoenix",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 7,
+            "home_score": 9,
             "is_dp": false
           },
           {
@@ -3170,8 +3170,8 @@
             "time": "20:40",
             "away": "oceanic",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 3,
+            "home_score": 10,
             "is_dp": false
           },
           {
@@ -3180,8 +3180,8 @@
             "time": "20:40",
             "away": "seadogs",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 6,
+            "home_score": 3,
             "is_dp": false
           },
           {
@@ -3190,8 +3190,8 @@
             "time": "20:40",
             "away": "wildcats",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 13,
+            "home_score": 5,
             "is_dp": false
           },
           {
@@ -3200,8 +3200,8 @@
             "time": "20:40",
             "away": "saguenéens",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 11,
+            "home_score": 3,
             "is_dp": false
           },
           {
@@ -3210,8 +3210,8 @@
             "time": "20:40",
             "away": "drakkar",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 0,
+            "home_score": 6,
             "is_dp": false
           },
           {
@@ -3220,8 +3220,8 @@
             "time": "21:10",
             "away": "phoenix",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 10,
+            "home_score": 2,
             "is_dp": false
           },
           {
@@ -3230,8 +3230,8 @@
             "time": "21:10",
             "away": "tigres",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 10,
+            "home_score": 2,
             "is_dp": false
           },
           {
@@ -3240,8 +3240,8 @@
             "time": "21:10",
             "away": "voltigeurs",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 6,
+            "home_score": 0,
             "is_dp": false
           },
           {
@@ -3250,8 +3250,8 @@
             "time": "21:10",
             "away": "saguenéens",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 13,
+            "home_score": 6,
             "is_dp": false
           },
           {
@@ -3260,8 +3260,8 @@
             "time": "21:10",
             "away": "seadogs",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
+            "away_score": 8,
+            "home_score": 2,
             "is_dp": false
           },
           {
@@ -3270,6 +3270,181 @@
             "time": "21:10",
             "away": "oceanic",
             "home": "armada",
+            "away_score": 9,
+            "home_score": 5,
+            "is_dp": false
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "matches": [
+          {
+            "id": "W3L01",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "phoenix",
+            "home": "tigres",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L02",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "oceanic",
+            "home": "drakkar",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L03",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "voltigeurs",
+            "home": "saguenéens",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L04",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "huskies",
+            "home": "mooseheads",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L05",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "seadogs",
+            "home": "remparts",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L06",
+            "division": "lhjmq",
+            "time": "20:00",
+            "away": "wildcats",
+            "home": "armada",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L07",
+            "division": "lhjmq",
+            "time": "20:40",
+            "away": "armada",
+            "home": "phoenix",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L08",
+            "division": "lhjmq",
+            "time": "20:40",
+            "away": "voltigeurs",
+            "home": "tigres",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L09",
+            "division": "lhjmq",
+            "time": "20:40",
+            "away": "drakkar",
+            "home": "wildcats",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L10",
+            "division": "lhjmq",
+            "time": "20:40",
+            "away": "huskies",
+            "home": "saguenéens",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L11",
+            "division": "lhjmq",
+            "time": "20:40",
+            "away": "seadogs",
+            "home": "mooseheads",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L12",
+            "division": "lhjmq",
+            "time": "21:10",
+            "away": "phoenix",
+            "home": "wildcats",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L13",
+            "division": "lhjmq",
+            "time": "21:10",
+            "away": "tigres",
+            "home": "huskies",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L14",
+            "division": "lhjmq",
+            "time": "21:10",
+            "away": "remparts",
+            "home": "drakkar",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L15",
+            "division": "lhjmq",
+            "time": "21:10",
+            "away": "oceanic",
+            "home": "mooseheads",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L16",
+            "division": "lhjmq",
+            "time": "21:10",
+            "away": "saguenéens",
+            "home": "seadogs",
+            "away_score": null,
+            "home_score": null,
+            "is_dp": false
+          },
+          {
+            "id": "W3L17",
+            "division": "lhjmq",
+            "time": "21:10",
+            "away": "armada",
+            "home": "voltigeurs",
             "away_score": null,
             "home_score": null,
             "is_dp": false
