@@ -8570,44 +8570,184 @@ function renderTournoisSchedule(mode, div) {
   const container = document.getElementById(`tournois-${mode}-schedule-${div}`);
   if (!container) return;
 
-  // Collecter tous les matchs
-  const allMatches = [];
-  teams.forEach(t => {
-    (t.schedule || []).forEach(m => allMatches.push(m));
-  });
-
-  if (allMatches.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📅</div><p>Aucun match — clique sur ➕ Ajouter match en mode admin.</p></div>`;
-    return;
-  }
-
   const isAdmin = document.body.classList.contains('admin-mode');
-  container.innerHTML = allMatches.map(m => {
-    const away = teams.find(t => t.teamNum === m.away);
-    const home = teams.find(t => t.teamNum === m.home);
+
+  // Collecter matchs réguliers
+  const allMatches = [];
+  teams.forEach(t => { (t.schedule || []).forEach(m => allMatches.push(m)); });
+
+  // Éliminatoires
+  const elim = DATA.tournaments[mode][div + '_elim'] || { semi1:{}, semi2:{}, finale:{} };
+
+  function matchCard(m, label) {
     const played = m.away_score !== null && m.away_score !== undefined;
     const awayWin = played && m.away_score > m.home_score;
     const homeWin = played && m.home_score > m.away_score;
     const dpBadge = m.is_dp && played ? '<span class="match-dp-badge">DP</span>' : '';
-
+    const awayName = m.away ? `Équipe ${m.away}` : '?';
+    const homeName = m.home ? `Équipe ${m.home}` : '?';
     const center = played
       ? `<div class="match-center match-score">
-          <span class="${awayWin ? 'winner' : 'loser'}">${m.away_score}</span>
+          <span class="${awayWin?'winner':'loser'}">${m.away_score}</span>
           <span style="color:var(--text-tertiary);"> – </span>
-          <span class="${homeWin ? 'winner' : 'loser'}">${m.home_score}</span>
+          <span class="${homeWin?'winner':'loser'}">${m.home_score}</span>
          </div>`
       : `<div class="match-center">VS</div>`;
-
-    const delBtn = isAdmin ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="position:absolute;top:4px;right:4px;background:none;border:none;cursor:pointer;font-size:14px;" title="Supprimer">🗑️</button>` : '';
-
-    return `<div class="match-card ${played ? 'played' : 'upcoming'}" style="position:relative;margin-bottom:8px;">
+    const editBtn = isAdmin
+      ? `<button onclick="editTournoisMatch('${mode}','${div}','${m.id || label}')" style="position:absolute;top:4px;right:28px;background:none;border:none;cursor:pointer;font-size:14px;" title="Modifier">✏️</button>`
+      : '';
+    const delBtn = isAdmin && m.id
+      ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="position:absolute;top:4px;right:4px;background:none;border:none;cursor:pointer;font-size:14px;" title="Supprimer">🗑️</button>`
+      : '';
+    return `<div class="match-card ${played?'played':'upcoming'}" style="position:relative;margin-bottom:8px;">
       ${dpBadge}
-      <div class="match-team away"><span class="match-team-name">Équipe ${m.away}</span></div>
+      <div class="match-team away"><span class="match-team-name">${awayName}</span></div>
       ${center}
-      <div class="match-team home"><span class="match-team-name">Équipe ${m.home}</span></div>
-      ${delBtn}
+      <div class="match-team home"><span class="match-team-name">${homeName}</span></div>
+      ${editBtn}${delBtn}
     </div>`;
-  }).join('');
+  }
+
+  // Matchs réguliers
+  let html = '';
+  if (allMatches.length === 0) {
+    html = `<div class="empty-state"><div class="empty-state-icon">📅</div><p>Aucun match — clique sur ➕ Ajouter match.</p></div>`;
+  } else {
+    html = allMatches.map(m => matchCard(m, m.id)).join('');
+  }
+
+  // Éliminatoires
+  const elimAdminBtns = isAdmin ? `
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="editElimMatch('${mode}','${div}','semi1')" style="font-size:12px;padding:6px 10px;">✏️ Demi-finale 1</button>
+      <button class="btn btn-primary" onclick="editElimMatch('${mode}','${div}','semi2')" style="font-size:12px;padding:6px 10px;">✏️ Demi-finale 2</button>
+      <button class="btn btn-primary" onclick="editElimMatch('${mode}','${div}','finale')" style="font-size:12px;padding:6px 10px;">✏️ Finale</button>
+    </div>` : '';
+
+  html += `
+    <h3 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;margin:24px 0 12px;color:var(--red-bright);">🏆 Éliminatoires</h3>
+    ${elimAdminBtns}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div>
+        <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:6px;font-weight:700;">DEMI-FINALE 1</p>
+        ${matchCard(elim.semi1 || {}, 'semi1')}
+      </div>
+      <div>
+        <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:6px;font-weight:700;">DEMI-FINALE 2</p>
+        ${matchCard(elim.semi2 || {}, 'semi2')}
+      </div>
+    </div>
+    <div style="max-width:400px;margin:0 auto;">
+      <p style="font-size:12px;color:var(--red-bright);margin-bottom:6px;font-weight:700;text-align:center;">🥇 FINALE</p>
+      ${matchCard(elim.finale || {}, 'finale')}
+    </div>`;
+
+  container.innerHTML = html;
+}
+
+let currentElimContext = {};
+
+function editElimMatch(mode, div, phase) {
+  currentElimContext = { mode, div, phase };
+  if (!DATA.tournaments[mode][div + '_elim']) {
+    DATA.tournaments[mode][div + '_elim'] = { semi1:{}, semi2:{}, finale:{} };
+  }
+  const elim = DATA.tournaments[mode][div + '_elim'];
+  const m = elim[phase] || {};
+  const teams = DATA.tournaments[mode][div];
+
+  const phaseLabel = phase === 'semi1' ? 'Demi-finale 1' : phase === 'semi2' ? 'Demi-finale 2' : '🥇 Finale';
+  document.getElementById('addTournoisMatchSubtitle').textContent = phaseLabel;
+
+  const awayEl = document.getElementById('tmAwayNum');
+  const homeEl = document.getElementById('tmHomeNum');
+  const options = teams.map(t => `<option value="${t.teamNum}">Équipe ${t.teamNum}</option>`).join('');
+  awayEl.innerHTML = '<option value="">— Visiteur —</option>' + options;
+  homeEl.innerHTML = '<option value="">— Locale —</option>' + options;
+
+  if (m.away) awayEl.value = m.away;
+  if (m.home) homeEl.value = m.home;
+  document.getElementById('tmAwayScore').value = m.away_score ?? 0;
+  document.getElementById('tmHomeScore').value = m.home_score ?? 0;
+  document.getElementById('tmIsDP').checked = m.is_dp || false;
+
+  // Changer le bouton save pour utiliser saveElimMatch
+  document.querySelector('#addTournoisMatchModal .btn-primary').setAttribute('onclick', 'saveElimMatch()');
+  openModal('addTournoisMatchModal');
+}
+
+function saveElimMatch() {
+  const { mode, div, phase } = currentElimContext;
+  const awayNum = parseInt(document.getElementById('tmAwayNum').value);
+  const homeNum = parseInt(document.getElementById('tmHomeNum').value);
+  if (!awayNum || !homeNum || awayNum === homeNum) { alert('Équipes invalides!'); return; }
+
+  if (!DATA.tournaments[mode][div + '_elim']) {
+    DATA.tournaments[mode][div + '_elim'] = { semi1:{}, semi2:{}, finale:{} };
+  }
+  DATA.tournaments[mode][div + '_elim'][phase] = {
+    away: awayNum, home: homeNum,
+    away_score: parseInt(document.getElementById('tmAwayScore').value) || 0,
+    home_score: parseInt(document.getElementById('tmHomeScore').value) || 0,
+    is_dp: document.getElementById('tmIsDP').checked
+  };
+
+  // Remettre le bouton save pour matchs réguliers
+  document.querySelector('#addTournoisMatchModal .btn-primary').setAttribute('onclick', 'saveTournoisMatch()');
+  saveToFirebase();
+  renderTournoisAll(mode);
+  closeModal('addTournoisMatchModal');
+}
+
+function editTournoisMatch(mode, div, matchId) {
+  currentTournoisMatchContext = { mode, div };
+  // Trouver le match
+  const teams = DATA.tournaments[mode][div];
+  let match = null;
+  teams.forEach(t => {
+    const found = (t.schedule || []).find(m => m.id === matchId);
+    if (found) match = found;
+  });
+  if (!match) return;
+
+  const awayEl = document.getElementById('tmAwayNum');
+  const homeEl = document.getElementById('tmHomeNum');
+  const options = teams.map(t => `<option value="${t.teamNum}">Équipe ${t.teamNum}</option>`).join('');
+  awayEl.innerHTML = '<option value="">— Visiteur —</option>' + options;
+  homeEl.innerHTML = '<option value="">— Locale —</option>' + options;
+
+  awayEl.value = match.away;
+  homeEl.value = match.home;
+  document.getElementById('tmAwayScore').value = match.away_score ?? 0;
+  document.getElementById('tmHomeScore').value = match.home_score ?? 0;
+  document.getElementById('tmIsDP').checked = match.is_dp || false;
+  document.getElementById('addTournoisMatchSubtitle').textContent = `Modifier — Équipe ${match.away} vs Équipe ${match.home}`;
+
+  // Stocker l'ID du match à modifier
+  currentTournoisMatchContext.editId = matchId;
+  document.querySelector('#addTournoisMatchModal .btn-primary').setAttribute('onclick', 'updateTournoisMatch()');
+  openModal('addTournoisMatchModal');
+}
+
+function updateTournoisMatch() {
+  const { mode, div, editId } = currentTournoisMatchContext;
+  const teams = DATA.tournaments[mode][div];
+  teams.forEach(t => {
+    const match = (t.schedule || []).find(m => m.id === editId);
+    if (match) {
+      match.away = parseInt(document.getElementById('tmAwayNum').value);
+      match.home = parseInt(document.getElementById('tmHomeNum').value);
+      match.away_score = parseInt(document.getElementById('tmAwayScore').value) || 0;
+      match.home_score = parseInt(document.getElementById('tmHomeScore').value) || 0;
+      match.is_dp = document.getElementById('tmIsDP').checked;
+    }
+  });
+
+  document.querySelector('#addTournoisMatchModal .btn-primary').setAttribute('onclick', 'saveTournoisMatch()');
+  computeTournoisStandings(mode, div);
+  saveToFirebase();
+  renderTournoisAll(mode);
+  closeModal('addTournoisMatchModal');
 }
 
 loadData();
