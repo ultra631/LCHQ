@@ -2191,6 +2191,7 @@
       <h3>Statistiques 6S — Saison 3</h3>
       <p>Analyse et comparaisons · Format 6v6</p>
     </div>
+    <button class="tab admin-only" onclick="openEditModal('stats_6s')" style="margin-left:auto;background:var(--accent-color);">✏️ Éditer</button>
   </div>
 
   <h3 class="section-title" style="font-size: 26px; color: #3b82f6;">🏒 Patineurs 6S</h3>
@@ -3155,6 +3156,7 @@ function initApp() {
   renderHome();
   computeGoalieStats();
   computeStandingsFromSchedule();
+  computeStandings6SFromSchedule();
   renderStandingsNHL();
   renderStandingsLHJMQ();
   renderStandings6SNew();
@@ -5144,6 +5146,79 @@ function computeStandingsFromSchedule() {
 
   renderStandingsNHL();
   renderStandingsLHJMQ();
+
+  // Recalculer aussi le classement 6S
+  computeStandings6SFromSchedule();
+}
+
+function computeStandings6SFromSchedule() {
+  // Réinitialiser standings 6S
+  if (!DATA.season_3_6v6) return;
+  const standings = DATA.season_3_6v6.standings || [];
+  const teamHistory6S = {};
+
+  // Réinitialiser tous les records 6S
+  standings.forEach(s => {
+    s.gp = 0; s.w = 0; s.l = 0; s.otl = 0;
+    s.pts = 0; s.gf = 0; s.ga = 0; s.streak = '-';
+    teamHistory6S[s.team] = [];
+  });
+
+  // Parcourir le calendrier 6S
+  const weeks6s = [...(DATA.season_3_6v6.calendar || [])].sort((a, b) => a.num - b.num);
+  for (const week of weeks6s) {
+    const sortedMatches = [...(week.matches || [])].sort((a, b) => a.time.localeCompare(b.time));
+    for (const match of sortedMatches) {
+      if (match.away_score === null || match.away_score === undefined) continue;
+      if (match.home_score === null || match.home_score === undefined) continue;
+
+      let awayS = standings.find(s => s.team === match.away);
+      let homeS = standings.find(s => s.team === match.home);
+
+      // Créer entrée si manquante
+      if (!awayS) { awayS = {team:match.away,gp:0,w:0,l:0,otl:0,pts:0,gf:0,ga:0,streak:'-'}; standings.push(awayS); teamHistory6S[match.away] = []; }
+      if (!homeS) { homeS = {team:match.home,gp:0,w:0,l:0,otl:0,pts:0,gf:0,ga:0,streak:'-'}; standings.push(homeS); teamHistory6S[match.home] = []; }
+      if (!teamHistory6S[match.away]) teamHistory6S[match.away] = [];
+      if (!teamHistory6S[match.home]) teamHistory6S[match.home] = [];
+
+      const as = match.away_score;
+      const hs = match.home_score;
+      const dp = match.is_dp;
+
+      awayS.gp++; homeS.gp++;
+      awayS.gf += as; awayS.ga += hs;
+      homeS.gf += hs; homeS.ga += as;
+
+      if (as > hs) {
+        awayS.w++; awayS.pts += 2;
+        teamHistory6S[match.away].push('W');
+        if (dp) { homeS.otl++; homeS.pts += 1; teamHistory6S[match.home].push('OTL'); }
+        else { homeS.l++; teamHistory6S[match.home].push('L'); }
+      } else if (hs > as) {
+        homeS.w++; homeS.pts += 2;
+        teamHistory6S[match.home].push('W');
+        if (dp) { awayS.otl++; awayS.pts += 1; teamHistory6S[match.away].push('OTL'); }
+        else { awayS.l++; teamHistory6S[match.away].push('L'); }
+      }
+    }
+  }
+
+  // Calculer séries 6S
+  Object.entries(teamHistory6S).forEach(([key, history]) => {
+    const s = standings.find(st => st.team === key);
+    if (!s || !history.length) { if (s) s.streak = '-'; return; }
+    const last = history[history.length - 1];
+    let count = 0;
+    for (let i = history.length - 1; i >= 0; i--) {
+      if (history[i] === last) count++; else break;
+    }
+    if (last === 'W') s.streak = 'V' + count;
+    else if (last === 'L') s.streak = 'D' + count;
+    else if (last === 'OTL') s.streak = 'DP' + count;
+  });
+
+  DATA.season_3_6v6.standings = standings;
+  if (typeof renderStandings6SNew === 'function') renderStandings6SNew();
 }
 
 function saveMatchScore() {
@@ -5168,6 +5243,7 @@ function saveMatchScore() {
 
   // Recalculer le classement automatiquement
   computeStandingsFromSchedule();
+  if (editingMatchSource === '6s') computeStandings6SFromSchedule();
 
   closeModal('matchModal');
   if (editingMatchSource === '6s') {
@@ -5195,6 +5271,7 @@ function clearMatchScore() {
   }
   // Recalculer le classement automatiquement
   computeStandingsFromSchedule();
+  if (editingMatchSource === '6s') computeStandings6SFromSchedule();
   closeModal('matchModal');
   if (editingMatchSource === '6s') {
     renderSchedule6S();
