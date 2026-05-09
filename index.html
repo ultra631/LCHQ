@@ -8521,7 +8521,7 @@ function addTournoisMatch(mode, div) {
 
   const divLabel = div === 'nhl' ? 'Division NHL' : 'Division LHJMQ';
   document.getElementById('addTournoisMatchSubtitle').textContent = `${mode.toUpperCase()} · ${divLabel}`;
-
+  currentTournoisSaveMode = 'regular';
   openModal('addTournoisMatchModal');
 }
 
@@ -8646,6 +8646,13 @@ function renderTournoisSchedule(mode, div) {
 }
 
 let currentElimContext = {};
+let currentTournoisSaveMode = 'regular'; // 'regular', 'elim', 'edit'
+
+function saveTournoisMatchUniversal() {
+  if (currentTournoisSaveMode === 'elim') saveElimMatch();
+  else if (currentTournoisSaveMode === 'edit') updateTournoisMatch();
+  else saveTournoisMatch();
+}
 
 function editElimMatch(mode, div, phase) {
   currentElimContext = { mode, div, phase };
@@ -8671,8 +8678,7 @@ function editElimMatch(mode, div, phase) {
   document.getElementById('tmHomeScore').value = m.home_score ?? 0;
   document.getElementById('tmIsDP').checked = m.is_dp || false;
 
-  // Changer le bouton save pour utiliser saveElimMatch
-  document.querySelector('#addTournoisMatchModal .btn-primary').setAttribute('onclick', 'saveElimMatch()');
+  currentTournoisSaveMode = 'elim';
   openModal('addTournoisMatchModal');
 }
 
@@ -8692,8 +8698,7 @@ function saveElimMatch() {
     is_dp: document.getElementById('tmIsDP').checked
   };
 
-  // Remettre le bouton save pour matchs réguliers
-  document.querySelector('#addTournoisMatchModal .btn-primary').setAttribute('onclick', 'saveTournoisMatch()');
+  currentTournoisSaveMode = 'regular';
   saveToFirebase();
   renderTournoisAll(mode);
   closeModal('addTournoisMatchModal');
@@ -8723,9 +8728,8 @@ function editTournoisMatch(mode, div, matchId) {
   document.getElementById('tmIsDP').checked = match.is_dp || false;
   document.getElementById('addTournoisMatchSubtitle').textContent = `Modifier — Équipe ${match.away} vs Équipe ${match.home}`;
 
-  // Stocker l'ID du match à modifier
   currentTournoisMatchContext.editId = matchId;
-  document.querySelector('#addTournoisMatchModal .btn-primary').setAttribute('onclick', 'updateTournoisMatch()');
+  currentTournoisSaveMode = 'edit';
   openModal('addTournoisMatchModal');
 }
 
@@ -8743,7 +8747,7 @@ function updateTournoisMatch() {
     }
   });
 
-  document.querySelector('#addTournoisMatchModal .btn-primary').setAttribute('onclick', 'saveTournoisMatch()');
+  currentTournoisSaveMode = 'regular';
   computeTournoisStandings(mode, div);
   saveToFirebase();
   renderTournoisAll(mode);
@@ -8801,7 +8805,7 @@ if (window.innerWidth <= 900) {
 
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('addTournoisMatchModal')">Annuler</button>
-      <button class="btn btn-primary" onclick="saveTournoisMatch()">💾 Enregistrer</button>
+      <button class="btn btn-primary" onclick="saveTournoisMatchUniversal()">💾 Enregistrer</button>
     </div>
   </div>
 </div>
