@@ -6391,29 +6391,33 @@ function renderSchedule6S() {
         <div class="schedule-matches">`;
 
       timeMatches.forEach(m => {
-        const away = DATA.teams[m.away] || { name: m.away, emoji: '🏒', color: '#666' };
-        const home = DATA.teams[m.home] || { name: m.home, emoji: '🏒', color: '#666' };
         const played = m.away_score !== null && m.away_score !== undefined;
-        const awayWin = played && m.away_score > m.home_score;
-        const homeWin = played && m.home_score > m.away_score;
+        const isAdmin = document.body.classList.contains('admin-mode');
+        const dpBadge = m.is_dp ? '<span class="match-dp-badge">DP</span>' : '';
 
-        const adminBtn = document.body.classList.contains('admin-mode')
-          ? `<button class="match-edit-btn admin-only" onclick="event.stopPropagation();openMatchModal6S('${m.id}')">✏️</button>`
-          : '';
+        let clickAttr = '';
+        if (isAdmin) {
+          clickAttr = `onclick="openMatchModal6S('${m.id}')"`;
+        }
 
-        html += `<div class="schedule-match ${played ? 'played' : 'upcoming'}" onclick="openMatchModal6S('${m.id}')">
-          <div class="match-team away ${awayWin ? 'winner' : played ? 'loser' : ''}">
-            <span class="team-emoji">${away.emoji || '🏒'}</span>
-            <span class="team-name">${away.name}</span>
-            ${played ? `<span class="match-score ${awayWin ? 'winner' : 'loser'}">${m.away_score}</span>` : ''}
-          </div>
-          <div class="match-vs">${played ? '' : 'VS'}${m.is_dp && played ? '<span class="dp-badge">DP</span>' : ''}</div>
-          <div class="match-team home ${homeWin ? 'winner' : played ? 'loser' : ''}">
-            ${played ? `<span class="match-score ${homeWin ? 'winner' : 'loser'}">${m.home_score}</span>` : ''}
-            <span class="team-name">${home.name}</span>
-            <span class="team-emoji">${home.emoji || '🏒'}</span>
-          </div>
-          ${adminBtn}
+        let center;
+        if (played) {
+          const awayWin = m.away_score > m.home_score;
+          const homeWin = m.home_score > m.away_score;
+          center = `<div class="match-center match-score">
+            <span class="${awayWin ? 'winner' : 'loser'}">${m.away_score}</span>
+            <span style="color:var(--text-tertiary);"> – </span>
+            <span class="${homeWin ? 'winner' : 'loser'}">${m.home_score}</span>
+          </div>`;
+        } else {
+          center = `<div class="match-center">VS</div>`;
+        }
+
+        html += `<div class="match-card ${played ? 'played' : 'upcoming'}" ${clickAttr}>
+          ${dpBadge}
+          ${teamMiniDisplay(m.away, 'away')}
+          ${center}
+          ${teamMiniDisplay(m.home, 'home')}
         </div>`;
       });
 
