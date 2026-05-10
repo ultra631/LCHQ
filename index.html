@@ -8593,8 +8593,15 @@ function renderTournoisSchedule(mode, div) {
           <span class="${homeWin?'winner':'loser'}">${m.home_score}</span>
          </div>`
       : `<div class="match-center">VS</div>`;
+    const isElim = (label === 'semi1' || label === 'semi2' || label === 'finale');
+    const editOnclick = isElim
+      ? `editElimMatchBtn(this)`
+      : `editTournoisMatch('${mode}','${div}','${m.id || label}')`;
+    const editDataAttrs = isElim
+      ? `data-mode="${mode}" data-div="${div}" data-phase="${label}"`
+      : '';
     const editBtn = isAdmin
-      ? `<button onclick="editTournoisMatch('${mode}','${div}','${m.id || label}')" style="position:absolute;top:4px;right:28px;background:none;border:none;cursor:pointer;font-size:14px;" title="Modifier">✏️</button>`
+      ? `<button ${editDataAttrs} onclick="${editOnclick}" style="position:absolute;top:4px;right:28px;background:none;border:none;cursor:pointer;font-size:14px;" title="Modifier">✏️</button>`
       : '';
     const delBtn = isAdmin && m.id
       ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="position:absolute;top:4px;right:4px;background:none;border:none;cursor:pointer;font-size:14px;" title="Supprimer">🗑️</button>`
