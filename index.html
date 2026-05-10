@@ -1578,8 +1578,8 @@
         <button class="nav-btn mode-4s desktop-only" data-section="archives">Archives ▾</button>
         <div class="nav-dropdown">
           <button class="nav-btn mode-4s" data-page="archive-s4" onclick="navigate('archive-s4')">Saison 4</button>
-          <button class="nav-btn mode-4s" data-page="archive-s2" onclick="navigate('archive-s2')">Saison 2</button>
           <button class="nav-btn mode-4s" data-page="archive-s3" onclick="navigate('archive-s3')">Saison 3</button>
+          <button class="nav-btn mode-4s" data-page="archive-s2" onclick="navigate('archive-s2')">Saison 2</button>
           <button class="nav-btn mode-6s" data-page="archive-6s-s1" onclick="navigate('archive-6s-s1')" style="display:none;">Saison 1 (6S)</button>
           <button class="nav-btn mode-6s" data-page="archive-6s-s2" onclick="navigate('archive-6s-s2')" style="display:none;">Saison 2 (6S)</button>
         </div>
@@ -7455,7 +7455,7 @@ function switchArchiveS2Tab(section, btn) {
 }
 
 function renderArchiveS2() {
-  const archive = DATA.archives_s2 || null;
+  const archive = DATA.archives_s2 || DATA.archives?.season_2 || null;
   const container = document.getElementById('archiveS2Content');
   if (!container) return;
   if (!archive) {
