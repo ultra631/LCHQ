@@ -6503,7 +6503,7 @@ function switchArchiveSection(section, btn) {
 }
 
 function renderArchiveS4() {
-  const archive = (DATA.archives && DATA.archives.season_4) || null;
+  const archive = DATA.archives_s4 || (DATA.archives && DATA.archives.season_4) || null;
   const container = document.getElementById('archiveS4Content');
   if (!container) return;
 
@@ -6577,7 +6577,7 @@ function renderArchiveStandings(archive) {
 
 // Ouvrir la fiche détaillée d'une équipe en archive
 function openArchiveTeam(teamKey) {
-  const archive = (DATA.archives && DATA.archives.season_4) || null;
+  const archive = DATA.archives_s4 || (DATA.archives && DATA.archives.season_4) || null;
   if (!archive) return;
   const team = DATA.teams[teamKey];
   if (!team) return;
@@ -7428,7 +7428,7 @@ function switchArchiveS3Section(section, btn) {
 }
 
 function renderArchiveS3() {
-  const archive = (DATA.archives && DATA.archives.season_3) || null;
+  const archive = DATA.archives_s3 || (DATA.archives && DATA.archives.season_3) || null;
   const container = document.getElementById('archiveS3Content');
   if (!container) return;
 
@@ -7499,7 +7499,7 @@ function renderArchiveS3Standings(archive) {
 }
 
 function openArchiveS3Team(teamKey) {
-  const archive = (DATA.archives && DATA.archives.season_3) || null;
+  const archive = DATA.archives_s3 || (DATA.archives && DATA.archives.season_3) || null;
   if (!archive) return;
   const team = DATA.teams[teamKey];
   if (!team) return;
