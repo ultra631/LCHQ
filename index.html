@@ -2171,18 +2171,17 @@
 <!-- ARCHIVES 6S - SAISON 2 -->
 <section id="page-archive-6s-s2" class="page">
   <div class="division-banner" style="--division-color: #3b82f6">
-    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">📚</div>
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">⚡</div>
     <div class="division-banner-text">
       <h3>Archives 6S — Saison 2</h3>
-      <p>Statistiques finales de la saison 2 (6v6)</p>
+      <p>Statistiques finales · Format 6v6</p>
     </div>
-    <button class="btn btn-primary admin-only" onclick="openEditModal('season_6s_s2')" style="margin-left:auto;">✏️ Éditer</button>
   </div>
-  <div class="empty-state" style="padding: 60px 20px;">
-    <div class="empty-state-icon">📂</div>
-    <p style="font-size: 18px; margin-top: 20px;">Archives de la Saison 2 (6S)</p>
-    <p style="font-size: 14px; color: var(--text-tertiary); margin-top: 10px;">Cette section sera remplie prochainement</p>
+  <div class="tabs" style="margin-bottom: 20px;">
+    <button class="tab active" onclick="switchArchive6SS2Tab('standings', this)">📊 Classement</button>
+    <button class="tab" onclick="switchArchive6SS2Tab('players', this)">🏒 Joueurs</button>
   </div>
+  <div id="archive6SS2Content"></div>
 </section>
 
 <!-- ============ PAGES 6S ============ -->
@@ -3489,7 +3488,9 @@ function navigate(page) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   
   // Appeler les fonctions de rendu pour les pages d'archives
-  if (page === 'archive-s1') {
+  if (page === 'archive-6s-s2') {
+    renderArchive6SS2();
+  } else if (page === 'archive-s1') {
     renderArchiveS1();
   } else if (page === 'archive-s2') {
     renderArchiveS2();
@@ -7461,6 +7462,142 @@ function switchArchiveS3Section(section, btn) {
   document.querySelectorAll('#page-archive-s3 .tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   renderArchiveS3();
+}
+
+let currentArchive6SS2Section = 'standings';
+
+function switchArchive6SS2Tab(section, btn) {
+  currentArchive6SS2Section = section;
+  document.querySelectorAll('#page-archive-6s-s2 .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderArchive6SS2();
+}
+
+function renderArchive6SS2() {
+  const archive = DATA.archives_6s_s2 || null;
+  const container = document.getElementById('archive6SS2Content');
+  if (!container) return;
+  if (!archive) {
+    container.innerHTML = '<div class="card"><div class="empty-state"><p>Pas d&#39;archive disponible.</p></div></div>';
+    return;
+  }
+  if (currentArchive6SS2Section === 'standings') {
+    container.innerHTML = renderArchive6SS2Standings(archive);
+  } else {
+    container.innerHTML = renderArchive6SS2Players(archive);
+  }
+}
+
+function renderArchive6SS2Standings(archive) {
+  const teams = archive.standings || [];
+  if (teams.length === 0) return '<div class="empty-state"><p>Données non disponibles</p></div>';
+  const rows = teams.map((row, i) => {
+    const team = DATA.teams[row.team_key];
+    if (!team) return '';
+    const diff = (row.gf||0) - (row.ga||0);
+    const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
+    const diffStr = diff > 0 ? `+${diff}` : diff;
+    return `<tr class="archive-team-row" onclick="showArchive6STeamDetail('${row.team_key}', 's2')" style="cursor:pointer;">
+      <td class="num">${i+1}</td>
+      <td><div class="team-cell">${team.logo ? `<img src="${team.logo}" class="team-mini-logo">` : team.emoji}<span>${team.name}</span></div></td>
+      <td class="num">${row.gp}</td>
+      <td class="num">${row.w}</td>
+      <td class="num">${row.l}</td>
+      <td class="num">${row.otl}</td>
+      <td class="num">${row.gf}</td>
+      <td class="num">${row.ga}</td>
+      <td class="num ${diffClass}">${diffStr}</td>
+      <td class="num pts-cell"><strong>${row.pts}</strong></td>
+    </tr>`;
+  }).join('');
+  return `<div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>Équipe</th><th class="num">PJ</th><th class="num">V</th><th class="num">D</th><th class="num">DP</th><th class="num">BP</th><th class="num">BC</th><th class="num">DIFF</th><th class="num pts-cell">PTS</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+function renderArchive6SS2Players(archive) {
+  const players = (archive.top_players || []).sort((a,b) => (b.pts||0)-(a.pts||0));
+  if (players.length === 0) return '<div class="empty-state"><p>Aucune donnée</p></div>';
+  const rows = players.map((p, i) => {
+    const team = p.team_key ? DATA.teams[p.team_key] : null;
+    const teamCell = team
+      ? `<div class="team-cell">${team.logo ? `<img src="${team.logo}" class="team-mini-logo">` : team.emoji}<span>${team.name}</span></div>`
+      : '<span style="color:var(--text-tertiary);">—</span>';
+    const pmClass = (p.plusminus||0) > 0 ? 'diff-pos' : (p.plusminus||0) < 0 ? 'diff-neg' : '';
+    const pmStr = (p.plusminus||0) > 0 ? `+${p.plusminus}` : (p.plusminus||0);
+    return `<tr>
+      <td class="num">${i+1}</td>
+      <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+      <td>${teamCell}</td>
+      <td class="num">${p.gp||0}</td>
+      <td class="num">${p.g||0}</td>
+      <td class="num">${p.a||0}</td>
+      <td class="num pts-cell">${p.pts||0}</td>
+      <td class="num ${pmClass}">${pmStr}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>Joueur</th><th>Équipe</th><th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num pts-cell">PTS</th><th class="num">+/-</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+function showArchive6STeamDetail(teamKey, season) {
+  const archiveMap = { 's2': DATA.archives_6s_s2 };
+  const archive = archiveMap[season];
+  if (!archive) return;
+  const team = DATA.teams[teamKey];
+  if (!team) return;
+
+  const standing = (archive.standings || []).find(s => s.team_key === teamKey);
+  const teamPlayers = (archive.top_players || [])
+    .filter(p => p.team_key === teamKey)
+    .sort((a,b) => (b.pts||0)-(a.pts||0));
+
+  const diff = standing ? (standing.gf||0)-(standing.ga||0) : 0;
+  const diffStr = diff > 0 ? `+${diff}` : diff;
+  const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
+
+  const statsHtml = standing ? `
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+      <div class="stat-block"><div class="stat-block-value">${standing.gp||0}</div><div class="stat-block-label">PJ</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.w||0}</div><div class="stat-block-label">V</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.l||0}</div><div class="stat-block-label">D</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.otl||0}</div><div class="stat-block-label">DP</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.gf||0}</div><div class="stat-block-label">BP</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.ga||0}</div><div class="stat-block-label">BC</div></div>
+      <div class="stat-block"><div class="stat-block-value ${diffClass}">${diffStr}</div><div class="stat-block-label">DIFF</div></div>
+      <div class="stat-block"><div class="stat-block-value pts-cell" style="color:var(--red-bright);">${standing.pts||0}</div><div class="stat-block-label">PTS</div></div>
+    </div>` : '';
+
+  const playersHtml = teamPlayers.length > 0 ? `
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Joueur</th><th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num pts-cell">PTS</th><th class="num">+/-</th></tr></thead>
+      <tbody>${teamPlayers.map((p,i) => {
+        const pmClass = (p.plusminus||0)>0?'diff-pos':(p.plusminus||0)<0?'diff-neg':'';
+        const pmStr = (p.plusminus||0)>0?`+${p.plusminus}`:(p.plusminus||0);
+        return `<tr><td class="num">${i+1}</td><td style="font-weight:600;">${escapeHtml(p.name)}</td><td class="num">${p.gp||0}</td><td class="num">${p.g||0}</td><td class="num">${p.a||0}</td><td class="num pts-cell">${p.pts||0}</td><td class="num ${pmClass}">${pmStr}</td></tr>`;
+      }).join('')}</tbody>
+    </table></div>` : '<p style="color:var(--text-tertiary);">Aucun joueur.</p>';
+
+  document.getElementById('teamDetail').innerHTML = `
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:20px;background:var(--bg-secondary);border-radius:16px;">
+      ${team.logo ? `<img src="${team.logo}" style="width:72px;height:72px;object-fit:contain;">` : `<span style="font-size:64px;">${team.emoji}</span>`}
+      <div>
+        <h2 style="font-family:'Bebas Neue';font-size:32px;margin:0;">${escapeHtml(team.name)}</h2>
+        <p style="color:var(--text-tertiary);margin:4px 0 0;">6S Saison 2 · 6v6</p>
+      </div>
+    </div>
+    <h3 style="font-family:'Bebas Neue';font-size:20px;margin-bottom:12px;">📊 Classement</h3>
+    ${statsHtml}
+    <h3 style="font-family:'Bebas Neue';font-size:20px;margin:20px 0 12px;">🏒 Joueurs</h3>
+    ${playersHtml}
+  `;
+
+  document.getElementById('teamDetailBackBtn') &&
+    document.getElementById('teamDetailBackBtn').setAttribute('onclick', `navigate('archive-6s-s2')`);
+  navigate('team-detail');
 }
 
 let currentArchiveS1Section = 'standings';
