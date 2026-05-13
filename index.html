@@ -3927,9 +3927,9 @@ function showTeamDetail(teamKey) {
               <td class="num">${p.a}</td>
               <td class="num pts-cell">${p.pts}</td>
               <td class="num ${pmClass}">${pmStr}</td>
-              <td class="num">${p.pim}</td>
-              <td class="num">${p.shots}</td>
-              <td class="num">${p.shotpct.toFixed(1)}%</td>
+              <td class="num">${p.pim||0}</td>
+              <td class="num">${p.shots||0}</td>
+              <td class="num">${(p.shotpct||0).toFixed(1)}%</td>
             </tr>`;
           }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun joueur régulier dans cette équipe.</td></tr>'}
           ${goalie ? `<tr style="background: var(--bg-elevated);">
@@ -3937,7 +3937,7 @@ function showTeamDetail(teamKey) {
             <td><span class="pos-badge pos-badge-main">G</span></td>
             <td class="num">${goalie.gp}</td>
             <td class="num" colspan="2">${goalie.w}V – ${goalie.l}D – ${goalie.otl}DP</td>
-            <td class="num">${goalie.gaa.toFixed(2)} MOY</td>
+            <td class="num">${(goalie.gaa||0).toFixed(2)} MOY</td>
             <td class="num" colspan="3">${(goalie.svpct * 100).toFixed(1)}% ARR</td>
             <td class="num">${goalie.so} BL</td>
           </tr>` : ''}
