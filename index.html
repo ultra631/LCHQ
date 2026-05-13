@@ -1929,7 +1929,7 @@
 
 <!-- TEAM DETAIL -->
 <section id="page-team-detail" class="page">
-  <button class="back-btn" onclick="navigate('teams')">← Retour aux équipes</button>
+  <button class="back-btn" id="teamDetailBackBtn" onclick="navigate('teams')">← Retour aux équipes</button>
   <div id="teamDetail"></div>
 </section>
 
@@ -6555,7 +6555,7 @@ function renderArchiveStandings(archive) {
       const diff = (row.gf || 0) - (row.ga || 0);
       const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
       const diffStr = diff > 0 ? `+${diff}` : diff;
-      return `<tr class="archive-team-row" onclick="openArchiveTeam('${row.team_key}')" title="Voir détails ${escapeHtml(team.name)}">
+      return `<tr class="archive-team-row" onclick="showArchiveTeamDetail('${row.team_key}', 's4')" title="Voir détails ${escapeHtml(team.name)}">
         <td class="num">${i + 1}</td>
         <td>${teamCell}</td>
         <td class="num">${row.gp}</td>
@@ -7481,7 +7481,7 @@ function renderArchiveS2Standings(archive) {
       const diff = (row.gf||0) - (row.ga||0);
       const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
       const diffStr = diff > 0 ? `+${diff}` : diff;
-      return `<tr>
+      return `<tr class="archive-team-row" onclick="showArchiveTeamDetail('${row.team_key}', 's2')" style="cursor:pointer;">
         <td class="num">${i+1}</td>
         <td>${teamCell}</td>
         <td class="num">${row.gp}</td>
@@ -7577,7 +7577,7 @@ function renderArchiveS3Standings(archive) {
       const diff = (row.gf || 0) - (row.ga || 0);
       const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
       const diffStr = diff > 0 ? `+${diff}` : diff;
-      return `<tr class="archive-team-row" onclick="openArchiveS3Team('${row.team_key}')" title="Voir détails ${escapeHtml(team.name)}">
+      return `<tr class="archive-team-row" onclick="showArchiveTeamDetail('${row.team_key}', 's3')" title="Voir détails ${escapeHtml(team.name)}">
         <td class="num">${i + 1}</td>
         <td>${teamCell}</td>
         <td class="num">${row.gp}</td>
@@ -7615,7 +7615,99 @@ function renderArchiveS3Standings(archive) {
          renderTable(archive.standings_lhjmq, 'Division LHJMQ', 'var(--lhjmq-color)');
 }
 
+function showArchiveTeamDetail(teamKey, season) {
+  const archiveMap = {
+    's2': DATA.archives_s2,
+    's3': DATA.archives_s3,
+    's4': DATA.archives_s4 || (DATA.archives && DATA.archives.season_4),
+  };
+  const archive = archiveMap[season];
+  if (!archive) return;
+
+  const team = DATA.teams[teamKey];
+  if (!team) return;
+
+  // Trouver le classement de cette équipe
+  const standing = (archive.standings_nhl || []).find(s => s.team_key === teamKey)
+    || (archive.standings_lhjmq || []).find(s => s.team_key === teamKey);
+
+  // Trouver les joueurs de cette équipe
+  const teamPlayers = (archive.top_players || [])
+    .filter(p => p.team_key === teamKey)
+    .sort((a, b) => (b.pts || 0) - (a.pts || 0));
+
+  const seasonLabel = season === 's2' ? 'Saison 2' : season === 's3' ? 'Saison 3' : 'Saison 4';
+
+  // Stats équipe
+  const diff = standing ? (standing.gf || 0) - (standing.ga || 0) : 0;
+  const diffStr = diff > 0 ? `+${diff}` : diff;
+  const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
+
+  const statsHtml = standing ? `
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+      <div class="stat-block"><div class="stat-block-value">${standing.gp||0}</div><div class="stat-block-label">PJ</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.w||0}</div><div class="stat-block-label">V</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.l||0}</div><div class="stat-block-label">D</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.otl||0}</div><div class="stat-block-label">DP</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.gf||0}</div><div class="stat-block-label">BP</div></div>
+      <div class="stat-block"><div class="stat-block-value">${standing.ga||0}</div><div class="stat-block-label">BC</div></div>
+      <div class="stat-block"><div class="stat-block-value ${diffClass}">${diffStr}</div><div class="stat-block-label">DIFF</div></div>
+      <div class="stat-block"><div class="stat-block-value pts-cell" style="color:var(--red-bright);">${standing.pts||0}</div><div class="stat-block-label">PTS</div></div>
+    </div>` : '<p style="color:var(--text-tertiary);">Stats non disponibles</p>';
+
+  // Tableau joueurs
+  const playersHtml = teamPlayers.length > 0 ? `
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Joueur</th>
+          <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
+          <th class="num pts-cell">PTS</th><th class="num">+/-</th>
+        </tr></thead>
+        <tbody>${teamPlayers.map((p, i) => {
+          const pmClass = (p.plusminus||0) > 0 ? 'diff-pos' : (p.plusminus||0) < 0 ? 'diff-neg' : '';
+          const pmStr = (p.plusminus||0) > 0 ? `+${p.plusminus}` : (p.plusminus||0);
+          return `<tr>
+            <td class="num">${i+1}</td>
+            <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+            <td class="num">${p.gp||0}</td>
+            <td class="num">${p.g||0}</td>
+            <td class="num">${p.a||0}</td>
+            <td class="num pts-cell">${p.pts||0}</td>
+            <td class="num ${pmClass}">${pmStr}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>` : '<p style="color:var(--text-tertiary);padding:20px 0;">Aucun joueur enregistré pour cette équipe.</p>';
+
+  // Afficher dans un modal
+  document.getElementById('teamDetail').innerHTML = `
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:20px;background:var(--bg-secondary);border-radius:16px;">
+      ${team.logo ? `<img src="${team.logo}" style="width:72px;height:72px;object-fit:contain;">` : `<span style="font-size:64px;">${team.emoji}</span>`}
+      <div>
+        <h2 style="font-family:'Bebas Neue';font-size:32px;margin:0;">${escapeHtml(team.name)}</h2>
+        <p style="color:var(--text-tertiary);margin:4px 0 0;">${seasonLabel} · ${team.division.toUpperCase()}</p>
+      </div>
+    </div>
+    <h3 style="font-family:'Bebas Neue';font-size:20px;margin-bottom:12px;">📊 Classement</h3>
+    ${statsHtml}
+    <h3 style="font-family:'Bebas Neue';font-size:20px;margin:20px 0 12px;">🏒 Joueurs</h3>
+    ${playersHtml}
+  `;
+
+  // Bouton retour contextuel
+  const backPage = season === 's2' ? 'archive-s2' : season === 's3' ? 'archive-s3' : 'archive-s4';
+  document.getElementById('teamDetailBackBtn') && 
+    document.getElementById('teamDetailBackBtn').setAttribute('onclick', `navigate('${backPage}')`);
+
+  navigate('team-detail');
+}
+
 function openArchiveS3Team(teamKey) {
+  showArchiveTeamDetail(teamKey, 's3');
+}
+
+function _openArchiveS3Team_legacy(teamKey) {
   const archive = DATA.archives_s3 || (DATA.archives && DATA.archives.season_3) || null;
   if (!archive) return;
   const team = DATA.teams[teamKey];
