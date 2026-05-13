@@ -1580,6 +1580,7 @@
           <button class="nav-btn mode-4s" data-page="archive-s4" onclick="navigate('archive-s4')">Saison 4</button>
           <button class="nav-btn mode-4s" data-page="archive-s3" onclick="navigate('archive-s3')">Saison 3</button>
           <button class="nav-btn mode-4s" data-page="archive-s2" onclick="navigate('archive-s2')">Saison 2</button>
+          <button class="nav-btn mode-4s" data-page="archive-s1" onclick="navigate('archive-s1')">Saison 1</button>
           <button class="nav-btn mode-6s" data-page="archive-6s-s1" onclick="navigate('archive-6s-s1')" style="display:none;">Saison 1 (6S)</button>
           <button class="nav-btn mode-6s" data-page="archive-6s-s2" onclick="navigate('archive-6s-s2')" style="display:none;">Saison 2 (6S)</button>
         </div>
@@ -2101,6 +2102,21 @@
 </section>
 
 <!-- ARCHIVES SAISON 3 -->
+<section id="page-archive-s1" class="page">
+  <div class="division-banner" style="--division-color: #10b981">
+    <div class="division-banner-icon" style="background: linear-gradient(135deg, #059669, #047857);">🏒</div>
+    <div class="division-banner-text">
+      <h3>Saison 1 — Archives 4S</h3>
+      <p>Statistiques complètes · Format 4v4</p>
+    </div>
+  </div>
+  <div class="tabs" style="margin-bottom: 20px;">
+    <button class="tab active" onclick="switchArchiveS1Tab('standings', this)">📊 Classement</button>
+    <button class="tab" onclick="switchArchiveS1Tab('players', this)">🏒 Joueurs</button>
+  </div>
+  <div id="archiveS1Content"></div>
+</section>
+
 <section id="page-archive-s2" class="page">
   <div class="division-banner" style="--division-color: #8b5cf6">
     <div class="division-banner-icon" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">🏒</div>
@@ -3473,7 +3489,9 @@ function navigate(page) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   
   // Appeler les fonctions de rendu pour les pages d'archives
-  if (page === 'archive-s2') {
+  if (page === 'archive-s1') {
+    renderArchiveS1();
+  } else if (page === 'archive-s2') {
     renderArchiveS2();
   } else if (page === 'archive-s3') {
     renderArchiveS3();
@@ -7445,6 +7463,105 @@ function switchArchiveS3Section(section, btn) {
   renderArchiveS3();
 }
 
+let currentArchiveS1Section = 'standings';
+
+function switchArchiveS1Tab(section, btn) {
+  currentArchiveS1Section = section;
+  document.querySelectorAll('#page-archive-s1 .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderArchiveS1();
+}
+
+function renderArchiveS1() {
+  const archive = DATA.archives_s1 || null;
+  const container = document.getElementById('archiveS1Content');
+  if (!container) return;
+  if (!archive) {
+    container.innerHTML = '<div class="card"><div class="empty-state"><p>Pas d&#39;archive disponible.</p></div></div>';
+    return;
+  }
+  if (currentArchiveS1Section === 'standings') {
+    container.innerHTML = renderArchiveS1Standings(archive);
+  } else {
+    container.innerHTML = renderArchiveS1Players(archive);
+  }
+}
+
+function renderArchiveS1Standings(archive) {
+  const renderTable = (teams, divLabel, divColor) => {
+    if (!teams || teams.length === 0) return `<div class="card"><div class="empty-state"><p>Données non disponibles</p></div></div>`;
+    const rows = teams.map((row, i) => {
+      const team = DATA.teams[row.team_key];
+      if (!team) return '';
+      const teamCell = team.logo
+        ? `<div class="team-cell"><img src="${team.logo}" class="team-mini-logo"><span>${team.name}</span></div>`
+        : `<div class="team-cell">${team.emoji} ${team.name}</div>`;
+      const diff = (row.gf||0) - (row.ga||0);
+      const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
+      const diffStr = diff > 0 ? `+${diff}` : diff;
+      return `<tr class="archive-team-row" onclick="showArchiveTeamDetail('${row.team_key}', 's1')" style="cursor:pointer;">
+        <td class="num">${i+1}</td>
+        <td>${teamCell}</td>
+        <td class="num">${row.gp}</td>
+        <td class="num">${row.w}</td>
+        <td class="num">${row.l}</td>
+        <td class="num">${row.otl}</td>
+        <td class="num">${row.gf}</td>
+        <td class="num">${row.ga}</td>
+        <td class="num ${diffClass}">${diffStr}</td>
+        <td class="num pts-cell">${row.pts}</td>
+      </tr>`;
+    }).join('');
+    return `<div style="margin-bottom:30px;">
+      <h3 class="section-title" style="color:${divColor};">${divLabel}</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>#</th><th>Équipe</th><th class="num">PJ</th><th class="num">V</th><th class="num">D</th><th class="num">DP</th><th class="num">BP</th><th class="num">BC</th><th class="num">DIFF</th><th class="num pts-cell">PTS</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>`;
+  };
+  return renderTable(archive.standings_nhl, 'Division NHL', 'var(--nhl-color)') +
+         renderTable(archive.standings_lhjmq, 'Division LHJMQ', 'var(--lhjmq-color)');
+}
+
+function renderArchiveS1Players(archive) {
+  if (!archive.top_players || archive.top_players.length === 0) {
+    return '<div class="card"><div class="empty-state"><p>Aucune donnée de joueur disponible</p></div></div>';
+  }
+  const nhlKeys = ['capitals','avalanche','canadiens','kings','kraken','rangers','panthers','sharks','bruins','predators'];
+  const nhlPlayers = archive.top_players.filter(p => nhlKeys.includes(p.team_key)).sort((a,b) => (b.pts||0)-(a.pts||0));
+  const lhjmqPlayers = archive.top_players.filter(p => !nhlKeys.includes(p.team_key)).sort((a,b) => (b.pts||0)-(a.pts||0));
+  const makeTable = (players, divLabel, divColor) => {
+    const rows = players.map((p, i) => {
+      const team = p.team_key ? DATA.teams[p.team_key] : null;
+      const teamCell = team
+        ? `<div class="team-cell">${team.logo ? `<img src="${team.logo}" class="team-mini-logo">` : team.emoji}<span>${team.name}</span></div>`
+        : '<span style="color:var(--text-tertiary);">—</span>';
+      const pmClass = (p.plusminus||0) > 0 ? 'diff-pos' : (p.plusminus||0) < 0 ? 'diff-neg' : '';
+      const pmStr = (p.plusminus||0) > 0 ? `+${p.plusminus}` : (p.plusminus||0);
+      return `<tr>
+        <td class="num">${i+1}</td>
+        <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+        <td>${teamCell}</td>
+        <td class="num">${p.gp||0}</td>
+        <td class="num">${p.g||0}</td>
+        <td class="num">${p.a||0}</td>
+        <td class="num pts-cell">${p.pts||0}</td>
+        <td class="num ${pmClass}">${pmStr}</td>
+      </tr>`;
+    }).join('');
+    return `<div style="margin-bottom:30px;">
+      <h3 class="section-title" style="color:${divColor};">${divLabel}</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>#</th><th>Joueur</th><th>Équipe</th><th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th><th class="num">+/-</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>`;
+  };
+  return makeTable(nhlPlayers, 'Division NHL', 'var(--nhl-color)') +
+         makeTable(lhjmqPlayers, 'Division LHJMQ', 'var(--lhjmq-color)');
+}
+
 let currentArchiveS2Section = 'standings';
 
 function switchArchiveS2Tab(section, btn) {
@@ -7617,6 +7734,7 @@ function renderArchiveS3Standings(archive) {
 
 function showArchiveTeamDetail(teamKey, season) {
   const archiveMap = {
+    's1': DATA.archives_s1,
     's2': DATA.archives_s2,
     's3': DATA.archives_s3,
     's4': DATA.archives_s4 || (DATA.archives && DATA.archives.season_4),
@@ -7636,7 +7754,7 @@ function showArchiveTeamDetail(teamKey, season) {
     .filter(p => p.team_key === teamKey)
     .sort((a, b) => (b.pts || 0) - (a.pts || 0));
 
-  const seasonLabel = season === 's2' ? 'Saison 2' : season === 's3' ? 'Saison 3' : 'Saison 4';
+  const seasonLabel = season === 's1' ? 'Saison 1' : season === 's2' ? 'Saison 2' : season === 's3' ? 'Saison 3' : 'Saison 4';
 
   // Stats équipe
   const diff = standing ? (standing.gf || 0) - (standing.ga || 0) : 0;
@@ -7696,7 +7814,7 @@ function showArchiveTeamDetail(teamKey, season) {
   `;
 
   // Bouton retour contextuel
-  const backPage = season === 's2' ? 'archive-s2' : season === 's3' ? 'archive-s3' : 'archive-s4';
+  const backPage = season === 's1' ? 'archive-s1' : season === 's2' ? 'archive-s2' : season === 's3' ? 'archive-s3' : 'archive-s4';
   document.getElementById('teamDetailBackBtn') && 
     document.getElementById('teamDetailBackBtn').setAttribute('onclick', `navigate('${backPage}')`);
 
