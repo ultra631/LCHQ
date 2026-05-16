@@ -9075,11 +9075,52 @@ function saveTournoisMatch() {
 function deleteTournoisMatch(mode, div, matchId) {
   if (!confirm('Supprimer ce match?')) return;
   const teams = DATA.tournaments[mode][div];
+
+  // Avant de supprimer — soustraire les stats des joueurs du match des profils globaux
+  teams.forEach(t => {
+    const match = (t.schedule || []).find(m => m.id === matchId);
+    if (!match) return;
+
+    // Récupérer les stats des joueurs de cette équipe dans ce match
+    Object.entries(t.player_stats || {}).forEach(([pid, stats]) => {
+      const player4s = DATA.players.find(p => p.id === pid);
+      const player6s = (DATA.season_3_6v6?.players || []).find(p => p.id === pid);
+      const globalPlayer = player4s || player6s;
+      if (!globalPlayer) return;
+
+      // Soustraire les stats
+      globalPlayer.gp = Math.max(0, (globalPlayer.gp || 0) - (stats.gp || 0));
+      globalPlayer.g  = Math.max(0, (globalPlayer.g  || 0) - (stats.g  || 0));
+      globalPlayer.a  = Math.max(0, (globalPlayer.a  || 0) - (stats.a  || 0));
+      globalPlayer.pts = (globalPlayer.g || 0) + (globalPlayer.a || 0);
+      globalPlayer.plusminus = (globalPlayer.plusminus || 0) - (stats.plusminus || 0);
+      globalPlayer.hits = Math.max(0, (globalPlayer.hits || 0) - (stats.hits || 0));
+      globalPlayer.tb   = Math.max(0, (globalPlayer.tb   || 0) - (stats.tb   || 0));
+      globalPlayer.mjg  = Math.max(0, (globalPlayer.mjg  || 0) - (stats.mjg  || 0));
+      globalPlayer.mjf  = Math.max(0, (globalPlayer.mjf  || 0) - (stats.mjf  || 0));
+      globalPlayer.pt   = Math.max(0, (globalPlayer.pt   || 0) - (stats.pt   || 0));
+      globalPlayer.pr   = Math.max(0, (globalPlayer.pr   || 0) - (stats.pr   || 0));
+      globalPlayer.intc  = Math.max(0, (globalPlayer.intc  || 0) - (stats.intc  || 0));
+      globalPlayer.prises= Math.max(0, (globalPlayer.prises|| 0) - (stats.prises|| 0));
+      globalPlayer.pert  = Math.max(0, (globalPlayer.pert  || 0) - (stats.pert  || 0));
+      // Recalculer les pourcentages
+      globalPlayer.fopct   = globalPlayer.mjf > 0 ? Math.round(globalPlayer.mjg / globalPlayer.mjf * 1000) / 10 : 0;
+      globalPlayer.passpct = globalPlayer.pt  > 0 ? Math.round(globalPlayer.pr  / globalPlayer.pt  * 1000) / 10 : 0;
+      globalPlayer.ppm     = globalPlayer.gp  > 0 ? Math.round(globalPlayer.pts / globalPlayer.gp  * 100)  / 100 : 0;
+    });
+
+    // Effacer les stats du match pour cette équipe
+    t.player_stats = {};
+  });
+
+  // Supprimer le match
   teams.forEach(t => {
     if (t.schedule) t.schedule = t.schedule.filter(m => m.id !== matchId);
   });
+
   computeTournoisStandings(mode, div);
   saveToFirebase();
+  rerenderAll();
   renderTournoisAll(mode);
 }
 
