@@ -1574,8 +1574,8 @@
       </div>
 
       <!-- Archives -->
-      <div class="nav-group">
-        <button class="nav-btn mode-4s desktop-only" data-section="archives">Archives ▾</button>
+      <div class="nav-group nav-archives">
+        <button class="nav-btn desktop-only" data-section="archives">Archives ▾</button>
         <div class="nav-dropdown">
           <button class="nav-btn mode-4s" data-page="archive-s4" onclick="navigate('archive-s4')">Saison 4</button>
           <button class="nav-btn mode-4s" data-page="archive-s3" onclick="navigate('archive-s3')">Saison 3</button>
@@ -3434,6 +3434,10 @@ function setGameMode(mode) {
   });
   document.querySelectorAll('.nav-btn.mode-6s').forEach(btn => {
     btn.style.display = mode === '6s' ? '' : 'none';
+  });
+  // Toujours garder le bouton Archives visible
+  document.querySelectorAll('.nav-archives > .nav-btn').forEach(btn => {
+    btn.style.display = '';
   });
   
   // Naviguer vers la page appropriée
