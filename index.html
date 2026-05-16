@@ -3936,26 +3936,30 @@ function showTeamDetail(teamKey) {
           <tr>
             <th>Joueur</th><th>Pos</th>
             <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th>
-            <th class="num">+/-</th><th class="num">MEC</th><th class="num">TIRS</th><th class="num">%T</th>
+            <th class="num">+/-</th><th class="num">HITS</th><th class="num">TB</th>
+            <th class="num">MJG</th><th class="num">MJ</th><th class="num">%MJ</th>
           </tr>
         </thead>
         <tbody>
           ${roster.length ? roster.map(p => {
-            const pmClass = p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : '';
-            const pmStr = p.plusminus > 0 ? `+${p.plusminus}` : p.plusminus;
-            return `<tr>
+            const pmClass = (p.plusminus||0) > 0 ? 'diff-pos' : (p.plusminus||0) < 0 ? 'diff-neg' : '';
+            const pmStr = (p.plusminus||0) > 0 ? `+${p.plusminus}` : (p.plusminus||0);
+            const foPct = (p.mjf||0) > 0 ? ((p.mjg||0)/(p.mjf||1)*100).toFixed(1)+'%' : '0.0%';
+            return `<tr onclick="showPlayerDetail('${p.id}','4s')" style="cursor:pointer;">
               <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
               <td>${posBadges(p)}</td>
-              <td class="num">${p.gp}</td>
-              <td class="num">${p.g}</td>
-              <td class="num">${p.a}</td>
-              <td class="num pts-cell">${p.pts}</td>
+              <td class="num">${p.gp||0}</td>
+              <td class="num">${p.g||0}</td>
+              <td class="num">${p.a||0}</td>
+              <td class="num pts-cell">${p.pts||0}</td>
               <td class="num ${pmClass}">${pmStr}</td>
-              <td class="num">${p.pim||0}</td>
-              <td class="num">${p.shots||0}</td>
-              <td class="num">${(p.shotpct||0).toFixed(1)}%</td>
+              <td class="num">${p.hits||0}</td>
+              <td class="num">${p.tb||0}</td>
+              <td class="num">${p.mjg||0}</td>
+              <td class="num">${p.mjf||0}</td>
+              <td class="num">${foPct}</td>
             </tr>`;
-          }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun joueur régulier dans cette équipe.</td></tr>'}
+          }).join('') : '<tr><td colspan="12" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun joueur régulier dans cette équipe.</td></tr>'}
           ${goalie ? `<tr style="background: var(--bg-elevated);">
             <td style="font-weight: 600;">🥅 ${escapeHtml(goalie.name)}</td>
             <td><span class="pos-badge pos-badge-main">G</span></td>
