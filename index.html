@@ -8834,21 +8834,53 @@ async function saveTournoisPlayerStats() {
   const passpct= pt  > 0 ? Math.round(pr  / pt  * 1000) / 10 : 0;
 
   if (!team.player_stats) team.player_stats = {};
-  team.player_stats[currentTournoisPlayer] = {
-    gp, g, a, pts, plusminus: pm,
-    hits, tb, mjg, mjf, fopct,
-    pt, pr, passpct, intc, prises, pert
-  };
   
+  // Anciennes stats pour calculer la différence
+  const oldStats = team.player_stats[currentTournoisPlayer] || { gp:0,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 };
+  
+  // Nouvelles stats
+  const newStats = { gp, g, a, pts, plusminus: pm, hits, tb, mjg, mjf, fopct, pt, pr, passpct, intc, prises, pert };
+  team.player_stats[currentTournoisPlayer] = newStats;
+
+  // Cumuler dans le profil joueur global (4S ou 6S)
+  const pid = currentTournoisPlayer;
+  const player4s = DATA.players.find(p => p.id === pid);
+  const player6s = (DATA.season_3_6v6?.players || []).find(p => p.id === pid);
+  const globalPlayer = player4s || player6s;
+
+  if (globalPlayer) {
+    // Différence entre nouvelles et anciennes stats
+    const diff = (key) => (newStats[key] || 0) - (oldStats[key] || 0);
+    globalPlayer.gp = Math.max(0, (globalPlayer.gp || 0) + diff('gp'));
+    globalPlayer.g  = Math.max(0, (globalPlayer.g  || 0) + diff('g'));
+    globalPlayer.a  = Math.max(0, (globalPlayer.a  || 0) + diff('a'));
+    globalPlayer.pts = (globalPlayer.g || 0) + (globalPlayer.a || 0);
+    globalPlayer.plusminus = (globalPlayer.plusminus || 0) + diff('plusminus');
+    globalPlayer.hits = Math.max(0, (globalPlayer.hits || 0) + diff('hits'));
+    globalPlayer.tb   = Math.max(0, (globalPlayer.tb   || 0) + diff('tb'));
+    globalPlayer.mjg  = Math.max(0, (globalPlayer.mjg  || 0) + diff('mjg'));
+    globalPlayer.mjf  = Math.max(0, (globalPlayer.mjf  || 0) + diff('mjf'));
+    globalPlayer.pt   = Math.max(0, (globalPlayer.pt   || 0) + diff('pt'));
+    globalPlayer.pr   = Math.max(0, (globalPlayer.pr   || 0) + diff('pr'));
+    globalPlayer.intc  = Math.max(0, (globalPlayer.intc  || 0) + diff('intc'));
+    globalPlayer.prises= Math.max(0, (globalPlayer.prises|| 0) + diff('prises'));
+    globalPlayer.pert  = Math.max(0, (globalPlayer.pert  || 0) + diff('pert'));
+    // Recalculer les pourcentages
+    globalPlayer.fopct   = globalPlayer.mjf > 0 ? Math.round(globalPlayer.mjg / globalPlayer.mjf * 1000) / 10 : 0;
+    globalPlayer.passpct = globalPlayer.pt  > 0 ? Math.round(globalPlayer.pr  / globalPlayer.pt  * 1000) / 10 : 0;
+    globalPlayer.ppm     = globalPlayer.gp  > 0 ? Math.round(globalPlayer.pts / globalPlayer.gp  * 100)  / 100 : 0;
+  }
+
   // Sauvegarder dans Firebase
   await saveToFirebase();
   
   // Rafraîchir l'affichage
   renderTournoisRoster();
+  rerenderAll();
   
   // Fermer le modal
   closeModal('tournoisPlayerStatsModal');
-  showToast('✅ Stats sauvegardées!');
+  showToast('✅ Stats sauvegardées et ajoutées au profil!');
 }
 
 function saveTournoisTeam() {
