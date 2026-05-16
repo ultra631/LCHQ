@@ -9209,12 +9209,17 @@ function renderTournoisSchedule(mode, div) {
     const delBtn = isAdmin && m.id
       ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="position:absolute;top:4px;right:4px;background:none;border:none;cursor:pointer;font-size:14px;" title="Supprimer">🗑️</button>`
       : '';
-    return `<div class="match-card ${played?'played':'upcoming'}" style="position:relative;margin-bottom:8px;">
-      ${dpBadge}
-      <div class="match-team away"><span class="match-team-name">${awayName}</span></div>
-      ${center}
-      <div class="match-team home"><span class="match-team-name">${homeName}</span></div>
-      ${editBtn}${delBtn}
+    const adminBar = (editBtn || delBtn) 
+      ? `<div style="display:flex;justify-content:flex-end;gap:4px;padding:2px 4px;background:var(--bg-elevated);border-radius:0 0 8px 8px;margin-top:-4px;margin-bottom:8px;">${editBtn}${delBtn}</div>`
+      : '';
+    return `<div style="margin-bottom:${adminBar ? '0' : '8px'};">
+      <div class="match-card ${played?'played':'upcoming'}" style="position:relative;margin-bottom:0;">
+        ${dpBadge}
+        <div class="match-team away"><span class="match-team-name">${awayName}</span></div>
+        ${center}
+        <div class="match-team home"><span class="match-team-name">${homeName}</span></div>
+      </div>
+      ${adminBar}
     </div>`;
   }
 
