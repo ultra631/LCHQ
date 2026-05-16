@@ -3876,8 +3876,10 @@ function renderTeamCard(key, t) {
   const logoHtml = t.logo
     ? `<img src="${t.logo}" alt="${escapeHtml(t.name)}" class="team-card-logo" onerror="this.outerHTML='<div style=\\'font-size:64px;margin-bottom:10px;\\'>${t.emoji}</div>'">`
     : `<div style="font-size: 64px; margin-bottom: 10px;">${t.emoji}</div>`;
+  const adminBtn4s = `<button class="admin-only" onclick="event.stopPropagation();openTeamModal('${key}')" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px;display:none;">✏️</button>`;
   return `
-    <div class="team-card" style="--team-color: ${t.color}" onclick="showTeamDetail('${key}')">
+    <div class="team-card" style="--team-color: ${t.color};position:relative;" onclick="showTeamDetail('${key}')">
+      ${adminBtn4s}
       ${logoHtml}
       <div class="team-card-name">${t.name}</div>
       <div class="team-card-city">${t.city}</div>
@@ -6579,7 +6581,7 @@ function renderArchiveStandings(archive) {
       const diffStr = diff > 0 ? `+${diff}` : diff;
       return `<tr class="archive-team-row" onclick="showArchiveTeamDetail('${row.team_key}', 's4')" title="Voir détails ${escapeHtml(team.name)}">
         <td class="num">${i + 1}</td>
-        <td>${teamCell}</td>
+        <td>${teamCell} ${document.body.classList.contains('admin-mode') ? `<span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();showArchiveTeamDetail('${row.team_key}', 's4')" title="Voir">✏️</button></span>` : ''}</td>
         <td class="num">${row.gp}</td>
         <td class="num">${row.w}</td>
         <td class="num">${row.l}</td>
@@ -7123,7 +7125,11 @@ function renderTeams6S() {
     const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
     const diffStr = diff > 0 ? `+${diff}` : diff;
     
-    return `<div class="team-card" onclick="if(!document.body.classList.contains('admin-mode'))showTeamDetail6S('${tid}')" style="cursor:pointer;">
+    const adminBtn6s = document.body.classList.contains('admin-mode') 
+      ? `<button onclick="event.stopPropagation();editTeamStanding6S('${tid}')" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px;">✏️</button>`
+      : '';
+    return `<div class="team-card" onclick="if(!document.body.classList.contains('admin-mode'))showTeamDetail6S('${tid}')" style="cursor:pointer;position:relative;">
+      ${adminBtn6s}
       ${teamLogoHtml(team, 'card')}
       <h3 class="team-card-name">${escapeHtml(team.name)}</h3>
       <div class="team-card-stats">
@@ -7500,9 +7506,10 @@ function renderArchive6SS2Standings(archive) {
     const diff = (row.gf||0) - (row.ga||0);
     const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
     const diffStr = diff > 0 ? `+${diff}` : diff;
+    const isAdmin6S = document.body.classList.contains('admin-mode');
     return `<tr class="archive-team-row" onclick="showArchive6STeamDetail('${row.team_key}', 's2')" style="cursor:pointer;">
       <td class="num">${i+1}</td>
-      <td><div class="team-cell">${team.logo ? `<img src="${team.logo}" class="team-mini-logo">` : team.emoji}<span>${team.name}</span></div></td>
+      <td><div class="team-cell" style="display:inline-flex;">${team.logo ? `<img src="${team.logo}" class="team-mini-logo">` : team.emoji}<span>${team.name}</span></div>${isAdmin6S ? '<button class="row-action-btn" onclick="event.stopPropagation();" title="Modifier">✏️</button>' : ''}</td>
       <td class="num">${row.gp}</td>
       <td class="num">${row.w}</td>
       <td class="num">${row.l}</td>
@@ -7641,7 +7648,7 @@ function renderArchiveS1Standings(archive) {
       const diffStr = diff > 0 ? `+${diff}` : diff;
       return `<tr class="archive-team-row" onclick="showArchiveTeamDetail('${row.team_key}', 's1')" style="cursor:pointer;">
         <td class="num">${i+1}</td>
-        <td>${teamCell}</td>
+        <td>${teamCell} ${document.body.classList.contains('admin-mode') ? `<button class="row-action-btn" onclick="event.stopPropagation();" title="Modifier">✏️</button>` : ''}</td>
         <td class="num">${row.gp}</td>
         <td class="num">${row.w}</td>
         <td class="num">${row.l}</td>
@@ -7740,7 +7747,7 @@ function renderArchiveS2Standings(archive) {
       const diffStr = diff > 0 ? `+${diff}` : diff;
       return `<tr class="archive-team-row" onclick="showArchiveTeamDetail('${row.team_key}', 's2')" style="cursor:pointer;">
         <td class="num">${i+1}</td>
-        <td>${teamCell}</td>
+        <td>${teamCell} ${document.body.classList.contains('admin-mode') ? `<button class="row-action-btn" onclick="event.stopPropagation();" title="Modifier">✏️</button>` : ''}</td>
         <td class="num">${row.gp}</td>
         <td class="num">${row.w}</td>
         <td class="num">${row.l}</td>
@@ -7834,9 +7841,10 @@ function renderArchiveS3Standings(archive) {
       const diff = (row.gf || 0) - (row.ga || 0);
       const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
       const diffStr = diff > 0 ? `+${diff}` : diff;
+      const isAdminS3 = document.body.classList.contains('admin-mode');
       return `<tr class="archive-team-row" onclick="showArchiveTeamDetail('${row.team_key}', 's3')" title="Voir détails ${escapeHtml(team.name)}">
         <td class="num">${i + 1}</td>
-        <td>${teamCell}</td>
+        <td>${teamCell} ${isAdminS3 ? '<button class="row-action-btn" onclick="event.stopPropagation();" title="Modifier">✏️</button>' : ''}</td>
         <td class="num">${row.gp}</td>
         <td class="num">${row.w}</td>
         <td class="num">${row.l}</td>
