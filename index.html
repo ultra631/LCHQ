@@ -7128,7 +7128,7 @@ function renderTeams6S() {
     const adminBtn6s = document.body.classList.contains('admin-mode') 
       ? `<button onclick="event.stopPropagation();editTeamStanding6S('${tid}')" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px;">✏️</button>`
       : '';
-    return `<div class="team-card" onclick="if(!document.body.classList.contains('admin-mode'))showTeamDetail6S('${tid}')" style="cursor:pointer;position:relative;">
+    return `<div class="team-card" onclick="showTeamDetail6S('${tid}')" style="cursor:pointer;position:relative;">
       ${adminBtn6s}
       ${teamLogoHtml(team, 'card')}
       <h3 class="team-card-name">${escapeHtml(team.name)}</h3>
