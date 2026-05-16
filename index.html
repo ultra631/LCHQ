@@ -9493,49 +9493,46 @@ function openTournoisMatchDetail(mode, div, matchId) {
 
 // ============ TOURNOIS TOP STATS ============
 
+function collectTournoisDivStats(mode, div) {
+  const players = {};
+  const teams = DATA.tournaments?.[mode]?.[div] || [];
+  teams.forEach(t => {
+    Object.entries(t.player_stats || {}).forEach(([pid, stats]) => {
+      const player = DATA.players.find(p => p.id === pid) ||
+                     (DATA.season_3_6v6?.players || []).find(p => p.id === pid);
+      if (!player) return;
+      if (!players[pid]) {
+        players[pid] = { name: player.name, gp:0, g:0, a:0, pts:0, plusminus:0, hits:0 };
+      }
+      players[pid].gp += stats.gp || 0;
+      players[pid].g  += stats.g  || 0;
+      players[pid].a  += stats.a  || 0;
+      players[pid].pts = players[pid].g + players[pid].a;
+      players[pid].plusminus += stats.plusminus || 0;
+      players[pid].hits += stats.hits || 0;
+    });
+  });
+  return Object.values(players);
+}
+
 function renderTournoisTopStats(mode) {
   const container = document.getElementById(`tournois-${mode}-topstats-content`);
   if (!container) return;
 
-  // Collecter tous les joueurs de toutes les équipes des 2 divisions
-  const allPlayers = {};
+  const nhlPlayers = collectTournoisDivStats(mode, 'nhl');
+  const lhjmqPlayers = collectTournoisDivStats(mode, 'lhjmq');
+  const allPlayers = [...nhlPlayers, ...lhjmqPlayers];
 
-  ['nhl','lhjmq'].forEach(div => {
-    const teams = DATA.tournaments?.[mode]?.[div] || [];
-    teams.forEach(t => {
-      Object.entries(t.player_stats || {}).forEach(([pid, stats]) => {
-        const player = DATA.players.find(p => p.id === pid) ||
-                       (DATA.season_3_6v6?.players || []).find(p => p.id === pid);
-        if (!player) return;
-        if (!allPlayers[pid]) {
-          allPlayers[pid] = { name: player.name, gp:0, g:0, a:0, pts:0, plusminus:0, hits:0 };
-        }
-        allPlayers[pid].gp += stats.gp || 0;
-        allPlayers[pid].g  += stats.g  || 0;
-        allPlayers[pid].a  += stats.a  || 0;
-        allPlayers[pid].pts = allPlayers[pid].g + allPlayers[pid].a;
-        allPlayers[pid].plusminus += stats.plusminus || 0;
-        allPlayers[pid].hits += stats.hits || 0;
-      });
-    });
-  });
-
-  const sorted = Object.values(allPlayers).sort((a,b) => (b.pts||0)-(a.pts||0));
-
-  if (sorted.length === 0) {
+  if (allPlayers.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div><p>Aucune stat disponible pour ce tournoi.</p></div>';
     return;
   }
 
-  // Top marqueurs
-  const topPts = [...sorted].sort((a,b)=>(b.pts||0)-(a.pts||0)).slice(0,10);
-  const topG   = [...sorted].sort((a,b)=>(b.g||0)-(a.g||0)).slice(0,5);
-  const topA   = [...sorted].sort((a,b)=>(b.a||0)-(a.a||0)).slice(0,5);
-  const topPm  = [...sorted].sort((a,b)=>(b.plusminus||0)-(a.plusminus||0)).slice(0,5);
-
-  const makeTable = (players, cols, title, icon) => `
+  const makeTable = (players, cols, title, icon, color) => {
+    if (players.length === 0) return '';
+    return `
     <div style="margin-bottom:24px;">
-      <h3 style="font-family:'Bebas Neue';font-size:22px;margin-bottom:12px;">${icon} ${title}</h3>
+      <h3 style="font-family:'Bebas Neue';font-size:22px;margin-bottom:12px;color:${color||'var(--text-primary)'};">${icon} ${title}</h3>
       <div class="table-wrap"><table>
         <thead><tr>${cols.map(c=>`<th ${c.num?'class="num"':''}>${c.label}</th>`).join('')}</tr></thead>
         <tbody>${players.map((p,i)=>`<tr>
@@ -9546,22 +9543,41 @@ function renderTournoisTopStats(mode) {
         </tbody>
       </table></div>
     </div>`;
+  };
 
-  container.innerHTML = `
-    ${makeTable(topPts, [
-      {label:'#',num:true},{label:'Joueur'},
-      {label:'PJ',num:true,val:p=>p.gp},{label:'B',num:true,val:p=>p.g},
-      {label:'A',num:true,val:p=>p.a},{label:'PTS',num:true,pts:true,val:p=>p.pts}
-    ], 'Top Marqueurs', '🏒')}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-      ${makeTable(topG, [{label:'#',num:true},{label:'Joueur'},{label:'Buts',num:true,val:p=>p.g}], 'Buteurs', '🥅')}
-      ${makeTable(topA, [{label:'#',num:true},{label:'Joueur'},{label:'Passes',num:true,val:p=>p.a}], 'Passeurs', '🎯')}
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;">
-      ${makeTable(topPm, [{label:'#',num:true},{label:'Joueur'},{label:'+/-',num:true,val:p=>(p.plusminus>0?'+':'')+p.plusminus}], 'Meilleur +/-', '📈')}
-      ${makeTable([...sorted].sort((a,b)=>(b.hits||0)-(a.hits||0)).slice(0,5), [{label:'#',num:true},{label:'Joueur'},{label:'HITS',num:true,val:p=>p.hits}], 'Mises en Échec', '💥')}
-    </div>`;
+  const topSection = (players, divLabel, divColor) => {
+    if (players.length === 0) return '';
+    const sorted = [...players].sort((a,b)=>(b.pts||0)-(a.pts||0));
+    const topPts = sorted.slice(0,10);
+    const topG   = [...players].sort((a,b)=>(b.g||0)-(a.g||0)).slice(0,5);
+    const topA   = [...players].sort((a,b)=>(b.a||0)-(a.a||0)).slice(0,5);
+    const topPm  = [...players].sort((a,b)=>(b.plusminus||0)-(a.plusminus||0)).slice(0,5);
+    const topHits= [...players].sort((a,b)=>(b.hits||0)-(a.hits||0)).slice(0,5);
+    return `
+      <div style="border-left:4px solid ${divColor};padding-left:16px;margin-bottom:40px;">
+        <h2 style="font-family:'Bebas Neue';font-size:28px;color:${divColor};margin-bottom:20px;">${divLabel}</h2>
+        ${makeTable(topPts, [
+          {label:'#',num:true},{label:'Joueur'},
+          {label:'PJ',num:true,val:p=>p.gp},{label:'B',num:true,val:p=>p.g},
+          {label:'A',num:true,val:p=>p.a},{label:'PTS',num:true,pts:true,val:p=>p.pts}
+        ], 'Top Marqueurs', '🏒', divColor)}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          ${makeTable(topG, [{label:'#',num:true},{label:'Joueur'},{label:'Buts',num:true,val:p=>p.g}], 'Buteurs', '🥅')}
+          ${makeTable(topA, [{label:'#',num:true},{label:'Joueur'},{label:'Passes',num:true,val:p=>p.a}], 'Passeurs', '🎯')}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;">
+          ${makeTable(topPm, [{label:'#',num:true},{label:'Joueur'},{label:'+/-',num:true,val:p=>(p.plusminus>0?'+':'')+p.plusminus}], 'Meilleur +/-', '📈')}
+          ${makeTable(topHits, [{label:'#',num:true},{label:'Joueur'},{label:'HITS',num:true,val:p=>p.hits}], 'Mises en Échec', '💥')}
+        </div>
+      </div>`;
+  };
+
+  container.innerHTML =
+    topSection(nhlPlayers, 'Division NHL', 'var(--nhl-color)') +
+    topSection(lhjmqPlayers, 'Division LHJMQ', 'var(--lhjmq-color)');
 }
+
+
 
 
 function removePlayerFromMatchDetail(mode, div, pid, teamNum) {
