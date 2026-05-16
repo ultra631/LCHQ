@@ -9414,16 +9414,27 @@ function openTournoisMatchDetail(mode, div, matchId) {
   document.getElementById('tournoisMatchDetailTitle').textContent = `📊 ${awayName} vs ${homeName}`;
   document.getElementById('tournoisMatchDetailSubtitle').textContent = phaseLabel;
 
-  // Récupérer les joueurs avec leurs stats pour ce match
-  const matchPlayers = Object.values(match.player_stats || {});
+  // Récupérer tous les joueurs du roster des 2 équipes avec leurs stats
   const allPlayerStats = [];
   
-  // Chercher dans les équipes
   teams.forEach(t => {
     if (t.teamNum !== match.away && t.teamNum !== match.home) return;
     const ps = t.player_stats || {};
+    const roster = t.players || [];
+    
+    // Tous les joueurs du roster de l'équipe
+    roster.forEach(pid => {
+      const player = DATA.players.find(p => p.id === pid) || 
+                     (DATA.season_3_6v6?.players || []).find(p => p.id === pid);
+      if (player) {
+        const stats = ps[pid] || { gp:0, g:0, a:0, pts:0, plusminus:0, hits:0, tb:0, mjg:0, mjf:0 };
+        allPlayerStats.push({ ...stats, name: player.name, pid, teamNum: t.teamNum });
+      }
+    });
+    
+    // Aussi ajouter les joueurs qui ont des stats mais ne sont plus dans le roster
     Object.entries(ps).forEach(([pid, stats]) => {
-      // Chercher le joueur dans DATA
+      if (roster.includes(pid)) return; // Déjà ajouté
       const player = DATA.players.find(p => p.id === pid) || 
                      (DATA.season_3_6v6?.players || []).find(p => p.id === pid);
       if (player) {
