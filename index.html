@@ -9350,7 +9350,7 @@ function openTournoisMatchDetail(mode, div, matchId) {
             <td class="num">${p.a||0}</td>
             <td class="num pts-cell">${p.pts||0}</td>
             <td class="num ${pmClass}">${pmStr}</td>
-            ${isAdmin ? `<td><button class="row-action-btn" onclick="openTournoisPlayerStatsModal('${p.pid}')" title="Modifier">✏️</button></td>` : ''}
+            ${isAdmin ? `<td><button class="row-action-btn" onclick="closeModal('tournoisMatchDetailModal');setTimeout(()=>openTournoisPlayerStatsModal('${p.pid}'),150)" title="Modifier">✏️</button></td>` : ''}
           </tr>`;
         }).join('')}</tbody>
       </table>
