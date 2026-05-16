@@ -4037,8 +4037,14 @@ function showTeamDetail6S(teamKey) {
             const pmClass = (p.plusminus || 0) > 0 ? 'diff-pos' : (p.plusminus || 0) < 0 ? 'diff-neg' : '';
             const pmStr = (p.plusminus || 0) > 0 ? `+${p.plusminus}` : (p.plusminus || 0);
             const foPct = (p.mjf || 0) > 0 ? ((p.mjg || 0) / p.mjf * 100).toFixed(1) : '0.0';
-            return `<tr>
-              <td style="font-weight: 600;">${escapeHtml(p.name)}</td>
+            const isAdm = document.body.classList.contains('admin-mode');
+            return `<tr onclick="showPlayerDetail('${p.id}','6s')" style="cursor:pointer;">
+              <td style="font-weight: 600;">${escapeHtml(p.name)}
+                ${isAdm ? `<span class="admin-row-actions">
+                  <button class="row-action-btn" onclick="event.stopPropagation();openPlayerModal('${p.id}','6s')" title="Modifier">✏️</button>
+                  <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer6S('${p.id}')" title="Supprimer">🗑️</button>
+                </span>` : ''}
+              </td>
               <td class="num">${p.gp || 0}</td>
               <td class="num">${p.g || 0}</td>
               <td class="num">${p.a || 0}</td>
@@ -4066,16 +4072,21 @@ function showTeamDetail6S(teamKey) {
           </tr>
         </thead>
         <tbody>
-          ${goalies.length ? goalies.map(g => `<tr>
-            <td style="font-weight: 600;">🥅 ${escapeHtml(g.name)}</td>
-            <td class="num">${g.gp || 0}</td>
-            <td class="num">${g.w || 0}</td>
-            <td class="num">${g.l || 0}</td>
-            <td class="num">${g.otl || 0}</td>
-            <td class="num">${g.gaa ? g.gaa.toFixed(2) : '0.00'}</td>
-            <td class="num">${g.svpct ? (g.svpct * 100).toFixed(1) : '0.0'}%</td>
-            <td class="num">${g.so || 0}</td>
-          </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun gardien dans cette équipe.</td></tr>'}
+          ${goalies.length ? goalies.map(g => {
+            const isAdmG = document.body.classList.contains('admin-mode');
+            return `<tr>
+              <td style="font-weight: 600;">🥅 ${escapeHtml(g.name)}
+                ${isAdmG ? `<span class="admin-row-actions"><button class="row-action-btn" onclick="openGoalieModal('${g.id}','6s')" title="Modifier">✏️</button></span>` : ''}
+              </td>
+              <td class="num">${g.gp || 0}</td>
+              <td class="num">${g.w || 0}</td>
+              <td class="num">${g.l || 0}</td>
+              <td class="num">${g.otl || 0}</td>
+              <td class="num">${g.gaa ? g.gaa.toFixed(2) : '0.00'}</td>
+              <td class="num">${g.svpct ? (g.svpct * 100).toFixed(1) : '0.0'}%</td>
+              <td class="num">${g.so || 0}</td>
+            </tr>`;
+          }).join('') : '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun gardien dans cette équipe.</td></tr>'}
         </tbody>
       </table>
     </div>
