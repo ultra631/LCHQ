@@ -8783,6 +8783,12 @@ function removePlayerFromTournoisTeam(idx) {
 
 let currentTournoisPlayer = null;
 
+function openTournoisPlayerStatsFromMatch(mode, div, teamNum, playerId) {
+  // Définir le contexte équipe avant d'ouvrir le modal
+  currentTournoisTeam = { mode, division: div, teamNum: parseInt(teamNum) };
+  openTournoisPlayerStatsModal(playerId);
+}
+
 function openTournoisPlayerStatsModal(playerId) {
   const { mode, division, teamNum } = currentTournoisTeam;
   const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
@@ -8793,9 +8799,8 @@ function openTournoisPlayerStatsModal(playerId) {
   
   currentTournoisPlayer = playerId;
   
-  const player = mode === '4s' 
-    ? DATA.players.find(p => p.id === playerId)
-    : DATA.players_6s?.find(p => p.id === playerId);
+  const player = DATA.players.find(p => p.id === playerId) ||
+                 (DATA.season_3_6v6?.players || []).find(p => p.id === playerId);
   
   if (!player) return;
   
@@ -9474,7 +9479,7 @@ function openTournoisMatchDetail(mode, div, matchId) {
             <td class="num pts-cell">${p.pts||0}</td>
             <td class="num ${pmClass}">${pmStr}</td>
             ${isAdmin ? `<td style="display:flex;gap:6px;">
-              <button class="row-action-btn" onclick="closeModal('tournoisMatchDetailModal');setTimeout(()=>openTournoisPlayerStatsModal('${p.pid}'),150)" title="Modifier">✏️</button>
+              <button class="row-action-btn" onclick="closeModal('tournoisMatchDetailModal');setTimeout(()=>openTournoisPlayerStatsFromMatch('${mode}','${div}','${p.teamNum}','${p.pid}'),150)" title="Modifier">✏️</button>
               <button class="row-action-btn delete" onclick="removePlayerFromMatchDetail('${mode}','${div}','${p.pid}','${p.teamNum}')" title="Supprimer">🗑️</button>
             </td>` : ''}
           </tr>`;
