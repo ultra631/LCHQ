@@ -9204,22 +9204,17 @@ function renderTournoisSchedule(mode, div) {
       ? `data-mode="${mode}" data-div="${div}" data-phase="${label}"`
       : '';
     const editBtn = isAdmin
-      ? `<button ${editDataAttrs} onclick="${editOnclick}" style="position:absolute;top:4px;right:28px;background:none;border:none;cursor:pointer;font-size:14px;" title="Modifier">✏️</button>`
+      ? `<button ${editDataAttrs} onclick="${editOnclick}" style="position:absolute;top:50%;right:36px;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;z-index:10;" title="Modifier score">✏️</button>`
       : '';
     const delBtn = isAdmin && m.id
-      ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="position:absolute;top:4px;right:4px;background:none;border:none;cursor:pointer;font-size:14px;" title="Supprimer">🗑️</button>`
+      ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="position:absolute;top:50%;right:8px;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;z-index:10;" title="Supprimer">🗑️</button>`
       : '';
-    const adminBar = (editBtn || delBtn) 
-      ? `<div style="display:flex;justify-content:flex-end;gap:4px;padding:2px 4px;background:var(--bg-elevated);border-radius:0 0 8px 8px;margin-top:-4px;margin-bottom:8px;">${editBtn}${delBtn}</div>`
-      : '';
-    return `<div style="margin-bottom:${adminBar ? '0' : '8px'};">
-      <div class="match-card ${played?'played':'upcoming'}" style="position:relative;margin-bottom:0;">
-        ${dpBadge}
-        <div class="match-team away"><span class="match-team-name">${awayName}</span></div>
-        ${center}
-        <div class="match-team home"><span class="match-team-name">${homeName}</span></div>
-      </div>
-      ${adminBar}
+    return `<div class="match-card ${played?'played':'upcoming'}" style="position:relative;margin-bottom:8px;">
+      ${dpBadge}
+      <div class="match-team away"><span class="match-team-name">${awayName}</span></div>
+      ${center}
+      <div class="match-team home"><span class="match-team-name">${homeName}</span></div>
+      ${editBtn}${delBtn}
     </div>`;
   }
 
