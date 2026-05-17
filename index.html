@@ -10158,13 +10158,20 @@ function renderHomeLeaders4s(type) {
   if (!container) return;
 
   if (type === 'goalie') {
-    const goalies = [...(DATA.goalies || [])].filter(g => g.gp > 0).sort((a,b) => (b.w||0)-(a.w||0)).slice(0,10);
-    container.innerHTML = renderHomeLeaderCards(goalies, 'goalie');
+    const nhlGoalies   = [...(DATA.goalies || [])].filter(g => g.gp > 0 && DATA.teams[g.team]?.division === 'nhl').sort((a,b) => (b.w||0)-(a.w||0)).slice(0,10);
+    const lhjmqGoalies = [...(DATA.goalies || [])].filter(g => g.gp > 0 && DATA.teams[g.team]?.division === 'lhjmq').sort((a,b) => (b.w||0)-(a.w||0)).slice(0,10);
+    container.innerHTML =
+      `<div style="margin-bottom:8px;"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--nhl-color);margin-bottom:8px;">DIVISION NHL</div>${renderHomeLeaderCards(nhlGoalies, 'goalie')}</div>` +
+      `<div style="margin-top:24px;"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--lhjmq-color);margin-bottom:8px;">DIVISION LHJMQ</div>${renderHomeLeaderCards(lhjmqGoalies, 'goalie')}</div>`;
     return;
   }
 
-  const players = [...(DATA.players || [])].sort((a,b) => (b[type]||0)-(a[type]||0)).slice(0,10);
-  container.innerHTML = renderHomeLeaderCards(players, type);
+  const nhlPlayers   = [...(DATA.players || [])].filter(p => DATA.teams[p.team]?.division === 'nhl').sort((a,b) => (b[type]||0)-(a[type]||0)).slice(0,10);
+  const lhjmqPlayers = [...(DATA.players || [])].filter(p => DATA.teams[p.team]?.division === 'lhjmq').sort((a,b) => (b[type]||0)-(a[type]||0)).slice(0,10);
+
+  container.innerHTML =
+    `<div style="margin-bottom:8px;"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--nhl-color);margin-bottom:8px;">DIVISION NHL</div>${renderHomeLeaderCards(nhlPlayers, type)}</div>` +
+    `<div style="margin-top:24px;"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--lhjmq-color);margin-bottom:8px;">DIVISION LHJMQ</div>${renderHomeLeaderCards(lhjmqPlayers, type)}</div>`;
 }
 
 function renderHomeLeaders6s(type) {
