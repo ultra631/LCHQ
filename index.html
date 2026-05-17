@@ -1700,7 +1700,7 @@
         <p class="subtitle">Ligue de Hockey · World of Chel · NHL 26</p>
         <div class="badge">⚡ Saison 5 — En cours</div>
         <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
-          <button onclick="navigate('standings-nhl')" style="padding:10px 20px;background:rgba(220,38,38,0.85);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">📊 Classement</button>
+          <button onclick="navigateBothStandings()" style="padding:10px 20px;background:rgba(220,38,38,0.85);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">📊 Classement</button>
           <button onclick="navigate('schedule')" style="padding:10px 20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">📅 Calendrier</button>
         </div>
       </div>
@@ -1866,6 +1866,11 @@
 </section>
 
 <!-- STANDINGS NHL -->
+<section id="page-standings-all" class="page">
+  <div id="standings-all-nhl"></div>
+  <div style="margin-top:40px;" id="standings-all-lhjmq"></div>
+</section>
+
 <section id="page-standings-nhl" class="page">
   <div class="division-banner" style="--division-color: var(--nhl-color)">
     <div class="division-banner-icon">NHL</div>
@@ -3719,6 +3724,8 @@ function navigate(page) {
     renderAllPlayers();
   } else if (page === 'goalies-all') {
     renderAllGoalies();
+  } else if (page === 'standings-all') {
+    renderStandingsAll();
   } else if (page === 'schedule') {
     // Activer NHL par défaut
     const nhlBtn = document.querySelector('#page-schedule .tab:nth-child(2)');
@@ -10042,6 +10049,21 @@ function removePlayerFromMatchDetail(mode, div, pid, teamNum) {
 
 let currentHomeLeader4s = 'pts';
 let currentHomeLeader6s = 'pts';
+
+function renderStandingsAll() {
+  // Copier le contenu des 2 pages dans standings-all
+  const nhlPage = document.getElementById('page-standings-nhl');
+  const lhjmqPage = document.getElementById('page-standings-lhjmq');
+  const nhlDest = document.getElementById('standings-all-nhl');
+  const lhjmqDest = document.getElementById('standings-all-lhjmq');
+
+  if (nhlPage && nhlDest) nhlDest.innerHTML = nhlPage.innerHTML;
+  if (lhjmqPage && lhjmqDest) lhjmqDest.innerHTML = lhjmqPage.innerHTML;
+}
+
+function navigateBothStandings() {
+  navigate('standings-all');
+}
 
 function renderHomePage() {
   renderHomeStats();
