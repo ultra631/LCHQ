@@ -10842,9 +10842,14 @@ function openMobileDrawer() {
   document.getElementById('mobileDrawer').classList.add('open');
   document.getElementById('mobileOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Sync mode avec le site
-  const is6s = document.body.classList.contains('mode-6s');
-  setDrawerMode(is6s ? '6s' : '4s');
+  // Sync mode avec currentGameMode (pas de navigate, juste afficher le bon menu)
+  const mode = typeof currentGameMode !== 'undefined' ? currentGameMode : '4s';
+  document.getElementById('drawerMode4s').className = 'drawer-mode-btn' + (mode==='4s' ? ' active-4s' : '');
+  document.getElementById('drawerMode6s').className = 'drawer-mode-btn' + (mode==='6s' ? ' active-6s' : '');
+  document.getElementById('drawerNav4s').style.display = mode==='4s' ? '' : 'none';
+  document.getElementById('drawerNav6s').style.display = mode==='6s' ? '' : 'none';
+  const dSeason = document.getElementById('drawerSeasonText');
+  if (dSeason) dSeason.textContent = mode === '6s' ? 'SAISON 3 · 6S · WORLD OF CHEL' : 'SAISON 5 · WORLD OF CHEL';
 }
 function closeMobileDrawer() {
   const drawer = document.getElementById('mobileDrawer');
