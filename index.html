@@ -9181,44 +9181,58 @@ function removeTournoisPlayer(playerId, idx) {
   renderTournoisRoster();
 }
 
+function renderTournoisPlayerList(players, search='') {
+  const { mode, division, teamNum } = currentTournoisTeam;
+  const team = DATA.tournaments?.[mode]?.[division]?.find(t => t.teamNum === teamNum);
+  const alreadyIn = new Set(team?.players || []);
+
+  const filtered = players.filter(p =>
+    !alreadyIn.has(p.id) && p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const tonight = filtered.filter(p => p.tonight);
+  const others  = filtered.filter(p => !p.tonight);
+
+  const makeRow = (p) => `<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:background 0.15s;"
+    onclick="addPlayerToTournoisTeam('${p.id}')"
+    onmouseover="this.style.background='var(--bg-elevated)'"
+    onmouseout="this.style.background='transparent'">
+    <div style="flex:1;">
+      <strong style="font-size:14px;">${escapeHtml(p.name)}</strong>
+      ${p.tonight ? '<span style="font-size:10px;background:rgba(34,197,94,0.2);color:#22c55e;border-radius:4px;padding:1px 5px;margin-left:6px;">CE SOIR</span>' : ''}
+    </div>
+    <span style="font-size:11px;color:var(--text-tertiary);">${(p.positions||[]).join(' · ') || p.position_main || ''}</span>
+  </div>`;
+
+  let html = '';
+  if (tonight.length > 0) {
+    html += `<div style="font-size:10px;font-weight:700;letter-spacing:1px;color:#22c55e;padding:8px 12px 4px;background:rgba(34,197,94,0.05);">🏒 JOUEURS DU TOURNOI CE SOIR (${tonight.length})</div>`;
+    html += tonight.map(makeRow).join('');
+  }
+  if (others.length > 0) {
+    html += `<div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-tertiary);padding:8px 12px 4px;">TOUS LES JOUEURS</div>`;
+    html += others.map(makeRow).join('');
+  }
+  if (filtered.length === 0) {
+    html = '<div style="padding:20px;text-align:center;color:var(--text-tertiary);">Aucun joueur trouvé</div>';
+  }
+
+  document.getElementById('tournoisPlayerList').innerHTML = html;
+}
+
 function showAddPlayerToTournoisTeam() {
   const { mode } = currentTournoisTeam;
   const players = mode === '4s' ? DATA.players : (DATA.season_3_6v6?.players || []);
-  
-  const playerList = document.getElementById('tournoisPlayerList');
-  playerList.innerHTML = players.map(p => {
-    return `<div style="padding:10px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.2s;" 
-                 onclick="addPlayerToTournoisTeam('${p.id}')"
-                 onmouseover="this.style.background='var(--bg-elevated)'" 
-                 onmouseout="this.style.background='transparent'">
-      <strong>${escapeHtml(p.name)}</strong>
-      <span style="color:var(--text-tertiary);margin-left:10px;">${p.position_main || p.position || 'F'}</span>
-      ${p.team ? `<span style="color:var(--text-tertiary);margin-left:10px;">• ${DATA.teams[p.team]?.name || ''}</span>` : ''}
-    </div>`;
-  }).join('');
-  
+  renderTournoisPlayerList(players);
   document.getElementById('tournoisPlayerSearch').value = '';
   openModal('addPlayerToTournoisModal');
 }
 
 function filterTournoisPlayers() {
-  const search = document.getElementById('tournoisPlayerSearch').value.toLowerCase();
+  const search = document.getElementById('tournoisPlayerSearch').value;
   const { mode } = currentTournoisTeam;
   const players = mode === '4s' ? DATA.players : (DATA.season_3_6v6?.players || []);
-  
-  const filtered = players.filter(p => p.name.toLowerCase().includes(search));
-  
-  const playerList = document.getElementById('tournoisPlayerList');
-  playerList.innerHTML = filtered.map(p => {
-    return `<div style="padding:10px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.2s;" 
-                 onclick="addPlayerToTournoisTeam('${p.id}')"
-                 onmouseover="this.style.background='var(--bg-elevated)'" 
-                 onmouseout="this.style.background='transparent'">
-      <strong>${escapeHtml(p.name)}</strong>
-      <span style="color:var(--text-tertiary);margin-left:10px;">${p.position_main || p.position || 'F'}</span>
-      ${p.team ? `<span style="color:var(--text-tertiary);margin-left:10px;">• ${DATA.teams[p.team]?.name || ''}</span>` : ''}
-    </div>`;
-  }).join('');
+  renderTournoisPlayerList(players, search);
 }
 
 function addPlayerToTournoisTeam(playerId) {
