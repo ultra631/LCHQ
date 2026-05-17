@@ -3718,6 +3718,12 @@ function navigate(page) {
     renderAllPlayers();
   } else if (page === 'goalies-all') {
     renderAllGoalies();
+  } else if (page === 'schedule') {
+    // Activer NHL par défaut
+    const nhlBtn = document.querySelector('#page-schedule .tab:nth-child(2)');
+    if (nhlBtn && currentScheduleDiv !== 'nhl') {
+      switchScheduleDiv('nhl', nhlBtn);
+    }
   } else if (page === 'tournois-4s') {
     renderTournoisAll('4s');
   } else if (page === 'tournois-6s') {
