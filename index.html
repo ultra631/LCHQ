@@ -3906,16 +3906,18 @@ function renderStandingsByDivision(division, sort, bodyId) {
     .filter(([_, t]) => t.division === division)
     .map(([key, t]) => ({ key, ...t, diff: t.record.gf - t.record.ga, ...t.record }));
 
+  // Tri: PTS > DIFF > BP
   teams.sort((a, b) => {
-    let av = a[sort.key], bv = b[sort.key];
-    if (sort.dir === 'desc') return bv - av || b.pts - a.pts;
-    return av - bv || a.pts - b.pts;
+    if (b.pts !== a.pts) return b.pts - a.pts;
+    if (b.diff !== a.diff) return b.diff - a.diff;
+    return (b.gf || 0) - (a.gf || 0);
   });
 
   document.getElementById(bodyId).innerHTML = teams.map((t, i) => {
     const diffClass = t.diff > 0 ? 'diff-pos' : t.diff < 0 ? 'diff-neg' : '';
     const diffStr = t.diff > 0 ? `+${t.diff}` : t.diff;
     const streakClass = t.record.streak.startsWith('V') ? 'streak-w' : t.record.streak.startsWith('D') ? 'streak-l' : '';
+    const ptsColor = i < 8 ? '#22c55e' : '#ef4444';
     const adminActions = `<span class="admin-row-actions">
       <button class="row-action-btn" onclick="event.stopPropagation();openTeamModal('${t.key}')" title="Modifier classement">✏️</button>
     </span>`;
@@ -3931,7 +3933,7 @@ function renderStandingsByDivision(division, sort, bodyId) {
         <td class="num">${t.ga}</td>
         <td class="num ${diffClass}">${diffStr}</td>
         <td class="num ${streakClass}">${t.record.streak}</td>
-        <td class="num pts-cell">${t.pts}</td>
+        <td class="num pts-cell" style="color:${ptsColor};font-weight:800;">${t.pts}</td>
       </tr>`;
   }).join('');
 }
@@ -3948,7 +3950,8 @@ function renderStandings6SNew() {
     if (b.pts !== a.pts) return b.pts - a.pts;
     const diffA = (a.gf || 0) - (a.ga || 0);
     const diffB = (b.gf || 0) - (b.ga || 0);
-    return diffB - diffA;
+    if (diffB !== diffA) return diffB - diffA;
+    return (b.gf || 0) - (a.gf || 0);
   });
   
   tbody.innerHTML = sorted.map((s, i) => {
@@ -7431,7 +7434,8 @@ function renderStandings6S() {
     if (b.pts !== a.pts) return b.pts - a.pts;
     const diffA = (a.gf || 0) - (a.ga || 0);
     const diffB = (b.gf || 0) - (b.ga || 0);
-    return diffB - diffA;
+    if (diffB !== diffA) return diffB - diffA;
+    return (b.gf || 0) - (a.gf || 0);
   });
 
   const rows = sorted.map((s, i) => {
@@ -7447,7 +7451,7 @@ function renderStandings6S() {
       <td class="num">${s.w || 0}</td>
       <td class="num">${s.l || 0}</td>
       <td class="num">${s.otl || 0}</td>
-      <td class="num pts-cell">${s.pts || 0}</td>
+      <td class="num pts-cell" style="color:${i < 8 ? '#22c55e' : '#ef4444'};font-weight:800;">${s.pts || 0}</td>
       <td class="num">${s.gf || 0}</td>
       <td class="num">${s.ga || 0}</td>
       <td class="num ${diffClass}">${diffStr}</td>
