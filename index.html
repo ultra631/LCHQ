@@ -4147,7 +4147,7 @@ function renderTeamCard(key, t, rank) {
       ${logoHtml}
       <div class="team-card-name">${t.name}</div>
       <div class="team-card-city">${t.city}</div>
-      <div class="team-card-record">${t.record.w}V – ${t.record.l}D – ${t.record.otl}DP · ${t.record.pts} PTS</div>
+      <div class="team-card-record">${t.record.w}V – ${t.record.l}D – ${t.record.otl}DP · <span style="color:${rank && rank <= 8 ? '#22c55e' : '#ef4444'};font-weight:800;">${t.record.pts} PTS</span></div>
     </div>`;
 }
 
@@ -7606,7 +7606,7 @@ function renderTeams6S() {
       <h3 class="team-card-name">${escapeHtml(team.name)}</h3>
       <p style="font-size:12px;color:var(--text-tertiary);margin:2px 0 8px;">${escapeHtml(team.city || '')}</p>
       <div style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">
-        ${w}V – ${l}D – ${otl}DP · <span style="color:var(--red-bright);font-weight:700;">${pts} PTS</span>
+        ${w}V – ${l}D – ${otl}DP · <span style="color:${idx6 < 8 ? '#22c55e' : '#ef4444'};font-weight:700;">${pts} PTS</span>
       </div>
     </div>`;
   }).join('');
