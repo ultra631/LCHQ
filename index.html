@@ -256,6 +256,7 @@
 
   /* GRIDS */
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
   .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 
   /* CARDS */
@@ -1273,8 +1274,8 @@
     .team-logo-table { width: 28px; height: 28px; }
     
     /* Team cards en colonne unique */
-    .grid-3, .grid-2 { 
-      grid-template-columns: 1fr !important; 
+    .grid-3, .grid-2, .grid-5 { 
+      grid-template-columns: repeat(2, 1fr) !important; 
       gap: 12px;
     }
     
@@ -7581,30 +7582,32 @@ function renderTeams6S() {
     return (sb.pts || 0) - (sa.pts || 0);
   });
 
+  const isAdmin = document.body.classList.contains('admin-mode');
+
   const teamCards = teams6s.map(([tid, team], idx6) => {
     const standing = standings.find(s => s.team === tid) || {};
-    const diff = (standing.gf || 0) - (standing.ga || 0);
-    const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
-    const diffStr = diff > 0 ? `+${diff}` : diff;
-    
-    const adminBtn6s = document.body.classList.contains('admin-mode') 
+    const w = standing.w || 0;
+    const l = standing.l || 0;
+    const otl = standing.otl || 0;
+    const pts = standing.pts || 0;
+
+    const adminBtn = isAdmin
       ? `<button onclick="event.stopPropagation();editTeamStanding6S('${tid}')" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px;">✏️</button>`
       : '';
-    return `<div class="team-card" onclick="showTeamDetail6S('${tid}')" style="cursor:pointer;position:relative;">
-      <span style="position:absolute;top:10px;left:12px;font-family:'Bebas Neue';font-size:22px;color:rgba(255,255,255,0.3);">${idx6+1}</span>
-      ${adminBtn6s}
+
+    return `<div class="team-card" onclick="showTeamDetail6S('${tid}')" style="--team-color:#3b82f6;position:relative;">
+      <span style="position:absolute;top:10px;left:12px;font-family:'Bebas Neue';font-size:18px;color:rgba(255,255,255,0.25);">${idx6+1}</span>
+      ${adminBtn}
       ${teamLogoHtml(team, 'card')}
       <h3 class="team-card-name">${escapeHtml(team.name)}</h3>
-      <div class="team-card-stats">
-        <div class="team-stat"><span class="team-stat-label">PJ</span><span class="team-stat-value">${standing.gp || 0}</span></div>
-        <div class="team-stat"><span class="team-stat-label">V-D-DP</span><span class="team-stat-value">${standing.w || 0}-${standing.l || 0}-${standing.otl || 0}</span></div>
-        <div class="team-stat"><span class="team-stat-label">PTS</span><span class="team-stat-value pts-cell">${standing.pts || 0}</span></div>
-        <div class="team-stat"><span class="team-stat-label">DIFF</span><span class="team-stat-value ${diffClass}">${diffStr}</span></div>
+      <p style="font-size:12px;color:var(--text-tertiary);margin:2px 0 8px;">${escapeHtml(team.city || '')}</p>
+      <div style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">
+        ${w}V – ${l}D – ${otl}DP · <span style="color:var(--red-bright);font-weight:700;">${pts} PTS</span>
       </div>
     </div>`;
   }).join('');
 
-  document.getElementById('teams6s').innerHTML = `<div class="grid-4">${teamCards || '<p style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucune équipe</p>'}</div>`;
+  document.getElementById('teams6s').innerHTML = `<div class="grid-5">${teamCards || '<p style="text-align:center;padding:40px;color:var(--text-tertiary);">Aucune équipe</p>'}</div>`;
 }
 
 function renderSchedule6S() {
