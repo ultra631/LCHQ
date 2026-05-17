@@ -9529,35 +9529,29 @@ function openTournoisMatchDetail(mode, div, matchId) {
 
   // Récupérer tous les joueurs du roster des 2 équipes avec leurs stats
   const allPlayerStats = [];
-  
+
   teams.forEach(t => {
     if (t.teamNum !== match.away && t.teamNum !== match.home) return;
     const ps = t.player_stats || {};
+    const positions = t.player_positions || {};
     const roster = t.players || [];
-    
-    // Tous les joueurs du roster de l'équipe
-    roster.forEach(pid => {
-      const player = DATA.players.find(p => p.id === pid) || 
+
+    const addPlayer = (pid) => {
+      const player = DATA.players.find(p => p.id === pid) ||
                      (DATA.season_3_6v6?.players || []).find(p => p.id === pid);
-      if (player) {
-        const stats = ps[pid] || { gp:0, g:0, a:0, pts:0, plusminus:0, hits:0, tb:0, mjg:0, mjf:0 };
-        allPlayerStats.push({ ...stats, name: player.name, pid, teamNum: t.teamNum });
-      }
-    });
-    
-    // Aussi ajouter les joueurs qui ont des stats mais ne sont plus dans le roster
-    Object.entries(ps).forEach(([pid, stats]) => {
-      if (roster.includes(pid)) return; // Déjà ajouté
-      const player = DATA.players.find(p => p.id === pid) || 
-                     (DATA.season_3_6v6?.players || []).find(p => p.id === pid);
-      if (player) {
-        allPlayerStats.push({ ...stats, name: player.name, pid, teamNum: t.teamNum });
-      }
-    });
+      if (!player) return;
+      const stats = ps[pid] || {};
+      const pos = positions[pid] || [];
+      const isGoalie = pos.includes('G');
+      allPlayerStats.push({ ...stats, name: player.name, pid, teamNum: t.teamNum, positions: pos, isGoalie });
+    };
+
+    roster.forEach(pid => addPlayer(pid));
+    Object.keys(ps).forEach(pid => { if (!roster.includes(pid)) addPlayer(pid); });
   });
 
   const isAdmin = document.body.classList.contains('admin-mode');
-  
+
   const scoreHtml = `
     <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;text-align:center;margin-bottom:24px;padding:20px;background:var(--bg-secondary);border-radius:12px;">
       <div style="font-family:'Bebas Neue';font-size:24px;">${awayName}</div>
@@ -9565,37 +9559,77 @@ function openTournoisMatchDetail(mode, div, matchId) {
       <div style="font-family:'Bebas Neue';font-size:24px;">${homeName}</div>
     </div>`;
 
-  const playersHtml = allPlayerStats.length > 0 ? `
-    <h3 style="font-family:'Bebas Neue';font-size:20px;margin-bottom:12px;">🏒 Joueurs</h3>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>Joueur</th><th>Équipe</th>
-          <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
-          <th class="num pts-cell">PTS</th><th class="num">+/-</th>
-          ${isAdmin ? '<th>Actions</th>' : ''}
-        </tr></thead>
-        <tbody>${allPlayerStats.sort((a,b)=>(b.pts||0)-(a.pts||0)).map(p => {
-          const pmClass = (p.plusminus||0)>0?'diff-pos':(p.plusminus||0)<0?'diff-neg':'';
-          const pmStr = (p.plusminus||0)>0?`+${p.plusminus}`:(p.plusminus||0);
-          return `<tr>
-            <td style="font-weight:600;">${escapeHtml(p.name)}</td>
-            <td>Équipe ${p.teamNum}</td>
-            <td class="num">${p.gp||0}</td>
-            <td class="num">${p.g||0}</td>
-            <td class="num">${p.a||0}</td>
-            <td class="num pts-cell">${p.pts||0}</td>
-            <td class="num ${pmClass}">${pmStr}</td>
-            ${isAdmin ? `<td style="display:flex;gap:6px;">
-              <button class="row-action-btn" onclick="closeModal('tournoisMatchDetailModal');setTimeout(()=>openTournoisPlayerStatsFromMatch('${mode}','${div}','${p.teamNum}','${p.pid}'),150)" title="Modifier">✏️</button>
-              <button class="row-action-btn delete" onclick="removePlayerFromMatchDetail('${mode}','${div}','${p.pid}','${p.teamNum}')" title="Supprimer">🗑️</button>
-            </td>` : ''}
-          </tr>`;
-        }).join('')}</tbody>
-      </table>
-    </div>` : `<div class="empty-state"><p>Aucun joueur enregistré pour ce match.</p>${isAdmin ? `<button class="btn btn-primary" style="margin-top:12px;" onclick="closeModal('tournoisMatchDetailModal');openTournoisTeamModal('${mode}','${div}',${match.away})">➕ Ajouter joueurs Équipe ${match.away}</button>` : ''}</div>`;
+  // Séparer joueurs et gardiens
+  const skaters = allPlayerStats.filter(p => !p.isGoalie);
+  const goalies = allPlayerStats.filter(p => p.isGoalie);
 
-  document.getElementById('tournoisMatchDetailContent').innerHTML = scoreHtml + playersHtml;
+  const renderSkaterRow = (p) => {
+    const pmClass = (p.plusminus||0)>0?'diff-pos':(p.plusminus||0)<0?'diff-neg':'';
+    const pmStr = (p.plusminus||0)>0?`+${p.plusminus}`:(p.plusminus||0);
+    const posBadges = p.positions.map(pos => `<span class="pos-badge pos-badge-main" style="font-size:10px;padding:1px 4px;margin-left:3px;">${pos}</span>`).join('');
+    return `<tr>
+      <td style="font-weight:600;">${escapeHtml(p.name)}${posBadges}</td>
+      <td>Équipe ${p.teamNum}</td>
+      <td class="num">${p.gp||0}</td>
+      <td class="num">${p.g||0}</td>
+      <td class="num">${p.a||0}</td>
+      <td class="num pts-cell">${(p.g||0)+(p.a||0)}</td>
+      <td class="num ${pmClass}">${pmStr}</td>
+      ${isAdmin ? `<td style="display:flex;gap:4px;">
+        <button class="row-action-btn" onclick="closeModal('tournoisMatchDetailModal');setTimeout(()=>openTournoisPlayerStatsFromMatch('${mode}','${div}','${p.teamNum}','${p.pid}'),150)" title="Modifier">✏️</button>
+        <button class="row-action-btn delete" onclick="removePlayerFromMatchDetail('${mode}','${div}','${p.pid}','${p.teamNum}')" title="Supprimer">🗑️</button>
+      </td>` : ''}
+    </tr>`;
+  };
+
+  const renderGoalieRow = (g) => {
+    const gaa = g.gaa ? Number(g.gaa).toFixed(2) : '0.00';
+    const svpct = g.svpct ? (Number(g.svpct)*100).toFixed(1) : '0.0';
+    return `<tr>
+      <td style="font-weight:600;">🥅 ${escapeHtml(g.name)}</td>
+      <td>Équipe ${g.teamNum}</td>
+      <td class="num">${g.gp||0}</td>
+      <td class="num" style="color:#22c55e;">${g.w||0}</td>
+      <td class="num" style="color:var(--red-bright);">${g.l||0}</td>
+      <td class="num">${gaa}</td>
+      <td class="num">${svpct}%</td>
+      <td class="num">${g.so||0}</td>
+      ${isAdmin ? `<td style="display:flex;gap:4px;">
+        <button class="row-action-btn" onclick="closeModal('tournoisMatchDetailModal');setTimeout(()=>openTournoisPlayerStatsFromMatch('${mode}','${div}','${g.teamNum}','${g.pid}'),150)" title="Modifier">✏️</button>
+        <button class="row-action-btn delete" onclick="removePlayerFromMatchDetail('${mode}','${div}','${g.pid}','${g.teamNum}')" title="Supprimer">🗑️</button>
+      </td>` : ''}
+    </tr>`;
+  };
+
+  const skatersHtml = skaters.length > 0 ? `
+    <h3 style="font-family:'Bebas Neue';font-size:20px;margin-bottom:12px;">🏒 Joueurs</h3>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>Joueur</th><th>Équipe</th>
+        <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
+        <th class="num pts-cell">PTS</th><th class="num">+/-</th>
+        ${isAdmin ? '<th></th>' : ''}
+      </tr></thead>
+      <tbody>${skaters.sort((a,b)=>(b.g||0)+(b.a||0)-(a.g||0)-(a.a||0)).map(renderSkaterRow).join('')}</tbody>
+    </table></div>` : '';
+
+  const goaliesHtml = goalies.length > 0 ? `
+    <h3 style="font-family:'Bebas Neue';font-size:20px;margin:16px 0 12px;">🥅 Gardiens</h3>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>Gardien</th><th>Équipe</th>
+        <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+        <th class="num">MOY</th><th class="num">ARR%</th><th class="num">BL</th>
+        ${isAdmin ? '<th></th>' : ''}
+      </tr></thead>
+      <tbody>${goalies.map(renderGoalieRow).join('')}</tbody>
+    </table></div>` : '';
+
+  const emptyHtml = skaters.length === 0 && goalies.length === 0
+    ? `<div class="empty-state"><p>Aucun joueur enregistré pour ce match.</p>${isAdmin ? `<button class="btn btn-primary" style="margin-top:12px;" onclick="closeModal('tournoisMatchDetailModal');openTournoisTeamModal('${mode}','${div}',${match.away})">➕ Ajouter joueurs Équipe ${match.away}</button>` : ''}</div>`
+    : '';
+
+  document.getElementById('tournoisMatchDetailContent').innerHTML = scoreHtml + skatersHtml + goaliesHtml + emptyHtml;
   openModal('tournoisMatchDetailModal');
 }
 
@@ -9611,32 +9645,37 @@ function collectTournoisDivStats(mode, div) {
   const allG = [...(DATA.goalies || []), ...(DATA.season_3_6v6?.goalies || [])];
 
   teams.forEach(t => {
-    // Joueurs — stats du tournoi
-    Object.entries(t.player_stats || {}).forEach(([pid, stats]) => {
-      const player = allP.find(p => p.id === pid);
-      if (!player) return;
-      if (!players[pid]) players[pid] = { name: player.name, gp:0, g:0, a:0, pts:0, plusminus:0, hits:0, tb:0 };
-      players[pid].gp += stats.gp || 0;
-      players[pid].g  += stats.g  || 0;
-      players[pid].a  += stats.a  || 0;
-      players[pid].pts = players[pid].g + players[pid].a;
-      players[pid].plusminus += stats.plusminus || 0;
-      players[pid].hits += stats.hits || 0;
-      players[pid].tb   += stats.tb   || 0;
-    });
+    const positions = t.player_positions || {};
 
-    // Gardiens — stats du tournoi
-    Object.entries(t.goalie_stats || {}).forEach(([gid, stats]) => {
-      const goalie = allG.find(g => g.id === gid);
-      if (!goalie) return;
-      if (!goalies[gid]) goalies[gid] = { name: goalie.name, gp:0, w:0, l:0, ga:0, sa:0, sv:0, so:0 };
-      goalies[gid].gp += stats.gp || 0;
-      goalies[gid].w  += stats.w  || 0;
-      goalies[gid].l  += stats.l  || 0;
-      goalies[gid].ga += stats.ga || 0;
-      goalies[gid].sa += stats.sa || 0;
-      goalies[gid].sv += stats.sv || 0;
-      goalies[gid].so += stats.so || 0;
+    Object.entries(t.player_stats || {}).forEach(([pid, stats]) => {
+      const pos = positions[pid] || [];
+      const isGoalie = pos.includes('G');
+
+      if (isGoalie) {
+        // Traiter comme gardien
+        const player = allP.find(p => p.id === pid) || allG.find(g => g.id === pid);
+        if (!player) return;
+        if (!goalies[pid]) goalies[pid] = { name: player.name, gp:0, w:0, l:0, ga:0, sa:0, sv:0, so:0 };
+        goalies[pid].gp += stats.gp || 0;
+        goalies[pid].w  += stats.w  || 0;
+        goalies[pid].l  += stats.l  || 0;
+        goalies[pid].ga += stats.ga || 0;
+        goalies[pid].sa += stats.sa || 0;
+        goalies[pid].sv += (stats.sv || (stats.sa||0) - (stats.ga||0));
+        goalies[pid].so += stats.so || 0;
+      } else {
+        // Traiter comme joueur
+        const player = allP.find(p => p.id === pid);
+        if (!player) return;
+        if (!players[pid]) players[pid] = { name: player.name, gp:0, g:0, a:0, pts:0, plusminus:0, hits:0, tb:0 };
+        players[pid].gp += stats.gp || 0;
+        players[pid].g  += stats.g  || 0;
+        players[pid].a  += stats.a  || 0;
+        players[pid].pts = players[pid].g + players[pid].a;
+        players[pid].plusminus += stats.plusminus || 0;
+        players[pid].hits += stats.hits || 0;
+        players[pid].tb   += stats.tb   || 0;
+      }
     });
   });
 
