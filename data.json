@@ -14249,6 +14249,455 @@
         "pert": 25,
         "ppm": 0.33,
         "toi": "0:00"
+      },
+      {
+        "id": "p6s_xxfroadenxx",
+        "name": "XxfroadenxX",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "C",
+          "Ag",
+          "Dg"
+        ],
+        "console": "Xbox",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_ambidex",
+        "name": "Ambidex",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Ad",
+          "Ag",
+          "C"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_dj_lavabo",
+        "name": "Dj_lavabo",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Ad",
+          "Ag",
+          "C"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_kuze_majestic",
+        "name": "Kuze_majestic",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Ad",
+          "Ag",
+          "C"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_b470n3y123_qc",
+        "name": "B470n3Y123_Qc",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "C",
+          "Ad",
+          "Dd"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_courchxsne",
+        "name": "Courchxsne",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Dg",
+          "Dd"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_god_em",
+        "name": "God_em",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "C"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_mcxpichex",
+        "name": "McXpicheX",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Dd",
+          "Ad",
+          "C"
+        ],
+        "console": "Xbox",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_tibod68",
+        "name": "tibod68",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "C",
+          "Dd"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_itsmejello",
+        "name": "ItsMeJello",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Dd",
+          "Dg",
+          "C"
+        ],
+        "console": "Xbox",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_mathst0126",
+        "name": "Mathst0126",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "C",
+          "G",
+          "Ad"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_xslafkovskyx20",
+        "name": "xSlafkovskyx20",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Ag",
+          "C",
+          "Ag"
+        ],
+        "console": "Xbox",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_x_brownie__x",
+        "name": "X-Brownie--X",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "G",
+          "C",
+          "G"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_xi_lxxse_ix",
+        "name": "xI_Lxxse_Ix",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Ad",
+          "Dd",
+          "G"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_tanguay_l40l",
+        "name": "Tanguay_l40l",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "G",
+          "C",
+          "Ag"
+        ],
+        "console": "Xbox",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_lchq_purplelight",
+        "name": "LCHQ_purplelight",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "G"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_xxhutson48xx",
+        "name": "XxHutson48xX",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "G",
+          "Ag",
+          "Dg"
+        ],
+        "console": "Xbox",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_slafwoo",
+        "name": "Slafwoo",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "G",
+          "Ag"
+        ],
+        "console": "Xbox",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_lookeazy",
+        "name": "LooKEazY",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "G",
+          "Dg",
+          "G"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_xxfowler32xx",
+        "name": "XxFowler32xX",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "G",
+          "Dd",
+          "Ag"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_tomyhabs11",
+        "name": "TomyHabs11",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Ad",
+          "C",
+          "Dd"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_brisette",
+        "name": "brisette",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Ad"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
+      },
+      {
+        "id": "p6s_tremblay",
+        "name": "tremblay",
+        "team": null,
+        "status": "sub",
+        "positions": [
+          "Dg"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0
       }
     ],
     "goalies": [
