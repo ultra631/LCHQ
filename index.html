@@ -9796,8 +9796,11 @@ function renderTournoisSchedule(mode, div) {
   if (allMatches.length === 0) {
     html = `<div class="empty-state"><div class="empty-state-icon">📅</div><p>Aucun match — clique sur ➕ Ajouter match.</p></div>`;
   } else {
-    // Trier par équipe away puis home
+    // Trier par heure puis par équipe away
     allMatches.sort((a, b) => {
+      const timeA = a.time || '00:00';
+      const timeB = b.time || '00:00';
+      if (timeA !== timeB) return timeA.localeCompare(timeB);
       if (a.away !== b.away) return a.away - b.away;
       return a.home - b.home;
     });
@@ -10963,12 +10966,11 @@ function updateGenPreview() {
     return;
   }
 
-  const matches = generateRoundRobin(selected);
-  const rounds = Math.ceil(matches.length / Math.floor(count / 2));
+  const minGames = parseInt(document.getElementById('genMinGames')?.value || 3);
+  const matches = generateRoundRobin(selected, minGames);
   document.getElementById('genPreview').innerHTML = `
     <strong>${matches.length} matchs générés</strong> · ${count} équipes<br>
-    Chaque équipe joue minimum <strong>${Math.min(...selected.map(t => matches.filter(m => m.away === t || m.home === t).length))} matchs</strong><br>
-    Format : round-robin complet`;
+    Chaque équipe joue minimum <strong>${Math.min(...selected.map(t => matches.filter(m => m.away === t || m.home === t).length))} matchs</strong>`;
 }
 
 function generateRoundRobin(teams, minGamesPerTeam = 3) {
@@ -11018,16 +11020,17 @@ function confirmGenerateSchedule() {
   const { mode, div } = genScheduleContext;
   const selected = [...document.querySelectorAll('#genTeamList input:checked')].map(i => parseInt(i.value));
   const time = document.getElementById('genMatchTime').value || '20:00';
+  const minGames = parseInt(document.getElementById('genMinGames')?.value || 3);
 
   if (selected.length < 2) {
     alert('Sélectionne au moins 2 équipes !');
     return;
   }
 
-  if (!confirm(`Générer ${generateRoundRobin(selected).length} matchs pour ${selected.length} équipes ? Les matchs existants seront conservés.`)) return;
+  const matches = generateRoundRobin(selected, minGames);
+  if (!confirm(`Générer ${matches.length} matchs pour ${selected.length} équipes (${minGames} matchs min/équipe) ? Les matchs existants seront conservés.`)) return;
 
   const teams = DATA.tournaments[mode][div];
-  const matches = generateRoundRobin(selected);
 
   matches.forEach(m => {
     const matchId = 'tm_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
@@ -11270,9 +11273,22 @@ function drawerNav(page) {
       <div id="genTeamList" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:280px;overflow-y:auto;padding:8px;background:var(--bg-elevated);border-radius:10px;border:1px solid var(--border);"></div>
     </div>
 
-    <div class="modal-form-group">
-      <label>Heure des matchs</label>
-      <input type="time" id="genMatchTime" value="20:00" style="padding:8px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="modal-form-group">
+        <label>Heure des matchs</label>
+        <input type="time" id="genMatchTime" value="20:00" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);">
+      </div>
+      <div class="modal-form-group">
+        <label>Matchs min. par équipe</label>
+        <select id="genMinGames" onchange="updateGenPreview()" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);">
+          <option value="1">1 match</option>
+          <option value="2">2 matchs</option>
+          <option value="3" selected>3 matchs</option>
+          <option value="4">4 matchs</option>
+          <option value="5">5 matchs</option>
+          <option value="6">6 matchs (round-robin complet)</option>
+        </select>
+      </div>
     </div>
 
     <div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:12px;margin-bottom:16px;">
