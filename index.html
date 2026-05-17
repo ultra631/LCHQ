@@ -9776,16 +9776,13 @@ function renderTournoisSchedule(mode, div) {
     const delBtn = isAdmin && m.id
       ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:6px 8px;cursor:pointer;font-size:15px;" title="Supprimer">🗑️</button>`
       : '';
-    const adminBtns = (editBtn || delBtn) ? `<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">${editBtn}${delBtn}</div>` : '';
-    return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-      <div class="match-card ${played?'played':'upcoming'}" style="flex:1;margin:0;">
+    return `<div class="match-card ${played?'played':'upcoming'}" style="position:relative;margin-bottom:8px;">
         ${dpBadge}
         <div class="match-team away"><span class="match-team-name">${awayName}</span></div>
         ${center}
         <div class="match-team home"><span class="match-team-name">${homeName}</span></div>
-      </div>
-      ${adminBtns}
-    </div>`;
+        ${(editBtn||delBtn) ? `<div style="position:absolute;top:50%;right:8px;transform:translateY(-50%);display:flex;gap:4px;">${editBtn}${delBtn}</div>` : ''}
+      </div>`;
   }
 
   // Matchs réguliers
