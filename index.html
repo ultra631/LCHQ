@@ -10867,7 +10867,7 @@ function setDrawerMode(mode) {
   document.getElementById('drawerNav4s').style.display = mode==='4s' ? '' : 'none';
   document.getElementById('drawerNav6s').style.display = mode==='6s' ? '' : 'none';
   // Changer le mode du site
-  if (typeof switchMode === 'function') switchMode(mode);
+  if (typeof setGameMode === 'function') setGameMode(mode);
 }
 function drawerNav(page) {
   closeMobileDrawer();
