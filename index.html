@@ -4119,7 +4119,7 @@ function renderGoaliesByDivision(division, sort, bodyId) {
         <td class="num">${g.l}</td>
         <td class="num">${g.otl}</td>
         <td class="num">${g.gaa.toFixed(2)}</td>
-        <td class="num">${(g.svpct * 100).toFixed(1)}%</td>
+        <td class="num">${g.svpct ? g.svpct.toFixed(3) : '0.000'}</td>
         <td class="num">${g.so}</td>
         <td class="num">${g.sa}</td>
         <td class="num">${g.sv}</td>
@@ -4131,13 +4131,14 @@ function renderGoaliesNHL() { renderGoaliesByDivision('nhl', goaliesNhlSort, 'go
 function renderGoaliesLHJMQ() { renderGoaliesByDivision('lhjmq', goaliesLhjmqSort, 'goaliesLhjmqBody'); }
 
 // TEAMS GRID
-function renderTeamCard(key, t) {
+function renderTeamCard(key, t, rank) {
   const logoHtml = t.logo
     ? `<img src="${t.logo}" alt="${escapeHtml(t.name)}" class="team-card-logo" onerror="this.outerHTML='<div style=\\'font-size:64px;margin-bottom:10px;\\'>${t.emoji}</div>'">`
     : `<div style="font-size: 64px; margin-bottom: 10px;">${t.emoji}</div>`;
   const adminBtn4s = `<button class="admin-only" onclick="event.stopPropagation();openTeamModal('${key}')" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px;display:none;">✏️</button>`;
   return `
     <div class="team-card" style="--team-color: ${t.color};position:relative;" onclick="showTeamDetail('${key}')">
+      ${rank ? `<span style="position:absolute;top:10px;left:12px;font-family:'Bebas Neue';font-size:22px;color:rgba(255,255,255,0.3);">${rank}</span>` : ''}
       ${adminBtn4s}
       ${logoHtml}
       <div class="team-card-name">${t.name}</div>
@@ -4146,11 +4147,17 @@ function renderTeamCard(key, t) {
     </div>`;
 }
 
+function getTeamPts(t) { return t.record?.pts || 0; }
+
 function renderTeamsGrids() {
-  const nhlTeams = Object.entries(DATA.teams).filter(([_, t]) => t.division === 'nhl').sort((a, b) => a[1].name.localeCompare(b[1].name));
-  const lhjmqTeams = Object.entries(DATA.teams).filter(([_, t]) => t.division === 'lhjmq').sort((a, b) => a[1].name.localeCompare(b[1].name));
-  document.getElementById('teamsGridNhl').innerHTML = nhlTeams.map(([k, t]) => renderTeamCard(k, t)).join('');
-  document.getElementById('teamsGridLhjmq').innerHTML = lhjmqTeams.map(([k, t]) => renderTeamCard(k, t)).join('');
+  const nhlTeams = Object.entries(DATA.teams)
+    .filter(([_, t]) => t.division === 'nhl')
+    .sort((a, b) => getTeamPts(b[1]) - getTeamPts(a[1]));
+  const lhjmqTeams = Object.entries(DATA.teams)
+    .filter(([_, t]) => t.division === 'lhjmq')
+    .sort((a, b) => getTeamPts(b[1]) - getTeamPts(a[1]));
+  document.getElementById('teamsGridNhl').innerHTML = nhlTeams.map(([k, t], i) => renderTeamCard(k, t, i+1)).join('');
+  document.getElementById('teamsGridLhjmq').innerHTML = lhjmqTeams.map(([k, t], i) => renderTeamCard(k, t, i+1)).join('');
 }
 
 // TEAM DETAIL
@@ -4343,7 +4350,7 @@ function showTeamDetail6S(teamKey) {
               <td class="num">${g.l || 0}</td>
               <td class="num">${g.otl || 0}</td>
               <td class="num">${g.gaa ? g.gaa.toFixed(2) : '0.00'}</td>
-              <td class="num">${g.svpct ? (g.svpct * 100).toFixed(1) : '0.0'}%</td>
+              <td class="num">${g.svpct ? g.svpct.toFixed(3) : '0.000'}</td>
               <td class="num">${g.so || 0}</td>
             </tr>`;
           }).join('') : '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun gardien dans cette équipe.</td></tr>'}
@@ -7567,7 +7574,14 @@ function renderTeams6S() {
   const teams6s = Object.entries(DATA.teams).filter(([id, t]) => t.division === '6v6');
   const standings = DATA.season_3_6v6?.standings || [];
   
-  const teamCards = teams6s.map(([tid, team]) => {
+  // Trier par points du classement
+  teams6s.sort((a, b) => {
+    const sa = standings.find(s => s.team === a[0]) || {};
+    const sb = standings.find(s => s.team === b[0]) || {};
+    return (sb.pts || 0) - (sa.pts || 0);
+  });
+
+  const teamCards = teams6s.map(([tid, team], idx6) => {
     const standing = standings.find(s => s.team === tid) || {};
     const diff = (standing.gf || 0) - (standing.ga || 0);
     const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
@@ -7577,6 +7591,7 @@ function renderTeams6S() {
       ? `<button onclick="event.stopPropagation();editTeamStanding6S('${tid}')" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px;">✏️</button>`
       : '';
     return `<div class="team-card" onclick="showTeamDetail6S('${tid}')" style="cursor:pointer;position:relative;">
+      <span style="position:absolute;top:10px;left:12px;font-family:'Bebas Neue';font-size:22px;color:rgba(255,255,255,0.3);">${idx6+1}</span>
       ${adminBtn6s}
       ${teamLogoHtml(team, 'card')}
       <h3 class="team-card-name">${escapeHtml(team.name)}</h3>
