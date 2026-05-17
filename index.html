@@ -9901,11 +9901,27 @@ function openTournoisMatchDetail(mode, div, matchId) {
     </table></div>` : '';
 
   const emptyHtml = skaters.length === 0 && goalies.length === 0
-    ? `<div class="empty-state"><p>Aucun joueur enregistré pour ce match.</p>${isAdmin ? `<button class="btn btn-primary" style="margin-top:12px;" onclick="closeModal('tournoisMatchDetailModal');openTournoisTeamModal('${mode}','${div}',${match.away})">➕ Ajouter joueurs Équipe ${match.away}</button>` : ''}</div>`
+    ? `<div class="empty-state"><p>Aucun joueur enregistré pour ce match.</p></div>`
     : '';
 
-  document.getElementById('tournoisMatchDetailContent').innerHTML = scoreHtml + skatersHtml + goaliesHtml + emptyHtml;
+  // Bouton pour ajouter un remplaçant depuis le résumé
+  const addSubBtn = isAdmin ? `
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" style="font-size:13px;" onclick="addSubFromMatch('${mode}','${div}',${match.away})">➕ Remplaçant Éq.${match.away}</button>
+      <button class="btn btn-primary" style="font-size:13px;" onclick="addSubFromMatch('${mode}','${div}',${match.home})">➕ Remplaçant Éq.${match.home}</button>
+    </div>` : '';
+
+  document.getElementById('tournoisMatchDetailContent').innerHTML = scoreHtml + skatersHtml + goaliesHtml + emptyHtml + addSubBtn;
   openModal('tournoisMatchDetailModal');
+}
+
+function addSubFromMatch(mode, div, teamNum) {
+  // Fermer le modal résumé, ouvrir le modal ajout joueur pour l'équipe
+  closeModal('tournoisMatchDetailModal');
+  setTimeout(() => {
+    currentTournoisTeam = { mode, division: div, teamNum: parseInt(teamNum) };
+    showAddPlayerToTournoisTeam();
+  }, 200);
 }
 
 // ============ TOURNOIS TOP STATS ============
