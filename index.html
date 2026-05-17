@@ -11020,26 +11020,28 @@ function confirmGenerateSchedule() {
 
   matches.forEach(m => {
     const matchId = 'tm_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
-    // Ajouter à chaque équipe concernée
-    teams.forEach(t => {
-      if (t.teamNum === m.away || t.teamNum === m.home) {
-        if (!t.schedule) t.schedule = [];
-        t.schedule.push({
-          id: matchId,
-          away: m.away,
-          home: m.home,
-          time: time,
-          away_score: null,
-          home_score: null,
-          is_dp: false
-        });
-      }
-    });
+    // Ajouter seulement à l'équipe away (comme addTournoisMatch)
+    const awayTeam = teams.find(t => t.teamNum === m.away);
+    if (awayTeam) {
+      if (!awayTeam.schedule) awayTeam.schedule = [];
+      awayTeam.schedule.push({
+        id: matchId,
+        away: m.away,
+        home: m.home,
+        time: time,
+        away_score: null,
+        home_score: null,
+        is_dp: false
+      });
+    }
   });
 
+  // Recalculer le classement et tout connecter
+  computeTournoisStandings(mode, div);
   saveToFirebase();
   closeModal('generateScheduleModal');
   renderTournoisAll(mode);
+  rerenderAll();
   showToast(`✅ ${matches.length} matchs générés !`);
 }
 
