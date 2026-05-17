@@ -1076,87 +1076,150 @@
     .grid-3 { grid-template-columns: 1fr; }
     .grid-2 { grid-template-columns: 1fr; }
     
-    /* Afficher le bouton hamburger */
-    .mobile-menu-btn { 
-      display: block;
-      font-size: 24px;
-      padding: 8px 12px;
-    }
-    
-    /* Menu mobile */
-    nav {
-      position: fixed; 
-      top: 80px; 
-      left: 0; 
-      right: 0;
-      flex-direction: column;
-      background: var(--bg-secondary);
-      border-bottom: 2px solid var(--red);
-      padding: 12px;
-      transform: translateY(-150%);
-      transition: transform 0.3s;
-      z-index: 99;
-      max-height: calc(100vh - 80px);
-      overflow-y: auto;
-    }
-    
-    nav.open { 
-      transform: translateY(0);
-    }
-    
-    /* TOUS les boutons de navigation sur mobile */
-    nav button,
-    nav .nav-btn,
-    nav .nav-dropdown .nav-btn {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      width: 100%;
-      text-align: left;
-      padding: 14px 16px;
-      font-size: 15px;
-      font-weight: 600;
-      background: #1e2130 !important;
-      border: 1px solid rgba(255,255,255,0.15) !important;
+    /* Bouton hamburger */
+    .mobile-menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
       border-radius: 10px;
-      margin-bottom: 8px;
-      color: #ffffff !important;
-      -webkit-text-fill-color: #ffffff !important;
-      letter-spacing: 0.5px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #fff;
     }
 
-    nav button:active,
-    nav .nav-btn:active {
-      background: #2a3050 !important;
-    }
+    /* Cacher la nav desktop */
+    nav { display: none !important; }
 
-    /* Forcer aussi pour les éléments enfants */
-    nav button *,
-    nav .nav-btn * {
-      color: #ffffff !important;
-      -webkit-text-fill-color: #ffffff !important;
+    /* DRAWER LATÉRAL */
+    #mobileDrawer {
+      position: fixed;
+      top: 0; right: -100%;
+      width: 82%;
+      max-width: 320px;
+      height: 100vh;
+      background: #0f111a;
+      z-index: 9999;
+      transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+      overflow-y: auto;
+      box-shadow: -4px 0 30px rgba(0,0,0,0.5);
+      border-left: 1px solid rgba(220,38,38,0.3);
     }
-    
-    /* Cacher les titres de dropdown sur mobile */
-    .nav-group > button[data-section] {
+    #mobileDrawer.open { right: 0; }
+
+    #mobileOverlay {
       display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9998;
+      backdrop-filter: blur(2px);
     }
-    
-    /* Afficher directement les sous-menus */
-    .nav-dropdown {
-      display: flex !important;
-      flex-direction: column;
-      position: static;
+    #mobileOverlay.open { display: block; }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid rgba(220,38,38,0.3);
+    }
+    .drawer-header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .drawer-close {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.08);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .drawer-mode-switch {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .drawer-mode-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+    }
+    .drawer-mode-btn.active-4s {
+      background: rgba(220,38,38,0.25);
+      border-color: #dc2626;
+      color: #fff;
+    }
+    .drawer-mode-btn.active-6s {
+      background: rgba(59,130,246,0.25);
+      border-color: #3b82f6;
+      color: #fff;
+    }
+
+    .drawer-section {
+      padding: 8px 12px 4px;
+    }
+    .drawer-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.3);
+      padding: 8px 8px 4px;
+      text-transform: uppercase;
+    }
+    .drawer-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 13px 14px;
+      margin-bottom: 3px;
       background: transparent;
       border: none;
-      box-shadow: none;
-      padding: 0;
+      border-radius: 10px;
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s;
+      -webkit-text-fill-color: rgba(255,255,255,0.85);
     }
-    
-    .nav-dropdown button {
-      background: var(--bg-elevated);
+    .drawer-btn:active, .drawer-btn:hover {
+      background: rgba(255,255,255,0.07);
+      color: #fff;
+      -webkit-text-fill-color: #fff;
     }
-    
+    .drawer-btn.active {
+      background: rgba(220,38,38,0.15);
+      color: #ef4444;
+      -webkit-text-fill-color: #ef4444;
+    }
+    .drawer-btn-icon { font-size: 18px; width: 24px; text-align: center; }
+    .drawer-sub { padding-left: 48px; }
+    .drawer-sub .drawer-btn {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      -webkit-text-fill-color: rgba(255,255,255,0.6);
+      padding: 10px 14px;
+    }
+
     /* Hero et autres */
     .hero { max-height: 60vh; border-radius: 16px; }
     .hero-overlay { padding: 20px 16px; }
@@ -1508,7 +1571,7 @@
         <p>Saison 5 · World of Chel</p>
       </div>
     </div>
-    <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+    <button class="mobile-menu-btn" onclick="openMobileDrawer()">☰</button>
     <nav id="mainNav">
       <button class="nav-btn active" data-page="home" onclick="navigate('home')">Accueil</button>
 
@@ -9909,5 +9972,105 @@ if (window.innerWidth <= 900) {
     </div>
   </div>
 </div>
+
+<!-- DRAWER MOBILE -->
+<div id="mobileOverlay" onclick="closeMobileDrawer()"></div>
+<div id="mobileDrawer">
+  <div class="drawer-header">
+    <div class="drawer-header-logo">
+      <img src="https://ultra631.github.io/LCHQ/assets/logo.png" style="width:36px;height:36px;border-radius:8px;" onerror="this.style.display='none'">
+      <div>
+        <div style="font-family:'Bebas Neue';font-size:20px;color:#fff;letter-spacing:1px;">LCHQ</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.4);">SAISON 5 · WORLD OF CHEL</div>
+      </div>
+    </div>
+    <button class="drawer-close" onclick="closeMobileDrawer()">✕</button>
+  </div>
+
+  <!-- Switch 4S / 6S -->
+  <div class="drawer-mode-switch">
+    <button class="drawer-mode-btn active-4s" id="drawerMode4s" onclick="setDrawerMode('4s')">✈️ 4S</button>
+    <button class="drawer-mode-btn" id="drawerMode6s" onclick="setDrawerMode('6s')">⚡ 6S</button>
+  </div>
+
+  <!-- Navigation -->
+  <div class="drawer-section" id="drawerNav4s">
+    <div class="drawer-section-label">Navigation</div>
+    <button class="drawer-btn" onclick="drawerNav('home')"><span class="drawer-btn-icon">🏠</span>Accueil</button>
+    
+    <div class="drawer-section-label">Classement</div>
+    <button class="drawer-btn" onclick="drawerNav('standings-nhl')"><span class="drawer-btn-icon">🏒</span>Division NHL</button>
+    <button class="drawer-btn" onclick="drawerNav('standings-lhjmq')"><span class="drawer-btn-icon">⚜️</span>Division LHJMQ</button>
+    
+    <div class="drawer-section-label">Joueurs</div>
+    <button class="drawer-btn" onclick="drawerNav('players-nhl')"><span class="drawer-btn-icon">👤</span>Joueurs NHL</button>
+    <button class="drawer-btn" onclick="drawerNav('players-lhjmq')"><span class="drawer-btn-icon">👤</span>Joueurs LHJMQ</button>
+    
+    <div class="drawer-section-label">Gardiens</div>
+    <button class="drawer-btn" onclick="drawerNav('goalies-nhl')"><span class="drawer-btn-icon">🥅</span>Gardiens NHL</button>
+    <button class="drawer-btn" onclick="drawerNav('goalies-lhjmq')"><span class="drawer-btn-icon">🥅</span>Gardiens LHJMQ</button>
+    
+    <div class="drawer-section-label">Saison</div>
+    <button class="drawer-btn" onclick="drawerNav('teams')"><span class="drawer-btn-icon">🛡️</span>Équipes</button>
+    <button class="drawer-btn" onclick="drawerNav('calendar')"><span class="drawer-btn-icon">📅</span>Calendrier</button>
+    <button class="drawer-btn" onclick="drawerNav('stats')"><span class="drawer-btn-icon">📊</span>Stats</button>
+    <button class="drawer-btn" onclick="drawerNav('trophies')"><span class="drawer-btn-icon">🏆</span>Trophées</button>
+    <button class="drawer-btn" onclick="drawerNav('tournois-4s')"><span class="drawer-btn-icon">🥇</span>Tournois</button>
+    
+    <div class="drawer-section-label">Archives</div>
+    <button class="drawer-btn" onclick="drawerNav('archive-s4')"><span class="drawer-btn-icon">📁</span>Saison 4</button>
+    <button class="drawer-btn" onclick="drawerNav('archive-s3')"><span class="drawer-btn-icon">📁</span>Saison 3</button>
+    <button class="drawer-btn" onclick="drawerNav('archive-s2')"><span class="drawer-btn-icon">📁</span>Saison 2</button>
+    <button class="drawer-btn" onclick="drawerNav('archive-s1')"><span class="drawer-btn-icon">📁</span>Saison 1</button>
+  </div>
+
+  <div class="drawer-section" id="drawerNav6s" style="display:none;">
+    <div class="drawer-section-label">Navigation</div>
+    <button class="drawer-btn" onclick="drawerNav('home')"><span class="drawer-btn-icon">🏠</span>Accueil</button>
+    
+    <div class="drawer-section-label">Classement & Stats</div>
+    <button class="drawer-btn" onclick="drawerNav('standings-6s')"><span class="drawer-btn-icon">📊</span>Classement 6S</button>
+    <button class="drawer-btn" onclick="drawerNav('players-6s')"><span class="drawer-btn-icon">👤</span>Joueurs 6S</button>
+    <button class="drawer-btn" onclick="drawerNav('goalies-6s')"><span class="drawer-btn-icon">🥅</span>Gardiens 6S</button>
+    
+    <div class="drawer-section-label">Saison</div>
+    <button class="drawer-btn" onclick="drawerNav('teams-6s')"><span class="drawer-btn-icon">🛡️</span>Équipes 6S</button>
+    <button class="drawer-btn" onclick="drawerNav('calendar-6s')"><span class="drawer-btn-icon">📅</span>Calendrier 6S</button>
+    <button class="drawer-btn" onclick="drawerNav('stats-6s')"><span class="drawer-btn-icon">📈</span>Stats 6S</button>
+    <button class="drawer-btn" onclick="drawerNav('trophies-6s')"><span class="drawer-btn-icon">🏆</span>Trophées 6S</button>
+    <button class="drawer-btn" onclick="drawerNav('tournois-6s')"><span class="drawer-btn-icon">🥇</span>Tournois 6S</button>
+    
+    <div class="drawer-section-label">Archives</div>
+    <button class="drawer-btn" onclick="drawerNav('archive-6s-s2')"><span class="drawer-btn-icon">📁</span>Saison 2 (6S)</button>
+  </div>
+</div>
+
+<script>
+function openMobileDrawer() {
+  document.getElementById('mobileDrawer').classList.add('open');
+  document.getElementById('mobileOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Sync mode avec le site
+  const is6s = document.body.classList.contains('mode-6s');
+  setDrawerMode(is6s ? '6s' : '4s');
+}
+function closeMobileDrawer() {
+  document.getElementById('mobileDrawer').classList.remove('open');
+  document.getElementById('mobileOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function setDrawerMode(mode) {
+  document.getElementById('drawerMode4s').className = 'drawer-mode-btn' + (mode==='4s' ? ' active-4s' : '');
+  document.getElementById('drawerMode6s').className = 'drawer-mode-btn' + (mode==='6s' ? ' active-6s' : '');
+  document.getElementById('drawerNav4s').style.display = mode==='4s' ? '' : 'none';
+  document.getElementById('drawerNav6s').style.display = mode==='6s' ? '' : 'none';
+  // Changer le mode du site
+  if (typeof switchMode === 'function') switchMode(mode);
+}
+function drawerNav(page) {
+  closeMobileDrawer();
+  setTimeout(() => { if (typeof navigate === 'function') navigate(page); }, 200);
+}
+</script>
 </body>
 </html>
