@@ -8331,7 +8331,7 @@ function showArchiveTeamDetail(teamKey, season) {
     's1': DATA.archives_s1,
     's2': DATA.archives_s2,
     's3': DATA.archives_s3,
-    's4': DATA.archives_s4 || (DATA.archives && DATA.archives.season_4),
+    's4': DATA.archives_s4 || DATA.archives?.season_4 || {},
   };
   const archive = archiveMap[season];
   if (!archive) return;
@@ -8340,12 +8340,21 @@ function showArchiveTeamDetail(teamKey, season) {
   if (!team) return;
 
   // Trouver le classement de cette équipe
-  const standing = (archive.standings_nhl || []).find(s => s.team_key === teamKey)
-    || (archive.standings_lhjmq || []).find(s => s.team_key === teamKey);
+  // Standings peut être un objet ou un array selon la saison
+  let standing = null;
+  if (Array.isArray(archive.standings)) {
+    standing = archive.standings.find(s => (s.team_key || s.team) === teamKey);
+  } else {
+    standing = (archive.standings_nhl || []).find(s => s.team_key === teamKey)
+      || (archive.standings_lhjmq || []).find(s => s.team_key === teamKey)
+      || (archive.standings?.nhl || []).find(s => (s.team_key||s.team) === teamKey)
+      || (archive.standings?.lhjmq || []).find(s => (s.team_key||s.team) === teamKey);
+  }
 
   // Trouver les joueurs de cette équipe
-  const teamPlayers = (archive.top_players || [])
-    .filter(p => p.team_key === teamKey)
+  const playerSource = archive.top_players || archive.players || [];
+  const teamPlayers = playerSource
+    .filter(p => (p.team_key || p.team) === teamKey)
     .sort((a, b) => (b.pts || 0) - (a.pts || 0));
 
   const seasonLabel = season === 's1' ? 'Saison 1' : season === 's2' ? 'Saison 2' : season === 's3' ? 'Saison 3' : 'Saison 4';
