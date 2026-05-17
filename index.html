@@ -1717,7 +1717,7 @@
         <div style="font-size:11px;color:var(--text-tertiary);letter-spacing:0.5px;">ÉQUIPES NHL</div>
       </div>
       <div onclick="navigate('standings-lhjmq')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-        <img src="https://ultra631.github.io/LCHQ/assets/preview%20(1).webp" style="width:40px;height:40px;object-fit:contain;margin-bottom:4px;mix-blend-mode:screen;filter:brightness(1.2);" onerror="this.outerHTML='⚜️'">
+        <img src="https://ultra631.github.io/LCHQ/assets/preview%20(1).webp" style="width:40px;height:40px;object-fit:contain;margin-bottom:4px;mix-blend-mode:multiply;filter:invert(1) hue-rotate(180deg) brightness(1.5);" onerror="this.outerHTML='⚜️'">
         <div style="font-family:'Bebas Neue';font-size:22px;color:var(--lhjmq-color);" id="homeStatLhjmqTeams">—</div>
         <div style="font-size:11px;color:var(--text-tertiary);letter-spacing:0.5px;">ÉQUIPES LHJMQ</div>
       </div>
@@ -10475,33 +10475,58 @@ function switchPlayoffDiv(div, btn) {
   renderPlayoffs('4s', div);
 }
 
+function getCurrentSeeds(mode, div) {
+  // Toujours recalculer depuis le classement actuel
+  if (mode === '6s') {
+    return (DATA.season_3_6v6?.standings || [])
+      .sort((a,b) => (b.pts||0)-(a.pts||0))
+      .slice(0,8)
+      .map(s => s.team);
+  } else {
+    return Object.entries(DATA.teams||{})
+      .filter(([k,t]) => t.division === div)
+      .map(([k,t]) => ({ team: k, pts: t.record?.pts||0, w: t.record?.w||0 }))
+      .sort((a,b) => b.pts - a.pts)
+      .slice(0,8)
+      .map(s => s.team);
+  }
+}
+
 function getPlayoffData(mode, div) {
   const key = mode === '6s' ? 'playoffs_6s' : `playoffs_4s_${div}`;
-  if (!DATA[key]) {
-    // Initialiser avec les 8 premières équipes du classement
-    const standings = mode === '6s'
-      ? (DATA.season_3_6v6?.standings || []).sort((a,b) => (b.pts||0)-(a.pts||0)).slice(0,8)
-      : Object.entries(DATA.teams||{})
-          .filter(([k,t]) => t.division === div)
-          .map(([k,t]) => ({ team: k, pts: t.record?.pts||0, w: t.record?.w||0 }))
-          .sort((a,b) => b.pts - a.pts).slice(0,8);
 
-    const seeds = standings.map(s => s.team);
+  // Toujours recalculer les seeds depuis le classement actuel
+  const seeds = getCurrentSeeds(mode, div);
+
+  // Si pas encore de données ou si les seeds ont changé, recréer les quarts
+  const existing = DATA[key];
+  const seedsChanged = !existing || JSON.stringify(existing.seeds) !== JSON.stringify(seeds);
+
+  if (!existing || seedsChanged) {
+    // Garder les résultats des séries si elles ont déjà commencé
+    const oldQf = existing?.qf || [];
     DATA[key] = {
       seeds,
-      // Quarts: 1v8, 2v7, 3v6, 4v5
       qf: [
-        { id:'qf1', home: seeds[0]||null, away: seeds[7]||null, home_wins:0, away_wins:0 },
-        { id:'qf2', home: seeds[1]||null, away: seeds[6]||null, home_wins:0, away_wins:0 },
-        { id:'qf3', home: seeds[2]||null, away: seeds[5]||null, home_wins:0, away_wins:0 },
-        { id:'qf4', home: seeds[3]||null, away: seeds[4]||null, home_wins:0, away_wins:0 },
+        { id:'qf1', home: seeds[0]||null, away: seeds[7]||null,
+          home_wins: seedsChanged ? 0 : (oldQf[0]?.home_wins||0),
+          away_wins: seedsChanged ? 0 : (oldQf[0]?.away_wins||0) },
+        { id:'qf2', home: seeds[1]||null, away: seeds[6]||null,
+          home_wins: seedsChanged ? 0 : (oldQf[1]?.home_wins||0),
+          away_wins: seedsChanged ? 0 : (oldQf[1]?.away_wins||0) },
+        { id:'qf3', home: seeds[2]||null, away: seeds[5]||null,
+          home_wins: seedsChanged ? 0 : (oldQf[2]?.home_wins||0),
+          away_wins: seedsChanged ? 0 : (oldQf[2]?.away_wins||0) },
+        { id:'qf4', home: seeds[3]||null, away: seeds[4]||null,
+          home_wins: seedsChanged ? 0 : (oldQf[3]?.home_wins||0),
+          away_wins: seedsChanged ? 0 : (oldQf[3]?.away_wins||0) },
       ],
-      sf: [
+      sf: existing?.sf || [
         { id:'sf1', home:null, away:null, home_wins:0, away_wins:0 },
         { id:'sf2', home:null, away:null, home_wins:0, away_wins:0 },
       ],
-      final: { id:'final', home:null, away:null, home_wins:0, away_wins:0 },
-      champion: null
+      final: existing?.final || { id:'final', home:null, away:null, home_wins:0, away_wins:0 },
+      champion: existing?.champion || null
     };
   }
   return DATA[key];
