@@ -1647,6 +1647,8 @@
       <div class="nav-group">
         <button class="nav-btn desktop-only" data-section="trophies">Trophées ▾</button>
       <button class="nav-btn mode-4s" data-page="draft" onclick="navigate('draft')">🎯 Repêchage</button>
+      <button class="nav-btn mode-4s" data-page="playoffs" onclick="navigate('playoffs')">🏆 Playoffs</button>
+      <button class="nav-btn mode-6s" data-page="playoffs-6s" onclick="navigate('playoffs-6s')" style="display:none;">🏆 Playoffs 6S</button>
         <div class="nav-dropdown">
           <button class="nav-btn mode-4s" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
           <button class="nav-btn mode-4s" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
@@ -2521,6 +2523,34 @@
     <button class="tab" onclick="switchDraftDiv('lhjmq',this)">⚜️ Division LHJMQ</button>
   </div>
   <div id="draftContent"></div>
+</section>
+
+
+<!-- ============ PLAYOFFS ============ -->
+<section id="page-playoffs" class="page">
+  <div class="division-banner" style="--division-color:#f59e0b">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#d97706,#b45309);">🏆</div>
+    <div class="division-banner-text">
+      <h3>Playoffs — Saison 5</h3>
+      <p>Format Bo5 · 4 vs 4 · 8 équipes par division</p>
+    </div>
+  </div>
+  <div class="tabs" style="margin-bottom:24px;">
+    <button class="tab active" onclick="switchPlayoffDiv('nhl',this)">🏒 Division NHL</button>
+    <button class="tab" onclick="switchPlayoffDiv('lhjmq',this)">⚜️ Division LHJMQ</button>
+  </div>
+  <div id="playoffBracket4s"></div>
+</section>
+
+<section id="page-playoffs-6s" class="page">
+  <div class="division-banner" style="--division-color:#3b82f6">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">🏆</div>
+    <div class="division-banner-text">
+      <h3>Playoffs 6S — Saison 3</h3>
+      <p>Format Bo5 · 6 vs 6 · 8 équipes</p>
+    </div>
+  </div>
+  <div id="playoffBracket6s"></div>
 </section>
 
 <!-- ============ TOURNOIS ============ -->
@@ -3741,6 +3771,10 @@ function navigate(page) {
     renderAllPlayers();
   } else if (page === 'goalies-all') {
     renderAllGoalies();
+  } else if (page === 'playoffs') {
+    renderPlayoffs('4s', currentPlayoffDiv4s);
+  } else if (page === 'playoffs-6s') {
+    renderPlayoffs('6s', 'nhl');
   } else if (page === 'draft') {
     renderDraft('nhl');
   } else if (page === 'standings-all') {
@@ -10429,6 +10463,195 @@ function renderDraft(div) {
   }).join('');
 }
 
+
+// ============ PLAYOFFS ============
+
+let currentPlayoffDiv4s = 'nhl';
+
+function switchPlayoffDiv(div, btn) {
+  currentPlayoffDiv4s = div;
+  document.querySelectorAll('#page-playoffs .tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderPlayoffs('4s', div);
+}
+
+function getPlayoffData(mode, div) {
+  const key = mode === '6s' ? 'playoffs_6s' : `playoffs_4s_${div}`;
+  if (!DATA[key]) {
+    // Initialiser avec les 8 premières équipes du classement
+    const standings = mode === '6s'
+      ? (DATA.season_3_6v6?.standings || []).sort((a,b) => (b.pts||0)-(a.pts||0)).slice(0,8)
+      : Object.entries(DATA.teams||{})
+          .filter(([k,t]) => t.division === div)
+          .map(([k,t]) => ({ team: k, pts: t.record?.pts||0, w: t.record?.w||0 }))
+          .sort((a,b) => b.pts - a.pts).slice(0,8);
+
+    const seeds = standings.map(s => s.team);
+    DATA[key] = {
+      seeds,
+      // Quarts: 1v8, 2v7, 3v6, 4v5
+      qf: [
+        { id:'qf1', home: seeds[0]||null, away: seeds[7]||null, home_wins:0, away_wins:0 },
+        { id:'qf2', home: seeds[1]||null, away: seeds[6]||null, home_wins:0, away_wins:0 },
+        { id:'qf3', home: seeds[2]||null, away: seeds[5]||null, home_wins:0, away_wins:0 },
+        { id:'qf4', home: seeds[3]||null, away: seeds[4]||null, home_wins:0, away_wins:0 },
+      ],
+      sf: [
+        { id:'sf1', home:null, away:null, home_wins:0, away_wins:0 },
+        { id:'sf2', home:null, away:null, home_wins:0, away_wins:0 },
+      ],
+      final: { id:'final', home:null, away:null, home_wins:0, away_wins:0 },
+      champion: null
+    };
+  }
+  return DATA[key];
+}
+
+function savePlayoff(mode, div) {
+  saveToFirebase();
+}
+
+function renderPlayoffs(mode, div) {
+  const containerId = mode === '6s' ? 'playoffBracket6s' : 'playoffBracket4s';
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const pd = getPlayoffData(mode, div);
+  const isAdmin = document.body.classList.contains('admin-mode');
+  const divColor = mode === '6s' ? '#3b82f6' : div === 'nhl' ? 'var(--nhl-color)' : 'var(--lhjmq-color)';
+
+  const teamCard = (teamKey, wins, series, isHome, matchId, mmode, mdiv) => {
+    const team = teamKey ? DATA.teams[teamKey] : null;
+    const seed = pd.seeds?.indexOf(teamKey) + 1;
+    const won = wins >= 3;
+    const logo = team?.logo
+      ? `<img src="${team.logo}" style="width:28px;height:28px;object-fit:contain;">`
+      : `<span style="font-size:22px;">${team?.emoji||'?'}</span>`;
+
+    return `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:${won?'rgba(34,197,94,0.1)':'var(--bg-elevated)'};border:1px solid ${won?'rgba(34,197,94,0.4)':'var(--border)'};border-radius:10px;min-width:200px;">
+      ${seed ? `<span style="font-size:11px;color:var(--text-tertiary);font-weight:700;min-width:16px;">${seed}</span>` : ''}
+      ${logo}
+      <span style="flex:1;font-weight:700;font-size:13px;">${escapeHtml(team?.name||'À déterminer')}</span>
+      <span style="font-family:'Bebas Neue';font-size:22px;color:${won?'#22c55e':wins>0?'var(--text-primary)':'var(--text-tertiary)'};">${wins}</span>
+      ${isAdmin && teamKey ? `<button onclick="updatePlayoffScore('${mmode}','${mdiv}','${matchId}','${isHome?'home':'away'}')" style="background:rgba(220,38,38,0.3);border:none;border-radius:6px;color:#fff;font-size:11px;padding:3px 7px;cursor:pointer;margin-left:4px;">+1</button>
+      <button onclick="resetPlayoffMatch('${mmode}','${mdiv}','${matchId}')" style="background:rgba(100,100,100,0.3);border:none;border-radius:6px;color:#fff;font-size:11px;padding:3px 6px;cursor:pointer;">↩</button>` : ''}
+    </div>`;
+  };
+
+  const matchBlock = (match, label, mmode, mdiv) => {
+    const done = match.home_wins >= 3 || match.away_wins >= 3;
+    return `<div style="margin-bottom:12px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:6px;">${label}</div>
+      ${teamCard(match.home, match.home_wins, match, true,  match.id, mmode, mdiv)}
+      <div style="text-align:center;font-size:10px;color:var(--text-tertiary);padding:2px 0;">VS</div>
+      ${teamCard(match.away, match.away_wins, match, false, match.id, mmode, mdiv)}
+      ${done ? `<div style="text-align:center;font-size:10px;color:#22c55e;margin-top:4px;">✅ Série terminée</div>` : ''}
+    </div>`;
+  };
+
+  const champion = pd.champion ? DATA.teams[pd.champion] : null;
+  const championHtml = champion ? `
+    <div style="text-align:center;padding:24px;background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));border:2px solid #f59e0b;border-radius:16px;margin-top:24px;">
+      <div style="font-size:40px;margin-bottom:8px;">🏆</div>
+      <div style="font-family:'Bebas Neue';font-size:32px;color:#f59e0b;">CHAMPION</div>
+      ${champion.logo ? `<img src="${champion.logo}" style="width:64px;height:64px;object-fit:contain;margin:8px 0;">` : `<div style="font-size:48px;">${champion.emoji}</div>`}
+      <div style="font-family:'Bebas Neue';font-size:28px;color:#fff;">${escapeHtml(champion.name)}</div>
+    </div>` : '';
+
+  container.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:16px;align-items:center;">
+      <!-- QUARTS -->
+      <div>
+        <div style="font-family:'Bebas Neue';font-size:18px;color:${divColor};margin-bottom:12px;border-left:3px solid ${divColor};padding-left:8px;">QUARTS DE FINALE</div>
+        ${matchBlock(pd.qf[0], '#1 vs #8', mode, div)}
+        ${matchBlock(pd.qf[1], '#2 vs #7', mode, div)}
+        ${matchBlock(pd.qf[2], '#3 vs #6', mode, div)}
+        ${matchBlock(pd.qf[3], '#4 vs #5', mode, div)}
+      </div>
+
+      <!-- Connecteur -->
+      <div style="display:flex;flex-direction:column;gap:80px;align-items:center;">
+        <div style="width:20px;height:2px;background:${divColor};opacity:0.4;"></div>
+        <div style="width:20px;height:2px;background:${divColor};opacity:0.4;"></div>
+      </div>
+
+      <!-- DEMI-FINALES -->
+      <div>
+        <div style="font-family:'Bebas Neue';font-size:18px;color:${divColor};margin-bottom:12px;border-left:3px solid ${divColor};padding-left:8px;">DEMI-FINALES</div>
+        <div style="margin-top:40px;">
+          ${matchBlock(pd.sf[0], 'SF 1', mode, div)}
+        </div>
+        <div style="margin-top:80px;">
+          ${matchBlock(pd.sf[1], 'SF 2', mode, div)}
+        </div>
+      </div>
+
+      <!-- Connecteur -->
+      <div style="display:flex;flex-direction:column;align-items:center;margin-top:80px;">
+        <div style="width:20px;height:2px;background:#f59e0b;opacity:0.6;"></div>
+      </div>
+
+      <!-- FINALE -->
+      <div>
+        <div style="font-family:'Bebas Neue';font-size:18px;color:#f59e0b;margin-bottom:12px;border-left:3px solid #f59e0b;padding-left:8px;">🏆 GRANDE FINALE</div>
+        <div style="margin-top:120px;">
+          ${matchBlock(pd.final, 'FINALE', mode, div)}
+        </div>
+        ${championHtml}
+      </div>
+    </div>`;
+}
+
+function updatePlayoffScore(mode, div, matchId, side) {
+  const key = mode === '6s' ? 'playoffs_6s' : `playoffs_4s_${div}`;
+  const pd = DATA[key];
+  if (!pd) return;
+
+  const allMatches = [...pd.qf, ...pd.sf, pd.final];
+  const match = allMatches.find(m => m.id === matchId);
+  if (!match) return;
+
+  if (side === 'home') match.home_wins = Math.min(3, (match.home_wins||0) + 1);
+  else match.away_wins = Math.min(3, (match.away_wins||0) + 1);
+
+  // Avancer le gagnant
+  const winner = match.home_wins >= 3 ? match.home : match.away_wins >= 3 ? match.away : null;
+  if (winner) {
+    if (matchId === 'qf1') pd.sf[0].home = winner;
+    if (matchId === 'qf2') pd.sf[0].away = winner;
+    if (matchId === 'qf3') pd.sf[1].home = winner;
+    if (matchId === 'qf4') pd.sf[1].away = winner;
+    if (matchId === 'sf1') pd.final.home = winner;
+    if (matchId === 'sf2') pd.final.away = winner;
+    if (matchId === 'final') pd.champion = winner;
+  }
+
+  savePlayoff(mode, div);
+  renderPlayoffs(mode, div);
+}
+
+function resetPlayoffMatch(mode, div, matchId) {
+  const key = mode === '6s' ? 'playoffs_6s' : `playoffs_4s_${div}`;
+  const pd = DATA[key];
+  if (!pd) return;
+
+  const allMatches = [...pd.qf, ...pd.sf, pd.final];
+  const match = allMatches.find(m => m.id === matchId);
+  if (!match) return;
+
+  match.home_wins = 0;
+  match.away_wins = 0;
+
+  // Retirer l'avancement selon le match
+  if (matchId === 'qf1' || matchId === 'qf2') { pd.sf[0].home = null; pd.sf[0].away = null; pd.sf[0].home_wins=0; pd.sf[0].away_wins=0; }
+  if (matchId === 'qf3' || matchId === 'qf4') { pd.sf[1].home = null; pd.sf[1].away = null; pd.sf[1].home_wins=0; pd.sf[1].away_wins=0; }
+  if (matchId === 'sf1' || matchId === 'sf2') { pd.final.home = null; pd.final.away = null; pd.final.home_wins=0; pd.final.away_wins=0; pd.champion = null; }
+  if (matchId === 'final') pd.champion = null;
+
+  savePlayoff(mode, div);
+  renderPlayoffs(mode, div);
+}
+
 loadData();
 
 // FORCER couleur blanche sur mobile pour les nav-btn
@@ -10551,6 +10774,7 @@ if (window.innerWidth <= 900) {
     <button class="drawer-btn" onclick="drawerNav('teams')"><span class="drawer-btn-icon">🛡️</span>Équipes</button>
     <button class="drawer-btn" onclick="drawerNav('schedule')"><span class="drawer-btn-icon">📅</span>Calendrier</button>
     <button class="drawer-btn" onclick="drawerNav('draft')"><span class="drawer-btn-icon">🎯</span>Repêchage</button>
+    <button class="drawer-btn" onclick="drawerNav('playoffs')"><span class="drawer-btn-icon">🏆</span>Playoffs</button>
     <button class="drawer-btn" onclick="drawerNav('stats')"><span class="drawer-btn-icon">📊</span>Stats</button>
     <button class="drawer-btn" onclick="drawerNav('trophies')"><span class="drawer-btn-icon">🏆</span>Trophées</button>
     <button class="drawer-btn" onclick="drawerNav('tournois-4s')"><span class="drawer-btn-icon">🥇</span>Tournois</button>
@@ -10577,6 +10801,7 @@ if (window.innerWidth <= 900) {
     <button class="drawer-btn" onclick="drawerNav('stats-6s')"><span class="drawer-btn-icon">📈</span>Stats 6S</button>
     <button class="drawer-btn" onclick="drawerNav('trophies-6s')"><span class="drawer-btn-icon">🏆</span>Trophées 6S</button>
     <button class="drawer-btn" onclick="drawerNav('tournois-6s')"><span class="drawer-btn-icon">🥇</span>Tournois 6S</button>
+    <button class="drawer-btn" onclick="drawerNav('playoffs-6s')"><span class="drawer-btn-icon">🏆</span>Playoffs 6S</button>
     
     <div class="drawer-section-label">Archives</div>
     <button class="drawer-btn" onclick="drawerNav('archive-6s-s2')"><span class="drawer-btn-icon">📁</span>Saison 2 (6S)</button>
