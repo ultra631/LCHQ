@@ -3375,7 +3375,7 @@
 
 <footer>
   <div class="container">
-    <p>LCHQ · Saison 5 · World of Chel · NHL 26</p>
+    <p id="footerSeasonText">LCHQ · Saison 5 · World of Chel · NHL 26</p>
     <p style="margin-top: 6px;">Bâti avec <span class="heart">♥</span> pour la communauté</p>
   </div>
 </footer>
@@ -3635,6 +3635,10 @@ function setGameMode(mode) {
   const seasonText = document.getElementById('headerSeasonText');
   if (seasonText) {
     seasonText.textContent = mode === '6s' ? 'Saison 3 · 6S · World of Chel' : 'Saison 5 · World of Chel';
+  }
+  const footerText = document.getElementById('footerSeasonText');
+  if (footerText) {
+    footerText.textContent = mode === '6s' ? 'LCHQ · Saison 3 · 6S · World of Chel · NHL 26' : 'LCHQ · Saison 5 · World of Chel · NHL 26';
   }
 
   // Cacher tous les boutons du mode opposé
