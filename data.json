@@ -12655,7 +12655,12 @@
         "prises": 20,
         "pert": 79,
         "ppm": 4.0,
-        "toi": "0:00"
+        "toi": "0:00",
+        "tonight": true,
+        "positions": [
+          "Ad",
+          "C"
+        ]
       },
       {
         "id": "p6_10",
@@ -12682,7 +12687,13 @@
         "prises": 33,
         "pert": 20,
         "ppm": 3.83,
-        "toi": "0:00"
+        "toi": "0:00",
+        "tonight": true,
+        "positions": [
+          "Dd",
+          "C",
+          "Ad"
+        ]
       },
       {
         "id": "p6_11",
@@ -12817,7 +12828,13 @@
         "prises": 7,
         "pert": 47,
         "ppm": 3.17,
-        "toi": "0:00"
+        "toi": "0:00",
+        "tonight": true,
+        "positions": [
+          "Ad",
+          "G",
+          "Ag"
+        ]
       },
       {
         "id": "p6_16",
@@ -13033,7 +13050,11 @@
         "prises": 15,
         "pert": 34,
         "ppm": 2.83,
-        "toi": "0:00"
+        "toi": "0:00",
+        "tonight": true,
+        "positions": [
+          "DG"
+        ]
       },
       {
         "id": "p6_24",
@@ -13627,7 +13648,11 @@
         "prises": 7,
         "pert": 14,
         "ppm": 2.67,
-        "toi": "0:00"
+        "toi": "0:00",
+        "tonight": true,
+        "positions": [
+          "DG"
+        ]
       },
       {
         "id": "p6_46",
@@ -13735,7 +13760,13 @@
         "prises": 34,
         "pert": 32,
         "ppm": 1.17,
-        "toi": "0:00"
+        "toi": "0:00",
+        "tonight": true,
+        "positions": [
+          "Ad",
+          "Ag",
+          "Dd"
+        ]
       },
       {
         "id": "p6_50",
@@ -13843,7 +13874,13 @@
         "prises": 12,
         "pert": 23,
         "ppm": 1.0,
-        "toi": "0:00"
+        "toi": "0:00",
+        "tonight": true,
+        "positions": [
+          "Ad",
+          "Dd",
+          "Dg"
+        ]
       },
       {
         "id": "p6_54",
@@ -13897,7 +13934,13 @@
         "prises": 12,
         "pert": 35,
         "ppm": 1.0,
-        "toi": "0:00"
+        "toi": "0:00",
+        "tonight": true,
+        "positions": [
+          "C",
+          "Ad",
+          "Dd"
+        ]
       },
       {
         "id": "p6_56",
@@ -14268,7 +14311,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_ambidex",
@@ -14296,8 +14340,8 @@
         "team": null,
         "status": "sub",
         "positions": [
-          "Ad",
           "Ag",
+          "Ad",
           "C"
         ],
         "console": "PS5",
@@ -14308,7 +14352,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_kuze_majestic",
@@ -14328,7 +14373,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_b470n3y123_qc",
@@ -14348,7 +14394,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_courchxsne",
@@ -14367,7 +14414,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_god_em",
@@ -14375,7 +14423,8 @@
         "team": null,
         "status": "sub",
         "positions": [
-          "C"
+          "C",
+          "Ad"
         ],
         "console": "PS5",
         "gp": 0,
@@ -14385,7 +14434,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_mcxpichex",
@@ -14405,7 +14455,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_tibod68",
@@ -14424,7 +14475,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_itsmejello",
@@ -14444,7 +14496,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_mathst0126",
@@ -14464,7 +14517,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_xslafkovskyx20",
@@ -14484,7 +14538,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_x_brownie__x",
@@ -14504,7 +14559,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_xi_lxxse_ix",
@@ -14524,7 +14580,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_tanguay_l40l",
@@ -14544,7 +14601,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_lchq_purplelight",
@@ -14562,7 +14620,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_xxhutson48xx",
@@ -14582,7 +14641,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_slafwoo",
@@ -14590,8 +14650,9 @@
         "team": null,
         "status": "sub",
         "positions": [
-          "G",
-          "Ag"
+          "C",
+          "Ag",
+          "Dg"
         ],
         "console": "Xbox",
         "gp": 0,
@@ -14601,7 +14662,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_lookeazy",
@@ -14621,7 +14683,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_xxfowler32xx",
@@ -14641,7 +14704,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_tomyhabs11",
@@ -14661,7 +14725,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_brisette",
@@ -14679,7 +14744,8 @@
         "plusminus": 0,
         "hits": 0,
         "tb": 0,
-        "ppm": 0
+        "ppm": 0,
+        "tonight": true
       },
       {
         "id": "p6s_tremblay",
@@ -14688,6 +14754,26 @@
         "status": "sub",
         "positions": [
           "Dg"
+        ],
+        "console": "PS5",
+        "gp": 0,
+        "g": 0,
+        "a": 0,
+        "pts": 0,
+        "plusminus": 0,
+        "hits": 0,
+        "tb": 0,
+        "ppm": 0,
+        "tonight": true
+      },
+      {
+        "id": "p6s_fl_ultra_",
+        "name": "FL_ULTRA-",
+        "team": null,
+        "status": "sub",
+        "tonight": true,
+        "positions": [
+          "DG"
         ],
         "console": "PS5",
         "gp": 0,
