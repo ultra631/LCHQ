@@ -9768,17 +9768,20 @@ function renderTournoisSchedule(mode, div) {
       ? `data-mode="${mode}" data-div="${div}" data-phase="${label}"`
       : '';
     const editBtn = isAdmin
-      ? `<button ${editDataAttrs} onclick="${editOnclick}" style="position:absolute;top:50%;right:36px;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;z-index:10;" title="Modifier score">✏️</button>`
+      ? `<button ${editDataAttrs} onclick="${editOnclick}" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:6px 8px;cursor:pointer;font-size:15px;" title="Modifier score">✏️</button>`
       : '';
     const delBtn = isAdmin && m.id
-      ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="position:absolute;top:50%;right:8px;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;z-index:10;" title="Supprimer">🗑️</button>`
+      ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:6px 8px;cursor:pointer;font-size:15px;" title="Supprimer">🗑️</button>`
       : '';
-    return `<div class="match-card ${played?'played':'upcoming'}" style="position:relative;margin-bottom:8px;">
-      ${dpBadge}
-      <div class="match-team away"><span class="match-team-name">${awayName}</span></div>
-      ${center}
-      <div class="match-team home"><span class="match-team-name">${homeName}</span></div>
-      ${editBtn}${delBtn}
+    const adminBtns = (editBtn || delBtn) ? `<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">${editBtn}${delBtn}</div>` : '';
+    return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+      <div class="match-card ${played?'played':'upcoming'}" style="flex:1;margin:0;">
+        ${dpBadge}
+        <div class="match-team away"><span class="match-team-name">${awayName}</span></div>
+        ${center}
+        <div class="match-team home"><span class="match-team-name">${homeName}</span></div>
+      </div>
+      ${adminBtns}
     </div>`;
   }
 
@@ -10957,19 +10960,47 @@ function updateGenPreview() {
     Format : round-robin complet`;
 }
 
-function generateRoundRobin(teams) {
-  const matches = [];
+function generateRoundRobin(teams, minGamesPerTeam = 3) {
+  // Générer toutes les paires possibles
+  const allPairs = [];
   for (let i = 0; i < teams.length; i++) {
     for (let j = i + 1; j < teams.length; j++) {
-      matches.push({ away: teams[i], home: teams[j] });
+      allPairs.push({ away: teams[i], home: teams[j] });
     }
   }
-  // Mélanger pour éviter que les mêmes équipes jouent en même temps
-  for (let i = matches.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [matches[i], matches[j]] = [matches[j], matches[i]];
+
+  // Compter les matchs par équipe
+  const matchCount = {};
+  teams.forEach(t => matchCount[t] = 0);
+
+  const selected = [];
+  // Mélanger les paires
+  const shuffled = [...allPairs].sort(() => Math.random() - 0.5);
+
+  // Ajouter des matchs jusqu'à ce que chaque équipe ait au moins minGamesPerTeam matchs
+  for (const pair of shuffled) {
+    selected.push(pair);
+    matchCount[pair.away]++;
+    matchCount[pair.home]++;
+    // Arrêter si tout le monde a au moins minGamesPerTeam matchs
+    if (Object.values(matchCount).every(c => c >= minGamesPerTeam)) break;
   }
-  return matches;
+
+  // Si certaines équipes n'ont pas encore assez de matchs, ajouter des paires manquantes
+  const underpaired = teams.filter(t => matchCount[t] < minGamesPerTeam);
+  if (underpaired.length > 0) {
+    for (const pair of allPairs) {
+      if (!selected.find(s => s.away === pair.away && s.home === pair.home)) {
+        if (matchCount[pair.away] < minGamesPerTeam || matchCount[pair.home] < minGamesPerTeam) {
+          selected.push(pair);
+          matchCount[pair.away]++;
+          matchCount[pair.home]++;
+        }
+      }
+    }
+  }
+
+  return selected;
 }
 
 function confirmGenerateSchedule() {
