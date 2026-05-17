@@ -8629,10 +8629,14 @@ function renderTournoisRoster() {
     const isAdmin = document.body.classList.contains('admin-mode');
     const clickHandler = `onclick="openTournoisPlayerStatsModal('${playerId}')" style="cursor:pointer;"`;
     
+    const positions = (team.player_positions || {})[playerId] || [];
+    const posBadgesHtml = positions.length > 0
+      ? positions.map(p => `<span class="pos-badge pos-badge-main" style="font-size:10px;padding:2px 5px;margin-left:4px;">${p}</span>`).join('')
+      : '';
     return `<div ${clickHandler} style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg-elevated);border-radius:8px;margin-bottom:8px;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-card)'" onmouseout="this.style.background='var(--bg-elevated)'">
       <div style="flex:1;">
-        <strong>${escapeHtml(player.name)}</strong>
-        ${isAdmin ? `<button class="row-action-btn" onclick="event.stopPropagation();removeTournoisPlayer('${playerId}',${idx})" title="Retirer" style="margin-left:8px;">🗑️</button>` : ''}
+        <strong>${escapeHtml(player.name)}</strong>${posBadgesHtml}
+        ${isAdmin ? `<button class="row-action-btn" onclick="event.stopPropagation();openTournoisPositionModal('${playerId}')" title="Changer position" style="margin-left:6px;">🔄</button><button class="row-action-btn" onclick="event.stopPropagation();removeTournoisPlayer('${playerId}',${idx})" title="Retirer" style="margin-left:4px;">🗑️</button>` : ''}
       </div>
       <div style="display:flex;gap:12px;font-size:13px;color:var(--text-secondary);flex-wrap:wrap;">
         <div title="Parties jouées"><strong>${stats.gp}</strong> PJ</div>
@@ -8741,16 +8745,69 @@ function addPlayerToTournoisTeam(playerId) {
   const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
   
   if (!team.players) team.players = [];
+  if (!team.player_positions) team.player_positions = {};
   
-  // Vérifier si le joueur est déjà dans l'équipe
   if (team.players.includes(playerId)) {
     alert('Ce joueur est déjà dans l\'équipe!');
     return;
   }
   
   team.players.push(playerId);
-  renderTournoisRoster();
   closeModal('addPlayerToTournoisModal');
+
+  // Ouvrir le modal de position
+  openTournoisPositionModal(playerId);
+}
+
+let currentPositionPlayerId = null;
+
+function openTournoisPositionModal(playerId) {
+  currentPositionPlayerId = playerId;
+  const { mode } = currentTournoisTeam;
+  const is6s = mode === '6s';
+
+  const player = DATA.players.find(p => p.id === playerId) ||
+                 (DATA.season_3_6v6?.players || []).find(p => p.id === playerId);
+  const name = player?.name || playerId;
+
+  document.getElementById('tournoisPositionPlayerName').textContent = name;
+
+  const pos4s = ['C','A','D','G'];
+  const pos6s = ['C','AD','AG','DD','DG','G'];
+  const positions = is6s ? pos6s : pos4s;
+  const maxPos = is6s ? 3 : 1;
+
+  document.getElementById('tournoisPositionSlots').innerHTML = 
+    Array.from({length: maxPos}, (_, i) => `
+      <div class="modal-form-group">
+        <label>${i === 0 ? 'Position principale' : `Position ${i+1}`}</label>
+        <select id="tournoisPos${i}" style="width:100%;padding:10px;border-radius:8px;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border);">
+          <option value="">— Choisir —</option>
+          ${positions.map(p => `<option value="${p}">${p}</option>`).join('')}
+        </select>
+      </div>`).join('');
+
+  openModal('tournoisPositionModal');
+}
+
+function saveTournoisPosition() {
+  const { mode, division, teamNum } = currentTournoisTeam;
+  const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
+  if (!team.player_positions) team.player_positions = {};
+
+  const is6s = mode === '6s';
+  const maxPos = is6s ? 3 : 1;
+  
+  const positions = [];
+  for (let i = 0; i < maxPos; i++) {
+    const val = document.getElementById(`tournoisPos${i}`)?.value;
+    if (val) positions.push(val);
+  }
+
+  team.player_positions[currentPositionPlayerId] = positions;
+  saveToFirebase();
+  renderTournoisRoster();
+  closeModal('tournoisPositionModal');
 }
 
 function removePlayerFromTournoisTeam(idx) {
@@ -9721,6 +9778,19 @@ if (window.innerWidth <= 900) {
     <div id="tournoisMatchDetailContent"></div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('tournoisMatchDetailModal')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Position joueur tournois -->
+<div class="modal-overlay" id="tournoisPositionModal">
+  <div class="modal" style="max-width:400px;">
+    <h3>📍 Position du joueur</h3>
+    <p id="tournoisPositionPlayerName" style="font-weight:700;font-size:18px;margin-bottom:16px;color:var(--red-bright);"></p>
+    <div id="tournoisPositionSlots"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('tournoisPositionModal')">Passer</button>
+      <button class="btn btn-primary" onclick="saveTournoisPosition()">✅ Confirmer</button>
     </div>
   </div>
 </div>
