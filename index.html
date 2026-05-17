@@ -1586,7 +1586,7 @@
       <img src="logo.png" alt="LCHQ" class="logo-img" onerror="this.style.display='none'">
       <div class="logo-text">
         <h1>LCHQ</h1>
-        <p>Saison 5 · World of Chel</p>
+        <p id="headerSeasonText">Saison 5 · World of Chel</p>
       </div>
     </div>
     <button class="mobile-menu-btn" onclick="openMobileDrawer()">☰</button>
@@ -3631,6 +3631,12 @@ function setGameMode(mode) {
   document.getElementById('home-4s').style.display = mode === '4s' ? '' : 'none';
   document.getElementById('home-6s').style.display = mode === '6s' ? '' : 'none';
   
+  // Mettre à jour le texte de saison
+  const seasonText = document.getElementById('headerSeasonText');
+  if (seasonText) {
+    seasonText.textContent = mode === '6s' ? 'Saison 3 · 6S · World of Chel' : 'Saison 5 · World of Chel';
+  }
+
   // Cacher tous les boutons du mode opposé
   document.querySelectorAll('.nav-btn.mode-4s').forEach(btn => {
     btn.style.display = mode === '4s' ? '' : 'none';
@@ -4183,6 +4189,7 @@ function showTeamDetail(teamKey) {
         </tbody>
       </table>
     </div>
+    ${renderTeamMatchesSection(teamKey)}
   `;
   navigate('team-detail');
 }
@@ -4293,6 +4300,7 @@ function showTeamDetail6S(teamKey) {
         </tbody>
       </table>
     </div>
+    ${renderTeamMatchesSection(teamKey)}
   `;
   navigate('team-detail');
 }
@@ -10171,6 +10179,105 @@ function renderHomeLeaderCards(list, type) {
   </div>`;
 }
 
+
+// ============ MATCHS ÉQUIPE ============
+
+function getTeamMatches(teamKey) {
+  const weeks = DATA.schedule?.weeks || [];
+  const allMatches = [];
+
+  weeks.forEach(w => {
+    (w.matches || []).forEach(m => {
+      if (m.away === teamKey || m.home === teamKey) {
+        allMatches.push({ ...m, week: w.num });
+      }
+    });
+  });
+
+  const played = allMatches.filter(m => m.away_score !== null && m.away_score !== undefined);
+  const upcoming = allMatches.filter(m => m.away_score === null || m.away_score === undefined);
+
+  return {
+    last5: played.slice(-5).reverse(),
+    next5: upcoming.slice(0, 5)
+  };
+}
+
+function renderTeamMatchesSection(teamKey) {
+  const { last5, next5 } = getTeamMatches(teamKey);
+
+  const renderRow = (m, teamKey) => {
+    const isHome = m.home === teamKey;
+    const oppKey = isHome ? m.away : m.home;
+    const opp = DATA.teams[oppKey];
+    const oppLogo = opp?.logo ? `<img src="${opp.logo}" style="width:28px;height:28px;object-fit:contain;">` : `<span style="font-size:22px;">${opp?.emoji||'🏒'}</span>`;
+    const teamLogo = DATA.teams[teamKey]?.logo ? `<img src="${DATA.teams[teamKey].logo}" style="width:28px;height:28px;object-fit:contain;">` : `<span style="font-size:22px;">${DATA.teams[teamKey]?.emoji||'🏒'}</span>`;
+    const played = m.away_score !== null && m.away_score !== undefined;
+    const homeLabel = `<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.08);color:var(--text-tertiary);margin-left:8px;">${isHome ? 'DOM' : 'VIS'}</span>`;
+
+    let result = '';
+    let resultColor = 'var(--text-tertiary)';
+    if (played) {
+      const teamScore = isHome ? m.home_score : m.away_score;
+      const oppScore  = isHome ? m.away_score : m.home_score;
+      const won = teamScore > oppScore;
+      const dp = m.is_dp && !won;
+      result = `<span style="font-family:'Bebas Neue';font-size:20px;color:${won?'#22c55e':dp?'#f59e0b':'#ef4444'};">${teamScore}–${oppScore}</span>
+        <span style="font-size:11px;color:${won?'#22c55e':dp?'#f59e0b':'#ef4444'};margin-left:4px;">${won?'V':dp?'DP':'D'}</span>`;
+    }
+
+    // Logos côte à côte
+    const awayKey = m.away;
+    const homeKey = m.home;
+    const awayTeam = DATA.teams[awayKey];
+    const homeTeam = DATA.teams[homeKey];
+    const awayLogo = awayTeam?.logo ? `<img src="${awayTeam.logo}" style="width:28px;height:28px;object-fit:contain;">` : `<span style="font-size:20px;">${awayTeam?.emoji||'🏒'}</span>`;
+    const homeLogo = homeTeam?.logo ? `<img src="${homeTeam.logo}" style="width:28px;height:28px;object-fit:contain;">` : `<span style="font-size:20px;">${homeTeam?.emoji||'🏒'}</span>`;
+
+    return `<div style="display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.05);gap:12px;">
+      <div style="min-width:70px;">
+        <div style="font-size:12px;color:var(--text-tertiary);">Sem. ${m.week}</div>
+        ${m.time ? `<div style="font-size:11px;color:var(--text-tertiary);">${m.time}</div>` : ''}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex:1;">
+        ${awayLogo}
+        <span style="font-size:12px;color:var(--text-tertiary);">@</span>
+        ${homeLogo}
+        ${homeLabel}
+      </div>
+      <div style="text-align:right;">
+        ${played ? result : '<span style="font-size:13px;color:var(--text-tertiary);">À venir</span>'}
+      </div>
+    </div>`;
+  };
+
+  const last5Html = last5.length > 0
+    ? last5.map(m => renderRow(m, teamKey)).join('')
+    : '<div style="padding:16px;color:var(--text-tertiary);font-size:13px;text-align:center;">Aucun match joué</div>';
+
+  const next5Html = next5.length > 0
+    ? next5.map(m => renderRow(m, teamKey)).join('')
+    : '<div style="padding:16px;color:var(--text-tertiary);font-size:13px;text-align:center;">Aucun match à venir</div>';
+
+  return `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:'Bebas Neue';font-size:18px;">⏮ Derniers matchs</span>
+          <span style="background:var(--red-bright);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">${last5.length}/5</span>
+        </div>
+        ${last5Html}
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:'Bebas Neue';font-size:18px;">⏭ Prochains matchs</span>
+          <span style="background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">${next5.length}/5</span>
+        </div>
+        ${next5Html}
+      </div>
+    </div>`;
+}
+
 loadData();
 
 // FORCER couleur blanche sur mobile pour les nav-btn
@@ -10253,14 +10360,14 @@ if (window.innerWidth <= 900) {
 </div>
 
 <!-- DRAWER MOBILE -->
-<div id="mobileOverlay" onclick="closeMobileDrawer()"></div>
-<div id="mobileDrawer">
+<div id="mobileOverlay" onclick="closeMobileDrawer()" style="display:none;"></div>
+<div id="mobileDrawer" style="display:none;">
   <div class="drawer-header">
     <div class="drawer-header-logo">
       <img src="https://ultra631.github.io/LCHQ/assets/logo.png" style="width:36px;height:36px;border-radius:8px;" onerror="this.style.display='none'">
       <div>
         <div style="font-family:'Bebas Neue';font-size:20px;color:#fff;letter-spacing:1px;">LCHQ</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.4);">SAISON 5 · WORLD OF CHEL</div>
+        <div id="drawerSeasonText" style="font-size:10px;color:rgba(255,255,255,0.4);">SAISON 5 · WORLD OF CHEL</div>
       </div>
     </div>
     <button class="drawer-close" onclick="closeMobileDrawer()">✕</button>
@@ -10326,6 +10433,10 @@ if (window.innerWidth <= 900) {
 
 <script>
 function openMobileDrawer() {
+  document.getElementById('mobileDrawer').style.display = 'block';
+  document.getElementById('mobileOverlay').style.display = 'block';
+  // Force reflow avant animation
+  document.getElementById('mobileDrawer').offsetHeight;
   document.getElementById('mobileDrawer').classList.add('open');
   document.getElementById('mobileOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -10334,13 +10445,23 @@ function openMobileDrawer() {
   setDrawerMode(is6s ? '6s' : '4s');
 }
 function closeMobileDrawer() {
-  document.getElementById('mobileDrawer').classList.remove('open');
-  document.getElementById('mobileOverlay').classList.remove('open');
+  const drawer = document.getElementById('mobileDrawer');
+  const overlay = document.getElementById('mobileOverlay');
+  drawer.classList.remove('open');
+  overlay.classList.remove('open');
   document.body.style.overflow = '';
+  setTimeout(() => {
+    if (!drawer.classList.contains('open')) {
+      drawer.style.display = 'none';
+      overlay.style.display = 'none';
+    }
+  }, 320);
 }
 function setDrawerMode(mode) {
   document.getElementById('drawerMode4s').className = 'drawer-mode-btn' + (mode==='4s' ? ' active-4s' : '');
   document.getElementById('drawerMode6s').className = 'drawer-mode-btn' + (mode==='6s' ? ' active-6s' : '');
+  const dSeason = document.getElementById('drawerSeasonText');
+  if (dSeason) dSeason.textContent = mode === '6s' ? 'SAISON 3 · 6S · WORLD OF CHEL' : 'SAISON 5 · WORLD OF CHEL';
   document.getElementById('drawerNav4s').style.display = mode==='4s' ? '' : 'none';
   document.getElementById('drawerNav6s').style.display = mode==='6s' ? '' : 'none';
   // Changer le mode du site
