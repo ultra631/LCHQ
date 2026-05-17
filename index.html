@@ -8947,11 +8947,8 @@ async function saveTournoisPlayerStats() {
   const { mode, division, teamNum } = currentTournoisTeam;
   const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
   if (!team || !currentTournoisPlayer) return;
-  
-  // Récupérer les valeurs
-  const { mode: sMode, division: sDiv, teamNum: sTeamNum } = currentTournoisTeam;
-  const sTeam = DATA.tournaments[sMode][sDiv].find(t => t.teamNum === sTeamNum);
-  const sPositions = sTeam?.player_positions?.[currentTournoisPlayer] || [];
+
+  const sPositions = team?.player_positions?.[currentTournoisPlayer] || [];
   const sIsGoalie = sPositions.includes('G');
 
   let gp, g, a, pts, pm, hits, tb, mjg, mjf, pt, pr, intc, prises, pert;
