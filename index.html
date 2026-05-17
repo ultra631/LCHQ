@@ -1601,14 +1601,8 @@
       </div>
 
       <!-- Classement -->
-      <div class="nav-group">
-        <button class="nav-btn" data-section="standings">Classement ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="standings-nhl" onclick="navigate('standings-nhl')">Division NHL</button>
-          <button class="nav-btn mode-4s" data-page="standings-lhjmq" onclick="navigate('standings-lhjmq')">Division LHJMQ</button>
-          <button class="nav-btn mode-6s" data-page="standings-6s" onclick="navigate('standings-6s')">Classement 6S</button>
-        </div>
-      </div>
+      <button class="nav-btn mode-4s" data-page="standings-all" onclick="navigateBothStandings()">Classement</button>
+      <button class="nav-btn mode-6s" data-page="standings-6s" onclick="navigate('standings-6s')" style="display:none;">Classement 6S</button>
 
       <!-- Joueurs -->
       <div class="nav-group">
