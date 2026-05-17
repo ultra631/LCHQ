@@ -9782,16 +9782,20 @@ function renderTournoisSchedule(mode, div) {
     const delBtn = isAdmin && m.id
       ? `<button onclick="deleteTournoisMatch('${mode}','${div}','${m.id}')" style="background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:6px 8px;cursor:pointer;font-size:15px;" title="Supprimer">🗑️</button>`
       : '';
-    return `<div class="match-card ${played?'played':'upcoming'}" style="position:relative;margin-bottom:8px;">
+    const adminBtnsHtml = (editBtn||delBtn) && !isElim
+      ? `<div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">${editBtn}${delBtn}</div>` : '';
+    return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+      <div class="match-card ${played?'played':'upcoming'}" style="flex:1;margin:0;">
         ${dpBadge}
         <div class="match-team away"><span class="match-team-name" style="display:flex;align-items:center;">${awayName}</span></div>
         ${center}
         <div class="match-team home"><span class="match-team-name" style="display:flex;align-items:center;justify-content:flex-end;">${homeName}</span></div>
-        ${(editBtn||delBtn) ? `<div style="position:absolute;top:50%;right:8px;transform:translateY(-50%);display:flex;gap:4px;">${editBtn}${delBtn}</div>` : ''}
-      </div>`;
+      </div>
+      ${adminBtnsHtml}
+    </div>`;
   }
 
-  // Matchs réguliers
+  // Matchs réguliers — groupés par heure
   let html = '';
   if (allMatches.length === 0) {
     html = `<div class="empty-state"><div class="empty-state-icon">📅</div><p>Aucun match — clique sur ➕ Ajouter match.</p></div>`;
@@ -9804,7 +9808,24 @@ function renderTournoisSchedule(mode, div) {
       if (a.away !== b.away) return a.away - b.away;
       return a.home - b.home;
     });
-    html = allMatches.map(m => matchCard(m, m.id)).join('');
+
+    // Grouper par heure
+    const byTime = {};
+    allMatches.forEach(m => {
+      const t = m.time || 'Non défini';
+      if (!byTime[t]) byTime[t] = [];
+      byTime[t].push(m);
+    });
+
+    html = Object.entries(byTime).map(([time, matches]) => `
+      <div class="schedule-time-slot" style="margin-bottom:16px;">
+        <div class="schedule-time" style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span>⏰</span><span>${time}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;">
+          ${matches.map(m => matchCard(m, m.id)).join('')}
+        </div>
+      </div>`).join('');
   }
 
   // Éliminatoires
