@@ -5941,8 +5941,13 @@ function renderMatchCard(m) {
   const played = isMatchPlayed(m);
   const dpBadge = m.is_dp ? '<span class="match-dp-badge">DP</span>' : '';
   
-  // Clic sur match ouvre toujours le résumé/stats
-  let clickAttr = `onclick="openMatchStatsModal('${m.id}')"`;
+  // Clic sur match ouvre stats si joué, modal score si admin
+  let clickAttr = '';
+  if (played) {
+    clickAttr = `onclick="openMatchStatsModal('${m.id}')"`;
+  } else if (isAdmin) {
+    clickAttr = `onclick="openMatchModal('${m.id}')"`;
+  }
 
   let center;
   if (played) {
@@ -7507,8 +7512,10 @@ function renderSchedule6S() {
         const isAdmin = document.body.classList.contains('admin-mode');
         const dpBadge = m.is_dp ? '<span class="match-dp-badge">DP</span>' : '';
 
-        // Toujours ouvrir le résumé/stats en cliquant sur le match
-        let clickAttr = `onclick="openMatchStatsModal('${m.id}')"`;
+        let clickAttr = '';
+        if (isAdmin) {
+          clickAttr = `onclick="openMatchModal6S('${m.id}')"`;
+        }
 
         let center;
         if (played) {
