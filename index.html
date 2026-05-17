@@ -6306,6 +6306,31 @@ function openMatchStatsModal(matchId) {
   // Initialiser la structure de données si elle n'existe pas
   if (!DATA.matchStats) DATA.matchStats = {};
   if (!DATA.matchStats[matchId]) DATA.matchStats[matchId] = { players: [] };
+
+  // Auto-remplir avec les joueurs des 2 équipes si pas encore de joueurs
+  const is6s = matchSource === '6s';
+  const playerPool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
+  const goaliePool = is6s ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+
+  if (DATA.matchStats[matchId].players.length === 0) {
+    const awayPlayers = playerPool.filter(p => p.team === match.away);
+    const homePlayers = playerPool.filter(p => p.team === match.home);
+    const awayGoalies = goaliePool.filter(g => g.team === match.away);
+    const homeGoalies = goaliePool.filter(g => g.team === match.home);
+
+    [...awayPlayers, ...homePlayers].forEach(p => {
+      DATA.matchStats[matchId].players.push({
+        id: p.id, name: p.name, team: p.team, type: 'player',
+        gp:0, g:0, a:0, plusminus:0, hits:0, tb:0, mjg:0, mjf:0, pt:0, pr:0, intc:0, prises:0, pert:0
+      });
+    });
+    [...awayGoalies, ...homeGoalies].forEach(g => {
+      DATA.matchStats[matchId].players.push({
+        id: g.id, name: g.name, team: g.team, type: 'goalie',
+        gp:0, w:0, l:0, sa:0, ga:0, sv:0, so:0, gaa:0, svpct:0
+      });
+    });
+  }
   
   // Afficher contenu
   renderMatchStatsContent(match, away, home);
