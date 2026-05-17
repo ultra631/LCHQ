@@ -10774,8 +10774,12 @@ if (window.innerWidth <= 900) {
 
   <!-- Switch 4S / 6S -->
   <div class="drawer-mode-switch">
-    <button class="drawer-mode-btn active-4s" id="drawerMode4s" onclick="setDrawerMode('4s')">✈️ 4S</button>
-    <button class="drawer-mode-btn" id="drawerMode6s" onclick="setDrawerMode('6s')">⚡ 6S</button>
+    <button class="drawer-mode-btn active-4s" id="drawerMode4s" onclick="setDrawerMode('4s')">
+      <img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/05_NHL_Shield.svg/330px-05_NHL_Shield.svg.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px;" onerror="this.style.display='none'"> 4S
+    </button>
+    <button class="drawer-mode-btn" id="drawerMode6s" onclick="setDrawerMode('6s')">
+      <img src="https://ultra631.github.io/LCHQ/ChatGPT%20Image%2017%20mai%202026%2C%2006_05_54.png" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px;" onerror="this.style.display='none'"> 6S
+    </button>
   </div>
 
   <!-- Navigation -->
@@ -10784,8 +10788,8 @@ if (window.innerWidth <= 900) {
     <button class="drawer-btn" onclick="drawerNav('home')"><span class="drawer-btn-icon">🏠</span>Accueil</button>
     
     <div class="drawer-section-label">Classement</div>
-    <button class="drawer-btn" onclick="drawerNav('standings-nhl')"><span class="drawer-btn-icon">🏒</span>Division NHL</button>
-    <button class="drawer-btn" onclick="drawerNav('standings-lhjmq')"><span class="drawer-btn-icon">⚜️</span>Division LHJMQ</button>
+    <button class="drawer-btn" onclick="drawerNav('standings-nhl')"><span class="drawer-btn-icon"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/05_NHL_Shield.svg/330px-05_NHL_Shield.svg.png" style="width:22px;height:22px;object-fit:contain;" onerror="this.outerHTML='🏒'"></span>Division NHL</button>
+    <button class="drawer-btn" onclick="drawerNav('standings-lhjmq')"><span class="drawer-btn-icon"><img src="https://ultra631.github.io/LCHQ/ChatGPT%20Image%2017%20mai%202026%2C%2006_05_54.png" style="width:22px;height:22px;object-fit:contain;mix-blend-mode:screen;" onerror="this.outerHTML='⚜️'"></span>Division LHJMQ</button>
     
     <div class="drawer-section-label">Joueurs</div>
     <button class="drawer-btn" onclick="drawerNav('players-nhl')"><span class="drawer-btn-icon">👤</span>Joueurs NHL</button>
