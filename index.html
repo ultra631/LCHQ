@@ -6321,6 +6321,16 @@ function openMatchStatsModal(matchId) {
 }
 
 function renderMatchStatsContent(match, awayTeam, homeTeam) {
+  // Si match pas passé, le retrouver depuis currentMatchStats
+  if (!match || (!match.away && !match.home)) {
+    match = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
+            DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
+    if (match) {
+      awayTeam = DATA.teams[match.away];
+      homeTeam = DATA.teams[match.home];
+    }
+  }
+  if (!match) return;
   const matchStats = DATA.matchStats[currentMatchStats] || { players: [] };
   const is6s = currentMatchSource === '6s';
   const playerPool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
