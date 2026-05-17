@@ -3978,7 +3978,7 @@ function renderStandings6SNew() {
       <td class="num">${s.ga || 0}</td>
       <td class="num ${diffClass}">${diffStr}</td>
       <td class="num">${streak}</td>
-      <td class="num pts-cell"><strong>${s.pts || 0}</strong></td>
+      <td class="num pts-cell" style="color:${i < 8 ? '#22c55e' : '#ef4444'};font-weight:800;">${s.pts || 0}</td>
     </tr>`;
   }).join('');
 }
