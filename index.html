@@ -1638,25 +1638,17 @@
 
       <!-- Trophées -->
       <div class="nav-group">
-        <button class="nav-btn desktop-only" data-section="trophies" onclick="toggleNavSection(this)">Trophées ▾</button>
+        <button class="nav-btn mode-4s" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
+        <button class="nav-btn mode-4s" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
+        <button class="nav-btn mode-6s" data-page="trophies-6s" onclick="navigate('trophies-6s')" style="display:none;">Trophées 6S</button>
       <button class="nav-btn mode-4s" data-page="draft" onclick="navigate('draft')">🎯 Repêchage</button>
       <button class="nav-btn mode-4s" data-page="playoffs" onclick="navigate('playoffs')">🏆 Playoffs</button>
       <button class="nav-btn mode-6s" data-page="playoffs-6s" onclick="navigate('playoffs-6s')" style="display:none;">🏆 Playoffs 6S</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
-          <button class="nav-btn mode-4s" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
-          <button class="nav-btn mode-6s" data-page="trophies-6s" onclick="navigate('trophies-6s')" style="display:none;">Trophées 6S</button>
-        </div>
       </div>
 
       <!-- Tournois -->
-      <div class="nav-group">
-        <button class="nav-btn" data-section="tournois">🏆 Tournois ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s" data-page="tournois-4s" onclick="navigate('tournois-4s')">Tournois 4S</button>
-          <button class="nav-btn mode-6s" data-page="tournois-6s" onclick="navigate('tournois-6s')" style="display:none;">Tournois 6S</button>
-        </div>
-      </div>
+      <button class="nav-btn mode-4s" data-page="tournois-4s" onclick="navigate('tournois-4s')">🏆 Tournois</button>
+      <button class="nav-btn mode-6s" data-page="tournois-6s" onclick="navigate('tournois-6s')" style="display:none;">🏆 Tournois 6S</button>
 
       <!-- Archives -->
       <div class="nav-group nav-archives">
