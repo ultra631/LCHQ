@@ -10238,75 +10238,105 @@ function getTeamMatches(teamKey) {
 
 function renderTeamMatchesSection(teamKey) {
   const { last5, next5 } = getTeamMatches(teamKey);
+  const team = DATA.teams[teamKey];
 
-  const renderRow = (m, teamKey) => {
+  const renderMatchCard = (m, isHistory) => {
     const isHome = m.home === teamKey;
     const oppKey = isHome ? m.away : m.home;
     const opp = DATA.teams[oppKey];
-    const oppLogo = opp?.logo ? `<img src="${opp.logo}" style="width:28px;height:28px;object-fit:contain;">` : `<span style="font-size:22px;">${opp?.emoji||'🏒'}</span>`;
-    const teamLogo = DATA.teams[teamKey]?.logo ? `<img src="${DATA.teams[teamKey].logo}" style="width:28px;height:28px;object-fit:contain;">` : `<span style="font-size:22px;">${DATA.teams[teamKey]?.emoji||'🏒'}</span>`;
     const played = m.away_score !== null && m.away_score !== undefined;
-    const homeLabel = `<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.08);color:var(--text-tertiary);margin-left:8px;">${isHome ? 'DOM' : 'VIS'}</span>`;
 
-    let result = '';
-    let resultColor = 'var(--text-tertiary)';
-    if (played) {
-      const teamScore = isHome ? m.home_score : m.away_score;
-      const oppScore  = isHome ? m.away_score : m.home_score;
-      const won = teamScore > oppScore;
-      const dp = m.is_dp && !won;
-      result = `<span style="font-family:'Bebas Neue';font-size:20px;color:${won?'#22c55e':dp?'#f59e0b':'#ef4444'};">${teamScore}–${oppScore}</span>
-        <span style="font-size:11px;color:${won?'#22c55e':dp?'#f59e0b':'#ef4444'};margin-left:4px;">${won?'V':dp?'DP':'D'}</span>`;
-    }
+    const teamScore = isHome ? (m.home_score||0) : (m.away_score||0);
+    const oppScore  = isHome ? (m.away_score||0) : (m.home_score||0);
+    const won = played && teamScore > oppScore;
+    const dp  = played && !won && m.is_dp;
+    const lost = played && !won && !dp;
 
-    // Logos côte à côte
-    const awayKey = m.away;
-    const homeKey = m.home;
-    const awayTeam = DATA.teams[awayKey];
-    const homeTeam = DATA.teams[homeKey];
-    const awayLogo = awayTeam?.logo ? `<img src="${awayTeam.logo}" style="width:28px;height:28px;object-fit:contain;">` : `<span style="font-size:20px;">${awayTeam?.emoji||'🏒'}</span>`;
-    const homeLogo = homeTeam?.logo ? `<img src="${homeTeam.logo}" style="width:28px;height:28px;object-fit:contain;">` : `<span style="font-size:20px;">${homeTeam?.emoji||'🏒'}</span>`;
+    const resultColor = won ? '#22c55e' : dp ? '#f59e0b' : '#ef4444';
+    const resultLabel = won ? 'V' : dp ? 'DP' : 'D';
+    const borderColor = !played ? 'rgba(255,255,255,0.06)' : won ? 'rgba(34,197,94,0.25)' : dp ? 'rgba(245,158,11,0.25)' : 'rgba(239,68,68,0.2)';
+    const bgColor = !played ? 'var(--bg-elevated)' : won ? 'rgba(34,197,94,0.06)' : dp ? 'rgba(245,158,11,0.06)' : 'rgba(239,68,68,0.05)';
 
-    return `<div style="display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.05);gap:12px;">
-      <div style="min-width:70px;">
-        <div style="font-size:12px;color:var(--text-tertiary);">Sem. ${m.week}</div>
-        ${m.time ? `<div style="font-size:11px;color:var(--text-tertiary);">${m.time}</div>` : ''}
+    const teamLogoHtml = team?.logo ? `<img src="${team.logo}" style="width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));">` : `<span style="font-size:32px;">${team?.emoji||'🏒'}</span>`;
+    const oppLogoHtml  = opp?.logo  ? `<img src="${opp.logo}"  style="width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));">` : `<span style="font-size:32px;">${opp?.emoji||'🏒'}</span>`;
+
+    const awayIsTeam = !isHome;
+    const awayLogoHtml = awayIsTeam ? teamLogoHtml : oppLogoHtml;
+    const homeLogoHtml = isHome    ? teamLogoHtml : oppLogoHtml;
+    const awayName = awayIsTeam ? (team?.name||'') : (opp?.name||'?');
+    const homeName = isHome    ? (team?.name||'') : (opp?.name||'?');
+
+    const scoreHtml = played
+      ? `<div style="text-align:center;min-width:80px;">
+           <div style="font-family:'Bebas Neue';font-size:32px;line-height:1;letter-spacing:1px;">
+             <span style="color:${teamScore>oppScore?'#fff':'rgba(255,255,255,0.4)'};">${isHome?teamScore:oppScore}</span>
+             <span style="color:rgba(255,255,255,0.2);margin:0 4px;">-</span>
+             <span style="color:${oppScore>teamScore?'#fff':'rgba(255,255,255,0.4)'};">${isHome?oppScore:teamScore}</span>
+           </div>
+           <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:${resultColor};margin-top:2px;">${resultLabel}</div>
+         </div>`
+      : `<div style="text-align:center;min-width:80px;">
+           <div style="font-family:'Bebas Neue';font-size:22px;color:rgba(255,255,255,0.2);">VS</div>
+           <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px;">Sem. ${m.week}</div>
+         </div>`;
+
+    return `<div style="background:${bgColor};border:1px solid ${borderColor};border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;text-align:center;">
+        ${awayLogoHtml}
+        <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:4px;font-weight:600;letter-spacing:0.5px;">${escapeHtml(awayName).substring(0,10)}</div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;flex:1;">
-        ${awayLogo}
-        <span style="font-size:12px;color:var(--text-tertiary);">@</span>
-        ${homeLogo}
-        ${homeLabel}
+      ${scoreHtml}
+      <div style="flex:1;text-align:center;">
+        ${homeLogoHtml}
+        <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:4px;font-weight:600;letter-spacing:0.5px;">${escapeHtml(homeName).substring(0,10)}</div>
       </div>
-      <div style="text-align:right;">
-        ${played ? result : '<span style="font-size:13px;color:var(--text-tertiary);">À venir</span>'}
-      </div>
+      ${played ? `<div style="position:absolute;"></div>` : ''}
     </div>`;
   };
 
   const last5Html = last5.length > 0
-    ? last5.map(m => renderRow(m, teamKey)).join('')
-    : '<div style="padding:16px;color:var(--text-tertiary);font-size:13px;text-align:center;">Aucun match joué</div>';
+    ? last5.map(m => renderMatchCard(m, true)).join('')
+    : `<div style="padding:24px;text-align:center;color:rgba(255,255,255,0.3);font-size:13px;">Aucun match joué</div>`;
 
   const next5Html = next5.length > 0
-    ? next5.map(m => renderRow(m, teamKey)).join('')
-    : '<div style="padding:16px;color:var(--text-tertiary);font-size:13px;text-align:center;">Aucun match à venir</div>';
+    ? next5.map(m => renderMatchCard(m, false)).join('')
+    : `<div style="padding:24px;text-align:center;color:rgba(255,255,255,0.3);font-size:13px;">Aucun match à venir</div>`;
+
+  // Série actuelle
+  let streak = '';
+  if (last5.length > 0) {
+    let count = 0; let type = '';
+    for (const m of last5) {
+      const isHome = m.home === teamKey;
+      const ts = isHome ? m.home_score : m.away_score;
+      const os = isHome ? m.away_score : m.home_score;
+      const w = ts > os; const d = !w && m.is_dp;
+      const cur = w ? 'V' : d ? 'DP' : 'D';
+      if (!type) { type = cur; count = 1; }
+      else if (cur === type) count++;
+      else break;
+    }
+    const sc = type === 'V' ? '#22c55e' : type === 'DP' ? '#f59e0b' : '#ef4444';
+    streak = `<span style="font-family:'Bebas Neue';font-size:15px;color:${sc};margin-left:8px;">${type}${count}</span>`;
+  }
 
   return `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;">
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-family:'Bebas Neue';font-size:18px;">⏮ Derniers matchs</span>
-          <span style="background:var(--red-bright);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">${last5.length}/5</span>
-        </div>
-        ${last5Html}
+    <div style="margin-top:28px;">
+      <div style="display:flex;align-items:center;margin-bottom:16px;gap:8px;">
+        <div style="width:3px;height:24px;background:var(--red-bright);border-radius:2px;"></div>
+        <span style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;">Matchs récents</span>
+        ${streak}
+        <span style="margin-left:auto;font-size:12px;color:rgba(255,255,255,0.3);">5 derniers · 5 prochains</span>
       </div>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-family:'Bebas Neue';font-size:18px;">⏭ Prochains matchs</span>
-          <span style="background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">${next5.length}/5</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.3);margin-bottom:10px;">DERNIERS MATCHS</div>
+          ${last5Html}
         </div>
-        ${next5Html}
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,0.3);margin-bottom:10px;">PROCHAINS MATCHS</div>
+          ${next5Html}
+        </div>
       </div>
     </div>`;
 }
