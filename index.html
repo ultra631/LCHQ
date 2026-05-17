@@ -1710,12 +1710,12 @@
     <!-- STATS RAPIDES -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;">
       <div onclick="navigate('standings-nhl')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-        <div style="font-size:24px;margin-bottom:4px;">🏒</div>
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/05_NHL_Shield.svg/330px-05_NHL_Shield.svg.png" style="width:40px;height:40px;object-fit:contain;margin-bottom:4px;" onerror="this.outerHTML='🏒'">
         <div style="font-family:'Bebas Neue';font-size:22px;color:var(--nhl-color);" id="homeStatNhlTeams">—</div>
         <div style="font-size:11px;color:var(--text-tertiary);letter-spacing:0.5px;">ÉQUIPES NHL</div>
       </div>
       <div onclick="navigate('standings-lhjmq')" style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-        <div style="font-size:24px;margin-bottom:4px;">⚜️</div>
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/91/QMJHL_logo.svg/800px-QMJHL_logo.svg.png" style="width:40px;height:40px;object-fit:contain;margin-bottom:4px;" onerror="this.outerHTML='⚜️'">
         <div style="font-family:'Bebas Neue';font-size:22px;color:var(--lhjmq-color);" id="homeStatLhjmqTeams">—</div>
         <div style="font-size:11px;color:var(--text-tertiary);letter-spacing:0.5px;">ÉQUIPES LHJMQ</div>
       </div>
