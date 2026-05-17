@@ -9754,8 +9754,14 @@ function renderTournoisSchedule(mode, div) {
     const awayWin = played && m.away_score > m.home_score;
     const homeWin = played && m.home_score > m.away_score;
     const dpBadge = m.is_dp && played ? '<span class="match-dp-badge">DP</span>' : '';
-    const awayName = m.away ? `Équipe ${m.away}` : '?';
-    const homeName = m.home ? `Équipe ${m.home}` : '?';
+    const awayTeamData = m.away ? DATA.tournaments?.[mode]?.[div]?.find(t => t.teamNum === m.away) : null;
+    const homeTeamData = m.home ? DATA.tournaments?.[mode]?.[div]?.find(t => t.teamNum === m.home) : null;
+    const awayRealTeam = awayTeamData?.linkedTeam ? DATA.teams[awayTeamData.linkedTeam] : null;
+    const homeRealTeam = homeTeamData?.linkedTeam ? DATA.teams[homeTeamData.linkedTeam] : null;
+    const awayLogo = awayRealTeam?.logo ? `<img src="${awayRealTeam.logo}" style="width:22px;height:22px;object-fit:contain;margin-right:4px;vertical-align:middle;">` : '';
+    const homeLogo = homeRealTeam?.logo ? `<img src="${homeRealTeam.logo}" style="width:22px;height:22px;object-fit:contain;margin-left:4px;vertical-align:middle;">` : '';
+    const awayName = m.away ? `${awayLogo}<span style="font-size:11px;color:rgba(255,255,255,0.4);margin-right:4px;">#${m.away}</span>${awayRealTeam ? awayRealTeam.name : 'Équipe ' + m.away}` : '?';
+    const homeName = m.home ? `${homeRealTeam ? homeRealTeam.name : 'Équipe ' + m.home}<span style="font-size:11px;color:rgba(255,255,255,0.4);margin-left:4px;">#${m.home}</span>${homeLogo}` : '?';
     const center = played
       ? `<div class="match-center match-score" onclick="event.stopPropagation();openTournoisMatchDetail('${mode}','${div}','${m.id || label}')" style="cursor:pointer;padding:8px 12px;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
           <span class="${awayWin?'winner':'loser'}">${m.away_score}</span>
@@ -9778,9 +9784,9 @@ function renderTournoisSchedule(mode, div) {
       : '';
     return `<div class="match-card ${played?'played':'upcoming'}" style="position:relative;margin-bottom:8px;">
         ${dpBadge}
-        <div class="match-team away"><span class="match-team-name">${awayName}</span></div>
+        <div class="match-team away"><span class="match-team-name" style="display:flex;align-items:center;">${awayName}</span></div>
         ${center}
-        <div class="match-team home"><span class="match-team-name">${homeName}</span></div>
+        <div class="match-team home"><span class="match-team-name" style="display:flex;align-items:center;justify-content:flex-end;">${homeName}</span></div>
         ${(editBtn||delBtn) ? `<div style="position:absolute;top:50%;right:8px;transform:translateY(-50%);display:flex;gap:4px;">${editBtn}${delBtn}</div>` : ''}
       </div>`;
   }
@@ -9790,6 +9796,11 @@ function renderTournoisSchedule(mode, div) {
   if (allMatches.length === 0) {
     html = `<div class="empty-state"><div class="empty-state-icon">📅</div><p>Aucun match — clique sur ➕ Ajouter match.</p></div>`;
   } else {
+    // Trier par équipe away puis home
+    allMatches.sort((a, b) => {
+      if (a.away !== b.away) return a.away - b.away;
+      return a.home - b.home;
+    });
     html = allMatches.map(m => matchCard(m, m.id)).join('');
   }
 
