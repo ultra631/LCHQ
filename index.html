@@ -3065,14 +3065,10 @@
     <h3 id="tournoisPlayerName">📊 Stats du joueur</h3>
     <div class="modal-info" id="tournoisPlayerInfo"></div>
 
-    <div class="stats-table-wrap" style="margin-top:16px;">
+    <!-- Stats JOUEUR -->
+    <div id="tournoisSkaterStatsSection" class="stats-table-wrap" style="margin-top:16px;">
       <table class="stats-add-table">
-        <thead>
-          <tr>
-            <th>Stat</th>
-            <th class="num">Stats</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Stat</th><th class="num">Stats</th></tr></thead>
         <tbody>
           <tr><td>PJ</td><td class="num"><input type="number" id="tpGpAdd" min="0" value="0" style="width:80px;"></td></tr>
           <tr><td>Buts (B)</td><td class="num"><input type="number" id="tpGAdd" min="0" value="0" oninput="updateTpPts()" style="width:80px;"></td></tr>
@@ -3090,8 +3086,24 @@
           <tr><td>Interceptions (INT)</td><td class="num"><input type="number" id="tpIntAdd" min="0" value="0" style="width:80px;"></td></tr>
           <tr><td>Prises de Possession</td><td class="num"><input type="number" id="tpPrisesAdd" min="0" value="0" style="width:80px;"></td></tr>
           <tr><td>Pertes (PERT)</td><td class="num"><input type="number" id="tpPertAdd" min="0" value="0" style="width:80px;"></td></tr>
-          <!-- Champs cachés pour compatibilité -->
           <span style="display:none;"><span id="tpGpCur">0</span><span id="tpGCur">0</span><span id="tpACur">0</span><span id="tpPtsCur">0</span><span id="tpPmCur">0</span><span id="tpHitsCur">0</span><span id="tpTbCur">0</span><span id="tpMjgCur">0</span><span id="tpMjfCur">0</span><span id="tpFoCur">0.0%</span><span id="tpPtCur">0</span><span id="tpPrCur">0</span><span id="tpPassCur">0.0%</span><span id="tpIntCur">0</span><span id="tpPrisesCur">0</span><span id="tpPertCur">0</span><span id="tpGpNew">0</span><span id="tpGNew">0</span><span id="tpANew">0</span><span id="tpPmNew">0</span><span id="tpHitsNew">0</span><span id="tpTbNew">0</span><span id="tpMjgNew">0</span><span id="tpMjfNew">0</span><span id="tpPtNew">0</span><span id="tpPrNew">0</span><span id="tpIntNew">0</span><span id="tpPrisesNew">0</span><span id="tpPertNew">0</span></span>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Stats GARDIEN -->
+    <div id="tournoisGoalieStatsSection" class="stats-table-wrap" style="margin-top:16px;display:none;">
+      <table class="stats-add-table">
+        <thead><tr><th>Stat</th><th class="num">Stats</th></tr></thead>
+        <tbody>
+          <tr><td>PJ</td><td class="num"><input type="number" id="tpGoalieGpAdd" min="0" value="0" style="width:80px;"></td></tr>
+          <tr><td>Victoires (V)</td><td class="num"><input type="number" id="tpGoalieWAdd" min="0" value="0" style="width:80px;"></td></tr>
+          <tr><td>Défaites (D)</td><td class="num"><input type="number" id="tpGoalieLAdd" min="0" value="0" style="width:80px;"></td></tr>
+          <tr><td>Tirs Alloués (LAN)</td><td class="num"><input type="number" id="tpGoalieSaAdd" min="0" value="0" oninput="updateTpGoalie()" style="width:80px;"></td></tr>
+          <tr><td>Buts Alloués (BA)</td><td class="num"><input type="number" id="tpGoalieGaAdd" min="0" value="0" oninput="updateTpGoalie()" style="width:80px;"></td></tr>
+          <tr style="background:rgba(91,155,213,0.08);"><td>MOY <small style="color:var(--text-tertiary);">auto</small></td><td class="num"><span id="tpGoalieGaaNew" class="pts-cell">0.00</span></td></tr>
+          <tr style="background:rgba(91,155,213,0.08);"><td>%ARR <small style="color:var(--text-tertiary);">auto</small></td><td class="num"><span id="tpGoalieSvpNew" class="pts-cell">0.0%</span></td></tr>
+          <tr><td>Jeux Blancs (BL)</td><td class="num"><input type="number" id="tpGoalieSoAdd" min="0" value="0" style="width:80px;"></td></tr>
         </tbody>
       </table>
     </div>
@@ -8623,31 +8635,41 @@ function renderTournoisRoster() {
     
     if (!player) return '';
     
-    // Récupérer les stats du joueur
-    const stats = team.player_stats[playerId] || { gp: 0, g: 0, a: 0, pts: 0, plusminus: 0 };
-    
+    const stats = team.player_stats[playerId] || {};
     const isAdmin = document.body.classList.contains('admin-mode');
-    const clickHandler = `onclick="openTournoisPlayerStatsModal('${playerId}')" style="cursor:pointer;"`;
-    
     const positions = (team.player_positions || {})[playerId] || [];
+    const isGoalie = positions.includes('G');
+    const clickHandler = `onclick="openTournoisPlayerStatsModal('${playerId}')" style="cursor:pointer;"`;
+
     const posBadgesHtml = positions.length > 0
       ? positions.map(p => `<span class="pos-badge pos-badge-main" style="font-size:10px;padding:2px 5px;margin-left:4px;">${p}</span>`).join('')
       : '';
+
+    // Stats selon position
+    const statsHtml = isGoalie
+      ? `<div style="display:flex;gap:12px;font-size:13px;color:var(--text-secondary);flex-wrap:wrap;">
+          <div title="Parties jouées"><strong>${stats.gp||0}</strong> PJ</div>
+          <div title="Victoires" style="color:#22c55e;"><strong>${stats.w||0}</strong> V</div>
+          <div title="Défaites" style="color:var(--red-bright);"><strong>${stats.l||0}</strong> D</div>
+          <div title="Moyenne buts alloués"><strong>${stats.gaa ? Number(stats.gaa).toFixed(2) : '0.00'}</strong> MOY</div>
+          <div title="% Arrêts"><strong>${stats.svpct ? (Number(stats.svpct)*100).toFixed(1) : '0.0'}%</strong> ARR</div>
+          <div title="Jeux blancs"><strong>${stats.so||0}</strong> BL</div>
+        </div>`
+      : `<div style="display:flex;gap:12px;font-size:13px;color:var(--text-secondary);flex-wrap:wrap;">
+          <div title="Parties jouées"><strong>${stats.gp||0}</strong> PJ</div>
+          <div title="Buts"><strong>${stats.g||0}</strong> B</div>
+          <div title="Passes"><strong>${stats.a||0}</strong> A</div>
+          <div title="Points" style="color:var(--red-bright);"><strong>${(stats.g||0)+(stats.a||0)}</strong> PTS</div>
+          <div title="+/-" class="${(stats.plusminus||0)>0?'diff-pos':(stats.plusminus||0)<0?'diff-neg':''}">${(stats.plusminus||0)>0?'+':''}${stats.plusminus||0}</div>
+          ${stats.hits ? `<div title="HITS"><strong>${stats.hits}</strong> HITS</div>` : ''}
+        </div>`;
+
     return `<div ${clickHandler} style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg-elevated);border-radius:8px;margin-bottom:8px;transition:background 0.2s;" onmouseover="this.style.background='var(--bg-card)'" onmouseout="this.style.background='var(--bg-elevated)'">
       <div style="flex:1;">
-        <strong>${escapeHtml(player.name)}</strong>${posBadgesHtml}
+        <strong>${isGoalie ? '🥅 ' : ''}${escapeHtml(player.name)}</strong>${posBadgesHtml}
         ${isAdmin ? `<button class="row-action-btn" onclick="event.stopPropagation();openTournoisPositionModal('${playerId}')" title="Changer position" style="margin-left:6px;">🔄</button><button class="row-action-btn" onclick="event.stopPropagation();removeTournoisPlayer('${playerId}',${idx})" title="Retirer" style="margin-left:4px;">🗑️</button>` : ''}
       </div>
-      <div style="display:flex;gap:12px;font-size:13px;color:var(--text-secondary);flex-wrap:wrap;">
-        <div title="Parties jouées"><strong>${stats.gp}</strong> PJ</div>
-        <div title="Buts"><strong>${stats.g}</strong> B</div>
-        <div title="Passes"><strong>${stats.a}</strong> A</div>
-        <div title="Points" style="color:var(--red-bright);"><strong>${stats.pts || ((stats.g||0)+(stats.a||0))}</strong> PTS</div>
-        <div title="+/-" class="${(stats.plusminus||0) > 0 ? 'diff-pos' : (stats.plusminus||0) < 0 ? 'diff-neg' : ''}">${(stats.plusminus||0) > 0 ? '+' : ''}${stats.plusminus||0}</div>
-        ${stats.hits ? `<div title="HITS"><strong>${stats.hits}</strong> HITS</div>` : ''}
-        ${stats.fopct ? `<div title="%MJ"><strong>${stats.fopct}%</strong> MJ</div>` : ''}
-        ${stats.passpct ? `<div title="%PR"><strong>${stats.passpct}%</strong> PR</div>` : ''}
-      </div>
+      ${statsHtml}
     </div>`;
   }).join('');
 }
@@ -8831,6 +8853,15 @@ function openTournoisPlayerStatsFromMatch(mode, div, teamNum, playerId) {
 function openTournoisPlayerStatsModal(playerId) {
   const { mode, division, teamNum } = currentTournoisTeam;
   const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
+  const positions = team?.player_positions?.[playerId] || [];
+  const isGoalie = positions.includes('G');
+
+  // Montrer/cacher les sections selon la position
+  const goalieSection = document.getElementById('tournoisGoalieStatsSection');
+  const skaterSection = document.getElementById('tournoisSkaterStatsSection');
+  if (goalieSection) goalieSection.style.display = isGoalie ? '' : 'none';
+  if (skaterSection) skaterSection.style.display = isGoalie ? 'none' : '';
+  const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
   if (!team) return;
   
   // Initialiser player_stats si nécessaire
@@ -8845,10 +8876,10 @@ function openTournoisPlayerStatsModal(playerId) {
   
   const stats = team.player_stats[playerId] || { gp:0,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 };
 
-  document.getElementById('tournoisPlayerName').textContent = `📊 ${player.name}`;
+  document.getElementById('tournoisPlayerName').textContent = `${isGoalie ? '🥅' : '📊'} ${player.name}`;
   document.getElementById('tournoisPlayerInfo').textContent = `${mode.toUpperCase()} • Division ${division.toUpperCase()} • Équipe ${teamNum}`;
 
-  loadTpStats(stats);
+  loadTpStats(stats, isGoalie);
   openModal('tournoisPlayerStatsModal');
 }
 
@@ -8860,6 +8891,16 @@ function updateTpTotal(key) {
   const cur = parseFloat(document.getElementById(`tp${key}Cur`).textContent) || 0;
   const add = parseFloat(document.getElementById(`tp${key}Add`).value) || 0;
   document.getElementById(`tp${key}New`).textContent = cur + add;
+}
+
+function updateTpGoalie() {
+  const sa = parseFloat(document.getElementById('tpGoalieSaAdd').value) || 0;
+  const ga = parseFloat(document.getElementById('tpGoalieGaAdd').value) || 0;
+  const gp = parseFloat(document.getElementById('tpGoalieGpAdd').value) || 0;
+  const gaa  = gp > 0 ? (ga / gp).toFixed(2) : '0.00';
+  const svpct = sa > 0 ? ((sa - ga) / sa * 100).toFixed(1) : '0.0';
+  document.getElementById('tpGoalieGaaNew').textContent = gaa;
+  document.getElementById('tpGoalieSvpNew').textContent = svpct + '%';
 }
 
 function updateTpPts() {
@@ -8880,16 +8921,26 @@ function updateTpPass() {
   document.getElementById('tpPassNew').textContent = pt > 0 ? (pr / pt * 100).toFixed(1) + '%' : '0.0%';
 }
 
-function loadTpStats(stats) {
-  const fields = ['Gp','G','A','Pm','Hits','Tb','Mjg','Mjf','Pt','Pr','Int','Prises','Pert'];
-  const keys   = ['gp','g','a','plusminus','hits','tb','mjg','mjf','pt','pr','intc','prises','pert'];
-  fields.forEach((f, i) => {
-    const add = document.getElementById(`tp${f}Add`);
-    if (add) add.value = stats[keys[i]] || 0;
-  });
-  updateTpPts();
-  updateTpFo();
-  updateTpPass();
+function loadTpStats(stats, isGoalie) {
+  if (isGoalie) {
+    document.getElementById('tpGoalieGpAdd').value = stats.gp || 0;
+    document.getElementById('tpGoalieWAdd').value  = stats.w  || 0;
+    document.getElementById('tpGoalieLAdd').value  = stats.l  || 0;
+    document.getElementById('tpGoalieSaAdd').value = stats.sa || 0;
+    document.getElementById('tpGoalieGaAdd').value = stats.ga || 0;
+    document.getElementById('tpGoalieSoAdd').value = stats.so || 0;
+    updateTpGoalie();
+  } else {
+    const fields = ['Gp','G','A','Pm','Hits','Tb','Mjg','Mjf','Pt','Pr','Int','Prises','Pert'];
+    const keys   = ['gp','g','a','plusminus','hits','tb','mjg','mjf','pt','pr','intc','prises','pert'];
+    fields.forEach((f, i) => {
+      const add = document.getElementById(`tp${f}Add`);
+      if (add) add.value = stats[keys[i]] || 0;
+    });
+    updateTpPts();
+    updateTpFo();
+    updateTpPass();
+  }
 }
 
 async function saveTournoisPlayerStats() {
@@ -8898,31 +8949,53 @@ async function saveTournoisPlayerStats() {
   if (!team || !currentTournoisPlayer) return;
   
   // Récupérer les valeurs
-  const tpVal = (key) => parseFloat(document.getElementById(`tp${key}Add`)?.value) || 0;
-  const gp = tpVal('Gp');
-  const g  = tpVal('G');
-  const a  = tpVal('A');
-  const pts    = g + a;
-  const pm     = tpVal('Pm');
-  const hits   = tpVal('Hits');
-  const tb     = tpVal('Tb');
-  const mjg    = tpVal('Mjg');
-  const mjf    = tpVal('Mjf');
-  const pt     = tpVal('Pt');
-  const pr     = tpVal('Pr');
-  const intc   = tpVal('Int');
-  const prises = tpVal('Prises');
-  const pert   = tpVal('Pert');
+  const { mode: sMode, division: sDiv, teamNum: sTeamNum } = currentTournoisTeam;
+  const sTeam = DATA.tournaments[sMode][sDiv].find(t => t.teamNum === sTeamNum);
+  const sPositions = sTeam?.player_positions?.[currentTournoisPlayer] || [];
+  const sIsGoalie = sPositions.includes('G');
+
+  let gp, g, a, pts, pm, hits, tb, mjg, mjf, pt, pr, intc, prises, pert;
+  let goalieStats = null;
+
+  if (sIsGoalie) {
+    const tpG = (key) => parseFloat(document.getElementById(`tpGoalie${key}Add`)?.value) || 0;
+    gp = tpG('Gp');
+    const w  = tpG('W');
+    const l  = tpG('L');
+    const sa = tpG('Sa');
+    const ga = tpG('Ga');
+    const so = tpG('So');
+    const sv = sa - ga;
+    const gaa   = gp > 0 ? +(ga / gp).toFixed(2) : 0;
+    const svpct = sa > 0 ? +(sv / sa).toFixed(3) : 0;
+    g=0; a=0; pts=0; pm=0; hits=0; tb=0; mjg=0; mjf=0; pt=0; pr=0; intc=0; prises=0; pert=0;
+    goalieStats = { gp, w, l, sa, ga, sv, so, gaa, svpct };
+  } else {
+    const tpVal = (key) => parseFloat(document.getElementById(`tp${key}Add`)?.value) || 0;
+    gp = tpVal('Gp');
+    g  = tpVal('G');
+    a  = tpVal('A');
+    pts    = g + a;
+    pm     = tpVal('Pm');
+    hits   = tpVal('Hits');
+    tb     = tpVal('Tb');
+    mjg    = tpVal('Mjg');
+    mjf    = tpVal('Mjf');
+    pt     = tpVal('Pt');
+    pr     = tpVal('Pr');
+    intc   = tpVal('Int');
+    prises = tpVal('Prises');
+    pert   = tpVal('Pert');
+  }
   const fopct  = mjf > 0 ? Math.round(mjg / mjf * 1000) / 10 : 0;
   const passpct= pt  > 0 ? Math.round(pr  / pt  * 1000) / 10 : 0;
 
   if (!team.player_stats) team.player_stats = {};
   
-  // Anciennes stats pour calculer la différence
-  const oldStats = team.player_stats[currentTournoisPlayer] || { gp:0,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 };
-  
-  // Nouvelles stats
-  const newStats = { gp, g, a, pts, plusminus: pm, hits, tb, mjg, mjf, fopct, pt, pr, passpct, intc, prises, pert };
+  const oldStats = team.player_stats[currentTournoisPlayer] || { gp:0,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0,w:0,l:0,sa:0,ga:0,sv:0,so:0 };
+  const newStats = goalieStats 
+    ? goalieStats
+    : { gp, g, a, pts, plusminus: pm, hits, tb, mjg, mjf, fopct, pt, pr, passpct, intc, prises, pert };
   team.player_stats[currentTournoisPlayer] = newStats;
 
   // Cumuler dans le profil joueur global (4S ou 6S)
