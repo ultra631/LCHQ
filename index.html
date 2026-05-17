@@ -1113,16 +1113,23 @@
       appearance: none;
       width: 100%;
       text-align: left;
-      padding: 14px;
-      font-size: 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      background: #1e2130 !important;
+      border: 1px solid rgba(255,255,255,0.15) !important;
+      border-radius: 10px;
       margin-bottom: 8px;
       color: #ffffff !important;
       -webkit-text-fill-color: #ffffff !important;
+      letter-spacing: 0.5px;
     }
-    
+
+    nav button:active,
+    nav .nav-btn:active {
+      background: #2a3050 !important;
+    }
+
     /* Forcer aussi pour les éléments enfants */
     nav button *,
     nav .nav-btn * {
