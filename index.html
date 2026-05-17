@@ -6307,25 +6307,7 @@ function openMatchStatsModal(matchId) {
   const playerPool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
   const goaliePool = is6s ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
 
-  if (DATA.matchStats[matchId].players.length === 0) {
-    const awayPlayers = playerPool.filter(p => p.team === match.away);
-    const homePlayers = playerPool.filter(p => p.team === match.home);
-    const awayGoalies = goaliePool.filter(g => g.team === match.away);
-    const homeGoalies = goaliePool.filter(g => g.team === match.home);
-
-    [...awayPlayers, ...homePlayers].forEach(p => {
-      DATA.matchStats[matchId].players.push({
-        id: p.id, name: p.name, team: p.team, type: 'player',
-        gp:0, g:0, a:0, plusminus:0, hits:0, tb:0, mjg:0, mjf:0, pt:0, pr:0, intc:0, prises:0, pert:0
-      });
-    });
-    [...awayGoalies, ...homeGoalies].forEach(g => {
-      DATA.matchStats[matchId].players.push({
-        id: g.id, name: g.name, team: g.team, type: 'goalie',
-        gp:0, w:0, l:0, sa:0, ga:0, sv:0, so:0, gaa:0, svpct:0
-      });
-    });
-  }
+  // Pas d'auto-remplissage — on sélectionne les joueurs manuellement
   
   // Afficher contenu
   renderMatchStatsContent(match, away, home);
@@ -6414,11 +6396,33 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   const emptyHtml = skaters.length === 0 && goalies.length === 0
     ? `<div class="empty-state"><p>Aucun joueur enregistré.</p></div>` : '';
 
-  // Bouton remplaçant
+  // Boutons sélection joueurs par équipe
+  const awayName = awayTeam?.name || match.away;
+  const homeName = homeTeam?.name || match.home;
+  const maxPlayers = is6s ? 6 : 4;
   const addSubHtml = isAdmin ? `
-    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn btn-secondary" style="font-size:13px;" onclick="openAddSubToSeasonMatch('${match.away}')">➕ Remplaçant ${awayTeam?.name||match.away}</button>
-      <button class="btn btn-secondary" style="font-size:13px;" onclick="openAddSubToSeasonMatch('${match.home}')">➕ Remplaçant ${homeTeam?.name||match.home}</button>
+    <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:10px;">AJOUTER UN JOUEUR À LA GAME</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--nhl-color);margin-bottom:6px;">${escapeHtml(awayName)}</div>
+          <select onchange="addPlayerFromDropdown('${match.away}',this.value,this)" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);font-size:13px;">
+            <option value="">— Choisir joueur —</option>
+            ${[...playerPool.filter(p=>p.team===match.away), ...goaliePool.filter(g=>g.team===match.away)]
+              .filter(p => !(matchStats.players||[]).find(mp=>mp.id===p.id))
+              .map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--lhjmq-color);margin-bottom:6px;">${escapeHtml(homeName)}</div>
+          <select onchange="addPlayerFromDropdown('${match.home}',this.value,this)" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);font-size:13px;">
+            <option value="">— Choisir joueur —</option>
+            ${[...playerPool.filter(p=>p.team===match.home), ...goaliePool.filter(g=>g.team===match.home)]
+              .filter(p => !(matchStats.players||[]).find(mp=>mp.id===p.id))
+              .map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}
+          </select>
+        </div>
+      </div>
     </div>` : '';
 
   document.getElementById('matchStatsContent').innerHTML = skatersHtml + goaliesHtml + emptyHtml + addSubHtml;
@@ -10839,6 +10843,33 @@ function resetPlayoffMatch(mode, div, matchId) {
 
   savePlayoff(mode, div);
   renderPlayoffs(mode, div);
+}
+
+
+function addPlayerFromDropdown(teamKey, playerId, selectEl) {
+  if (!playerId) return;
+  const is6s = currentMatchSource === '6s';
+  const pool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
+  const goaliePool = is6s ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+  const person = [...pool, ...goaliePool].find(p => p.id === playerId);
+  if (!person) return;
+
+  const matchStats = DATA.matchStats[currentMatchStats];
+  if (!matchStats) return;
+
+  const isGoalie = goaliePool.some(g => g.id === playerId);
+  if (isGoalie) {
+    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'goalie', gp:1,w:0,l:0,sa:0,ga:0,sv:0,so:0,gaa:0,svpct:0 });
+  } else {
+    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'player', gp:1,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 });
+  }
+
+  selectEl.value = '';
+  saveToFirebase();
+
+  const matchObj = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
+                   DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
+  if (matchObj) renderMatchStatsContent(matchObj, DATA.teams[matchObj.away], DATA.teams[matchObj.home]);
 }
 
 loadData();
