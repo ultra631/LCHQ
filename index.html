@@ -1646,6 +1646,7 @@
       <!-- Trophées -->
       <div class="nav-group">
         <button class="nav-btn desktop-only" data-section="trophies">Trophées ▾</button>
+      <button class="nav-btn mode-4s" data-page="draft" onclick="navigate('draft')">🎯 Repêchage</button>
         <div class="nav-dropdown">
           <button class="nav-btn mode-4s" data-page="trophies-nhl" onclick="navigate('trophies-nhl')">Trophées NHL</button>
           <button class="nav-btn mode-4s" data-page="trophies-lhjmq" onclick="navigate('trophies-lhjmq')">Trophées LHJMQ</button>
@@ -2504,6 +2505,22 @@
     </div>
   </div>
   <div id="trophies6s"></div>
+</section>
+
+<!-- ============ REPÊCHAGE ============ -->
+<section id="page-draft" class="page">
+  <div class="division-banner" style="--division-color: #f59e0b">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#d97706,#b45309);">🎯</div>
+    <div class="division-banner-text">
+      <h3>Repêchage — Saison 5</h3>
+      <p>Draft 4 vs 4 · 3 rondes · 72 choix</p>
+    </div>
+  </div>
+  <div class="tabs" style="margin-bottom:20px;">
+    <button class="tab active" onclick="switchDraftDiv('nhl',this)">🏒 Division NHL</button>
+    <button class="tab" onclick="switchDraftDiv('lhjmq',this)">⚜️ Division LHJMQ</button>
+  </div>
+  <div id="draftContent"></div>
 </section>
 
 <!-- ============ TOURNOIS ============ -->
@@ -3724,6 +3741,8 @@ function navigate(page) {
     renderAllPlayers();
   } else if (page === 'goalies-all') {
     renderAllGoalies();
+  } else if (page === 'draft') {
+    renderDraft('nhl');
   } else if (page === 'standings-all') {
     renderStandingsAll();
   } else if (page === 'schedule') {
@@ -10356,6 +10375,60 @@ function renderTeamMatchesSection(teamKey) {
     </div>`;
 }
 
+
+// ============ REPÊCHAGE ============
+
+let currentDraftDiv = 'nhl';
+
+function switchDraftDiv(div, btn) {
+  currentDraftDiv = div;
+  document.querySelectorAll('#page-draft .tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderDraft(div);
+}
+
+function renderDraft(div) {
+  const container = document.getElementById('draftContent');
+  if (!container) return;
+
+  const draft = DATA.draft_4s_s5?.[div];
+  if (!draft || draft.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>Données non disponibles</p></div>';
+    return;
+  }
+
+  const divColor = div === 'nhl' ? 'var(--nhl-color)' : 'var(--lhjmq-color)';
+
+  container.innerHTML = draft.map(round => {
+    const picks = round.picks.map((pick, idx) => {
+      const team = DATA.teams[pick.team];
+      const logoHtml = team?.logo
+        ? `<img src="${team.logo}" style="width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));">`
+        : `<span style="font-size:36px;">${team?.emoji||'🏒'}</span>`;
+
+      return `<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;transition:transform 0.15s,border-color 0.15s;" onmouseover="this.style.transform='translateY(-1px)';this.style.borderColor='${divColor.replace('var(','').replace(')','')}'=='var(--nhl-color)'?'rgba(30,144,255,0.3)':'rgba(200,16,46,0.3)'" onmouseout="this.style.transform='';this.style.borderColor='var(--border)'">
+        <span style="font-family:'Bebas Neue';font-size:22px;color:${divColor};min-width:32px;">${(idx+1).toString().padStart(2,'0')}</span>
+        ${logoHtml}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:11px;color:var(--text-tertiary);letter-spacing:0.5px;margin-bottom:2px;">${escapeHtml(team?.name||pick.team)}</div>
+          <div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${escapeHtml(pick.player)}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div style="margin-bottom:32px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div style="width:4px;height:28px;background:${divColor};border-radius:2px;"></div>
+        <span style="font-family:'Bebas Neue';font-size:26px;letter-spacing:1px;">${round.round}${round.round===1?'ère':'e'} Ronde</span>
+        <span style="font-size:13px;color:var(--text-tertiary);">${round.picks.length} choix</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;">
+        ${picks}
+      </div>
+    </div>`;
+  }).join('');
+}
+
 loadData();
 
 // FORCER couleur blanche sur mobile pour les nav-btn
@@ -10477,6 +10550,7 @@ if (window.innerWidth <= 900) {
     <div class="drawer-section-label">Saison</div>
     <button class="drawer-btn" onclick="drawerNav('teams')"><span class="drawer-btn-icon">🛡️</span>Équipes</button>
     <button class="drawer-btn" onclick="drawerNav('schedule')"><span class="drawer-btn-icon">📅</span>Calendrier</button>
+    <button class="drawer-btn" onclick="drawerNav('draft')"><span class="drawer-btn-icon">🎯</span>Repêchage</button>
     <button class="drawer-btn" onclick="drawerNav('stats')"><span class="drawer-btn-icon">📊</span>Stats</button>
     <button class="drawer-btn" onclick="drawerNav('trophies')"><span class="drawer-btn-icon">🏆</span>Trophées</button>
     <button class="drawer-btn" onclick="drawerNav('tournois-4s')"><span class="drawer-btn-icon">🥇</span>Tournois</button>
