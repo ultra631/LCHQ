@@ -8853,6 +8853,7 @@ function openTournoisPlayerStatsFromMatch(mode, div, teamNum, playerId) {
 function openTournoisPlayerStatsModal(playerId) {
   const { mode, division, teamNum } = currentTournoisTeam;
   const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
+  if (!team) return;
   const positions = team?.player_positions?.[playerId] || [];
   const isGoalie = positions.includes('G');
 
@@ -8861,8 +8862,6 @@ function openTournoisPlayerStatsModal(playerId) {
   const skaterSection = document.getElementById('tournoisSkaterStatsSection');
   if (goalieSection) goalieSection.style.display = isGoalie ? '' : 'none';
   if (skaterSection) skaterSection.style.display = isGoalie ? 'none' : '';
-  const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
-  if (!team) return;
   
   // Initialiser player_stats si nécessaire
   if (!team.player_stats) team.player_stats = {};
