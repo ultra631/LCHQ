@@ -5941,13 +5941,8 @@ function renderMatchCard(m) {
   const played = isMatchPlayed(m);
   const dpBadge = m.is_dp ? '<span class="match-dp-badge">DP</span>' : '';
   
-  // Clic sur match ouvre stats si joué, modal score si admin
-  let clickAttr = '';
-  if (played) {
-    clickAttr = `onclick="openMatchStatsModal('${m.id}')"`;
-  } else if (isAdmin) {
-    clickAttr = `onclick="openMatchModal('${m.id}')"`;
-  }
+  // Clic sur match ouvre toujours le résumé/stats
+  let clickAttr = `onclick="openMatchStatsModal('${m.id}')"`;
 
   let center;
   if (played) {
@@ -6344,105 +6339,235 @@ function openMatchStatsModal(matchId) {
 }
 
 function renderMatchStatsContent(match, awayTeam, homeTeam) {
-  const isEditMode = isAdmin;
   const matchStats = DATA.matchStats[currentMatchStats] || { players: [] };
-  
-  let html = '';
-  
-  if (isEditMode) {
-    // MODE ADMIN: Formulaire pour entrer les stats
-    html += `<div class="modal-info" style="background:rgba(91,155,213,0.1);border-color:rgba(91,155,213,0.3);color:#93c5fd;margin-bottom:20px;">
-      ⚠️ <strong>Mode Admin</strong> : Rentre les stats des joueurs qui ont participé au match.
-    </div>`;
-    
-    // Sélecteur de joueur avec barre de recherche
-    html += `<div class="modal-form-group">
-      <label>Ajouter un joueur/gardien au match</label>
-      <input type="text" id="playerSearchInput" placeholder="🔍 Rechercher par nom..." 
-        onkeyup="filterPlayerDropdown()" 
-        style="width:100%;padding:10px;margin-bottom:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
-      <select id="addPlayerToMatch" size="8" onchange="addPlayerToMatchStats(this.value)" 
-        style="width:100%;border-radius:8px;background:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border);">`;
-    
-    // Liste des joueurs des deux équipes + remplaçants (4S ou 6S)
-    const is6S = currentMatchSource === '6s';
-    const playerPool = is6S ? (DATA.season_3_6v6?.players || []) : DATA.players;
-    const goaliePool = is6S ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+  const is6s = currentMatchSource === '6s';
+  const playerPool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
+  const goaliePool = is6s ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
 
-    const allPlayers = playerPool.filter(p =>
-      p.team === match.away || p.team === match.home || p.status === 'sub'
-    );
+  // Séparer skaters et gardiens
+  const skaters = matchStats.players.filter(p => p.type !== 'goalie');
+  const goalies  = matchStats.players.filter(p => p.type === 'goalie');
 
-    // Liste des gardiens des deux équipes
-    const allGoalies = goaliePool.filter(g =>
-      g.team === match.away || g.team === match.home || g.status === 'sub'
-    );
-    
-    // Joueurs
-    if (allPlayers.length > 0) {
-      html += `<optgroup label="➡️ Joueurs">`;
-      allPlayers.forEach(p => {
-        const teamLabel = p.team ? DATA.teams[p.team]?.name : 'Remplaçant';
-        html += `<option value="${p.id}" data-name="${p.name.toLowerCase()}">${p.name} (${teamLabel})</option>`;
-      });
-      html += `</optgroup>`;
-    }
-    
-    // Gardiens
-    if (allGoalies.length > 0) {
-      html += `<optgroup label="🥅 Gardiens">`;
-      allGoalies.forEach(g => {
-        const teamLabel = g.team ? DATA.teams[g.team]?.name : 'Remplaçant';
-        html += `<option value="${g.id}" data-name="${g.name.toLowerCase()}">${g.name} (${teamLabel})</option>`;
-      });
-      html += `</optgroup>`;
-    }
-    
-    html += `</select></div>`;
-  }
-  
-  // Afficher les joueurs avec stats
-  if (matchStats.players.length === 0) {
-    html += `<div class="empty-state" style="padding:40px 20px;">
-      <div class="empty-state-icon">🏒</div>
-      <p><strong>Aucune statistique enregistrée</strong></p>
-      ${isEditMode ? '<p style="margin-top:8px;color:var(--text-tertiary);">Ajoute des joueurs ci-dessus pour commencer.</p>' : ''}
-    </div>`;
-  } else {
-    // Grouper par équipe
-    const awayPlayers = matchStats.players.filter(p => {
-      const is6Ss = currentMatchSource === '6s';
-      const playerPoolS = is6Ss ? (DATA.season_3_6v6?.players || []) : DATA.players;
-      const goaliePoolS = is6Ss ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
-      const player = playerPoolS.find(pl => pl.id === p.playerId);
-      const goalie = goaliePoolS.find(gl => gl.id === p.playerId);
-      const person = player || goalie;
-      return person && (person.team === match.away || (person.status === 'sub' && p.team === match.away));
-    });
-    
-    const homePlayers = matchStats.players.filter(p => {
-      const is6SH = currentMatchSource === '6s';
-      const playerPoolH = is6SH ? (DATA.season_3_6v6?.players || []) : DATA.players;
-      const goaliePoolH = is6SH ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
-      const player = playerPoolH.find(pl => pl.id === p.playerId);
-      const goalie = goaliePoolH.find(gl => gl.id === p.playerId);
-      const person = player || goalie;
-      return person && (person.team === match.home || (person.status === 'sub' && p.team === match.home));
-    });
-    
-    // Tableau visiteur
-    if (awayPlayers.length > 0) {
-      html += renderTeamStatsTable(awayPlayers, awayTeam, isEditMode, 'away');
-    }
-    
-    // Tableau domicile
-    if (homePlayers.length > 0) {
-      html += renderTeamStatsTable(homePlayers, homeTeam, isEditMode, 'home');
-    }
-  }
-  
-  document.getElementById('matchStatsContent').innerHTML = html;
+  const renderSkaterRow = (p, idx) => {
+    const pmClass = (p.plusminus||0)>0?'diff-pos':(p.plusminus||0)<0?'diff-neg':'';
+    const pmStr = (p.plusminus||0)>0?`+${p.plusminus}`:(p.plusminus||0);
+    const teamName = DATA.teams[p.team]?.name || p.team;
+    return `<tr>
+      <td style="font-weight:600;">${escapeHtml(p.name)}</td>
+      <td>${escapeHtml(teamName)}</td>
+      <td class="num">${p.gp||0}</td>
+      <td class="num">${p.g||0}</td>
+      <td class="num">${p.a||0}</td>
+      <td class="num pts-cell" style="color:var(--red-bright);">${(p.g||0)+(p.a||0)}</td>
+      <td class="num ${pmClass}">${pmStr}</td>
+      ${isAdmin ? `<td style="display:flex;gap:4px;">
+        <button class="row-action-btn" onclick="editMatchStatPlayer(${idx})" title="Modifier">✏️</button>
+        <button class="row-action-btn delete" onclick="removeMatchStatPlayer(${idx})" title="Retirer">🗑️</button>
+      </td>` : ''}
+    </tr>`;
+  };
+
+  const renderGoalieRow = (p, idx) => {
+    const gaa = p.gaa ? Number(p.gaa).toFixed(2) : '0.00';
+    const svpct = p.svpct ? (Number(p.svpct)*100).toFixed(1) : '0.0';
+    const teamName = DATA.teams[p.team]?.name || p.team;
+    return `<tr>
+      <td style="font-weight:600;">🥅 ${escapeHtml(p.name)}</td>
+      <td>${escapeHtml(teamName)}</td>
+      <td class="num">${p.gp||0}</td>
+      <td class="num" style="color:#22c55e;">${p.w||0}</td>
+      <td class="num" style="color:var(--red-bright);">${p.l||0}</td>
+      <td class="num">${gaa}</td>
+      <td class="num">${svpct}%</td>
+      <td class="num">${p.so||0}</td>
+      ${isAdmin ? `<td style="display:flex;gap:4px;">
+        <button class="row-action-btn" onclick="editMatchStatPlayer(${skaters.length + goalies.indexOf(p)})" title="Modifier">✏️</button>
+        <button class="row-action-btn delete" onclick="removeMatchStatPlayer(${skaters.length + goalies.indexOf(p)})" title="Retirer">🗑️</button>
+      </td>` : ''}
+    </tr>`;
+  };
+
+  const skatersHtml = skaters.length > 0 ? `
+    <h3 style="font-family:'Bebas Neue';font-size:20px;margin-bottom:12px;">🏒 Joueurs</h3>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>Joueur</th><th>Équipe</th>
+        <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
+        <th class="num pts-cell">PTS</th><th class="num">+/-</th>
+        ${isAdmin ? '<th></th>' : ''}
+      </tr></thead>
+      <tbody>${skaters.map((p,i) => renderSkaterRow(p,i)).join('')}</tbody>
+    </table></div>` : '';
+
+  const goaliesHtml = goalies.length > 0 ? `
+    <h3 style="font-family:'Bebas Neue';font-size:20px;margin:16px 0 12px;">🥅 Gardiens</h3>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>Gardien</th><th>Équipe</th>
+        <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
+        <th class="num">MOY</th><th class="num">ARR%</th><th class="num">BL</th>
+        ${isAdmin ? '<th></th>' : ''}
+      </tr></thead>
+      <tbody>${goalies.map((p,i) => renderGoalieRow(p, i)).join('')}</tbody>
+    </table></div>` : '';
+
+  const emptyHtml = skaters.length === 0 && goalies.length === 0
+    ? `<div class="empty-state"><p>Aucun joueur enregistré.</p></div>` : '';
+
+  // Bouton remplaçant
+  const addSubHtml = isAdmin ? `
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-secondary" style="font-size:13px;" onclick="openAddSubToSeasonMatch('${match.away}')">➕ Remplaçant ${awayTeam?.name||match.away}</button>
+      <button class="btn btn-secondary" style="font-size:13px;" onclick="openAddSubToSeasonMatch('${match.home}')">➕ Remplaçant ${homeTeam?.name||match.home}</button>
+    </div>` : '';
+
+  document.getElementById('matchStatsContent').innerHTML = skatersHtml + goaliesHtml + emptyHtml + addSubHtml;
 }
+
+function editMatchStatPlayer(idx) {
+  const matchStats = DATA.matchStats[currentMatchStats];
+  if (!matchStats) return;
+  const p = matchStats.players[idx];
+  if (!p) return;
+  // Remplir le formulaire inline
+  const isGoalie = p.type === 'goalie';
+  const fields = isGoalie
+    ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+        <div><label style="font-size:11px;">PJ</label><input id="msp_gp" type="number" value="${p.gp||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">V</label><input id="msp_w" type="number" value="${p.w||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">D</label><input id="msp_l" type="number" value="${p.l||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">LAN</label><input id="msp_sa" type="number" value="${p.sa||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">BA</label><input id="msp_ga" type="number" value="${p.ga||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">BL</label><input id="msp_so" type="number" value="${p.so||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+      </div>`
+    : `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
+        <div><label style="font-size:11px;">PJ</label><input id="msp_gp" type="number" value="${p.gp||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">B</label><input id="msp_g" type="number" value="${p.g||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">A</label><input id="msp_a" type="number" value="${p.a||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">+/-</label><input id="msp_pm" type="number" value="${p.plusminus||0}" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">HITS</label><input id="msp_hits" type="number" value="${p.hits||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+        <div><label style="font-size:11px;">TB</label><input id="msp_tb" type="number" value="${p.tb||0}" min="0" style="width:100%;padding:6px;border-radius:6px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);"></div>
+      </div>`;
+
+  // Ouvrir un mini modal
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;';
+  overlay.innerHTML = `
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;min-width:320px;max-width:420px;">
+      <h3 style="font-family:'Bebas Neue';font-size:22px;margin-bottom:12px;">📊 ${escapeHtml(p.name)}</h3>
+      ${fields}
+      <div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-end;">
+        <button onclick="this.closest('[style*=fixed]').remove()" style="padding:8px 16px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;color:#fff;cursor:pointer;">Annuler</button>
+        <button onclick="saveMatchStatPlayer(${idx},'${p.type}')" style="padding:8px 16px;background:var(--red-bright);border:none;border-radius:8px;color:#fff;cursor:pointer;font-weight:700;">✅ Sauvegarder</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function saveMatchStatPlayer(idx, type) {
+  const matchStats = DATA.matchStats[currentMatchStats];
+  if (!matchStats) return;
+  const p = matchStats.players[idx];
+  if (!p) return;
+
+  if (type === 'goalie') {
+    p.gp = parseInt(document.getElementById('msp_gp')?.value)||0;
+    p.w  = parseInt(document.getElementById('msp_w')?.value)||0;
+    p.l  = parseInt(document.getElementById('msp_l')?.value)||0;
+    p.sa = parseInt(document.getElementById('msp_sa')?.value)||0;
+    p.ga = parseInt(document.getElementById('msp_ga')?.value)||0;
+    p.so = parseInt(document.getElementById('msp_so')?.value)||0;
+    p.sv = p.sa - p.ga;
+    p.gaa   = p.gp > 0 ? +(p.ga / p.gp).toFixed(2) : 0;
+    p.svpct = p.sa > 0 ? +(p.sv / p.sa).toFixed(3) : 0;
+  } else {
+    p.gp = parseInt(document.getElementById('msp_gp')?.value)||0;
+    p.g  = parseInt(document.getElementById('msp_g')?.value)||0;
+    p.a  = parseInt(document.getElementById('msp_a')?.value)||0;
+    p.plusminus = parseInt(document.getElementById('msp_pm')?.value)||0;
+    p.hits = parseInt(document.getElementById('msp_hits')?.value)||0;
+    p.tb   = parseInt(document.getElementById('msp_tb')?.value)||0;
+    p.pts  = p.g + p.a;
+  }
+
+  // Fermer le mini modal
+  document.querySelector('[style*="position:fixed"][style*="10001"]')?.remove();
+
+  // Sauvegarder et rafraîchir
+  saveToFirebase();
+  const match = null;
+  renderMatchStatsContent(
+    DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
+    DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats),
+    DATA.teams[document.getElementById('statsAwayName')?.textContent?.toLowerCase()],
+    DATA.teams[document.getElementById('statsHomeName')?.textContent?.toLowerCase()]
+  );
+  showToast('✅ Stats sauvegardées!');
+}
+
+function removeMatchStatPlayer(idx) {
+  if (!confirm('Retirer ce joueur du match?')) return;
+  const matchStats = DATA.matchStats[currentMatchStats];
+  if (!matchStats) return;
+  matchStats.players.splice(idx, 1);
+  saveToFirebase();
+  const away = DATA.teams[Object.keys(DATA.teams).find(k => DATA.teams[k].name === document.getElementById('statsAwayName')?.textContent)];
+  const home = DATA.teams[Object.keys(DATA.teams).find(k => DATA.teams[k].name === document.getElementById('statsHomeName')?.textContent)];
+  renderMatchStatsContent({away: away?.id, home: home?.id}, away, home);
+}
+
+function openAddSubToSeasonMatch(teamKey) {
+  // Ouvrir une liste de tous les joueurs pour en ajouter un comme remplaçant
+  const is6s = currentMatchSource === '6s';
+  const pool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
+  const goaliePool = is6s ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+  const matchStats = DATA.matchStats[currentMatchStats];
+  const existingIds = (matchStats?.players || []).map(p => p.id);
+
+  const available = [...pool, ...goaliePool].filter(p => !existingIds.includes(p.id));
+
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;';
+  overlay.innerHTML = `
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;min-width:320px;max-width:420px;">
+      <h3 style="font-family:'Bebas Neue';font-size:22px;margin-bottom:12px;">➕ Ajouter remplaçant</h3>
+      <input type="text" placeholder="🔍 Rechercher..." oninput="this.nextElementSibling.querySelectorAll('option').forEach(o => o.style.display = o.text.toLowerCase().includes(this.value.toLowerCase()) ? '' : 'none')"
+        style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);margin-bottom:8px;">
+      <select size="8" style="width:100%;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);" onchange="addSubToSeasonMatch('${teamKey}',this.value)">
+        ${available.map(p => `<option value="${p.id}">${p.name} (${DATA.teams[p.team]?.name||p.team||'Libre'})</option>`).join('')}
+      </select>
+      <div style="margin-top:12px;text-align:right;">
+        <button onclick="this.closest('[style*=fixed]').remove()" style="padding:8px 16px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;color:#fff;cursor:pointer;">Fermer</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function addSubToSeasonMatch(teamKey, playerId) {
+  const is6s = currentMatchSource === '6s';
+  const pool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
+  const goaliePool = is6s ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
+  const person = [...pool, ...goaliePool].find(p => p.id === playerId);
+  if (!person) return;
+
+  const matchStats = DATA.matchStats[currentMatchStats];
+  if (!matchStats) return;
+
+  const isGoalie = goaliePool.some(g => g.id === playerId);
+  if (isGoalie) {
+    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'goalie', gp:0,w:0,l:0,sa:0,ga:0,sv:0,so:0,gaa:0,svpct:0 });
+  } else {
+    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'player', gp:0,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 });
+  }
+
+  document.querySelector('[style*="position:fixed"][style*="10001"]')?.remove();
+  saveToFirebase();
+
+  const awayMatch = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
+                    DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
+  if (awayMatch) renderMatchStatsContent(awayMatch, DATA.teams[awayMatch.away], DATA.teams[awayMatch.home]);
+}
+
 
 function renderTeamStatsTable(players, team, isEditMode, side) {
   // Séparer joueurs et gardiens
@@ -7512,10 +7637,8 @@ function renderSchedule6S() {
         const isAdmin = document.body.classList.contains('admin-mode');
         const dpBadge = m.is_dp ? '<span class="match-dp-badge">DP</span>' : '';
 
-        let clickAttr = '';
-        if (isAdmin) {
-          clickAttr = `onclick="openMatchModal6S('${m.id}')"`;
-        }
+        // Toujours ouvrir le résumé/stats en cliquant sur le match
+        let clickAttr = `onclick="openMatchStatsModal('${m.id}')"`;
 
         let center;
         if (played) {
