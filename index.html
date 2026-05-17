@@ -134,7 +134,7 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.6);
     z-index: 200;
   }
-  .nav-group .nav-dropdown { display: none; }
+  .nav-group:hover .nav-dropdown { display: flex; flex-direction: column; gap: 2px; }
   .nav-group.open .nav-dropdown { display: flex; flex-direction: column; gap: 2px; }
   .nav-dropdown .nav-btn { 
     width: 100%; 
@@ -1612,24 +1612,16 @@
 
       <!-- Joueurs -->
       <div class="nav-group">
-        <button class="nav-btn" data-section="players" onclick="toggleNavSection(this)">Joueurs ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s admin-hidden" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
-          <button class="nav-btn mode-4s admin-hidden" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
-          <button class="nav-btn mode-6s admin-hidden" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">Joueurs 6S</button>
-          <button class="nav-btn admin-only-nav" data-page="players-all" onclick="navigate('players-all')" style="display:none;">👥 Tous les joueurs</button>
-        </div>
+        <button class="nav-btn mode-4s admin-hidden" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
+        <button class="nav-btn mode-4s admin-hidden" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
+        <button class="nav-btn mode-6s admin-hidden" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">Joueurs 6S</button>
       </div>
 
       <!-- Gardiens -->
       <div class="nav-group">
-        <button class="nav-btn" data-section="goalies" onclick="toggleNavSection(this)">Gardiens ▾</button>
-        <div class="nav-dropdown">
-          <button class="nav-btn mode-4s admin-hidden" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
-          <button class="nav-btn mode-4s admin-hidden" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
-          <button class="nav-btn mode-6s admin-hidden" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">Gardiens 6S</button>
-          <button class="nav-btn admin-only-nav" data-page="goalies-all" onclick="navigate('goalies-all')" style="display:none;">🥅 Tous les gardiens</button>
-        </div>
+        <button class="nav-btn mode-4s admin-hidden" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
+        <button class="nav-btn mode-4s admin-hidden" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
+        <button class="nav-btn mode-6s admin-hidden" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">Gardiens 6S</button>
       </div>
 
       <!-- Équipes -->
