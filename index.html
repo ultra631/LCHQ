@@ -9516,9 +9516,20 @@ async function saveTournoisPlayerStats() {
   renderTournoisRoster();
   rerenderAll();
   
-  // Fermer le modal
+  // Fermer le modal stats et rouvrir le résumé si on venait du calendrier
   closeModal('tournoisPlayerStatsModal');
-  showToast('✅ Stats sauvegardées et ajoutées au profil!');
+  showToast('✅ Stats sauvegardées!');
+
+  // Rouvrir le résumé du match si on venait du calendrier
+  if (currentTournoisMatchDetail?.matchId && currentTournoisMatchDetail?.mode) {
+    setTimeout(() => {
+      openTournoisMatchDetail(
+        currentTournoisMatchDetail.mode,
+        currentTournoisMatchDetail.div,
+        currentTournoisMatchDetail.matchId
+      );
+    }, 150);
+  }
 }
 
 function saveTournoisTeam() {
