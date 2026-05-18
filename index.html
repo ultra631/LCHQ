@@ -2555,8 +2555,14 @@
 
   <!-- CLASSEMENT -->
   <div id="tournois-4s-standings">
-    <h2 class="section-title" style="color: var(--nhl-color);">Division NHL</h2>
-    <div class="table-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h2 class="section-title" style="color: var(--nhl-color);margin:0;">Division NHL</h2>
+    <div class="admin-only" style="display:flex;gap:8px;">
+      <button class="btn btn-primary" onclick="addTournoisTeam('4s','nhl')" style="font-size:13px;padding:8px 14px;">➕ Ajouter équipe</button>
+      <button class="btn btn-secondary" onclick="removeTournoisTeam('4s','nhl')" style="font-size:13px;padding:8px 14px;">🗑️ Retirer équipe</button>
+    </div>
+  </div>
+  <div class="table-wrap">
       <table>
         <thead><tr>
           <th>#</th><th>Équipe</th>
@@ -2629,7 +2635,13 @@
 
   <!-- CLASSEMENT -->
   <div id="tournois-6s-standings">
-    <h2 class="section-title" style="color: #3b82f6;">Classement 6S</h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 class="section-title" style="color: #3b82f6;margin:0;">Classement 6S</h2>
+      <div class="admin-only" style="display:none;gap:8px;display:flex;">
+        <button class="btn btn-primary" onclick="addTournoisTeam('6s','nhl')" style="font-size:13px;padding:8px 14px;">➕ Ajouter équipe</button>
+        <button class="btn btn-secondary" onclick="removeTournoisTeam('6s','nhl')" style="font-size:13px;padding:8px 14px;">🗑️ Retirer équipe</button>
+      </div>
+    </div>
     <div class="table-wrap">
       <table>
         <thead><tr>
@@ -11110,6 +11122,50 @@ function editTonightPlayerName(playerId, currentName) {
 
   // Rafraîchir la liste
   showAddPlayerToTournoisTeam();
+}
+
+
+function addTournoisTeam(mode, div) {
+  if (!DATA.tournaments) DATA.tournaments = {};
+  if (!DATA.tournaments[mode]) DATA.tournaments[mode] = {};
+  if (!DATA.tournaments[mode][div]) DATA.tournaments[mode][div] = [];
+  
+  const teams = DATA.tournaments[mode][div];
+  const maxNum = teams.length > 0 ? Math.max(...teams.map(t => t.teamNum)) : 0;
+  const newTeam = {
+    teamNum: maxNum + 1,
+    players: [],
+    player_positions: {},
+    player_stats: {},
+    schedule: [],
+    gp: 0, w: 0, l: 0, otl: 0, gf: 0, ga: 0, pts: 0
+  };
+  teams.push(newTeam);
+  computeTournoisStandings(mode, div);
+  saveToFirebase();
+  renderTournoisAll(mode);
+  showToast(`✅ Équipe ${newTeam.teamNum} ajoutée!`);
+}
+
+function removeTournoisTeam(mode, div) {
+  const teams = DATA.tournaments?.[mode]?.[div] || [];
+  if (teams.length === 0) return;
+  
+  const nums = teams.map(t => t.teamNum).join(', ');
+  const numStr = prompt(`Quel numéro d'équipe retirer ? (${nums})`);
+  if (!numStr) return;
+  
+  const num = parseInt(numStr);
+  const idx = teams.findIndex(t => t.teamNum === num);
+  if (idx === -1) { alert('Équipe non trouvée!'); return; }
+  
+  if (!confirm(`Retirer l'Équipe ${num} et tous ses matchs ?`)) return;
+  
+  teams.splice(idx, 1);
+  computeTournoisStandings(mode, div);
+  saveToFirebase();
+  renderTournoisAll(mode);
+  showToast(`✅ Équipe ${num} retirée!`);
 }
 
 loadData();
