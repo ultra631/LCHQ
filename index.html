@@ -5421,7 +5421,8 @@ function renderSubs() {
 
   let subs = DATA.players.filter(p => {
     const status = p.status || 'regular';
-    if (status !== 'sub') return false;
+    // Remplaçant = status sub OU pas d'équipe assignée
+    if (status !== 'sub' && (p.team && status !== 'inactive')) return false;
     if (search && !p.name.toLowerCase().includes(search)) return false;
     if (posF) {
       const main = p.position_main || p.position;
@@ -6449,12 +6450,23 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   const makeDropdown = (teamKey, side) => {
     if (!isAdmin) return '';
     const existing = new Set(matchStats.players.map(p => p.id));
+    // Joueurs de l'équipe
     const teamPlayers = [...playerPool.filter(p => p.team === teamKey), ...goaliePool.filter(g => g.team === teamKey)]
       .filter(p => !existing.has(p.id));
-    return `<select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);font-size:13px;margin-top:8px;width:100%;">
-      <option value="">➕ Ajouter joueur — ${escapeHtml(DATA.teams[teamKey]?.name||teamKey)}</option>
-      ${teamPlayers.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
-    </select>`;
+    // Remplaçants (pas d'équipe ou status sub)
+    const subs = [...playerPool.filter(p => (!p.team || p.status === 'sub') && !existing.has(p.id)),
+                  ...goaliePool.filter(g => (!g.team || g.status === 'sub') && !existing.has(g.id))];
+
+    return `<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);font-size:13px;">
+        <option value="">➕ Joueurs de l'équipe</option>
+        ${teamPlayers.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+      </select>
+      <select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:rgba(245,158,11,0.1);color:#fff;border:1px solid rgba(245,158,11,0.4);font-size:13px;">
+        <option value="">🔄 Remplaçants</option>
+        ${subs.map(p => `<option value="${p.id}">${p.name}${p.positions?.length ? ' ('+p.positions.join('/')+')'  : ''}</option>`).join('')}
+      </select>
+    </div>`;
   };
 
   // === TABLEAU JOUEURS ===
