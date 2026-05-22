@@ -5332,15 +5332,7 @@ function savePlayer() {
       const newDiv = DATA.teams[team4s]?.division;
       // Si changement de division NHL <-> LHJMQ, reset les stats
       if (oldTeam && team4s && oldDiv !== newDiv && oldDiv && newDiv) {
-        // Reset les stats de la nouvelle division seulement
-        if (!DATA.players[idx].stats_nhl) DATA.players[idx].stats_nhl = {};
-        if (!DATA.players[idx].stats_lhjmq) DATA.players[idx].stats_lhjmq = {};
-        // Garder les stats de l'ancienne division, reset la nouvelle
-        if (newDiv === 'nhl') {
-          DATA.players[idx].stats_nhl = {gp:0,g:0,a:0,pts:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,fopct:0,pt:0,pr:0,passpct:0,intc:0,prises:0,pert:0,ppm:0};
-        } else {
-          DATA.players[idx].stats_lhjmq = {gp:0,g:0,a:0,pts:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,fopct:0,pt:0,pr:0,passpct:0,intc:0,prises:0,pert:0,ppm:0};
-        }
+        // Juste changer l'équipe, garder toutes les stats
         DATA.players[idx] = { ...DATA.players[idx], ...data4s };
       } else {
         DATA.players[idx] = { ...DATA.players[idx], ...data4s };
@@ -5634,18 +5626,8 @@ function saveGoalie() {
       const oldTeamG = DATA.goalies[idx].team;
       const oldDivG = DATA.teams[oldTeamG]?.division;
       const newDivG = DATA.teams[team4s]?.division;
-      if (oldTeamG && team4s && oldDivG !== newDivG && oldDivG && newDivG) {
-        if (confirm(`${data4s.name} change de ${oldDivG.toUpperCase()} vers ${newDivG.toUpperCase()}. Remettre ses stats à zéro ?`)) {
-          DATA.goalies[idx].stats_archive = DATA.goalies[idx].stats_archive || [];
-          DATA.goalies[idx].stats_archive.push({ division: oldDivG, team: oldTeamG, ...DATA.goalies[idx] });
-          const resetG = { gp:0,w:0,l:0,otl:0,ga:0,sa:0,sv:0,so:0,gaa:0,svpct:0 };
-          DATA.goalies[idx] = { ...DATA.goalies[idx], ...resetG, ...data4s };
-        } else {
-          DATA.goalies[idx] = { ...DATA.goalies[idx], ...data4s };
-        }
-      } else {
-        DATA.goalies[idx] = { ...DATA.goalies[idx], ...data4s };
-      }
+      // Juste changer l'équipe, ne jamais effacer les stats automatiquement
+      DATA.goalies[idx] = { ...DATA.goalies[idx], ...data4s };
     } else {
       const newId = 'g' + (Math.max(0, ...DATA.goalies.map(g => parseInt(g.id.replace('g',''))||0)) + 1);
       DATA.goalies.push({ id: newId, ...data4s });
@@ -6470,7 +6452,8 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   };
 
   // === TABLEAU JOUEURS ===
-  const posOpts = ['C','AD','AG','DD','DG','G'].map(p => `<option value="${p}">${p}</option>`).join('');
+  const positions = is6s ? ['C','AD','AG','DD','DG','G'] : ['C','A','D','G'];
+  const posOpts = positions.map(p => `<option value="${p}">${p}</option>`).join('');
 
   const skaterRow = (p, idx) => {
     const pmClass = (p.plusminus||0)>0?'diff-pos':(p.plusminus||0)<0?'diff-neg':'';
@@ -6481,7 +6464,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
     return `<tr>
       <td class="num" style="color:var(--text-tertiary);font-size:11px;">${idx+1}</td>
       <td style="font-weight:600;font-size:13px;">${escapeHtml(p.name)}</td>
-      <td class="num">${isAdmin ? `<select onchange="updateMatchStatField(${idx},'pos',this.value)" style="width:52px;padding:2px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;">${['','C','AD','AG','DD','DG','G'].map(o=>`<option value="${o}" ${p.pos===o?'selected':''}>${o||'—'}</option>`).join('')}</select>` : (p.pos||'—')}</td>
+      <td class="num">${isAdmin ? `<select onchange="updateMatchStatField(${idx},'pos',this.value)" style="width:52px;padding:2px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;">${['',...positions].map(o=>`<option value="${o}" ${p.pos===o?'selected':''}>${o||'—'}</option>`).join('')}</select>` : (p.pos||'—')}</td>
       <td class="num">${makeInput('g')}</td>
       <td class="num">${makeInput('a')}</td>
       <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${pts}</td>
