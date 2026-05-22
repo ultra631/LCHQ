@@ -11200,11 +11200,11 @@ function addPlayerFromDropdown(teamKey, playerId, selectEl) {
   const matchStats = DATA.matchStats[currentMatchStats];
   if (!matchStats) return;
 
-  // Détecter si c'est un gardien — soit dans le pool gardiens, soit position G
-  const isGoalie = goaliePool.some(g => g.id === playerId)
-    || person.position === 'G'
-    || person.position_main === 'G'
-    || (person.positions || []).includes('G');
+  // Toujours ajouter comme joueur par défaut — l'utilisateur change la position à G si besoin
+  // Exception: si c'est SEULEMENT dans le pool gardiens (pas dans joueurs)
+  const inPlayerPool = playerPool.some(p => p.id === playerId);
+  const inGoaliePool = goaliePool.some(g => g.id === playerId);
+  const isGoalie = inGoaliePool && !inPlayerPool;
 
   if (isGoalie) {
     matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'goalie', pos: 'G', gp:1,w:0,l:0,sa:0,ga:0,sv:0,so:0,gaa:0,svpct:0 });
@@ -11807,3 +11807,5 @@ function drawerNav(page) {
 </div>
 </body>
 </html>
+
+        
