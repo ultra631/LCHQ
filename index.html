@@ -6495,7 +6495,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
     return `<tr>
       <td class="num" style="color:var(--text-tertiary);font-size:11px;">${idx+1}</td>
       <td style="font-weight:600;font-size:13px;">${escapeHtml(p.name)}</td>
-      <td class="num">${isAdmin ? `<select onchange="updateMatchStatField(${idx},'pos',this.value)" style="width:52px;padding:2px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;">${['',...positions].map(o=>`<option value="${o}" ${p.pos===o?'selected':''}>${o||'—'}</option>`).join('')}</select>` : (p.pos||'—')}</td>
+      <td class="num" style="cursor:${isAdmin?'pointer':'default'};" onclick="${isAdmin ? `pickPosition(${idx},this)` : ''}" title="${isAdmin?'Cliquer pour changer':''}"><span style="padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:4px;font-size:12px;">${p.pos||'—'}</span></td>
       <td class="num">${makeInput('g')}</td>
       <td class="num">${makeInput('a')}</td>
       <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${pts}</td>
@@ -11558,6 +11558,47 @@ function saveCurrentInputsToMatchStats() {
       matchStats.periods[teamKey][field] = inp.value;
     }
   });
+}
+
+
+function pickPosition(idx, cell) {
+  const matchStats = DATA.matchStats?.[currentMatchStats];
+  if (!matchStats?.players[idx]) return;
+  const is6s = currentMatchSource === '6s';
+  const positions = is6s ? ['C','AD','AG','DD','DG','G'] : ['C','A','D','G'];
+  const current = matchStats.players[idx].pos || '';
+
+  // Créer un mini dropdown inline
+  const sel = document.createElement('select');
+  sel.style.cssText = 'padding:2px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;font-size:12px;';
+  ['—',...positions].forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p === '—' ? '' : p;
+    opt.textContent = p;
+    if ((current || '—') === p) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  cell.innerHTML = '';
+  cell.appendChild(sel);
+  sel.focus();
+
+  const save = () => {
+    const val = sel.value;
+    matchStats.players[idx].pos = val;
+    // Convertir en gardien si G
+    if (val === 'G' && matchStats.players[idx].type !== 'goalie') {
+      const p = matchStats.players[idx];
+      matchStats.players[idx] = { id:p.id, name:p.name, team:p.team, type:'goalie', pos:'G', gp:1,w:0,l:0,sa:0,ga:0,sv:0,so:0,gaa:0,svpct:0 };
+      const matchObj = DATA.schedule?.weeks?.flatMap(w=>w.matches||[]).find(m=>m.id===currentMatchStats)||DATA.season_3_6v6?.calendar?.flatMap(w=>w.matches||[]).find(m=>m.id===currentMatchStats);
+      if (matchObj) renderMatchStatsContent(matchObj, DATA.teams[matchObj.away], DATA.teams[matchObj.home]);
+      saveMatchStatsOnly();
+      return;
+    }
+    cell.innerHTML = `<span style="padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:4px;font-size:12px;">${val||'—'}</span>`;
+    saveMatchStatsOnly();
+  };
+  sel.addEventListener('change', save);
+  sel.addEventListener('blur', save);
 }
 
 loadData();
