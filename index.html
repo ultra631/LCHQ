@@ -6403,9 +6403,6 @@ function openMatchStatsModal(matchId) {
 }
 
 function renderMatchStatsContent(match, awayTeam, homeTeam) {
-  // Sauvegarder les valeurs actuelles des inputs avant de re-render
-  saveCurrentInputsToMatchStats();
-
   if (!match || (!match.away && !match.home)) {
     match = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
             DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
