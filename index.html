@@ -3586,6 +3586,12 @@ async function loadData() {
 }
 
 // Save data to Firebase
+let _saveDebounceTimer = null;
+function saveToFirebaseDebounced() {
+  clearTimeout(_saveDebounceTimer);
+  _saveDebounceTimer = setTimeout(() => saveToFirebase(), 1500);
+}
+
 async function saveToFirebase() {
   if (!window.firebase || !DATA) return;
   
@@ -6595,6 +6601,31 @@ function updateMatchStatField(idx, field, value) {
   const matchStats = DATA.matchStats[currentMatchStats];
   if (!matchStats || !matchStats.players[idx]) return;
   matchStats.players[idx][field] = (field === 'min' || field === 'att' || field === 'pos') ? value : (parseFloat(value)||0);
+
+  // Sauvegarder automatiquement quand on change la position
+  if (field === 'pos') {
+    setTimeout(() => saveMatchStatsOnly(), 800);
+  }
+
+  // Si on change la position à G, convertir en gardien et re-render
+  if (field === 'pos' && value === 'G' && matchStats.players[idx].type !== 'goalie') {
+    const p = matchStats.players[idx];
+    matchStats.players[idx] = { id: p.id, name: p.name, team: p.team, type: 'goalie', pos: 'G', gp:1,w:0,l:0,sa:0,ga:0,sv:0,so:0,gaa:0,svpct:0 };
+    const matchObj = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
+                     DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
+    if (matchObj) renderMatchStatsContent(matchObj, DATA.teams[matchObj.away], DATA.teams[matchObj.home]);
+    return;
+  }
+  // Si on change la position de G à autre chose, convertir en joueur
+  if (field === 'pos' && value !== 'G' && matchStats.players[idx].type === 'goalie') {
+    const p = matchStats.players[idx];
+    matchStats.players[idx] = { id: p.id, name: p.name, team: p.team, type: 'player', pos: value, gp:1,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 };
+    const matchObj = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
+                     DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
+    if (matchObj) renderMatchStatsContent(matchObj, DATA.teams[matchObj.away], DATA.teams[matchObj.home]);
+    return;
+  }
+
   // Recalculer pts si b ou a change
   if (field === 'g' || field === 'a') {
     const p = matchStats.players[idx];
@@ -11145,9 +11176,14 @@ function addPlayerFromDropdown(teamKey, playerId, selectEl) {
   const matchStats = DATA.matchStats[currentMatchStats];
   if (!matchStats) return;
 
-  const isGoalie = goaliePool.some(g => g.id === playerId);
+  // Détecter si c'est un gardien — soit dans le pool gardiens, soit position G
+  const isGoalie = goaliePool.some(g => g.id === playerId)
+    || person.position === 'G'
+    || person.position_main === 'G'
+    || (person.positions || []).includes('G');
+
   if (isGoalie) {
-    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'goalie', gp:1,w:0,l:0,sa:0,ga:0,sv:0,so:0,gaa:0,svpct:0 });
+    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'goalie', pos: 'G', gp:1,w:0,l:0,sa:0,ga:0,sv:0,so:0,gaa:0,svpct:0 });
   } else {
     matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'player', gp:1,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 });
   }
@@ -11416,6 +11452,29 @@ function setGoalieStats(goalie, division, stats) {
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof restoreAdminSession === 'function') restoreAdminSession();
 });
+
+
+async function saveMatchStatsOnly() {
+  // Sauvegarder seulement matchStats pour éviter d'écraser les données des collègues
+  if (!window.firebase || !DATA) return;
+  try {
+    const { db, doc, getDoc, setDoc } = window.firebase;
+    const snap = await getDoc(doc(db, 'lchq', 'data'));
+    if (snap.exists()) {
+      const current = snap.data();
+      const { _adminKey, ...cleanCurrent } = current;
+      // Merger seulement matchStats
+      const merged = {
+        ...cleanCurrent,
+        matchStats: { ...(cleanCurrent.matchStats||{}), ...(DATA.matchStats||{}) },
+        _adminKey: 'lchq-secure-2026-firebase'
+      };
+      await setDoc(doc(db, 'lchq', 'data'), merged);
+    }
+  } catch(e) {
+    console.error('Erreur save matchStats:', e);
+  }
+}
 
 loadData();
 
