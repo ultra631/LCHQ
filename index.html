@@ -11210,6 +11210,31 @@ function addPlayerFromDropdown(teamKey, playerId, selectEl) {
   }
 
   selectEl.value = '';
+
+  // Sauvegarder les positions actuelles des inputs AVANT le re-render
+  const matchStats2 = DATA.matchStats[currentMatchStats];
+  if (matchStats2) {
+    document.querySelectorAll('#matchStatsContent select[onchange*="pos"]').forEach(sel => {
+      const onch = sel.getAttribute('onchange') || '';
+      const m = onch.match(/updateMatchStatField\((\d+),'pos'/);
+      if (m) {
+        const i = parseInt(m[1]);
+        if (matchStats2.players[i]) matchStats2.players[i].pos = sel.value;
+      }
+    });
+    // Sauvegarder aussi tous les inputs number
+    document.querySelectorAll('#matchStatsContent input[type="number"]').forEach(inp => {
+      const onch = inp.getAttribute('onchange') || '';
+      const m = onch.match(/updateMatchStatField\((\d+),'(\w+)'/);
+      if (m) {
+        const i = parseInt(m[1]); const field = m[2];
+        if (matchStats2.players[i] && inp.value !== '') {
+          matchStats2.players[i][field] = parseFloat(inp.value) || 0;
+        }
+      }
+    });
+  }
+
   saveToFirebase();
 
   const matchObj = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
