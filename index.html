@@ -3488,6 +3488,7 @@ async function loadData() {
         DATA = cleanData;
         console.log('✅ Données chargées depuis Firebase!');
         updateFirebaseStatus('connected', 'Synchronisé');
+        if (typeof restoreAdminSession === 'function') restoreAdminSession();
         
         // Setup real-time listener
         if (!firebaseListenerActive) {
@@ -4943,6 +4944,7 @@ function toggleAdminMode() {
       document.getElementById('adminTrigger').classList.remove('active');
       document.getElementById('adminTrigger').textContent = '🔒 Admin';
       document.getElementById('adminDownloadBtn').classList.remove('show');
+      sessionStorage.removeItem('lchq_admin');
       // Si on est sur une page admin-only, retourner à l'accueil
       const activePage = document.querySelector('.page.active');
       if (activePage && activePage.classList.contains('admin-only-page')) {
@@ -4965,10 +4967,23 @@ function checkPassword() {
     document.getElementById('adminTrigger').classList.add('active');
     document.getElementById('adminTrigger').textContent = '🔓 Admin actif';
     document.getElementById('adminDownloadBtn').classList.add('show');
+    // Sauvegarder la session admin pour ne pas se reconnecter au refresh
+    sessionStorage.setItem('lchq_admin', '1');
     closeModal('loginModal');
     rerenderAll();
   } else {
     document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function restoreAdminSession() {
+  if (sessionStorage.getItem('lchq_admin') === '1') {
+    isAdmin = true;
+    document.body.classList.add('admin-mode');
+    const trigger = document.getElementById('adminTrigger');
+    if (trigger) { trigger.classList.add('active'); trigger.textContent = '🔓 Admin actif'; }
+    const dlBtn = document.getElementById('adminDownloadBtn');
+    if (dlBtn) dlBtn.classList.add('show');
   }
 }
 
@@ -11376,6 +11391,11 @@ function setGoalieStats(goalie, division, stats) {
   goalie.gaa   = goalie.gp > 0 ? +(goalie.ga / goalie.gp).toFixed(2) : 0;
   goalie.svpct = goalie.sa > 0 ? +(goalie.sv / goalie.sa).toFixed(3) : 0;
 }
+
+// Restaurer la session admin si elle existe
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof restoreAdminSession === 'function') restoreAdminSession();
+});
 
 loadData();
 
