@@ -13936,8 +13936,6 @@
             "time": "20:00",
             "away": "phoenix",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -13946,8 +13944,6 @@
             "time": "20:00",
             "away": "remparts",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -13956,8 +13952,6 @@
             "time": "20:00",
             "away": "voltigeurs",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -13966,8 +13960,6 @@
             "time": "20:00",
             "away": "saguenéens",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -13976,8 +13968,6 @@
             "time": "20:00",
             "away": "mooseheads",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -13986,8 +13976,6 @@
             "time": "20:00",
             "away": "wildcats",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -13996,8 +13984,6 @@
             "time": "20:40",
             "away": "oceanic",
             "home": "phoenix",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14006,8 +13992,6 @@
             "time": "20:40",
             "away": "saguenéens",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14016,8 +14000,6 @@
             "time": "20:40",
             "away": "seadogs",
             "home": "voltigeurs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14026,8 +14008,6 @@
             "time": "20:40",
             "away": "drakkar",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14036,8 +14016,6 @@
             "time": "20:40",
             "away": "remparts",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14046,8 +14024,6 @@
             "time": "20:40",
             "away": "armada",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14056,8 +14032,6 @@
             "time": "21:10",
             "away": "phoenix",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14066,8 +14040,6 @@
             "time": "21:10",
             "away": "tigres",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14076,8 +14048,6 @@
             "time": "21:10",
             "away": "voltigeurs",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14086,8 +14056,6 @@
             "time": "21:10",
             "away": "armada",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14096,8 +14064,6 @@
             "time": "21:10",
             "away": "huskies",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14106,8 +14072,6 @@
             "time": "21:10",
             "away": "mooseheads",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -14121,8 +14085,6 @@
             "time": "20:00",
             "away": "phoenix",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14131,8 +14093,6 @@
             "time": "20:00",
             "away": "tigres",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14141,8 +14101,6 @@
             "time": "20:00",
             "away": "voltigeurs",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14151,8 +14109,6 @@
             "time": "20:00",
             "away": "huskies",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14161,8 +14117,6 @@
             "time": "20:00",
             "away": "mooseheads",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14171,8 +14125,6 @@
             "time": "20:00",
             "away": "oceanic",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14181,8 +14133,6 @@
             "time": "20:40",
             "away": "voltigeurs",
             "home": "phoenix",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14191,8 +14141,6 @@
             "time": "20:40",
             "away": "oceanic",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14201,8 +14149,6 @@
             "time": "20:40",
             "away": "seadogs",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14211,8 +14157,6 @@
             "time": "20:40",
             "away": "wildcats",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14221,8 +14165,6 @@
             "time": "20:40",
             "away": "saguenéens",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14231,8 +14173,6 @@
             "time": "20:40",
             "away": "drakkar",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14241,8 +14181,6 @@
             "time": "21:10",
             "away": "phoenix",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14251,8 +14189,6 @@
             "time": "21:10",
             "away": "tigres",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14261,8 +14197,6 @@
             "time": "21:10",
             "away": "voltigeurs",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14271,8 +14205,6 @@
             "time": "21:10",
             "away": "saguenéens",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14281,8 +14213,6 @@
             "time": "21:10",
             "away": "seadogs",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14291,8 +14221,6 @@
             "time": "21:10",
             "away": "oceanic",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -14306,8 +14234,6 @@
             "time": "20:00",
             "away": "phoenix",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14316,8 +14242,6 @@
             "time": "20:00",
             "away": "oceanic",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14326,8 +14250,6 @@
             "time": "20:00",
             "away": "voltigeurs",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14336,8 +14258,6 @@
             "time": "20:00",
             "away": "huskies",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14346,8 +14266,6 @@
             "time": "20:00",
             "away": "seadogs",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14356,8 +14274,6 @@
             "time": "20:00",
             "away": "wildcats",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14366,8 +14282,6 @@
             "time": "20:40",
             "away": "armada",
             "home": "phoenix",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14376,8 +14290,6 @@
             "time": "20:40",
             "away": "voltigeurs",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14386,8 +14298,6 @@
             "time": "20:40",
             "away": "drakkar",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14396,8 +14306,6 @@
             "time": "20:40",
             "away": "huskies",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14406,8 +14314,6 @@
             "time": "20:40",
             "away": "seadogs",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14416,8 +14322,6 @@
             "time": "21:10",
             "away": "phoenix",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14426,8 +14330,6 @@
             "time": "21:10",
             "away": "tigres",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14436,8 +14338,6 @@
             "time": "21:10",
             "away": "remparts",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14446,8 +14346,6 @@
             "time": "21:10",
             "away": "oceanic",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14456,8 +14354,6 @@
             "time": "21:10",
             "away": "saguenéens",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14466,8 +14362,6 @@
             "time": "21:10",
             "away": "armada",
             "home": "voltigeurs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -14481,8 +14375,6 @@
             "time": "20:00",
             "away": "remparts",
             "home": "phoenix",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14491,8 +14383,6 @@
             "time": "20:00",
             "away": "tigres",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14501,8 +14391,6 @@
             "time": "20:00",
             "away": "voltigeurs",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14511,8 +14399,6 @@
             "time": "20:00",
             "away": "huskies",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14521,8 +14407,6 @@
             "time": "20:00",
             "away": "saguenéens",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14531,8 +14415,6 @@
             "time": "20:00",
             "away": "wildcats",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14541,8 +14423,6 @@
             "time": "20:40",
             "away": "armada",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14551,8 +14431,6 @@
             "time": "20:40",
             "away": "remparts",
             "home": "voltigeurs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14561,8 +14439,6 @@
             "time": "20:40",
             "away": "oceanic",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14571,8 +14447,6 @@
             "time": "20:40",
             "away": "wildcats",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14581,8 +14455,6 @@
             "time": "20:40",
             "away": "phoenix",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14591,8 +14463,6 @@
             "time": "20:40",
             "away": "drakkar",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14601,8 +14471,6 @@
             "time": "21:10",
             "away": "phoenix",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14611,8 +14479,6 @@
             "time": "21:10",
             "away": "tigres",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14621,8 +14487,6 @@
             "time": "21:10",
             "away": "voltigeurs",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14631,8 +14495,6 @@
             "time": "21:10",
             "away": "seadogs",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14641,8 +14503,6 @@
             "time": "21:10",
             "away": "huskies",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14651,8 +14511,6 @@
             "time": "21:10",
             "away": "armada",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -14666,8 +14524,6 @@
             "time": "20:00",
             "away": "phoenix",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14676,8 +14532,6 @@
             "time": "20:00",
             "away": "tigres",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14686,8 +14540,6 @@
             "time": "20:00",
             "away": "voltigeurs",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14696,8 +14548,6 @@
             "time": "20:00",
             "away": "oceanic",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14706,8 +14556,6 @@
             "time": "20:00",
             "away": "wildcats",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14716,8 +14564,6 @@
             "time": "20:00",
             "away": "saguenéens",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14726,8 +14572,6 @@
             "time": "20:40",
             "away": "seadogs",
             "home": "phoenix",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14736,8 +14580,6 @@
             "time": "20:40",
             "away": "mooseheads",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14746,8 +14588,6 @@
             "time": "20:40",
             "away": "huskies",
             "home": "voltigeurs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14756,8 +14596,6 @@
             "time": "20:40",
             "away": "wildcats",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14766,8 +14604,6 @@
             "time": "20:40",
             "away": "drakkar",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14776,8 +14612,6 @@
             "time": "20:40",
             "away": "remparts",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14786,8 +14620,6 @@
             "time": "21:10",
             "away": "phoenix",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14796,8 +14628,6 @@
             "time": "21:10",
             "away": "tigres",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14806,8 +14636,6 @@
             "time": "21:10",
             "away": "armada",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14816,8 +14644,6 @@
             "time": "21:10",
             "away": "wildcats",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14826,8 +14652,6 @@
             "time": "21:10",
             "away": "voltigeurs",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14836,8 +14660,6 @@
             "time": "21:10",
             "away": "huskies",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -14851,8 +14673,6 @@
             "time": "20:00",
             "away": "phoenix",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14861,8 +14681,6 @@
             "time": "20:00",
             "away": "tigres",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14871,8 +14689,6 @@
             "time": "20:00",
             "away": "voltigeurs",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14881,8 +14697,6 @@
             "time": "20:00",
             "away": "drakkar",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14891,8 +14705,6 @@
             "time": "20:00",
             "away": "mooseheads",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14901,8 +14713,6 @@
             "time": "20:00",
             "away": "saguenéens",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14911,8 +14721,6 @@
             "time": "20:40",
             "away": "phoenix",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14921,8 +14729,6 @@
             "time": "20:40",
             "away": "seadogs",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14931,8 +14737,6 @@
             "time": "20:40",
             "away": "wildcats",
             "home": "voltigeurs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14941,8 +14745,6 @@
             "time": "20:40",
             "away": "huskies",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14951,8 +14753,6 @@
             "time": "20:40",
             "away": "oceanic",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14961,8 +14761,6 @@
             "time": "20:40",
             "away": "remparts",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14971,8 +14769,6 @@
             "time": "21:10",
             "away": "phoenix",
             "home": "voltigeurs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14981,8 +14777,6 @@
             "time": "21:10",
             "away": "tigres",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -14991,8 +14785,6 @@
             "time": "21:10",
             "away": "armada",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15001,8 +14793,6 @@
             "time": "21:10",
             "away": "remparts",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15011,8 +14801,6 @@
             "time": "21:10",
             "away": "huskies",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15021,8 +14809,6 @@
             "time": "21:10",
             "away": "mooseheads",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -15036,8 +14822,6 @@
             "time": "20:00",
             "away": "phoenix",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15046,8 +14830,6 @@
             "time": "20:00",
             "away": "tigres",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15056,8 +14838,6 @@
             "time": "20:00",
             "away": "voltigeurs",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15066,8 +14846,6 @@
             "time": "20:00",
             "away": "huskies",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15076,8 +14854,6 @@
             "time": "20:00",
             "away": "armada",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15086,8 +14862,6 @@
             "time": "20:00",
             "away": "oceanic",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15096,8 +14870,6 @@
             "time": "20:40",
             "away": "phoenix",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15106,8 +14878,6 @@
             "time": "20:40",
             "away": "remparts",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15116,8 +14886,6 @@
             "time": "20:40",
             "away": "saguenéens",
             "home": "voltigeurs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15126,8 +14894,6 @@
             "time": "20:40",
             "away": "wildcats",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15136,8 +14902,6 @@
             "time": "20:40",
             "away": "drakkar",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15146,8 +14910,6 @@
             "time": "20:40",
             "away": "mooseheads",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15156,8 +14918,6 @@
             "time": "21:10",
             "away": "armada",
             "home": "phoenix",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15166,8 +14926,6 @@
             "time": "21:10",
             "away": "oceanic",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15176,8 +14934,6 @@
             "time": "21:10",
             "away": "tigres",
             "home": "voltigeurs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15186,8 +14942,6 @@
             "time": "21:10",
             "away": "huskies",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15196,8 +14950,6 @@
             "time": "21:10",
             "away": "seadogs",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15206,8 +14958,6 @@
             "time": "21:10",
             "away": "drakkar",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -15221,8 +14971,6 @@
             "time": "20:00",
             "away": "phoenix",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15231,8 +14979,6 @@
             "time": "20:00",
             "away": "tigres",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15241,8 +14987,6 @@
             "time": "20:00",
             "away": "voltigeurs",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15251,8 +14995,6 @@
             "time": "20:00",
             "away": "huskies",
             "home": "drakkar",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15261,8 +15003,6 @@
             "time": "20:00",
             "away": "wildcats",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15271,8 +15011,6 @@
             "time": "20:00",
             "away": "mooseheads",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15281,8 +15019,6 @@
             "time": "20:40",
             "away": "drakkar",
             "home": "tigres",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15291,8 +15027,6 @@
             "time": "20:40",
             "away": "oceanic",
             "home": "voltigeurs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15301,8 +15035,6 @@
             "time": "20:40",
             "away": "seadogs",
             "home": "huskies",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15311,8 +15043,6 @@
             "time": "20:40",
             "away": "remparts",
             "home": "phoenix",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15321,8 +15051,6 @@
             "time": "20:40",
             "away": "armada",
             "home": "saguenéens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15331,8 +15059,6 @@
             "time": "20:40",
             "away": "wildcats",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15341,8 +15067,6 @@
             "time": "21:10",
             "away": "phoenix",
             "home": "mooseheads",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15351,8 +15075,6 @@
             "time": "21:10",
             "away": "tigres",
             "home": "armada",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15361,8 +15083,6 @@
             "time": "21:10",
             "away": "voltigeurs",
             "home": "remparts",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15371,8 +15091,6 @@
             "time": "21:10",
             "away": "saguenéens",
             "home": "wildcats",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15381,8 +15099,6 @@
             "time": "21:10",
             "away": "huskies",
             "home": "oceanic",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15391,8 +15107,6 @@
             "time": "21:10",
             "away": "drakkar",
             "home": "seadogs",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -15406,8 +15120,6 @@
             "time": "20:00",
             "away": "capitals",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15416,8 +15128,6 @@
             "time": "20:00",
             "away": "bruins",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15426,8 +15136,6 @@
             "time": "20:00",
             "away": "rangers",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15436,8 +15144,6 @@
             "time": "20:00",
             "away": "predators",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15446,8 +15152,6 @@
             "time": "20:00",
             "away": "wild",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15456,8 +15160,6 @@
             "time": "20:00",
             "away": "panthers",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15466,8 +15168,6 @@
             "time": "20:40",
             "away": "canadiens",
             "home": "capitals",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15476,8 +15176,6 @@
             "time": "20:40",
             "away": "kraken",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15486,8 +15184,6 @@
             "time": "20:40",
             "away": "sharks",
             "home": "rangers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15496,8 +15192,6 @@
             "time": "20:40",
             "away": "canucks",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15506,8 +15200,6 @@
             "time": "20:40",
             "away": "avalanche",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15516,8 +15208,6 @@
             "time": "20:40",
             "away": "panthers",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15526,8 +15216,6 @@
             "time": "21:10",
             "away": "capitals",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15536,8 +15224,6 @@
             "time": "21:10",
             "away": "bruins",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15546,8 +15232,6 @@
             "time": "21:10",
             "away": "rangers",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15556,8 +15240,6 @@
             "time": "21:10",
             "away": "kings",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15566,8 +15248,6 @@
             "time": "21:10",
             "away": "predators",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15576,8 +15256,6 @@
             "time": "21:10",
             "away": "kraken",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -15591,8 +15269,6 @@
             "time": "20:00",
             "away": "bruins",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15601,8 +15277,6 @@
             "time": "20:00",
             "away": "capitals",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15611,8 +15285,6 @@
             "time": "20:00",
             "away": "rangers",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15621,8 +15293,6 @@
             "time": "20:00",
             "away": "predators",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15631,8 +15301,6 @@
             "time": "20:00",
             "away": "avalanche",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15641,8 +15309,6 @@
             "time": "20:00",
             "away": "sharks",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15651,8 +15317,6 @@
             "time": "20:40",
             "away": "bruins",
             "home": "capitals",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15661,8 +15325,6 @@
             "time": "20:40",
             "away": "canadiens",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15671,8 +15333,6 @@
             "time": "20:40",
             "away": "kings",
             "home": "rangers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15681,8 +15341,6 @@
             "time": "20:40",
             "away": "panthers",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15691,8 +15349,6 @@
             "time": "20:40",
             "away": "sharks",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15701,8 +15357,6 @@
             "time": "20:40",
             "away": "predators",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15711,8 +15365,6 @@
             "time": "21:10",
             "away": "capitals",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15721,8 +15373,6 @@
             "time": "21:10",
             "away": "sharks",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15731,8 +15381,6 @@
             "time": "21:10",
             "away": "rangers",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15741,8 +15389,6 @@
             "time": "21:10",
             "away": "kings",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15751,8 +15397,6 @@
             "time": "21:10",
             "away": "canucks",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15761,8 +15405,6 @@
             "time": "21:10",
             "away": "kraken",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -15776,8 +15418,6 @@
             "time": "20:00",
             "away": "capitals",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15786,8 +15426,6 @@
             "time": "20:00",
             "away": "bruins",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15796,8 +15434,6 @@
             "time": "20:00",
             "away": "rangers",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15806,8 +15442,6 @@
             "time": "20:00",
             "away": "kraken",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15816,8 +15450,6 @@
             "time": "20:00",
             "away": "wild",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15826,8 +15458,6 @@
             "time": "20:00",
             "away": "kings",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15836,8 +15466,6 @@
             "time": "20:40",
             "away": "kraken",
             "home": "capitals",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15846,8 +15474,6 @@
             "time": "20:40",
             "away": "canucks",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15856,8 +15482,6 @@
             "time": "20:40",
             "away": "panthers",
             "home": "rangers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15866,8 +15490,6 @@
             "time": "20:40",
             "away": "avalanche",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15876,8 +15498,6 @@
             "time": "20:40",
             "away": "sharks",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15886,8 +15506,6 @@
             "time": "20:40",
             "away": "canadiens",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15896,8 +15514,6 @@
             "time": "21:10",
             "away": "capitals",
             "home": "rangers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15906,8 +15522,6 @@
             "time": "21:10",
             "away": "bruins",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15916,8 +15530,6 @@
             "time": "21:10",
             "away": "avalanche",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15926,8 +15538,6 @@
             "time": "21:10",
             "away": "kings",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15936,8 +15546,6 @@
             "time": "21:10",
             "away": "predators",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15946,8 +15554,6 @@
             "time": "21:10",
             "away": "kraken",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -15961,8 +15567,6 @@
             "time": "20:00",
             "away": "capitals",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15971,8 +15575,6 @@
             "time": "20:00",
             "away": "bruins",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15981,8 +15583,6 @@
             "time": "20:00",
             "away": "rangers",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -15991,8 +15591,6 @@
             "time": "20:00",
             "away": "sharks",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16001,8 +15599,6 @@
             "time": "20:00",
             "away": "wild",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16011,8 +15607,6 @@
             "time": "20:00",
             "away": "panthers",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16021,8 +15615,6 @@
             "time": "20:40",
             "away": "canucks",
             "home": "capitals",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16031,8 +15623,6 @@
             "time": "20:40",
             "away": "wild",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16041,8 +15631,6 @@
             "time": "20:40",
             "away": "predators",
             "home": "rangers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16051,8 +15639,6 @@
             "time": "20:40",
             "away": "panthers",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16061,8 +15647,6 @@
             "time": "20:40",
             "away": "kraken",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16071,8 +15655,6 @@
             "time": "20:40",
             "away": "canadiens",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16081,8 +15663,6 @@
             "time": "21:10",
             "away": "capitals",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16091,8 +15671,6 @@
             "time": "21:10",
             "away": "kings",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16101,8 +15679,6 @@
             "time": "21:10",
             "away": "canadiens",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16111,8 +15687,6 @@
             "time": "21:10",
             "away": "avalanche",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16121,8 +15695,6 @@
             "time": "21:10",
             "away": "canucks",
             "home": "rangers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16131,8 +15703,6 @@
             "time": "21:10",
             "away": "kraken",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -16146,8 +15716,6 @@
             "time": "20:00",
             "away": "rangers",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16156,8 +15724,6 @@
             "time": "20:00",
             "away": "capitals",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16166,8 +15732,6 @@
             "time": "20:00",
             "away": "bruins",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16176,8 +15740,6 @@
             "time": "20:00",
             "away": "predators",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16186,8 +15748,6 @@
             "time": "20:00",
             "away": "kings",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16196,8 +15756,6 @@
             "time": "20:00",
             "away": "panthers",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16206,8 +15764,6 @@
             "time": "20:40",
             "away": "wild",
             "home": "capitals",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16216,8 +15772,6 @@
             "time": "20:40",
             "away": "avalanche",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16226,8 +15780,6 @@
             "time": "20:40",
             "away": "canadiens",
             "home": "rangers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16236,8 +15788,6 @@
             "time": "20:40",
             "away": "sharks",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16246,8 +15796,6 @@
             "time": "20:40",
             "away": "panthers",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16256,8 +15804,6 @@
             "time": "20:40",
             "away": "canucks",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16266,8 +15812,6 @@
             "time": "21:10",
             "away": "capitals",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16276,8 +15820,6 @@
             "time": "21:10",
             "away": "bruins",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16286,8 +15828,6 @@
             "time": "21:10",
             "away": "rangers",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16296,8 +15836,6 @@
             "time": "21:10",
             "away": "canucks",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16306,8 +15844,6 @@
             "time": "21:10",
             "away": "predators",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16316,8 +15852,6 @@
             "time": "21:10",
             "away": "kraken",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -16331,8 +15865,6 @@
             "time": "20:00",
             "away": "capitals",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16341,8 +15873,6 @@
             "time": "20:00",
             "away": "sharks",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16351,8 +15881,6 @@
             "time": "20:00",
             "away": "rangers",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16361,8 +15889,6 @@
             "time": "20:00",
             "away": "predators",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16371,8 +15897,6 @@
             "time": "20:00",
             "away": "canucks",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16381,8 +15905,6 @@
             "time": "20:00",
             "away": "panthers",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16391,8 +15913,6 @@
             "time": "20:40",
             "away": "avalanche",
             "home": "capitals",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16401,8 +15921,6 @@
             "time": "20:40",
             "away": "canadiens",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16411,8 +15929,6 @@
             "time": "20:40",
             "away": "bruins",
             "home": "rangers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16421,8 +15937,6 @@
             "time": "20:40",
             "away": "kings",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16431,8 +15945,6 @@
             "time": "20:40",
             "away": "kraken",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16441,8 +15953,6 @@
             "time": "20:40",
             "away": "canucks",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16451,8 +15961,6 @@
             "time": "21:10",
             "away": "capitals",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16461,8 +15969,6 @@
             "time": "21:10",
             "away": "rangers",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16471,8 +15977,6 @@
             "time": "21:10",
             "away": "bruins",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16481,8 +15985,6 @@
             "time": "21:10",
             "away": "kings",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16491,8 +15993,6 @@
             "time": "21:10",
             "away": "sharks",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16501,8 +16001,6 @@
             "time": "21:10",
             "away": "kraken",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -16516,8 +16014,6 @@
             "time": "20:00",
             "away": "capitals",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16526,8 +16022,6 @@
             "time": "20:00",
             "away": "bruins",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16536,8 +16030,6 @@
             "time": "20:00",
             "away": "rangers",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16546,8 +16038,6 @@
             "time": "20:00",
             "away": "predators",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16556,8 +16046,6 @@
             "time": "20:00",
             "away": "wild",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16566,8 +16054,6 @@
             "time": "20:00",
             "away": "sharks",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16576,8 +16062,6 @@
             "time": "20:40",
             "away": "rangers",
             "home": "capitals",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16586,8 +16070,6 @@
             "time": "20:40",
             "away": "sharks",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16596,8 +16078,6 @@
             "time": "20:40",
             "away": "avalanche",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16606,8 +16086,6 @@
             "time": "20:40",
             "away": "panthers",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16616,8 +16094,6 @@
             "time": "20:40",
             "away": "canadiens",
             "home": "kings",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16626,8 +16102,6 @@
             "time": "20:40",
             "away": "kraken",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16636,8 +16110,6 @@
             "time": "21:10",
             "away": "capitals",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16646,8 +16118,6 @@
             "time": "21:10",
             "away": "bruins",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16656,8 +16126,6 @@
             "time": "21:10",
             "away": "rangers",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16666,8 +16134,6 @@
             "time": "21:10",
             "away": "kings",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16676,8 +16142,6 @@
             "time": "21:10",
             "away": "canucks",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16686,8 +16150,6 @@
             "time": "21:10",
             "away": "avalanche",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -16701,8 +16163,6 @@
             "time": "20:00",
             "away": "capitals",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16711,8 +16171,6 @@
             "time": "20:00",
             "away": "canadiens",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16721,8 +16179,6 @@
             "time": "20:00",
             "away": "rangers",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16731,8 +16187,6 @@
             "time": "20:00",
             "away": "kings",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16741,8 +16195,6 @@
             "time": "20:00",
             "away": "wild",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16751,8 +16203,6 @@
             "time": "20:00",
             "away": "panthers",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16761,8 +16211,6 @@
             "time": "20:40",
             "away": "sharks",
             "home": "capitals",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16771,8 +16219,6 @@
             "time": "20:40",
             "away": "kings",
             "home": "bruins",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16781,8 +16227,6 @@
             "time": "20:40",
             "away": "canucks",
             "home": "rangers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16791,8 +16235,6 @@
             "time": "20:40",
             "away": "kraken",
             "home": "predators",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16801,8 +16243,6 @@
             "time": "20:40",
             "away": "canadiens",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16811,8 +16251,6 @@
             "time": "20:40",
             "away": "avalanche",
             "home": "wild",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16821,8 +16259,6 @@
             "time": "21:10",
             "away": "capitals",
             "home": "canadiens",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16831,8 +16267,6 @@
             "time": "21:10",
             "away": "bruins",
             "home": "kraken",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16841,8 +16275,6 @@
             "time": "21:10",
             "away": "rangers",
             "home": "sharks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16851,8 +16283,6 @@
             "time": "21:10",
             "away": "kings",
             "home": "avalanche",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16861,8 +16291,6 @@
             "time": "21:10",
             "away": "predators",
             "home": "canucks",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -16871,8 +16299,6 @@
             "time": "21:10",
             "away": "wild",
             "home": "panthers",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -20081,10 +19507,7 @@
           "otl": 0
         }
       ],
-      "champions": {
-        "nhl": null,
-        "lhjmq": null
-      }
+      "champions": {}
     }
   },
   "season_3_6v6": {
@@ -22285,7 +21708,6 @@
       {
         "id": "p6s_xxfroadenxx",
         "name": "XxfroadenxX",
-        "team": null,
         "status": "sub",
         "positions": [
           "C",
@@ -22316,7 +21738,6 @@
       {
         "id": "p6s_ambidex",
         "name": "Ambidex",
-        "team": null,
         "status": "sub",
         "positions": [
           "Ad",
@@ -22346,7 +21767,6 @@
       {
         "id": "p6s_dj_lavabo",
         "name": "Dj_lavabo",
-        "team": null,
         "status": "sub",
         "positions": [
           "Ag",
@@ -22377,7 +21797,6 @@
       {
         "id": "p6s_kuze_majestic",
         "name": "Kuze_majestic",
-        "team": null,
         "status": "sub",
         "positions": [
           "Ad",
@@ -22408,7 +21827,6 @@
       {
         "id": "p6s_b470n3y123_qc",
         "name": "B470n3Y123_Qc",
-        "team": null,
         "status": "sub",
         "positions": [
           "C",
@@ -22439,7 +21857,6 @@
       {
         "id": "p6s_courchxsne",
         "name": "Courchxsne",
-        "team": null,
         "status": "sub",
         "positions": [
           "Dg",
@@ -22469,7 +21886,6 @@
       {
         "id": "p6s_god_em",
         "name": "God_em",
-        "team": null,
         "status": "sub",
         "positions": [
           "C",
@@ -22499,7 +21915,6 @@
       {
         "id": "p6s_mcxpichex",
         "name": "McXpicheX",
-        "team": null,
         "status": "sub",
         "positions": [
           "Dd",
@@ -22530,7 +21945,6 @@
       {
         "id": "p6s_tibod68",
         "name": "tibod68",
-        "team": null,
         "status": "sub",
         "positions": [
           "C",
@@ -22560,7 +21974,6 @@
       {
         "id": "p6s_itsmejello",
         "name": "ItsMeJello",
-        "team": null,
         "status": "sub",
         "positions": [
           "Dd",
@@ -22591,7 +22004,6 @@
       {
         "id": "p6s_mathst0126",
         "name": "Mathst0126",
-        "team": null,
         "status": "sub",
         "positions": [
           "C",
@@ -22622,7 +22034,6 @@
       {
         "id": "p6s_xslafkovskyx20",
         "name": "xSlafkovskyx20",
-        "team": null,
         "status": "sub",
         "positions": [
           "Ag",
@@ -22653,7 +22064,6 @@
       {
         "id": "p6s_x_brownie__x",
         "name": "X-Brownie--X",
-        "team": null,
         "status": "sub",
         "positions": [
           "G",
@@ -22684,7 +22094,6 @@
       {
         "id": "p6s_xi_lxxse_ix",
         "name": "xI_Lxxse_Ix",
-        "team": null,
         "status": "sub",
         "positions": [
           "Ad",
@@ -22715,7 +22124,6 @@
       {
         "id": "p6s_tanguay_l40l",
         "name": "Tanguay_l40l",
-        "team": null,
         "status": "sub",
         "positions": [
           "G",
@@ -22746,7 +22154,6 @@
       {
         "id": "p6s_lchq_purplelight",
         "name": "LCHQ_purplelight",
-        "team": null,
         "status": "sub",
         "positions": [
           "G"
@@ -22775,7 +22182,6 @@
       {
         "id": "p6s_xxhutson48xx",
         "name": "XxHutson48xX",
-        "team": null,
         "status": "sub",
         "positions": [
           "G",
@@ -22806,7 +22212,6 @@
       {
         "id": "p6s_slafwoo",
         "name": "Slafwoo",
-        "team": null,
         "status": "sub",
         "positions": [
           "C",
@@ -22837,7 +22242,6 @@
       {
         "id": "p6s_lookeazy",
         "name": "LooKEazY",
-        "team": null,
         "status": "sub",
         "positions": [
           "G",
@@ -22868,7 +22272,6 @@
       {
         "id": "p6s_xxfowler32xx",
         "name": "XxFowler32xX",
-        "team": null,
         "status": "sub",
         "positions": [
           "G",
@@ -22899,7 +22302,6 @@
       {
         "id": "p6s_tomyhabs11",
         "name": "TomyHabs11",
-        "team": null,
         "status": "sub",
         "positions": [
           "Ad",
@@ -22930,7 +22332,6 @@
       {
         "id": "p6s_brisette",
         "name": "brisette",
-        "team": null,
         "status": "sub",
         "positions": [
           "Ad"
@@ -22959,7 +22360,6 @@
       {
         "id": "p6s_tremblay",
         "name": "tremblay",
-        "team": null,
         "status": "sub",
         "positions": [
           "Dg"
@@ -22988,7 +22388,6 @@
       {
         "id": "p6s_fl_ultra_",
         "name": "FL_ULTRA-",
-        "team": null,
         "status": "sub",
         "tonight": true,
         "positions": [
@@ -23057,8 +22456,6 @@
             "time": "20:00",
             "away": "ducks_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23067,8 +22464,6 @@
             "time": "20:00",
             "away": "jets_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23077,8 +22472,6 @@
             "time": "20:00",
             "away": "penguins_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23087,8 +22480,6 @@
             "time": "20:00",
             "away": "flyers_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23097,8 +22488,6 @@
             "time": "20:00",
             "away": "oilers_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23107,8 +22496,6 @@
             "time": "20:00",
             "away": "mapleleafs_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23117,8 +22504,6 @@
             "time": "20:40",
             "away": "hurricanes_6v6",
             "home": "ducks_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23127,8 +22512,6 @@
             "time": "20:40",
             "away": "lightning_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23137,8 +22520,6 @@
             "time": "20:40",
             "away": "devils_6v6",
             "home": "penguins_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23147,8 +22528,6 @@
             "time": "20:40",
             "away": "blues_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23157,8 +22536,6 @@
             "time": "20:40",
             "away": "senators_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23167,8 +22544,6 @@
             "time": "20:40",
             "away": "mapleleafs_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23177,8 +22552,6 @@
             "time": "21:10",
             "away": "ducks_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23187,8 +22560,6 @@
             "time": "21:10",
             "away": "jets_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23197,8 +22568,6 @@
             "time": "21:10",
             "away": "penguins_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23207,8 +22576,6 @@
             "time": "21:10",
             "away": "sabres_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23217,8 +22584,6 @@
             "time": "21:10",
             "away": "flyers_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23227,8 +22592,6 @@
             "time": "21:10",
             "away": "lightning_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -23242,8 +22605,6 @@
             "time": "20:00",
             "away": "ducks_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23252,8 +22613,6 @@
             "time": "20:00",
             "away": "jets_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23262,8 +22621,6 @@
             "time": "20:00",
             "away": "penguins_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23272,8 +22629,6 @@
             "time": "20:00",
             "away": "flyers_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23282,8 +22637,6 @@
             "time": "20:00",
             "away": "senators_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23292,8 +22645,6 @@
             "time": "20:00",
             "away": "devils_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23302,8 +22653,6 @@
             "time": "20:40",
             "away": "jets_6v6",
             "home": "ducks_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23312,8 +22661,6 @@
             "time": "20:40",
             "away": "hurricanes_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23322,8 +22669,6 @@
             "time": "20:40",
             "away": "sabres_6v6",
             "home": "penguins_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23332,8 +22677,6 @@
             "time": "20:40",
             "away": "mapleleafs_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23342,8 +22685,6 @@
             "time": "20:40",
             "away": "devils_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23352,8 +22693,6 @@
             "time": "20:40",
             "away": "flyers_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23362,8 +22701,6 @@
             "time": "21:10",
             "away": "ducks_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23372,8 +22709,6 @@
             "time": "21:10",
             "away": "devils_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23382,8 +22717,6 @@
             "time": "21:10",
             "away": "penguins_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23392,8 +22725,6 @@
             "time": "21:10",
             "away": "sabres_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23402,8 +22733,6 @@
             "time": "21:10",
             "away": "blues_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23412,8 +22741,6 @@
             "time": "21:10",
             "away": "lightning_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -23427,8 +22754,6 @@
             "time": "20:00",
             "away": "ducks_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23437,8 +22762,6 @@
             "time": "20:00",
             "away": "jets_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23447,8 +22770,6 @@
             "time": "20:00",
             "away": "penguins_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23457,8 +22778,6 @@
             "time": "20:00",
             "away": "lightning_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23467,8 +22786,6 @@
             "time": "20:00",
             "away": "oilers_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23477,8 +22794,6 @@
             "time": "20:00",
             "away": "sabres_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23487,8 +22802,6 @@
             "time": "20:40",
             "away": "lightning_6v6",
             "home": "ducks_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23497,8 +22810,6 @@
             "time": "20:40",
             "away": "blues_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23507,8 +22818,6 @@
             "time": "20:40",
             "away": "mapleleafs_6v6",
             "home": "penguins_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23517,8 +22826,6 @@
             "time": "20:40",
             "away": "senators_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23527,8 +22834,6 @@
             "time": "20:40",
             "away": "devils_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23537,8 +22842,6 @@
             "time": "20:40",
             "away": "hurricanes_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23547,8 +22850,6 @@
             "time": "21:10",
             "away": "ducks_6v6",
             "home": "penguins_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23557,8 +22858,6 @@
             "time": "21:10",
             "away": "jets_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23567,8 +22866,6 @@
             "time": "21:10",
             "away": "senators_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23577,8 +22874,6 @@
             "time": "21:10",
             "away": "sabres_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23587,8 +22882,6 @@
             "time": "21:10",
             "away": "flyers_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23597,8 +22890,6 @@
             "time": "21:10",
             "away": "lightning_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -23612,8 +22903,6 @@
             "time": "20:00",
             "away": "ducks_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23622,8 +22911,6 @@
             "time": "20:00",
             "away": "jets_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23632,8 +22919,6 @@
             "time": "20:00",
             "away": "penguins_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23642,8 +22927,6 @@
             "time": "20:00",
             "away": "devils_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23652,8 +22935,6 @@
             "time": "20:00",
             "away": "oilers_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23662,8 +22943,6 @@
             "time": "20:00",
             "away": "mapleleafs_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23672,8 +22951,6 @@
             "time": "20:40",
             "away": "blues_6v6",
             "home": "ducks_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23682,8 +22959,6 @@
             "time": "20:40",
             "away": "oilers_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23692,8 +22967,6 @@
             "time": "20:40",
             "away": "flyers_6v6",
             "home": "penguins_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23702,8 +22975,6 @@
             "time": "20:40",
             "away": "mapleleafs_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23712,8 +22983,6 @@
             "time": "20:40",
             "away": "lightning_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23722,8 +22991,6 @@
             "time": "20:40",
             "away": "hurricanes_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23732,8 +22999,6 @@
             "time": "21:10",
             "away": "ducks_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23742,8 +23007,6 @@
             "time": "21:10",
             "away": "sabres_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23752,8 +23015,6 @@
             "time": "21:10",
             "away": "hurricanes_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23762,8 +23023,6 @@
             "time": "21:10",
             "away": "senators_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23772,8 +23031,6 @@
             "time": "21:10",
             "away": "blues_6v6",
             "home": "penguins_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23782,8 +23039,6 @@
             "time": "21:10",
             "away": "lightning_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -23797,8 +23052,6 @@
             "time": "20:00",
             "away": "ducks_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23807,8 +23060,6 @@
             "time": "20:00",
             "away": "jets_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23817,8 +23068,6 @@
             "time": "20:00",
             "away": "penguins_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23827,8 +23076,6 @@
             "time": "20:00",
             "away": "flyers_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23837,8 +23084,6 @@
             "time": "20:00",
             "away": "sabres_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23847,8 +23092,6 @@
             "time": "20:00",
             "away": "mapleleafs_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23857,8 +23100,6 @@
             "time": "20:40",
             "away": "oilers_6v6",
             "home": "ducks_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23867,8 +23108,6 @@
             "time": "20:40",
             "away": "senators_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23877,8 +23116,6 @@
             "time": "20:40",
             "away": "hurricanes_6v6",
             "home": "penguins_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23887,8 +23124,6 @@
             "time": "20:40",
             "away": "devils_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23897,8 +23132,6 @@
             "time": "20:40",
             "away": "mapleleafs_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23907,8 +23140,6 @@
             "time": "20:40",
             "away": "blues_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23917,8 +23148,6 @@
             "time": "21:10",
             "away": "ducks_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23927,8 +23156,6 @@
             "time": "21:10",
             "away": "jets_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23937,8 +23164,6 @@
             "time": "21:10",
             "away": "penguins_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23947,8 +23172,6 @@
             "time": "21:10",
             "away": "blues_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23957,8 +23180,6 @@
             "time": "21:10",
             "away": "flyers_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23967,8 +23188,6 @@
             "time": "21:10",
             "away": "lightning_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -23982,8 +23201,6 @@
             "time": "20:00",
             "away": "ducks_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -23992,8 +23209,6 @@
             "time": "20:00",
             "away": "devils_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24002,8 +23217,6 @@
             "time": "20:00",
             "away": "penguins_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24012,8 +23225,6 @@
             "time": "20:00",
             "away": "flyers_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24022,8 +23233,6 @@
             "time": "20:00",
             "away": "blues_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24032,8 +23241,6 @@
             "time": "20:00",
             "away": "mapleleafs_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24042,8 +23249,6 @@
             "time": "20:40",
             "away": "senators_6v6",
             "home": "ducks_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24052,8 +23257,6 @@
             "time": "20:40",
             "away": "hurricanes_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24062,8 +23265,6 @@
             "time": "20:40",
             "away": "jets_6v6",
             "home": "penguins_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24072,8 +23273,6 @@
             "time": "20:40",
             "away": "sabres_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24082,8 +23281,6 @@
             "time": "20:40",
             "away": "lightning_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24092,8 +23289,6 @@
             "time": "20:40",
             "away": "blues_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24102,8 +23297,6 @@
             "time": "21:10",
             "away": "ducks_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24112,8 +23305,6 @@
             "time": "21:10",
             "away": "jets_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24122,8 +23313,6 @@
             "time": "21:10",
             "away": "penguins_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24132,8 +23321,6 @@
             "time": "21:10",
             "away": "sabres_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24142,8 +23329,6 @@
             "time": "21:10",
             "away": "devils_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24152,8 +23337,6 @@
             "time": "21:10",
             "away": "lightning_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -24167,8 +23350,6 @@
             "time": "20:00",
             "away": "ducks_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24177,8 +23358,6 @@
             "time": "20:00",
             "away": "jets_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24187,8 +23366,6 @@
             "time": "20:00",
             "away": "penguins_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24197,8 +23374,6 @@
             "time": "20:00",
             "away": "flyers_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24207,8 +23382,6 @@
             "time": "20:00",
             "away": "oilers_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24217,8 +23390,6 @@
             "time": "20:00",
             "away": "devils_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24227,8 +23398,6 @@
             "time": "20:40",
             "away": "penguins_6v6",
             "home": "ducks_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24237,8 +23406,6 @@
             "time": "20:40",
             "away": "devils_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24247,8 +23414,6 @@
             "time": "20:40",
             "away": "mapleleafs_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24257,8 +23422,6 @@
             "time": "20:40",
             "away": "hurricanes_6v6",
             "home": "sabres_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24267,8 +23430,6 @@
             "time": "20:40",
             "away": "senators_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24277,8 +23438,6 @@
             "time": "20:40",
             "away": "lightning_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24287,8 +23446,6 @@
             "time": "21:10",
             "away": "ducks_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24297,8 +23454,6 @@
             "time": "21:10",
             "away": "jets_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24307,8 +23462,6 @@
             "time": "21:10",
             "away": "penguins_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24317,8 +23470,6 @@
             "time": "21:10",
             "away": "sabres_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24327,8 +23478,6 @@
             "time": "21:10",
             "away": "blues_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24337,8 +23486,6 @@
             "time": "21:10",
             "away": "senators_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -24352,8 +23499,6 @@
             "time": "20:00",
             "away": "ducks_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24362,8 +23507,6 @@
             "time": "20:00",
             "away": "hurricanes_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24372,8 +23515,6 @@
             "time": "20:00",
             "away": "penguins_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24382,8 +23523,6 @@
             "time": "20:00",
             "away": "sabres_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24392,8 +23531,6 @@
             "time": "20:00",
             "away": "oilers_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24402,8 +23539,6 @@
             "time": "20:00",
             "away": "mapleleafs_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24412,8 +23547,6 @@
             "time": "20:40",
             "away": "devils_6v6",
             "home": "ducks_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24422,8 +23555,6 @@
             "time": "20:40",
             "away": "sabres_6v6",
             "home": "jets_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24432,8 +23563,6 @@
             "time": "20:40",
             "away": "blues_6v6",
             "home": "penguins_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24442,8 +23571,6 @@
             "time": "20:40",
             "away": "lightning_6v6",
             "home": "flyers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24452,8 +23579,6 @@
             "time": "20:40",
             "away": "hurricanes_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24462,8 +23587,6 @@
             "time": "20:40",
             "away": "senators_6v6",
             "home": "oilers_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24472,8 +23595,6 @@
             "time": "21:10",
             "away": "ducks_6v6",
             "home": "hurricanes_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24482,8 +23603,6 @@
             "time": "21:10",
             "away": "jets_6v6",
             "home": "lightning_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24492,8 +23611,6 @@
             "time": "21:10",
             "away": "penguins_6v6",
             "home": "devils_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24502,8 +23619,6 @@
             "time": "21:10",
             "away": "sabres_6v6",
             "home": "senators_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24512,8 +23627,6 @@
             "time": "21:10",
             "away": "flyers_6v6",
             "home": "blues_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           },
           {
@@ -24522,8 +23635,6 @@
             "time": "21:10",
             "away": "oilers_6v6",
             "home": "mapleleafs_6v6",
-            "away_score": null,
-            "home_score": null,
             "is_dp": false
           }
         ]
@@ -45238,5 +44349,6 @@
       }
     ]
   },
-  "matchStats": {}
+  "matchStats": {},
+  "tournaments": {}
 }
