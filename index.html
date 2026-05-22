@@ -3526,7 +3526,9 @@ async function loadData() {
 
               console.log('🔄 Données mises à jour en temps réel!');
               updateFirebaseStatus('syncing', 'Mise à jour...');
-              if (typeof rerenderAll === 'function') rerenderAll();
+              // Ne pas re-render si le modal de stats est ouvert (évite d'écraser les inputs)
+              const modalOpen = document.getElementById('matchStatsModal')?.classList.contains('show');
+              if (!modalOpen && typeof rerenderAll === 'function') rerenderAll();
               if (typeof restoreAdminSession === 'function') restoreAdminSession();
               setTimeout(() => updateFirebaseStatus('connected', 'Synchronisé'), 500);
             }
@@ -6503,7 +6505,9 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
     return `<tr>
       <td class="num" style="color:var(--text-tertiary);font-size:11px;">${idx+1}</td>
       <td style="font-weight:600;font-size:13px;">${escapeHtml(p.name)}</td>
-      <td class="num"><input type="text" value="${p.pos||''}" placeholder="—" maxlength="3" onchange="DATA.matchStats[currentMatchStats].players[${idx}].pos=this.value;saveToFirebase();" style="width:38px;padding:2px 4px;background:${isAdmin?'var(--bg-elevated)':'transparent'};color:#fff;border:${isAdmin?'1px solid var(--border)':'none'};border-radius:4px;font-size:12px;text-align:center;" ${isAdmin?'':'readonly'}></td>
+      <td class="num"><input type="text" value="${p.pos||''}" placeholder="—" maxlength="3" 
+        oninput="clearTimeout(this._t);this._t=setTimeout(()=>{if(DATA.matchStats[currentMatchStats]?.players[${idx}]){DATA.matchStats[currentMatchStats].players[${idx}].pos=this.value;saveToFirebase();}},600);"
+        style="width:38px;padding:2px 4px;background:${isAdmin?'var(--bg-elevated)':'transparent'};color:#fff;border:${isAdmin?'1px solid var(--border)':'none'};border-radius:4px;font-size:12px;text-align:center;" ${isAdmin?'':'readonly'}></td>
       <td class="num">${makeInput('g')}</td>
       <td class="num">${makeInput('a')}</td>
       <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${pts}</td>
