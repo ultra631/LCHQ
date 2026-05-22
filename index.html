@@ -3143,31 +3143,30 @@
 
 <!-- Modal: Stats du match -->
 <div class="modal-overlay" id="matchStatsModal">
-  <div class="modal" style="max-width:900px;">
+  <div class="modal" style="max-width:1100px;max-height:90vh;overflow-y:auto;">
     <h3 id="matchStatsTitle">📊 Statistiques du match</h3>
-    <div class="modal-info" id="matchStatsSubtitle" style="margin-bottom:20px;"></div>
+    <div class="modal-info" id="matchStatsSubtitle" style="margin-bottom:16px;"></div>
 
-    <div class="match-stats-container">
-      <!-- En-tête avec score -->
-      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;margin-bottom:30px;padding:20px;background:var(--bg-card);border-radius:12px;">
-        <div style="text-align:center;">
-          <div id="statsAwayLogo" style="font-size:48px;margin-bottom:8px;"></div>
-          <div id="statsAwayName" style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;"></div>
-          <div id="statsAwayScore" style="font-family:'Bebas Neue';font-size:48px;color:var(--red);margin-top:8px;"></div>
-        </div>
-        <div style="font-family:'Bebas Neue';font-size:40px;color:var(--text-tertiary);">@</div>
-        <div style="text-align:center;">
-          <div id="statsHomeLogo" style="font-size:48px;margin-bottom:8px;"></div>
-          <div id="statsHomeName" style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;"></div>
-          <div id="statsHomeScore" style="font-family:'Bebas Neue';font-size:48px;color:var(--red);margin-top:8px;"></div>
-        </div>
+    <!-- Score header -->
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-bottom:20px;padding:16px;background:var(--bg-card);border-radius:12px;">
+      <div style="text-align:center;">
+        <div id="statsAwayLogo" style="font-size:40px;margin-bottom:6px;"></div>
+        <div id="statsAwayName" style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;"></div>
+        <div id="statsAwayScore" style="font-family:'Bebas Neue';font-size:42px;color:var(--red);"></div>
       </div>
-
-      <!-- Contenu -->
-      <div id="matchStatsContent">
-        <!-- Sera rempli dynamiquement -->
+      <div style="font-family:'Bebas Neue';font-size:32px;color:var(--text-tertiary);">@</div>
+      <div style="text-align:center;">
+        <div id="statsHomeLogo" style="font-size:40px;margin-bottom:6px;"></div>
+        <div id="statsHomeName" style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;"></div>
+        <div id="statsHomeScore" style="font-family:'Bebas Neue';font-size:42px;color:var(--red);"></div>
       </div>
     </div>
+
+    <!-- Tableau par période + lancers + temps attaque -->
+    <div id="matchPeriodTable" style="margin-bottom:20px;"></div>
+
+    <!-- Contenu joueurs/gardiens -->
+    <div id="matchStatsContent"></div>
 
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('matchStatsModal')">Fermer</button>
@@ -6335,122 +6334,202 @@ function openMatchStatsModal(matchId) {
 }
 
 function renderMatchStatsContent(match, awayTeam, homeTeam) {
-  // Si match pas passé, le retrouver depuis currentMatchStats
   if (!match || (!match.away && !match.home)) {
     match = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
             DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
-    if (match) {
-      awayTeam = DATA.teams[match.away];
-      homeTeam = DATA.teams[match.home];
-    }
+    if (match) { awayTeam = DATA.teams[match.away]; homeTeam = DATA.teams[match.home]; }
   }
   if (!match) return;
-  const matchStats = DATA.matchStats[currentMatchStats] || { players: [] };
+
+  const matchStats = DATA.matchStats[currentMatchStats] || { players: [], periods: {} };
   const is6s = currentMatchSource === '6s';
+  const isAdmin = document.body.classList.contains('admin-mode');
   const playerPool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
   const goaliePool = is6s ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
 
-  // Séparer skaters et gardiens
+  // === TABLEAU PAR PÉRIODE ===
+  const periods = matchStats.periods || {};
+  const away = match.away; const home = match.home;
+  const awayName = awayTeam?.name || away;
+  const homeName = homeTeam?.name || home;
+
+  const periodTable = `
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;">
+      <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-family:'Bebas Neue';font-size:16px;letter-spacing:1px;">POINTAGE PAR PÉRIODE</div>
+      <div class="table-wrap"><table style="min-width:400px;">
+        <thead><tr>
+          <th>Équipe</th>
+          <th class="num">P1</th><th class="num">P2</th><th class="num">P3</th>
+          <th class="num" style="color:var(--red-bright);">TOT</th>
+          <th class="num">LAN</th>
+          <th class="num">ATT</th>
+        </tr></thead>
+        <tbody>
+          ${[away, home].map(teamKey => {
+            const tName = DATA.teams[teamKey]?.name || teamKey;
+            const p = periods[teamKey] || {};
+            const p1 = p.p1 || 0; const p2 = p.p2 || 0; const p3 = p.p3 || 0;
+            const tot = teamKey === away ? (match.away_score ?? '?') : (match.home_score ?? '?');
+            return `<tr>
+              <td style="font-weight:700;">${escapeHtml(tName)}</td>
+              <td class="num">${isAdmin ? `<input type="number" min="0" value="${p1}" onchange="updatePeriodStat('${teamKey}','p1',this.value)" style="width:45px;padding:3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : p1}</td>
+              <td class="num">${isAdmin ? `<input type="number" min="0" value="${p2}" onchange="updatePeriodStat('${teamKey}','p2',this.value)" style="width:45px;padding:3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : p2}</td>
+              <td class="num">${isAdmin ? `<input type="number" min="0" value="${p3}" onchange="updatePeriodStat('${teamKey}','p3',this.value)" style="width:45px;padding:3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : p3}</td>
+              <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${tot}</td>
+              <td class="num">${isAdmin ? `<input type="number" min="0" value="${p.lan||0}" onchange="updatePeriodStat('${teamKey}','lan',this.value)" style="width:50px;padding:3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : (p.lan||0)}</td>
+              <td class="num">${isAdmin ? `<input type="text" value="${p.att||'0:00'}" onchange="updatePeriodStat('${teamKey}','att',this.value)" style="width:55px;padding:3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;" placeholder="0:00">` : (p.att||'0:00')}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+
+  document.getElementById('matchPeriodTable').innerHTML = periodTable;
+
+  // === SÉPARER JOUEURS ET GARDIENS ===
   const skaters = matchStats.players.filter(p => p.type !== 'goalie');
   const goalies  = matchStats.players.filter(p => p.type === 'goalie');
 
-  const renderSkaterRow = (p, idx) => {
+  // Listes déroulantes pour ajouter joueurs par équipe
+  const makeDropdown = (teamKey, side) => {
+    if (!isAdmin) return '';
+    const existing = new Set(matchStats.players.map(p => p.id));
+    const teamPlayers = [...playerPool.filter(p => p.team === teamKey), ...goaliePool.filter(g => g.team === teamKey)]
+      .filter(p => !existing.has(p.id));
+    return `<select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);font-size:13px;margin-top:8px;width:100%;">
+      <option value="">➕ Ajouter joueur — ${escapeHtml(DATA.teams[teamKey]?.name||teamKey)}</option>
+      ${teamPlayers.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+    </select>`;
+  };
+
+  // === TABLEAU JOUEURS ===
+  const posOpts = ['C','AD','AG','DD','DG','G'].map(p => `<option value="${p}">${p}</option>`).join('');
+
+  const skaterRow = (p, idx) => {
     const pmClass = (p.plusminus||0)>0?'diff-pos':(p.plusminus||0)<0?'diff-neg':'';
-    const pmStr = (p.plusminus||0)>0?`+${p.plusminus}`:(p.plusminus||0);
-    const teamName = DATA.teams[p.team]?.name || p.team;
+    const makeInput = (field, width=40) => isAdmin
+      ? `<input type="number" value="${p[field]||0}" onchange="updateMatchStatField(${idx},'${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
+      : (p[field]||0);
+    const pts = (p.g||0)+(p.a||0);
     return `<tr>
-      <td style="font-weight:600;">${escapeHtml(p.name)}</td>
-      <td>${escapeHtml(teamName)}</td>
-      <td class="num">${p.gp||0}</td>
-      <td class="num">${p.g||0}</td>
-      <td class="num">${p.a||0}</td>
-      <td class="num pts-cell" style="color:var(--red-bright);">${(p.g||0)+(p.a||0)}</td>
-      <td class="num ${pmClass}">${pmStr}</td>
-      ${isAdmin ? `<td style="display:flex;gap:4px;">
-        <button class="row-action-btn" onclick="editMatchStatPlayer(${idx})" title="Modifier">✏️</button>
-        <button class="row-action-btn delete" onclick="removeMatchStatPlayer(${idx})" title="Retirer">🗑️</button>
-      </td>` : ''}
+      <td class="num" style="color:var(--text-tertiary);font-size:11px;">${idx+1}</td>
+      <td style="font-weight:600;font-size:13px;">${escapeHtml(p.name)}</td>
+      <td class="num">${isAdmin ? `<select onchange="updateMatchStatField(${idx},'pos',this.value)" style="width:52px;padding:2px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;">${['','C','AD','AG','DD','DG','G'].map(o=>`<option value="${o}" ${p.pos===o?'selected':''}>${o||'—'}</option>`).join('')}</select>` : (p.pos||'—')}</td>
+      <td class="num">${makeInput('g')}</td>
+      <td class="num">${makeInput('a')}</td>
+      <td class="num ${pmClass}">${isAdmin ? `<input type="number" value="${p.plusminus||0}" onchange="updateMatchStatField(${idx},'plusminus',this.value)" style="width:45px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : (p.plusminus||0)}</td>
+      <td class="num">${makeInput('hits')}</td>
+      <td class="num">${makeInput('mjg')}</td>
+      <td class="num">${makeInput('mjf',45)}</td>
+      <td class="num">${makeInput('tb')}</td>
+      <td class="num">${makeInput('intc')}</td>
+      <td class="num">${makeInput('pert')}</td>
+      <td class="num">${makeInput('prises')}</td>
+      <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${pts}</td>
+      ${isAdmin ? `<td><button onclick="removeMatchStatPlayer(${idx})" style="background:rgba(220,38,38,0.2);border:none;border-radius:4px;padding:2px 6px;cursor:pointer;color:#ef4444;">🗑️</button></td>` : ''}
     </tr>`;
   };
 
-  const renderGoalieRow = (p, idx) => {
-    const gaa = p.gaa ? Number(p.gaa).toFixed(2) : '0.00';
-    const svpct = p.svpct ? (Number(p.svpct)*100).toFixed(1) : '0.0';
-    const teamName = DATA.teams[p.team]?.name || p.team;
-    return `<tr>
-      <td style="font-weight:600;">🥅 ${escapeHtml(p.name)}</td>
-      <td>${escapeHtml(teamName)}</td>
-      <td class="num">${p.gp||0}</td>
-      <td class="num" style="color:#22c55e;">${p.w||0}</td>
-      <td class="num" style="color:var(--red-bright);">${p.l||0}</td>
-      <td class="num">${gaa}</td>
-      <td class="num">${svpct}%</td>
-      <td class="num">${p.so||0}</td>
-      ${isAdmin ? `<td style="display:flex;gap:4px;">
-        <button class="row-action-btn" onclick="editMatchStatPlayer(${skaters.length + goalies.indexOf(p)})" title="Modifier">✏️</button>
-        <button class="row-action-btn delete" onclick="removeMatchStatPlayer(${skaters.length + goalies.indexOf(p)})" title="Retirer">🗑️</button>
-      </td>` : ''}
+  // Ligne total joueurs
+  const totalRow = (players) => {
+    const sum = (f) => players.reduce((s,p) => s+(parseInt(p[f])||0), 0);
+    return `<tr style="background:rgba(255,255,255,0.04);font-weight:700;">
+      <td colspan="3" style="font-size:11px;color:var(--text-tertiary);">TOTAL</td>
+      <td class="num">${sum('g')}</td>
+      <td class="num">${sum('a')}</td>
+      <td class="num">${sum('plusminus')}</td>
+      <td class="num">${sum('hits')}</td>
+      <td class="num">${sum('mjg')}</td>
+      <td class="num">${sum('mjf')}</td>
+      <td class="num">${sum('tb')}</td>
+      <td class="num">${sum('intc')}</td>
+      <td class="num">${sum('pert')}</td>
+      <td class="num">${sum('prises')}</td>
+      <td class="num pts-cell">${sum('g')+sum('a')}</td>
+      ${isAdmin ? '<td></td>' : ''}
     </tr>`;
   };
 
-  const skatersHtml = skaters.length > 0 ? `
-    <h3 style="font-family:'Bebas Neue';font-size:20px;margin-bottom:12px;">🏒 Joueurs</h3>
-    <div class="table-wrap"><table>
-      <thead><tr>
-        <th>Joueur</th><th>Équipe</th>
-        <th class="num">PJ</th><th class="num">B</th><th class="num">A</th>
-        <th class="num pts-cell">PTS</th><th class="num">+/-</th>
-        ${isAdmin ? '<th></th>' : ''}
-      </tr></thead>
-      <tbody>${skaters.map((p,i) => renderSkaterRow(p,i)).join('')}</tbody>
-    </table></div>` : '';
+  // === TABLEAU GARDIENS ===
+  const goalieRow = (g, idx) => {
+    const realIdx = skaters.length + idx;
+    const makeInput = (field, width=45) => isAdmin
+      ? `<input type="number" value="${g[field]||0}" onchange="updateMatchStatField(${realIdx},'${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
+      : (g[field]||0);
+    return `<tr>
+      <td class="num" style="color:var(--text-tertiary);font-size:11px;">${idx+1}</td>
+      <td style="font-weight:600;font-size:13px;">🥅 ${escapeHtml(g.name)}</td>
+      <td class="num">${makeInput('sa')}</td>
+      <td class="num">${makeInput('ga')}</td>
+      <td class="num">${isAdmin ? `<input type="checkbox" ${g.w?'checked':''} onchange="updateMatchStatField(${realIdx},'w',this.checked?1:0)" style="accent-color:#22c55e;">` : (g.w?'✅':'')}</td>
+      <td class="num">${isAdmin ? `<input type="checkbox" ${g.l?'checked':''} onchange="updateMatchStatField(${realIdx},'l',this.checked?1:0)" style="accent-color:#ef4444;">` : (g.l?'❌':'')}</td>
+      <td class="num">${makeInput('g')}</td>
+      <td class="num">${makeInput('a')}</td>
+      <td class="num">${isAdmin ? `<input type="text" value="${g.min||'0:00'}" onchange="updateMatchStatField(${realIdx},'min',this.value)" style="width:55px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;" placeholder="0:00">` : (g.min||'0:00')}</td>
+      ${isAdmin ? `<td><button onclick="removeMatchStatPlayer(${realIdx})" style="background:rgba(220,38,38,0.2);border:none;border-radius:4px;padding:2px 6px;cursor:pointer;color:#ef4444;">🗑️</button></td>` : ''}
+    </tr>`;
+  };
 
-  const goaliesHtml = goalies.length > 0 ? `
-    <h3 style="font-family:'Bebas Neue';font-size:20px;margin:16px 0 12px;">🥅 Gardiens</h3>
-    <div class="table-wrap"><table>
-      <thead><tr>
-        <th>Gardien</th><th>Équipe</th>
-        <th class="num">PJ</th><th class="num">V</th><th class="num">D</th>
-        <th class="num">MOY</th><th class="num">ARR%</th><th class="num">BL</th>
-        ${isAdmin ? '<th></th>' : ''}
-      </tr></thead>
-      <tbody>${goalies.map((p,i) => renderGoalieRow(p, i)).join('')}</tbody>
-    </table></div>` : '';
+  // Grouper par équipe
+  const awaySkaters = skaters.filter(p => p.team === away);
+  const homeSkaters = skaters.filter(p => p.team === home);
+  const awayGoalies = goalies.filter(p => p.team === away);
+  const homeGoalies = goalies.filter(p => p.team === home);
 
-  const emptyHtml = skaters.length === 0 && goalies.length === 0
-    ? `<div class="empty-state"><p>Aucun joueur enregistré.</p></div>` : '';
+  const skaterHeaders = `<th class="num">#</th><th>JOUEUR</th><th class="num">POS</th><th class="num">B</th><th class="num">A</th><th class="num">+/-</th><th class="num">MEC</th><th class="num">MJG</th><th class="num">MJ</th><th class="num">TB</th><th class="num">INT</th><th class="num">PERT</th><th class="num">PRIS</th><th class="num pts-cell">PTS</th>${isAdmin?'<th></th>':''}`;
+  const goalieHeaders = `<th class="num">#</th><th>GARDIEN</th><th class="num">LAN</th><th class="num">BA</th><th class="num">V</th><th class="num">D</th><th class="num">B</th><th class="num">A</th><th class="num">MIN</th>${isAdmin?'<th></th>':''}`;
 
-  // Boutons sélection joueurs par équipe
-  const awayName = awayTeam?.name || match.away;
-  const homeName = homeTeam?.name || match.home;
-  const maxPlayers = is6s ? 6 : 4;
-  const addSubHtml = isAdmin ? `
-    <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:10px;">AJOUTER UN JOUEUR À LA GAME</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div>
-          <div style="font-size:12px;font-weight:700;color:var(--nhl-color);margin-bottom:6px;">${escapeHtml(awayName)}</div>
-          <select onchange="addPlayerFromDropdown('${match.away}',this.value,this)" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);font-size:13px;">
-            <option value="">— Choisir joueur —</option>
-            ${[...playerPool.filter(p=>p.team===match.away), ...goaliePool.filter(g=>g.team===match.away)]
-              .filter(p => !(matchStats.players||[]).find(mp=>mp.id===p.id))
-              .map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:700;color:var(--lhjmq-color);margin-bottom:6px;">${escapeHtml(homeName)}</div>
-          <select onchange="addPlayerFromDropdown('${match.home}',this.value,this)" style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);font-size:13px;">
-            <option value="">— Choisir joueur —</option>
-            ${[...playerPool.filter(p=>p.team===match.home), ...goaliePool.filter(g=>g.team===match.home)]
-              .filter(p => !(matchStats.players||[]).find(mp=>mp.id===p.id))
-              .map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}
-          </select>
-        </div>
-      </div>
-    </div>` : '';
+  const makeTeamSection = (teamKey, tSkaters, tGoalies, color) => {
+    const tName = DATA.teams[teamKey]?.name || teamKey;
+    return `<div style="margin-bottom:24px;">
+      <div style="border-left:4px solid ${color};padding-left:12px;margin-bottom:12px;font-family:'Bebas Neue';font-size:20px;color:${color};">${escapeHtml(tName)}</div>
+      <div class="table-wrap" style="margin-bottom:8px;"><table style="min-width:700px;">
+        <thead><tr>${skaterHeaders}</tr></thead>
+        <tbody>
+          ${tSkaters.map((p,i) => skaterRow(p, skaters.indexOf(p))).join('')}
+          ${totalRow(tSkaters)}
+        </tbody>
+      </table></div>
+      ${makeDropdown(teamKey)}
+      ${tGoalies.length > 0 ? `
+      <div style="margin-top:12px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-tertiary);margin-bottom:6px;">GARDIENS</div>
+      <div class="table-wrap"><table style="min-width:500px;">
+        <thead><tr>${goalieHeaders}</tr></thead>
+        <tbody>${tGoalies.map((g,i) => goalieRow(g, goalies.indexOf(g))).join('')}</tbody>
+      </table></div>` : ''}
+    </div>`;
+  };
 
-  document.getElementById('matchStatsContent').innerHTML = skatersHtml + goaliesHtml + emptyHtml + addSubHtml;
+  const awayColor = DATA.teams[away]?.color || 'var(--nhl-color)';
+  const homeColor = DATA.teams[home]?.color || 'var(--lhjmq-color)';
+
+  document.getElementById('matchStatsContent').innerHTML =
+    makeTeamSection(away, awaySkaters, awayGoalies, awayColor) +
+    makeTeamSection(home, homeSkaters, homeGoalies, homeColor);
 }
+
+function updatePeriodStat(teamKey, field, value) {
+  if (!DATA.matchStats[currentMatchStats]) DATA.matchStats[currentMatchStats] = { players: [], periods: {} };
+  if (!DATA.matchStats[currentMatchStats].periods) DATA.matchStats[currentMatchStats].periods = {};
+  if (!DATA.matchStats[currentMatchStats].periods[teamKey]) DATA.matchStats[currentMatchStats].periods[teamKey] = {};
+  DATA.matchStats[currentMatchStats].periods[teamKey][field] = field === 'att' ? value : parseInt(value)||0;
+}
+
+function updateMatchStatField(idx, field, value) {
+  const matchStats = DATA.matchStats[currentMatchStats];
+  if (!matchStats || !matchStats.players[idx]) return;
+  matchStats.players[idx][field] = (field === 'min' || field === 'att' || field === 'pos') ? value : (parseFloat(value)||0);
+  // Recalculer pts si b ou a change
+  if (field === 'g' || field === 'a') {
+    const p = matchStats.players[idx];
+    p.pts = (p.g||0) + (p.a||0);
+  }
+  // Rafraîchir l'affichage sans fermer
+  const matchObj = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
+                   DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
+  if (matchObj) renderMatchStatsContent(matchObj, DATA.teams[matchObj.away], DATA.teams[matchObj.home]);
+}
+
 
 function editMatchStatPlayer(idx) {
   const matchStats = DATA.matchStats[currentMatchStats];
