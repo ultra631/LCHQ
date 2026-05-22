@@ -6403,6 +6403,9 @@ function openMatchStatsModal(matchId) {
 }
 
 function renderMatchStatsContent(match, awayTeam, homeTeam) {
+  // Sauvegarder les valeurs actuelles des inputs avant de re-render
+  saveCurrentInputsToMatchStats();
+
   if (!match || (!match.away && !match.home)) {
     match = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
             DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
@@ -11520,6 +11523,44 @@ async function saveMatchStatsOnly() {
   } catch(e) {
     console.error('Erreur save matchStats:', e);
   }
+}
+
+
+function saveCurrentInputsToMatchStats() {
+  // Lire tous les inputs/selects du modal et sauvegarder dans DATA
+  const matchStats = DATA.matchStats?.[currentMatchStats];
+  if (!matchStats) return;
+
+  document.querySelectorAll('#matchStatsContent select').forEach(sel => {
+    const onch = sel.getAttribute('onchange') || '';
+    const m = onch.match(/updateMatchStatField\((\d+),'(\w+)'/);
+    if (m) {
+      const i = parseInt(m[1]); const field = m[2];
+      if (matchStats.players[i]) matchStats.players[i][field] = sel.value;
+    }
+  });
+
+  document.querySelectorAll('#matchStatsContent input[type="number"]').forEach(inp => {
+    const onch = inp.getAttribute('onchange') || '';
+    const m = onch.match(/updateMatchStatField\((\d+),'(\w+)'/);
+    if (m) {
+      const i = parseInt(m[1]); const field = m[2];
+      if (matchStats.players[i] && inp.value !== '') {
+        matchStats.players[i][field] = parseFloat(inp.value) || 0;
+      }
+    }
+  });
+
+  document.querySelectorAll('#matchPeriodTable input').forEach(inp => {
+    const onch = inp.getAttribute('onchange') || '';
+    const m = onch.match(/updatePeriodStat\('([^']+)','([^']+)'/);
+    if (m) {
+      const [, teamKey, field] = m;
+      if (!matchStats.periods) matchStats.periods = {};
+      if (!matchStats.periods[teamKey]) matchStats.periods[teamKey] = {};
+      matchStats.periods[teamKey][field] = inp.value;
+    }
+  });
 }
 
 loadData();
