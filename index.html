@@ -6358,14 +6358,9 @@ function openMatchStatsModal(matchId) {
   
   // Initialiser la structure de données si elle n'existe pas
   if (!DATA.matchStats) DATA.matchStats = {};
-  if (!DATA.matchStats[matchId]) DATA.matchStats[matchId] = { players: [] };
-
-  // Auto-remplir avec les joueurs des 2 équipes si pas encore de joueurs
+  if (!DATA.matchStats[matchId]) DATA.matchStats[matchId] = { players: [], periods: {} };
+  if (!DATA.matchStats[matchId].periods) DATA.matchStats[matchId].periods = {};
   const is6s = matchSource === '6s';
-  const playerPool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
-  const goaliePool = is6s ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
-
-  // Pas d'auto-remplissage — on sélectionne les joueurs manuellement
   
   // Afficher contenu
   renderMatchStatsContent(match, away, home);
@@ -6580,6 +6575,21 @@ function updateMatchStatField(idx, field, value) {
     const mjEl = document.getElementById(`mjpct_${idx}`);
     if (mjEl) mjEl.textContent = pct;
   }
+  // Mettre à jour PTS live
+  if (field === 'g' || field === 'a') {
+    const rows = document.querySelectorAll('#matchStatsContent .pts-cell');
+    // Trouver la bonne row
+    const allRows = document.querySelectorAll('#matchStatsContent tbody tr');
+    let skaterIdx = 0;
+    for (const row of allRows) {
+      const ptsCell = row.querySelector('.pts-cell');
+      if (ptsCell && skaterIdx === idx) {
+        ptsCell.textContent = matchStats.players[idx].pts || 0;
+        break;
+      }
+      skaterIdx++;
+    }
+  }
 }
 
 
@@ -6665,14 +6675,23 @@ function saveMatchStatPlayer(idx, type) {
 }
 
 function removeMatchStatPlayer(idx) {
-  if (!confirm('Retirer ce joueur du match?')) return;
+  if (!confirm('Retirer ce joueur du match et annuler ses stats?')) return;
   const matchStats = DATA.matchStats[currentMatchStats];
   if (!matchStats) return;
+
+  // Si déjà sauvegardé, soustraire les stats de ce joueur du profil
+  if (matchStats.saved) {
+    const singlePlayer = { ...matchStats, players: [matchStats.players[idx]] };
+    applyMatchStatsToProfiles(singlePlayer, true); // reverse
+  }
+
   matchStats.players.splice(idx, 1);
   saveToFirebase();
-  const away = DATA.teams[Object.keys(DATA.teams).find(k => DATA.teams[k].name === document.getElementById('statsAwayName')?.textContent)];
-  const home = DATA.teams[Object.keys(DATA.teams).find(k => DATA.teams[k].name === document.getElementById('statsHomeName')?.textContent)];
-  renderMatchStatsContent({away: away?.id, home: home?.id}, away, home);
+  rerenderAll();
+
+  const matchObj = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
+                   DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
+  if (matchObj) renderMatchStatsContent(matchObj, DATA.teams[matchObj.away], DATA.teams[matchObj.home]);
 }
 
 function openAddSubToSeasonMatch(teamKey) {
@@ -7054,90 +7073,87 @@ function filterPlayerDropdown() {
   });
 }
 
-function saveMatchStats() {
-  const matchStats = DATA.matchStats[currentMatchStats];
-  
-  // Vérifier si déjà sauvegardé pour éviter de cumuler 2 fois
-  if (matchStats.saved) {
-    if (!confirm('Les stats de ce match ont déjà été sauvegardées. Voulez-vous les sauvegarder à nouveau? (Cela va les cumuler une 2e fois!)')) {
-      return;
+function applyMatchStatsToProfiles(matchStats, reverse = false) {
+  // Appliquer ou annuler les stats d'un match sur les profils
+  const mult = reverse ? -1 : 1;
+  const is6s = currentMatchSource === '6s';
+  const matchObj = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
+                   DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
+  const awayDiv = matchObj ? DATA.teams[matchObj.away]?.division : null;
+  const homeDiv = matchObj ? DATA.teams[matchObj.home]?.division : null;
+
+  (matchStats.players || []).forEach(p => {
+    const player = DATA.players.find(pl => pl.id === p.id) ||
+                   (DATA.season_3_6v6?.players || []).find(pl => pl.id === p.id);
+    const goalie = DATA.goalies?.find(gl => gl.id === p.id) ||
+                   (DATA.season_3_6v6?.goalies || []).find(gl => gl.id === p.id);
+
+    const teamDiv = p.team === matchObj?.away ? awayDiv : homeDiv;
+
+    if (goalie && p.type === 'goalie') {
+      const target = (teamDiv === 'nhl' && goalie.stats_nhl) ? goalie.stats_nhl :
+                     (teamDiv === 'lhjmq' && goalie.stats_lhjmq) ? goalie.stats_lhjmq : goalie;
+      target.gp = Math.max(0, (target.gp||0) + mult);
+      target.w  = Math.max(0, (target.w||0)  + mult*(p.w||0));
+      target.l  = Math.max(0, (target.l||0)  + mult*(p.l||0));
+      target.sa = Math.max(0, (target.sa||0) + mult*(p.sa||0));
+      target.ga = Math.max(0, (target.ga||0) + mult*(p.ga||0));
+      target.sv = Math.max(0, (target.sv||0) + mult*((p.sa||0)-(p.ga||0)));
+      target.so = Math.max(0, (target.so||0) + mult*(p.so||0));
+      target.gaa   = target.gp > 0 ? +(target.ga/target.gp).toFixed(2) : 0;
+      target.svpct = target.sa > 0 ? +(target.sv/target.sa).toFixed(3) : 0;
+      // Sync profil principal
+      if (goalie.stats_nhl || goalie.stats_lhjmq) setGoalieStats(goalie, teamDiv, {});
+
+    } else if (player && p.type !== 'goalie') {
+      const target = (teamDiv === 'nhl' && player.stats_nhl) ? player.stats_nhl :
+                     (teamDiv === 'lhjmq' && player.stats_lhjmq) ? player.stats_lhjmq : player;
+      target.gp = Math.max(0, (target.gp||0) + mult);
+      target.g  = Math.max(0, (target.g||0)  + mult*(p.g||0));
+      target.a  = Math.max(0, (target.a||0)  + mult*(p.a||0));
+      target.pts = (target.g||0) + (target.a||0);
+      target.plusminus = (target.plusminus||0) + mult*(p.plusminus||0);
+      target.hits = Math.max(0, (target.hits||0) + mult*(p.hits||0));
+      target.tb   = Math.max(0, (target.tb||0)   + mult*(p.tb||0));
+      target.mjg  = Math.max(0, (target.mjg||0)  + mult*(p.mjg||0));
+      target.mjf  = Math.max(0, (target.mjf||0)  + mult*(p.mjf||0));
+      target.intc  = Math.max(0, (target.intc||0)  + mult*(p.intc||0));
+      target.prises= Math.max(0, (target.prises||0)+ mult*(p.prises||0));
+      target.pert  = Math.max(0, (target.pert||0)  + mult*(p.pert||0));
+      target.fopct = target.mjf > 0 ? +((target.mjg/target.mjf)*100).toFixed(1) : 0;
+      target.ppm   = target.gp  > 0 ? +(target.pts/target.gp).toFixed(2) : 0;
+      if (player.stats_nhl || player.stats_lhjmq) setPlayerStats(player, teamDiv, {});
     }
+  });
+}
+
+function saveMatchStats() {
+  if (!DATA.matchStats) DATA.matchStats = {};
+  if (!DATA.matchStats[currentMatchStats]) DATA.matchStats[currentMatchStats] = { players: [], periods: {} };
+  const matchStats = DATA.matchStats[currentMatchStats];
+
+  // Si déjà sauvegardé, annuler les anciens avant d'appliquer les nouveaux
+  if (matchStats.saved) {
+    applyMatchStatsToProfiles(matchStats, true); // reverse
   }
-  
-  // Cumuler les stats dans les profils joueurs/gardiens
-  if (matchStats && matchStats.players) {
-    matchStats.players.forEach(p => {
-      // Trouver le joueur ou gardien
-      const player = DATA.players.find(pl => pl.id === p.playerId);
-      const goalie = DATA.goalies?.find(gl => gl.id === p.playerId);
-      
-      if (goalie) {
-        // CUMULER STATS GARDIEN
-        goalie.w = (goalie.w || 0) + (p.w || 0);
-        goalie.l = (goalie.l || 0) + (p.l || 0);
-        goalie.sv = (goalie.sv || 0) + (p.sv || 0);
-        goalie.sa = (goalie.sa || 0) + (p.sa || 0);
-        goalie.ga = (goalie.ga || 0) + (p.ga || 0);
-        goalie.so = (goalie.so || 0) + ((p.ga || 0) === 0 ? 1 : 0);
-        goalie.g = (goalie.g || 0) + (p.g || 0);
-        goalie.a = (goalie.a || 0) + (p.a || 0);
-        goalie.gp = (goalie.gp || 0) + 1;
-        
-        // Recalculer moyennes
-        if (goalie.sa > 0) {
-          goalie.svpct = ((goalie.sv / goalie.sa) * 100).toFixed(1);
-        }
-        if (goalie.gp > 0) {
-          goalie.gaa = (goalie.ga / goalie.gp).toFixed(2);
-        }
-        
-      } else if (player) {
-        // CUMULER STATS JOUEUR
-        player.g = (player.g || 0) + (p.g || 0);
-        player.a = (player.a || 0) + (p.a || 0);
-        player.pts = (player.pts || 0) + ((p.g || 0) + (p.a || 0));
-        player.plusminus = (player.plusminus || 0) + (p.pm || 0);
-        player.hits = (player.hits || 0) + (p.hits || 0);
-        player.tb = (player.tb || 0) + (p.tb || 0);
-        player.mjg = (player.mjg || 0) + (p.mjg || 0);
-        player.mjf = (player.mjf || 0) + (p.mjf || 0);
-        player.pt = (player.pt || 0) + (p.pt || 0);
-        player.pr = (player.pr || 0) + (p.pr || 0);
-        player.intc = (player.intc || 0) + (p.intc || 0);
-        player.prises = (player.prises || 0) + (p.prises || 0);
-        player.pert = (player.pert || 0) + (p.pert || 0);
-        player.gp = (player.gp || 0) + 1;
-        
-        // Recalculer moyennes
-        if (player.mjf > 0) {
-          player.fopct = ((player.mjg / player.mjf) * 100).toFixed(1);
-        }
-        if (player.pt > 0) {
-          player.passpct = ((player.pr / player.pt) * 100).toFixed(1);
-        }
-        if (player.gp > 0) {
-          player.ppg = (player.g / player.gp).toFixed(2);
-          player.ppm = ((player.g + player.a) / player.gp).toFixed(2);
-        }
-      }
-    });
-  }
-  
-  // Marquer comme sauvegardé
+
+  // Calculer %MJ et PTS pour chaque joueur avant de sauvegarder
+  (matchStats.players || []).forEach(p => {
+    if (p.type !== 'goalie') {
+      p.pts = (p.g||0) + (p.a||0);
+      p.fopct = p.mjf > 0 ? +((p.mjg/p.mjf)*100).toFixed(1) : 0;
+    }
+  });
+
+  // Appliquer les stats aux profils
+  applyMatchStatsToProfiles(matchStats, false);
+
   matchStats.saved = true;
   matchStats.savedAt = new Date().toISOString();
-  
-  alert('✅ Stats du match sauvegardées et ajoutées aux profils!');
-  closeModal('matchStatsModal');
+
   saveToFirebase();
-  
-  // Recharger les sections Stats et Équipes si elles sont affichées
-  if (document.getElementById('stats-section')?.style.display !== 'none') {
-    showSection('stats');
-  }
-  if (document.getElementById('teams-section')?.style.display !== 'none') {
-    showSection('teams');
-  }
+  rerenderAll();
+  showToast('✅ Stats sauvegardées et ajoutées aux profils!');
 }
 
 function openMatchModalFromStats() {
