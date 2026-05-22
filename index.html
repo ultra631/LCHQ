@@ -11192,9 +11192,9 @@ function resetPlayoffMatch(mode, div, matchId) {
 function addPlayerFromDropdown(teamKey, playerId, selectEl) {
   if (!playerId) return;
   const is6s = currentMatchSource === '6s';
-  const pool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
+  const playerPool = is6s ? (DATA.season_3_6v6?.players || []) : (DATA.players || []);
   const goaliePool = is6s ? (DATA.season_3_6v6?.goalies || []) : (DATA.goalies || []);
-  const person = [...pool, ...goaliePool].find(p => p.id === playerId);
+  const person = [...playerPool, ...goaliePool].find(p => p.id === playerId);
   if (!person) return;
 
   const matchStats = DATA.matchStats[currentMatchStats];
@@ -11807,5 +11807,3 @@ function drawerNav(page) {
 </div>
 </body>
 </html>
-
-        
