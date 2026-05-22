@@ -5347,11 +5347,15 @@ function savePlayer() {
     intc: newVal('Int'), prises: newVal('Prises'), pert: newVal('Pert')
   };
 
-  // Chercher les profils existants dans les 2 pools
-  const existing4s = DATA.players.find(x => x.id === editingPlayerId)
-    || DATA.players.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
-  const existing6s = (DATA.season_3_6v6?.players || []).find(x => x.id === editingPlayerId)
-    || (DATA.season_3_6v6?.players || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+  // Si on modifie un joueur existant → chercher SEULEMENT par ID
+  let existing4s, existing6s;
+  if (editingPlayerId) {
+    existing4s = DATA.players.find(x => x.id === editingPlayerId);
+    existing6s = (DATA.season_3_6v6?.players || []).find(x => x.id === editingPlayerId);
+  } else {
+    existing4s = DATA.players.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+    existing6s = (DATA.season_3_6v6?.players || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+  }
 
   // SAUVEGARDER EN 4S
   if (mode4s) {
@@ -5644,10 +5648,14 @@ function saveGoalie() {
   };
 
   // Chercher existants par id ou nom
-  const existing4s = DATA.goalies.find(x => x.id === editingGoalieId)
-    || DATA.goalies.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
-  const existing6s = (DATA.season_3_6v6?.goalies || []).find(x => x.id === editingGoalieId)
-    || (DATA.season_3_6v6?.goalies || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+  let existing4s, existing6s;
+  if (editingGoalieId) {
+    existing4s = DATA.goalies.find(x => x.id === editingGoalieId);
+    existing6s = (DATA.season_3_6v6?.goalies || []).find(x => x.id === editingGoalieId);
+  } else {
+    existing4s = DATA.goalies.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+    existing6s = (DATA.season_3_6v6?.goalies || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+  }
 
   // SAUVEGARDER 4S
   if (mode4s) {
