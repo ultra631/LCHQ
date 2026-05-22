@@ -6569,10 +6569,12 @@ function updateMatchStatField(idx, field, value) {
     const p = matchStats.players[idx];
     p.pts = (p.g||0) + (p.a||0);
   }
-  // Rafraîchir l'affichage sans fermer
-  const matchObj = DATA.schedule?.weeks?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats) ||
-                   DATA.season_3_6v6?.calendar?.flatMap(w => w.matches||[]).find(m => m.id === currentMatchStats);
-  if (matchObj) renderMatchStatsContent(matchObj, DATA.teams[matchObj.away], DATA.teams[matchObj.home]);
+  // PAS de re-render — garder le focus sur le champ actuel
+  // Le PTS se met à jour juste dans la cellule si possible
+  const ptsCell = document.querySelector(`#matchStatsContent tr:nth-child(${idx+1}) .pts-cell`);
+  if (ptsCell && (field === 'g' || field === 'a')) {
+    ptsCell.textContent = matchStats.players[idx].pts || 0;
+  }
 }
 
 
