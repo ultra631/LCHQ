@@ -3171,7 +3171,7 @@
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('matchStatsModal')">Fermer</button>
       <button class="btn btn-secondary admin-only" onclick="openMatchModalFromStats()" style="display:none;">⚙️ Modifier score</button>
-      <button class="btn btn-primary admin-only" onclick="saveMatchStats()" style="display:none;">💾 Enregistrer stats</button>
+      <button class="btn btn-primary admin-only" onclick="saveMatchStats()" style="display:none;" onkeydown="event.preventDefault()">💾 Enregistrer stats</button>
     </div>
   </div>
 </div>
@@ -4077,13 +4077,16 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
   const teamF = document.getElementById(teamFilterId).value;
 
   let players = DATA.players.filter(p => {
-    // Seulement les joueurs réguliers (pas remplaçants, pas inactifs)
     const status = p.status || 'regular';
     if (status !== 'regular') return false;
     if (!p.team || !DATA.teams[p.team] || DATA.teams[p.team].division !== division) return false;
     if (search && !p.name.toLowerCase().includes(search)) return false;
     if (teamF && p.team !== teamF) return false;
     return true;
+  }).map(p => {
+    // Utiliser les stats de la division affichée
+    const divStats = division === 'nhl' ? p.stats_nhl : p.stats_lhjmq;
+    return divStats ? { ...p, ...divStats } : p;
   });
 
   players.sort((a, b) => {
@@ -4135,7 +4138,11 @@ function renderPlayersLHJMQ() { renderPlayersByDivision('lhjmq', playersLhjmqSor
 
 // GOALIES
 function renderGoaliesByDivision(division, sort, bodyId) {
-  let goalies = DATA.goalies.filter(g => g && g.team && DATA.teams[g.team] && DATA.teams[g.team].division === division);
+  let goalies = DATA.goalies.filter(g => g && g.team && DATA.teams[g.team] && DATA.teams[g.team].division === division)
+    .map(g => {
+      const divStats = division === 'nhl' ? g.stats_nhl : g.stats_lhjmq;
+      return divStats ? { ...g, ...divStats } : g;
+    });
   goalies.sort((a, b) => sort.dir === 'desc' ? b[sort.key] - a[sort.key] : a[sort.key] - b[sort.key]);
 
   document.getElementById(bodyId).innerHTML = goalies.map((g, i) => {
@@ -5305,13 +5312,29 @@ function savePlayer() {
     const data4s = { ...baseData, team: team4s };
     if (existing4s) {
       const idx = DATA.players.findIndex(x => x.id === existing4s.id);
-      DATA.players[idx] = { ...DATA.players[idx], ...data4s };
+      const oldTeam = DATA.players[idx].team;
+      const oldDiv = DATA.teams[oldTeam]?.division;
+      const newDiv = DATA.teams[team4s]?.division;
+      // Si changement de division NHL <-> LHJMQ, reset les stats
+      if (oldTeam && team4s && oldDiv !== newDiv && oldDiv && newDiv) {
+        // Reset les stats de la nouvelle division seulement
+        if (!DATA.players[idx].stats_nhl) DATA.players[idx].stats_nhl = {};
+        if (!DATA.players[idx].stats_lhjmq) DATA.players[idx].stats_lhjmq = {};
+        // Garder les stats de l'ancienne division, reset la nouvelle
+        if (newDiv === 'nhl') {
+          DATA.players[idx].stats_nhl = {gp:0,g:0,a:0,pts:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,fopct:0,pt:0,pr:0,passpct:0,intc:0,prises:0,pert:0,ppm:0};
+        } else {
+          DATA.players[idx].stats_lhjmq = {gp:0,g:0,a:0,pts:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,fopct:0,pt:0,pr:0,passpct:0,intc:0,prises:0,pert:0,ppm:0};
+        }
+        DATA.players[idx] = { ...DATA.players[idx], ...data4s };
+      } else {
+        DATA.players[idx] = { ...DATA.players[idx], ...data4s };
+      }
     } else {
       const newId = 'p' + (Math.max(0, ...DATA.players.map(p => parseInt(p.id.replace('p',''))||0)) + 1);
       DATA.players.push({ id: newId, ...data4s });
     }
   } else if (existing4s && editingPlayerId === existing4s.id) {
-    // Si on décoche 4S sur un joueur existant, retirer l'équipe mais garder le profil
     existing4s.team = '';
     existing4s.status = 'inactive';
   }
@@ -5592,7 +5615,21 @@ function saveGoalie() {
     const data4s = { ...baseData, team: team4s, position: pos4s };
     if (existing4s) {
       const idx = DATA.goalies.findIndex(x => x.id === existing4s.id);
-      DATA.goalies[idx] = { ...DATA.goalies[idx], ...data4s };
+      const oldTeamG = DATA.goalies[idx].team;
+      const oldDivG = DATA.teams[oldTeamG]?.division;
+      const newDivG = DATA.teams[team4s]?.division;
+      if (oldTeamG && team4s && oldDivG !== newDivG && oldDivG && newDivG) {
+        if (confirm(`${data4s.name} change de ${oldDivG.toUpperCase()} vers ${newDivG.toUpperCase()}. Remettre ses stats à zéro ?`)) {
+          DATA.goalies[idx].stats_archive = DATA.goalies[idx].stats_archive || [];
+          DATA.goalies[idx].stats_archive.push({ division: oldDivG, team: oldTeamG, ...DATA.goalies[idx] });
+          const resetG = { gp:0,w:0,l:0,otl:0,ga:0,sa:0,sv:0,so:0,gaa:0,svpct:0 };
+          DATA.goalies[idx] = { ...DATA.goalies[idx], ...resetG, ...data4s };
+        } else {
+          DATA.goalies[idx] = { ...DATA.goalies[idx], ...data4s };
+        }
+      } else {
+        DATA.goalies[idx] = { ...DATA.goalies[idx], ...data4s };
+      }
     } else {
       const newId = 'g' + (Math.max(0, ...DATA.goalies.map(g => parseInt(g.id.replace('g',''))||0)) + 1);
       DATA.goalies.push({ id: newId, ...data4s });
@@ -6416,7 +6453,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   const skaterRow = (p, idx) => {
     const pmClass = (p.plusminus||0)>0?'diff-pos':(p.plusminus||0)<0?'diff-neg':'';
     const makeInput = (field, width=40) => isAdmin
-      ? `<input type="number" value="${p[field]||''}" placeholder="0" onfocus="this.select()" onkeydown="if(event.key==='Enter'){event.preventDefault();const inputs=document.querySelectorAll('#matchStatsContent input');const i=Array.from(inputs).indexOf(this);if(i<inputs.length-1)inputs[i+1].focus();}" onchange="updateMatchStatField(${idx},'${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
+      ? `<input type="number" value="${p[field]||''}" placeholder="0" onfocus="this.select()" onkeydown="event.stopPropagation();if(event.key==='Enter'){event.preventDefault();const inputs=document.querySelectorAll('#matchPeriodTable input,#matchStatsContent input');const i=Array.from(inputs).indexOf(this);if(i<inputs.length-1)inputs[i+1].focus();}" onchange="updateMatchStatField(${idx},'${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
       : (p[field]||0);
     const pts = (p.g||0)+(p.a||0);
     return `<tr>
@@ -6462,7 +6499,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   const goalieRow = (g, idx) => {
     const realIdx = skaters.length + idx;
     const makeInput = (field, width=45) => isAdmin
-      ? `<input type="number" value="${g[field]||''}" placeholder="0" onfocus="this.select()" onkeydown="if(event.key==='Enter'){event.preventDefault();const inputs=document.querySelectorAll('#matchStatsContent input');const i=Array.from(inputs).indexOf(this);if(i<inputs.length-1)inputs[i+1].focus();}" onchange="updateMatchStatField(${realIdx},'${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
+      ? `<input type="number" value="${g[field]||''}" placeholder="0" onfocus="this.select()" onkeydown="event.stopPropagation();if(event.key==='Enter'){event.preventDefault();const inputs=document.querySelectorAll('#matchPeriodTable input,#matchStatsContent input');const i=Array.from(inputs).indexOf(this);if(i<inputs.length-1)inputs[i+1].focus();}" onchange="updateMatchStatField(${realIdx},'${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
       : (g[field]||0);
     return `<tr>
       <td class="num" style="color:var(--text-tertiary);font-size:11px;">${idx+1}</td>
@@ -11264,6 +11301,57 @@ function removeTournoisTeam(mode, div) {
   saveToFirebase();
   renderTournoisAll(mode);
   showToast(`✅ Équipe ${num} retirée!`);
+}
+
+
+// ============ STATS PAR DIVISION ============
+function getPlayerStats(player, division) {
+  // Retourner les stats de la division spécifiée
+  if (division === 'nhl') return player.stats_nhl || player;
+  if (division === 'lhjmq') return player.stats_lhjmq || player;
+  return player;
+}
+
+function getGoalieStats(goalie, division) {
+  if (division === 'nhl') return goalie.stats_nhl || goalie;
+  if (division === 'lhjmq') return goalie.stats_lhjmq || goalie;
+  return goalie;
+}
+
+function setPlayerStats(player, division, stats) {
+  if (!player.stats_nhl) player.stats_nhl = {gp:0,g:0,a:0,pts:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,fopct:0,pt:0,pr:0,passpct:0,intc:0,prises:0,pert:0,ppm:0};
+  if (!player.stats_lhjmq) player.stats_lhjmq = {gp:0,g:0,a:0,pts:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,fopct:0,pt:0,pr:0,passpct:0,intc:0,prises:0,pert:0,ppm:0};
+  if (division === 'nhl') player.stats_nhl = { ...player.stats_nhl, ...stats };
+  else if (division === 'lhjmq') player.stats_lhjmq = { ...player.stats_lhjmq, ...stats };
+  // Mettre à jour les stats globales (combinées) sur le profil
+  const s = player.stats_nhl;
+  const q = player.stats_lhjmq;
+  player.gp = (s.gp||0) + (q.gp||0);
+  player.g  = (s.g||0)  + (q.g||0);
+  player.a  = (s.a||0)  + (q.a||0);
+  player.pts = player.g + player.a;
+  player.plusminus = (s.plusminus||0) + (q.plusminus||0);
+  player.hits = (s.hits||0) + (q.hits||0);
+  player.tb   = (s.tb||0)   + (q.tb||0);
+}
+
+function setGoalieStats(goalie, division, stats) {
+  if (!goalie.stats_nhl) goalie.stats_nhl = {gp:0,w:0,l:0,otl:0,ga:0,sa:0,sv:0,so:0,gaa:0,svpct:0};
+  if (!goalie.stats_lhjmq) goalie.stats_lhjmq = {gp:0,w:0,l:0,otl:0,ga:0,sa:0,sv:0,so:0,gaa:0,svpct:0};
+  if (division === 'nhl') goalie.stats_nhl = { ...goalie.stats_nhl, ...stats };
+  else if (division === 'lhjmq') goalie.stats_lhjmq = { ...goalie.stats_lhjmq, ...stats };
+  // Recalculer les stats globales
+  const s = goalie.stats_nhl;
+  const q = goalie.stats_lhjmq;
+  goalie.gp = (s.gp||0) + (q.gp||0);
+  goalie.w  = (s.w||0)  + (q.w||0);
+  goalie.l  = (s.l||0)  + (q.l||0);
+  goalie.ga = (s.ga||0) + (q.ga||0);
+  goalie.sa = (s.sa||0) + (q.sa||0);
+  goalie.sv = (s.sv||0) + (q.sv||0);
+  goalie.so = (s.so||0) + (q.so||0);
+  goalie.gaa   = goalie.gp > 0 ? +(goalie.ga / goalie.gp).toFixed(2) : 0;
+  goalie.svpct = goalie.sa > 0 ? +(goalie.sv / goalie.sa).toFixed(3) : 0;
 }
 
 loadData();
