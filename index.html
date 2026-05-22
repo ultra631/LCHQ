@@ -6462,15 +6462,16 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
       <td class="num">${isAdmin ? `<select onchange="updateMatchStatField(${idx},'pos',this.value)" style="width:52px;padding:2px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;">${['','C','AD','AG','DD','DG','G'].map(o=>`<option value="${o}" ${p.pos===o?'selected':''}>${o||'—'}</option>`).join('')}</select>` : (p.pos||'—')}</td>
       <td class="num">${makeInput('g')}</td>
       <td class="num">${makeInput('a')}</td>
+      <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${pts}</td>
       <td class="num ${pmClass}">${isAdmin ? `<input type="number" value="${p.plusminus||0}" onchange="updateMatchStatField(${idx},'plusminus',this.value)" style="width:45px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : (p.plusminus||0)}</td>
       <td class="num">${makeInput('hits')}</td>
       <td class="num">${makeInput('mjg')}</td>
       <td class="num">${makeInput('mjf',45)}</td>
+      <td class="num" style="color:#3b82f6;font-weight:600;" id="mjpct_${idx}">${p.mjf > 0 ? ((p.mjg/p.mjf)*100).toFixed(1)+'%' : '—'}</td>
       <td class="num">${makeInput('tb')}</td>
       <td class="num">${makeInput('intc')}</td>
       <td class="num">${makeInput('pert')}</td>
       <td class="num">${makeInput('prises')}</td>
-      <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${pts}</td>
       ${isAdmin ? `<td><button onclick="removeMatchStatPlayer(${idx})" style="background:rgba(220,38,38,0.2);border:none;border-radius:4px;padding:2px 6px;cursor:pointer;color:#ef4444;">🗑️</button></td>` : ''}
     </tr>`;
   };
@@ -6521,7 +6522,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   const awayGoalies = goalies.filter(p => p.team === away);
   const homeGoalies = goalies.filter(p => p.team === home);
 
-  const skaterHeaders = `<th class="num">#</th><th>JOUEUR</th><th class="num">POS</th><th class="num">B</th><th class="num">A</th><th class="num">+/-</th><th class="num">MEC</th><th class="num">MJG</th><th class="num">MJ</th><th class="num">TB</th><th class="num">INT</th><th class="num">PERT</th><th class="num">PRIS</th><th class="num pts-cell">PTS</th>${isAdmin?'<th></th>':''}`;
+  const skaterHeaders = `<th class="num">#</th><th>JOUEUR</th><th class="num">POS</th><th class="num">B</th><th class="num">A</th><th class="num pts-cell">PTS</th><th class="num">+/-</th><th class="num">MEC</th><th class="num">MJG</th><th class="num">MJ</th><th class="num" style="color:#3b82f6;">%MJ</th><th class="num">TB</th><th class="num">INT</th><th class="num">PERT</th><th class="num">PRIS</th>${isAdmin?'<th></th>':''}`;
   const goalieHeaders = `<th class="num">#</th><th>GARDIEN</th><th class="num">LAN</th><th class="num">BA</th><th class="num">V</th><th class="num">D</th><th class="num">B</th><th class="num">A</th><th class="num">MIN</th>${isAdmin?'<th></th>':''}`;
 
   const makeTeamSection = (teamKey, tSkaters, tGoalies, color) => {
@@ -6569,11 +6570,15 @@ function updateMatchStatField(idx, field, value) {
     const p = matchStats.players[idx];
     p.pts = (p.g||0) + (p.a||0);
   }
-  // PAS de re-render — garder le focus sur le champ actuel
-  // Le PTS se met à jour juste dans la cellule si possible
-  const ptsCell = document.querySelector(`#matchStatsContent tr:nth-child(${idx+1}) .pts-cell`);
-  if (ptsCell && (field === 'g' || field === 'a')) {
-    ptsCell.textContent = matchStats.players[idx].pts || 0;
+  // Mettre à jour PTS et %MJ sans re-render
+  const p = matchStats.players[idx];
+  if (field === 'g' || field === 'a') {
+    p.pts = (p.g||0) + (p.a||0);
+  }
+  if (field === 'mjg' || field === 'mjf') {
+    const pct = p.mjf > 0 ? ((p.mjg/p.mjf)*100).toFixed(1)+'%' : '—';
+    const mjEl = document.getElementById(`mjpct_${idx}`);
+    if (mjEl) mjEl.textContent = pct;
   }
 }
 
