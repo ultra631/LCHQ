@@ -5450,8 +5450,9 @@ function renderSubs() {
 
   let subs = DATA.players.filter(p => {
     const status = p.status || 'regular';
-    // Remplaçant = status sub OU pas d'équipe assignée
-    if (status !== 'sub' && (p.team && status !== 'inactive')) return false;
+    // Remplaçant = status sub OU sans équipe
+    const isSub = status === 'sub' || status === 'Sub' || !p.team;
+    if (!isSub) return false;
     if (search && !p.name.toLowerCase().includes(search)) return false;
     if (posF) {
       const main = p.position_main || p.position;
