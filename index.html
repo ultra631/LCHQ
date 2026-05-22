@@ -6495,7 +6495,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
     return `<tr>
       <td class="num" style="color:var(--text-tertiary);font-size:11px;">${idx+1}</td>
       <td style="font-weight:600;font-size:13px;">${escapeHtml(p.name)}</td>
-      <td class="num" style="cursor:${isAdmin?'pointer':'default'};" onclick="${isAdmin ? `pickPosition(${idx},this)` : ''}" title="${isAdmin?'Cliquer pour changer':''}"><span style="padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:4px;font-size:12px;">${p.pos||'—'}</span></td>
+      <td class="num">${isAdmin ? `<select onchange="updateMatchStatField(${idx},'pos',this.value)" style="padding:2px 4px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;font-size:12px;">${['',...positions].map(o=>`<option value="${o}" ${(p.pos||'')===(o)?'selected':''}>${o||'—'}</option>`).join('')}</select>` : `<span>${p.pos||'—'}</span>`}</td>
       <td class="num">${makeInput('g')}</td>
       <td class="num">${makeInput('a')}</td>
       <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${pts}</td>
@@ -6602,9 +6602,11 @@ function updateMatchStatField(idx, field, value) {
   if (!matchStats || !matchStats.players[idx]) return;
   matchStats.players[idx][field] = (field === 'min' || field === 'att' || field === 'pos') ? value : (parseFloat(value)||0);
 
-  // Sauvegarder automatiquement quand on change la position
+  // Sauvegarder dans Firebase quand on change la position
   if (field === 'pos') {
-    setTimeout(() => saveMatchStatsOnly(), 800);
+    if (!DATA.matchStats) DATA.matchStats = {};
+    DATA.matchStats[currentMatchStats] = DATA.matchStats[currentMatchStats] || { players: [], periods: {} };
+    saveToFirebase();
   }
 
   // Si on change la position à G, convertir en gardien et re-render
