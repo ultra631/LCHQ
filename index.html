@@ -8138,33 +8138,54 @@ function renderTrophies6S() {
 }
 
 function rerenderAll() {
+  // Rendre seulement la page active + les pages légères
+  const activePage = document.querySelector('.page.active');
+  const activeId = activePage?.id || '';
+
+  // Toujours mettre à jour l'accueil (leger)
   renderHome();
-  renderStandingsNHL();
-  renderStandingsLHJMQ();
-  renderPlayersNHL();
-  renderPlayersLHJMQ();
-  renderGoaliesNHL();
-  renderGoaliesLHJMQ();
-  if (document.getElementById('playersAll')) renderAllPlayers();
-  if (document.getElementById('goaliesAll')) renderAllGoalies();
-  renderTeamsGrids();
-  renderTrophiesNHL();
-  renderTrophiesLHJMQ();
-  renderSubs();
-  renderInactive();
-  renderStatsPage();
-  renderSchedule();
-  renderArchiveS4();
-  renderStandings6S();
-  renderPlayers6S();
-  renderGoalies6S();
-  renderTeams6S();
-  renderSchedule6S();
-  renderStats6S();
-  renderTrophies6S();
-  
-  // Save to Firebase after any change
-  saveToFirebase();
+
+  // Seulement re-render ce qui est visible
+  if (activeId.includes('standings') || activeId === 'page-home') {
+    renderStandingsNHL();
+    renderStandingsLHJMQ();
+    renderStandings6S();
+  }
+  if (activeId.includes('players-nhl')) renderPlayersNHL();
+  if (activeId.includes('players-lhjmq')) renderPlayersLHJMQ();
+  if (activeId.includes('players-6s')) renderPlayers6S();
+  if (activeId.includes('goalies-nhl')) renderGoaliesNHL();
+  if (activeId.includes('goalies-lhjmq')) renderGoaliesLHJMQ();
+  if (activeId.includes('goalies-6s')) renderGoalies6S();
+  if (activeId.includes('teams-6s')) renderTeams6S();
+  else if (activeId.includes('teams')) renderTeamsGrids();
+  if (activeId.includes('trophies-nhl')) renderTrophiesNHL();
+  if (activeId.includes('trophies-lhjmq')) renderTrophiesLHJMQ();
+  if (activeId.includes('trophies-6s')) renderTrophies6S();
+  if (activeId.includes('schedule-6s')) renderSchedule6S();
+  else if (activeId.includes('schedule')) renderSchedule();
+  if (activeId.includes('stats-6s')) renderStats6S();
+  else if (activeId.includes('stats')) renderStatsPage();
+  if (activeId.includes('gestion') || activeId.includes('admin')) {
+    if (typeof renderSubs === 'function') renderSubs();
+    if (typeof renderInactive === 'function') renderInactive();
+    if (typeof renderAllPlayers === 'function') renderAllPlayers();
+  }
+  if (activeId.includes('archive-s4')) renderArchiveS4();
+}
+
+function rerenderAllFull() {
+  // Version complète — pour les cas qui ont besoin de tout
+  renderHome();
+  renderStandingsNHL(); renderStandingsLHJMQ(); renderStandings6S();
+  renderPlayersNHL(); renderPlayersLHJMQ(); renderPlayers6S();
+  renderGoaliesNHL(); renderGoaliesLHJMQ(); renderGoalies6S();
+  renderTeamsGrids(); renderTeams6S();
+  renderTrophiesNHL(); renderTrophiesLHJMQ(); renderTrophies6S();
+  renderSchedule(); renderSchedule6S();
+  renderStatsPage(); renderStats6S();
+  if (typeof renderSubs === 'function') renderSubs();
+  if (typeof renderInactive === 'function') renderInactive();
 }
 
 // ============ ARCHIVES SAISON 3 ============
