@@ -1929,6 +1929,7 @@
           <th>#</th><th>Pays</th>
           <th class="num sortable" data-key="gp">PJ</th>
           <th class="num sortable" data-key="w">V</th>
+          <th class="num sortable" data-key="vp">VP</th>
           <th class="num sortable" data-key="l">D</th>
           <th class="num sortable" data-key="otl">DP</th>
           <th class="num sortable" data-key="gf">BP</th>
@@ -3155,6 +3156,7 @@
         <tbody>
           <tr><td>PJ</td><td class="num"><span id="tGpCurrent" class="editable-stat" onclick="makeStatEditable('t','Gp')">0</span></td><td class="num"><input type="number" id="tGpAdd" min="0" value="0" oninput="updateNewTotal('t','Gp')"></td><td class="num"><span id="tGpNew" class="pts-cell">0</span></td></tr>
           <tr><td>V (victoires)</td><td class="num"><span id="tWCurrent" class="editable-stat" onclick="makeStatEditable('t','W')">0</span></td><td class="num"><input type="number" id="tWAdd" min="0" value="0" oninput="updateNewTotal('t','W')"></td><td class="num"><span id="tWNew" class="pts-cell">0</span></td></tr>
+          <tr id="tVpRow" style="display:none;"><td>VP (vict. prol.)</td><td class="num"><span id="tVpCurrent" class="editable-stat" onclick="makeStatEditable('t','Vp')">0</span></td><td class="num"><input type="number" id="tVpAdd" min="0" value="0" oninput="updateNewTotal('t','Vp')"></td><td class="num"><span id="tVpNew" class="pts-cell">0</span></td></tr>
           <tr><td>D (défaites)</td><td class="num"><span id="tLCurrent" class="editable-stat" onclick="makeStatEditable('t','L')">0</span></td><td class="num"><input type="number" id="tLAdd" min="0" value="0" oninput="updateNewTotal('t','L')"></td><td class="num"><span id="tLNew" class="pts-cell">0</span></td></tr>
           <tr><td>DP (déf. prol.)</td><td class="num"><span id="tOtlCurrent" class="editable-stat" onclick="makeStatEditable('t','Otl')">0</span></td><td class="num"><input type="number" id="tOtlAdd" min="0" value="0" oninput="updateNewTotal('t','Otl')"></td><td class="num"><span id="tOtlNew" class="pts-cell">0</span></td></tr>
           <tr><td>BP (buts pour)</td><td class="num"><span id="tGfCurrent" class="editable-stat" onclick="makeStatEditable('t','Gf')">0</span></td><td class="num"><input type="number" id="tGfAdd" min="0" value="0" oninput="updateNewTotal('t','Gf')"></td><td class="num"><span id="tGfNew" class="pts-cell">0</span></td></tr>
@@ -3182,7 +3184,7 @@
       <input type="text" id="tStreak" placeholder="ex: V3, D2" value="-">
     </div>
 
-    <div class="modal-info" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
+    <div class="modal-info" id="tPtsFormula" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#86efac;">
       ✨ <strong>PTS calculé auto</strong> : V×2 + DP
     </div>
     <div class="modal-actions">
@@ -3942,7 +3944,7 @@ function renderEstStandings() {
   const est = getEstData();
   const body = document.getElementById('estStandingsBody');
   if (!body) return;
-  if (!est || !est.teams) { body.innerHTML = '<tr><td colspan="11" style="text-align:center;color:var(--text-tertiary);padding:30px;">Aucun pays</td></tr>'; return; }
+  if (!est || !est.teams) { body.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--text-tertiary);padding:30px;">Aucun pays</td></tr>'; return; }
   const order = est.countries || Object.keys(est.teams);
   const rows = order.map(k => ({ key:k, t:est.teams[k] })).filter(x => x.t);
   // Trier par points puis différentiel
@@ -3962,6 +3964,7 @@ function renderEstStandings() {
       <td><div class="team-cell">${flag}${escapeHtml(t.name)}</div></td>
       <td class="num">${r.gp||0}</td>
       <td class="num">${r.w||0}</td>
+      <td class="num">${r.vp||0}</td>
       <td class="num">${r.l||0}</td>
       <td class="num">${r.otl||0}</td>
       <td class="num">${r.gf||0}</td>
@@ -4350,6 +4353,10 @@ function editTeamStanding6S(teamId) {
   editingTeamEst = false;
   const qb6 = document.getElementById('estQuickButtons');
   if (qb6) qb6.style.display = 'none';
+  const vpRow6 = document.getElementById('tVpRow');
+  if (vpRow6) vpRow6.style.display = 'none';
+  const formula6 = document.getElementById('tPtsFormula');
+  if (formula6) formula6.innerHTML = '✨ <strong>PTS calculé auto</strong> : V×2 + DP';
   
   // Trouver ou créer standings
   if (!DATA.season_3_6v6) DATA.season_3_6v6 = {};
@@ -4390,6 +4397,7 @@ function editTeamStandingEst(teamId) {
   if (!est || !est.teams || !est.teams[teamId]) { alert('Pays introuvable'); return; }
   const t = est.teams[teamId];
   if (!t.record) t.record = { w:0,l:0,otl:0,gp:0,gf:0,ga:0,pts:0,streak:'—',diff:0 };
+  if (t.record.vp === undefined) t.record.vp = 0;
 
   const flagIcon = t.emoji || '🏒';
   document.getElementById('teamModalTitle').innerHTML = `✏️ ${flagIcon} ${t.name}`;
@@ -4397,9 +4405,16 @@ function editTeamStandingEst(teamId) {
   document.getElementById('tStreak').value = t.record.streak || '—';
 
   loadStatsIntoModal('t', t.record, {
-    'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
+    'Gp': 'gp', 'W': 'w', 'Vp': 'vp', 'L': 'l', 'Otl': 'otl',
     'Gf': 'gf', 'Ga': 'ga'
   });
+
+  // Afficher la ligne VP (victoires en prolongation) — propre à l'estival
+  const vpRow = document.getElementById('tVpRow');
+  if (vpRow) vpRow.style.display = '';
+  // Formule de points estivale : V×3 + VP×2 + DP×1
+  const formula = document.getElementById('tPtsFormula');
+  if (formula) formula.innerHTML = '✨ <strong>PTS calculé auto</strong> : V×3 + VP×2 + DP×1';
 
   // Réinitialiser l'historique des résultats rapides et afficher les boutons
   estResultHistory = [];
@@ -4437,8 +4452,10 @@ function estQuickResult(type) {
   };
   // PJ +1 dans tous les cas
   incAdd('Gp', 1);
-  if (type === 'W' || type === 'WOT') {
-    incAdd('W', 1);        // victoire (réglementaire ou prolongation) = 2 pts
+  if (type === 'W') {
+    incAdd('W', 1);        // victoire réglementaire = 3 pts
+  } else if (type === 'WOT') {
+    incAdd('Vp', 1);       // victoire en prolongation = 2 pts
   } else if (type === 'OTL') {
     incAdd('Otl', 1);      // défaite en prolongation = 1 pt
   } else if (type === 'L') {
@@ -4460,7 +4477,8 @@ function estUndoResult() {
     if (typeof updateNewTotal === 'function') updateNewTotal('t', key);
   };
   decAdd('Gp');
-  if (last === 'W' || last === 'WOT') decAdd('W');
+  if (last === 'W') decAdd('W');
+  else if (last === 'WOT') decAdd('Vp');
   else if (last === 'OTL') decAdd('Otl');
   else if (last === 'L') decAdd('L');
   document.getElementById('tStreak').value = estComputeStreak();
@@ -6108,6 +6126,10 @@ function openTeamModal(teamKey) {
   editingTeamEst = false;
   const qb = document.getElementById('estQuickButtons');
   if (qb) qb.style.display = 'none';
+  const vpRow = document.getElementById('tVpRow');
+  if (vpRow) vpRow.style.display = 'none';
+  const formula = document.getElementById('tPtsFormula');
+  if (formula) formula.innerHTML = '✨ <strong>PTS calculé auto</strong> : V×2 + DP';
   const t = DATA.teams[teamKey];
   document.getElementById('teamModalTitle').innerHTML = `✏️ ${t.emoji} ${t.name}`;
   document.getElementById('teamModalSubtitle').innerHTML = `${t.city} · Division ${t.division.toUpperCase()}`;
@@ -6134,15 +6156,18 @@ function saveTeam() {
     if (!t.record) t.record = {};
     const gf = newVal('Gf');
     const ga = newVal('Ga');
+    const vp = newVal('Vp');   // victoires en prolongation = 2 pts
     t.record.gp = newVal('Gp');
-    t.record.w = w;
+    t.record.w = w;            // victoires réglementaires = 3 pts
+    t.record.vp = vp;
     t.record.l = newVal('L');
-    t.record.otl = otl;
+    t.record.otl = otl;        // défaites en prolongation = 1 pt
     t.record.gf = gf;
     t.record.ga = ga;
     t.record.diff = gf - ga;
     t.record.streak = document.getElementById('tStreak').value || '—';
-    t.record.pts = w * 2 + otl;
+    // Barème estival : V×3 + VP×2 + DP×1
+    t.record.pts = w * 3 + vp * 2 + otl;
 
     editingTeamEst = false;
     closeModal('teamModal');
