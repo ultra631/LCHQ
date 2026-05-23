@@ -1920,7 +1920,7 @@
       <h3>Classement · Saison Estivale 2026</h3>
       <p>17 pays · Saison régulière</p>
     </div>
-    <button class="btn btn-primary admin-only" onclick="openEditModal('standings_est')" style="margin-left:auto;">✏️ Éditer</button>
+    <button class="btn btn-primary admin-only" onclick="alert('Pour éditer : clique directement sur un pays dans le tableau ci-dessous.')" style="margin-left:auto;">✏️ Éditer</button>
   </div>
   <div class="table-wrap">
     <table id="estStandingsTable">
@@ -3942,7 +3942,8 @@ function renderEstStandings() {
       ? `<img src="${t.flag}" class="team-logo-table" style="border-radius:3px;" onerror="this.outerHTML='${t.emoji||'🏒'}'">`
       : `<span class="team-emoji-fallback">${t.emoji||'🏒'}</span>`;
     const diff = (r.diff||0) > 0 ? `<span class="diff-pos">+${r.diff}</span>` : ((r.diff||0) < 0 ? `<span class="diff-neg">${r.diff}</span>` : '0');
-    return `<tr>
+    const clickable = (typeof isAdmin !== 'undefined' && isAdmin) ? `style="cursor:pointer;" onclick="editTeamStandingEst('${x.key}')" title="Cliquer pour éditer"` : '';
+    return `<tr ${clickable}>
       <td class="num">${i+1}</td>
       <td><div class="team-cell">${flag}${escapeHtml(t.name)}</div></td>
       <td class="num">${r.gp||0}</td>
@@ -4356,6 +4357,33 @@ function editTeamStanding6S(teamId) {
     'Gf': 'gf', 'Ga': 'ga'
   });
   
+  openModal('teamModal');
+}
+
+function editTeamStandingEst(teamId) {
+  if (!isAdmin) {
+    alert('Accès admin requis');
+    return;
+  }
+  editingTeamKey = teamId;
+  editingTeam6S = false;
+  editingTeamEst = true;
+
+  const est = DATA.summer_2026;
+  if (!est || !est.teams || !est.teams[teamId]) { alert('Pays introuvable'); return; }
+  const t = est.teams[teamId];
+  if (!t.record) t.record = { w:0,l:0,otl:0,gp:0,gf:0,ga:0,pts:0,streak:'—',diff:0 };
+
+  const flagIcon = t.emoji || '🏒';
+  document.getElementById('teamModalTitle').innerHTML = `✏️ ${flagIcon} ${t.name}`;
+  document.getElementById('teamModalSubtitle').innerHTML = `Saison Estivale 2026 · 4 vs 4`;
+  document.getElementById('tStreak').value = t.record.streak || '—';
+
+  loadStatsIntoModal('t', t.record, {
+    'Gp': 'gp', 'W': 'w', 'L': 'l', 'Otl': 'otl',
+    'Gf': 'gf', 'Ga': 'ga'
+  });
+
   openModal('teamModal');
 }
 
@@ -5241,6 +5269,7 @@ let editingPlayerId = null;
 let editingGoalieId = null;
 let editingTeamKey = null;
 let editingTeam6S = false;
+let editingTeamEst = false;
 let editingDivision = null; // Pour savoir si on édite en mode 4S ou 6S
 
 // HELPER: Affichage des badges de position
@@ -6012,6 +6041,33 @@ function saveTeam() {
   const w = newVal('W');
   const otl = newVal('Otl');
   
+  if (editingTeamEst) {
+    // MODE ESTIVAL 2026
+    if (!DATA.summer_2026) DATA.summer_2026 = { teams: {} };
+    if (!DATA.summer_2026.teams[editingTeamKey]) DATA.summer_2026.teams[editingTeamKey] = { record: {} };
+    const t = DATA.summer_2026.teams[editingTeamKey];
+    if (!t.record) t.record = {};
+    const gf = newVal('Gf');
+    const ga = newVal('Ga');
+    t.record.gp = newVal('Gp');
+    t.record.w = w;
+    t.record.l = newVal('L');
+    t.record.otl = otl;
+    t.record.gf = gf;
+    t.record.ga = ga;
+    t.record.diff = gf - ga;
+    t.record.streak = document.getElementById('tStreak').value || '—';
+    t.record.pts = w * 2 + otl;
+
+    editingTeamEst = false;
+    closeModal('teamModal');
+    saveToFirebase();
+    if (typeof renderEstStandings === 'function') renderEstStandings();
+    if (typeof renderEstHome === 'function') renderEstHome();
+    if (typeof renderEstTeams === 'function') renderEstTeams();
+    return;
+  }
+
   if (editingTeam6S) {
     // MODE 6S
     if (!DATA.season_3_6v6) DATA.season_3_6v6 = {};
@@ -8502,6 +8558,10 @@ function rerenderAll() {
     if (typeof renderAllPlayers === 'function') renderAllPlayers();
   }
   if (activeId.includes('archive-s4')) renderArchiveS4();
+  // Pages estivales
+  if (activeId === 'page-est-standings') { if (typeof renderEstStandings === 'function') renderEstStandings(); }
+  if (activeId === 'page-est-teams') { if (typeof renderEstTeams === 'function') renderEstTeams(); }
+  if (activeId === 'page-home' && currentGameMode === 'est') { if (typeof renderEstHome === 'function') renderEstHome(); }
 }
 
 function rerenderAllFull() {
