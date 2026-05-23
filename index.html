@@ -2149,8 +2149,7 @@
   <h2 class="section-title">📊 Stats de la Ligue</h2>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchStatsDiv('all', this)">Tous</button>
-    <button class="tab" onclick="switchStatsDiv('nhl', this)">Division NHL</button>
+    <button class="tab active" onclick="switchStatsDiv('nhl', this)">Division NHL</button>
     <button class="tab" onclick="switchStatsDiv('lhjmq', this)">Division LHJMQ</button>
     <button class="tab admin-only" onclick="openEditModal('stats_4s')" style="margin-left:auto;background:var(--accent-color);">✏️ Éditer</button>
   </div>
@@ -4760,7 +4759,7 @@ function renderTrophiesLHJMQ() {
 
 // ============ PAGE STATS GLOBAL ============
 
-let currentStatsDiv = 'all';
+let currentStatsDiv = 'nhl';
 
 function switchStatsDiv(div, btn) {
   currentStatsDiv = div;
