@@ -3704,6 +3704,9 @@ function initApp() {
     renderTournoisTable('6s', 'lhjmq');
   }
   setupSortHandlers();
+  if (typeof renderSubs === 'function') renderSubs();
+  if (typeof renderInactive === 'function') renderInactive();
+  if (typeof renderAllPlayers === 'function') renderAllPlayers();
 }
 
 // NAVIGATION
