@@ -1179,6 +1179,11 @@
       border-color: #3b82f6;
       color: #fff;
     }
+    .drawer-mode-btn.active-est {
+      background: rgba(245,158,11,0.25);
+      border-color: #f59e0b;
+      color: #fff;
+    }
 
     .drawer-section {
       padding: 8px 12px 4px;
@@ -1599,11 +1604,17 @@
       <div style="display: flex; gap: 8px; border: 1px solid var(--border); border-radius: 8px; padding: 4px; background: var(--bg-elevated);">
         <button class="nav-btn mode-toggle active" id="mode4s" onclick="setGameMode('4s')" style="padding: 8px 16px; font-size: 12px; font-weight: 700;">🏒 4S</button>
         <button class="nav-btn mode-toggle" id="mode6s" onclick="setGameMode('6s')" style="padding: 8px 16px; font-size: 12px; font-weight: 700;">⚡ 6S</button>
+        <button class="nav-btn mode-toggle" id="modeest" onclick="setGameMode('est')" style="padding: 8px 16px; font-size: 12px; font-weight: 700;">🏝️ EST</button>
       </div>
 
       <!-- Classement -->
       <button class="nav-btn mode-4s" data-page="standings-all" onclick="navigateBothStandings()">Classement</button>
       <button class="nav-btn mode-6s" data-page="standings-6s" onclick="navigate('standings-6s')" style="display:none;">Classement 6S</button>
+
+      <!-- ESTIVAL 2026 -->
+      <button class="nav-btn mode-est" data-page="est-teams" onclick="navigate('est-teams')" style="display:none;">🏝️ Pays</button>
+      <button class="nav-btn mode-est" data-page="est-standings" onclick="navigate('est-standings')" style="display:none;">Classement</button>
+      <button class="nav-btn mode-est" data-page="est-schedule" onclick="navigate('est-schedule')" style="display:none;">Calendrier</button>
 
       <!-- Joueurs -->
       <div class="nav-group">
@@ -1844,6 +1855,103 @@
     </div>
     <div class="grid-3" style="display:none;">
       <div class="card" style="border-color: #3b82f6;"><h3>🎯 Meilleure Moy 6S</h3><div id="sixsTopGAA"></div></div>
+    </div>
+  </div>
+
+  <!-- VERSION ESTIVALE 2026 -->
+  <div id="home-est" style="display:none;">
+    <div class="hero" style="border-color:#f59e0b;box-shadow:0 0 60px rgba(245,158,11,0.4),0 20px 80px rgba(0,0,0,0.6),inset 0 0 100px rgba(245,158,11,0.15);">
+      <img src="logo-estival-2026.jpg" alt="LCHQ Saison Estivale 2026" class="hero-banner" onerror="this.style.display='none'">
+      <div class="hero-overlay">
+        <p class="subtitle" style="color:#ffd98a;">Été · Hockey · Passion · NHL 26</p>
+        <div class="badge" style="background:linear-gradient(135deg,#f59e0b,#d97706);">☀️ Saison Estivale 2026</div>
+        <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+          <button onclick="navigate('est-teams')" style="padding:10px 20px;background:rgba(245,158,11,0.9);border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">🌍 Les Pays</button>
+          <button onclick="navigate('est-standings')" style="padding:10px 20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">📊 Classement</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS RAPIDES ESTIVAL -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;">
+      <div onclick="navigate('est-teams')" style="background:var(--bg-card);border:1px solid var(--border);border-top:2px solid #f59e0b;border-radius:14px;padding:16px;text-align:center;cursor:pointer;">
+        <div style="font-size:22px;margin-bottom:4px;">🌍</div>
+        <div style="font-family:'Bebas Neue';font-size:22px;color:#f59e0b;" id="homeStatEstTeams">—</div>
+        <div style="font-size:11px;color:var(--text-tertiary);letter-spacing:0.5px;">PAYS</div>
+      </div>
+      <div onclick="navigate('est-standings')" style="background:var(--bg-card);border:1px solid var(--border);border-top:2px solid #f59e0b;border-radius:14px;padding:16px;text-align:center;cursor:pointer;">
+        <div style="font-size:22px;margin-bottom:4px;">🏒</div>
+        <div style="font-family:'Bebas Neue';font-size:22px;color:#f59e0b;">4v4</div>
+        <div style="font-size:11px;color:var(--text-tertiary);letter-spacing:0.5px;">FORMAT</div>
+      </div>
+      <div onclick="navigate('est-schedule')" style="background:var(--bg-card);border:1px solid var(--border);border-top:2px solid #f59e0b;border-radius:14px;padding:16px;text-align:center;cursor:pointer;">
+        <div style="font-size:22px;margin-bottom:4px;">📅</div>
+        <div style="font-family:'Bebas Neue';font-size:22px;color:#f59e0b;" id="homeStatEstStatus">À venir</div>
+        <div style="font-size:11px;color:var(--text-tertiary);letter-spacing:0.5px;">STATUT</div>
+      </div>
+    </div>
+
+    <!-- APERÇU DES PAYS -->
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+      <h2 class="section-title" style="margin:0;color:#f59e0b;">🌍 Les Nations</h2>
+      <button onclick="navigate('est-teams')" style="font-size:13px;color:#f59e0b;background:none;border:none;cursor:pointer;font-weight:700;">Voir tout →</button>
+    </div>
+    <div id="homeEstCountries" class="teams-grid"></div>
+  </div>
+</section>
+
+<!-- ESTIVAL — PAYS / ÉQUIPES -->
+<section id="page-est-teams" class="page">
+  <div class="division-banner" style="--division-color:#f59e0b">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🌍</div>
+    <div class="division-banner-text">
+      <h3>Les Nations · Saison Estivale 2026</h3>
+      <p>17 pays · Format 4v4</p>
+    </div>
+  </div>
+  <div id="estTeamsGrid" class="teams-grid"></div>
+</section>
+
+<!-- ESTIVAL — CLASSEMENT -->
+<section id="page-est-standings" class="page">
+  <div class="division-banner" style="--division-color:#f59e0b">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">📊</div>
+    <div class="division-banner-text">
+      <h3>Classement · Saison Estivale 2026</h3>
+      <p>17 pays · Saison régulière</p>
+    </div>
+    <button class="btn btn-primary admin-only" onclick="openEditModal('standings_est')" style="margin-left:auto;">✏️ Éditer</button>
+  </div>
+  <div class="table-wrap">
+    <table id="estStandingsTable">
+      <thead>
+        <tr>
+          <th>#</th><th>Pays</th>
+          <th class="num sortable" data-key="gp">PJ</th>
+          <th class="num sortable" data-key="w">V</th>
+          <th class="num sortable" data-key="l">D</th>
+          <th class="num sortable" data-key="otl">DP</th>
+          <th class="num sortable" data-key="gf">BP</th>
+          <th class="num sortable" data-key="ga">BC</th>
+          <th class="num sortable" data-key="diff">DIFF</th>
+          <th class="num">SÉR.</th>
+          <th class="num sortable sort-desc" data-key="pts">PTS</th>
+        </tr>
+      </thead>
+      <tbody id="estStandingsBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ESTIVAL — CALENDRIER -->
+<section id="page-est-schedule" class="page">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <h2 class="section-title" style="margin:0;color:#f59e0b;">📅 Calendrier · Estival 2026</h2>
+  </div>
+  <div id="estScheduleContent">
+    <div class="empty-state">
+      <div class="empty-state-icon">📅</div>
+      <p>Le calendrier de la Saison Estivale 2026 sera bientôt disponible.</p>
     </div>
   </div>
 </section>
@@ -3712,25 +3820,113 @@ function initApp() {
 // GAME MODE TOGGLE — Switch entre 4S et 6S
 let currentGameMode = '4s'; // Par défaut en mode 4S
 
+// ===================== SAISON ESTIVALE 2026 =====================
+function getEstData() {
+  return (DATA && DATA.summer_2026) ? DATA.summer_2026 : null;
+}
+
+function estCountryCard(key, t) {
+  const r = t.record || {};
+  const flag = t.flag
+    ? `<img src="${t.flag}" alt="${escapeHtml(t.name)}" class="team-card-logo" style="border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.4);" onerror="this.outerHTML='<div class=&quot;team-card-logo&quot; style=&quot;font-size:60px&quot;>${t.emoji||'🏒'}</div>'">`
+    : `<div class="team-card-logo" style="font-size:60px">${t.emoji||'🏒'}</div>`;
+  const rec = (r.gp ? `${r.w||0}-${r.l||0}-${r.otl||0}` : 'Aucun match');
+  return `<div class="team-card" style="--team-color:#f59e0b" onclick="navigate('est-standings')">
+    ${flag}
+    <div class="team-card-name">${escapeHtml(t.name)}</div>
+    <div class="team-card-city">Saison Estivale 2026</div>
+    <div class="team-card-record">${rec}</div>
+  </div>`;
+}
+
+function renderEstTeams() {
+  const est = getEstData();
+  const grid = document.getElementById('estTeamsGrid');
+  if (!grid) return;
+  if (!est || !est.teams) { grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🌍</div><p>Aucun pays pour l\'instant.</p></div>'; return; }
+  const order = est.countries || Object.keys(est.teams);
+  grid.innerHTML = order.map(k => est.teams[k] ? estCountryCard(k, est.teams[k]) : '').join('');
+}
+
+function renderEstHome() {
+  const est = getEstData();
+  const grid = document.getElementById('homeEstCountries');
+  const statTeams = document.getElementById('homeStatEstTeams');
+  const statStatus = document.getElementById('homeStatEstStatus');
+  if (est) {
+    const order = est.countries || Object.keys(est.teams || {});
+    if (statTeams) statTeams.textContent = order.length;
+    if (statStatus) statStatus.textContent = est.status || 'À venir';
+    if (grid) grid.innerHTML = order.map(k => est.teams[k] ? estCountryCard(k, est.teams[k]) : '').join('');
+  } else if (grid) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🌍</div><p>Aucun pays pour l\'instant.</p></div>';
+  }
+}
+
+function renderEstStandings() {
+  const est = getEstData();
+  const body = document.getElementById('estStandingsBody');
+  if (!body) return;
+  if (!est || !est.teams) { body.innerHTML = '<tr><td colspan="11" style="text-align:center;color:var(--text-tertiary);padding:30px;">Aucun pays</td></tr>'; return; }
+  const order = est.countries || Object.keys(est.teams);
+  const rows = order.map(k => ({ key:k, t:est.teams[k] })).filter(x => x.t);
+  // Trier par points puis différentiel
+  rows.sort((a,b) => {
+    const ra=a.t.record||{}, rb=b.t.record||{};
+    return (rb.pts||0)-(ra.pts||0) || (rb.diff||0)-(ra.diff||0) || (rb.gf||0)-(ra.gf||0);
+  });
+  body.innerHTML = rows.map((x,i) => {
+    const t = x.t, r = t.record || {};
+    const flag = t.flag
+      ? `<img src="${t.flag}" class="team-logo-table" style="border-radius:3px;" onerror="this.outerHTML='${t.emoji||'🏒'}'">`
+      : `<span class="team-emoji-fallback">${t.emoji||'🏒'}</span>`;
+    const diff = (r.diff||0) > 0 ? `<span class="diff-pos">+${r.diff}</span>` : ((r.diff||0) < 0 ? `<span class="diff-neg">${r.diff}</span>` : '0');
+    return `<tr>
+      <td class="num">${i+1}</td>
+      <td><div class="team-cell">${flag}${escapeHtml(t.name)}</div></td>
+      <td class="num">${r.gp||0}</td>
+      <td class="num">${r.w||0}</td>
+      <td class="num">${r.l||0}</td>
+      <td class="num">${r.otl||0}</td>
+      <td class="num">${r.gf||0}</td>
+      <td class="num">${r.ga||0}</td>
+      <td class="num">${diff}</td>
+      <td class="num">${r.streak||'—'}</td>
+      <td class="num pts-cell">${r.pts||0}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderEstAll() {
+  try { renderEstHome(); } catch(e) { console.warn('renderEstHome', e); }
+  try { renderEstTeams(); } catch(e) { console.warn('renderEstTeams', e); }
+  try { renderEstStandings(); } catch(e) { console.warn('renderEstStandings', e); }
+}
+// =================== FIN SAISON ESTIVALE 2026 ===================
+
 function setGameMode(mode) {
   currentGameMode = mode;
   
   // Mettre à jour les boutons toggle
   document.getElementById('mode4s').classList.toggle('active', mode === '4s');
   document.getElementById('mode6s').classList.toggle('active', mode === '6s');
+  var modeEstBtn = document.getElementById('modeest');
+  if (modeEstBtn) modeEstBtn.classList.toggle('active', mode === 'est');
   
   // Switcher la page d'accueil
   document.getElementById('home-4s').style.display = mode === '4s' ? '' : 'none';
   document.getElementById('home-6s').style.display = mode === '6s' ? '' : 'none';
+  var homeEst = document.getElementById('home-est');
+  if (homeEst) homeEst.style.display = mode === 'est' ? '' : 'none';
   
   // Mettre à jour le texte de saison
   const seasonText = document.getElementById('headerSeasonText');
   if (seasonText) {
-    seasonText.textContent = mode === '6s' ? 'Saison 3 · 6S · World of Chel' : 'Saison 5 · World of Chel';
+    seasonText.textContent = mode === '6s' ? 'Saison 3 · 6S · World of Chel' : (mode === 'est' ? 'Saison Estivale 2026 · World of Chel' : 'Saison 5 · World of Chel');
   }
   const footerText = document.getElementById('footerSeasonText');
   if (footerText) {
-    footerText.textContent = mode === '6s' ? 'LCHQ · Saison 3 · 6S · World of Chel · NHL 26' : 'LCHQ · Saison 5 · World of Chel · NHL 26';
+    footerText.textContent = mode === '6s' ? 'LCHQ · Saison 3 · 6S · World of Chel · NHL 26' : (mode === 'est' ? 'LCHQ · Saison Estivale 2026 · World of Chel · NHL 26' : 'LCHQ · Saison 5 · World of Chel · NHL 26');
   }
 
   // Cacher tous les boutons du mode opposé
@@ -3740,6 +3936,9 @@ function setGameMode(mode) {
   document.querySelectorAll('.nav-btn.mode-6s').forEach(btn => {
     btn.style.display = mode === '6s' ? '' : 'none';
   });
+  document.querySelectorAll('.nav-btn.mode-est').forEach(btn => {
+    btn.style.display = mode === 'est' ? '' : 'none';
+  });
   // Toujours garder le bouton Archives visible
   document.querySelectorAll('.nav-archives > .nav-btn').forEach(btn => {
     btn.style.display = '';
@@ -3747,6 +3946,21 @@ function setGameMode(mode) {
   
   // Naviguer vers la page appropriée
   const currentPage = document.querySelector('.page.active')?.id?.replace('page-', '');
+
+  // Mode estival : rendre les données et aller à l'accueil si on était sur une page d'un autre mode
+  if (mode === 'est') {
+    renderEstAll();
+    const estPages = ['home','est-teams','est-standings','est-schedule'];
+    if (!estPages.includes(currentPage)) {
+      navigate('home');
+    }
+    return;
+  }
+  // Si on quitte le mode estival, revenir à l'accueil
+  if (currentPage && currentPage.startsWith('est-')) {
+    navigate('home');
+    return;
+  }
   
   if (mode === '6s') {
     // Si on est sur une page 4S, aller vers l'équivalent 6S
@@ -3828,6 +4042,12 @@ function navigate(page) {
     renderTournoisAll('4s');
   } else if (page === 'tournois-6s') {
     renderTournoisAll('6s');
+  } else if (page === 'est-teams') {
+    renderEstTeams();
+  } else if (page === 'est-standings') {
+    renderEstStandings();
+  } else if (page === 'home') {
+    if (currentGameMode === 'est') renderEstHome();
   }
 }
 
@@ -11744,10 +11964,11 @@ if (window.innerWidth <= 900) {
     <button class="drawer-close" onclick="closeMobileDrawer()">✕</button>
   </div>
 
-  <!-- Switch 4S / 6S -->
+  <!-- Switch 4S / 6S / EST -->
   <div class="drawer-mode-switch">
     <button class="drawer-mode-btn active-4s" id="drawerMode4s" onclick="setDrawerMode('4s')">4S</button>
     <button class="drawer-mode-btn" id="drawerMode6s" onclick="setDrawerMode('6s')">6S</button>
+    <button class="drawer-mode-btn" id="drawerModeEst" onclick="setDrawerMode('est')">🏝️ EST</button>
   </div>
 
   <!-- Navigation -->
@@ -11803,6 +12024,16 @@ if (window.innerWidth <= 900) {
     <div class="drawer-section-label">Archives</div>
     <button class="drawer-btn" onclick="drawerNav('archive-6s-s2')"><span class="drawer-btn-icon">📁</span>Saison 2 (6S)</button>
   </div>
+
+  <div class="drawer-section" id="drawerNavEst" style="display:none;">
+    <div class="drawer-section-label">Navigation</div>
+    <button class="drawer-btn" onclick="drawerNav('home')"><span class="drawer-btn-icon">🏠</span>Accueil</button>
+
+    <div class="drawer-section-label">Saison Estivale 2026</div>
+    <button class="drawer-btn" onclick="drawerNav('est-teams')"><span class="drawer-btn-icon">🌍</span>Les Pays</button>
+    <button class="drawer-btn" onclick="drawerNav('est-standings')"><span class="drawer-btn-icon">📊</span>Classement</button>
+    <button class="drawer-btn" onclick="drawerNav('est-schedule')"><span class="drawer-btn-icon">📅</span>Calendrier</button>
+  </div>
 </div>
 
 <script>
@@ -11818,10 +12049,14 @@ function openMobileDrawer() {
   const mode = typeof currentGameMode !== 'undefined' ? currentGameMode : '4s';
   document.getElementById('drawerMode4s').className = 'drawer-mode-btn' + (mode==='4s' ? ' active-4s' : '');
   document.getElementById('drawerMode6s').className = 'drawer-mode-btn' + (mode==='6s' ? ' active-6s' : '');
+  var dmeOpen = document.getElementById('drawerModeEst');
+  if (dmeOpen) dmeOpen.className = 'drawer-mode-btn' + (mode==='est' ? ' active-est' : '');
   document.getElementById('drawerNav4s').style.display = mode==='4s' ? '' : 'none';
   document.getElementById('drawerNav6s').style.display = mode==='6s' ? '' : 'none';
+  var dneOpen = document.getElementById('drawerNavEst');
+  if (dneOpen) dneOpen.style.display = mode==='est' ? '' : 'none';
   const dSeason = document.getElementById('drawerSeasonText');
-  if (dSeason) dSeason.textContent = mode === '6s' ? 'SAISON 3 · 6S · WORLD OF CHEL' : 'SAISON 5 · WORLD OF CHEL';
+  if (dSeason) dSeason.textContent = mode === '6s' ? 'SAISON 3 · 6S · WORLD OF CHEL' : (mode === 'est' ? 'SAISON ESTIVALE 2026' : 'SAISON 5 · WORLD OF CHEL');
 }
 function closeMobileDrawer() {
   const drawer = document.getElementById('mobileDrawer');
@@ -11839,10 +12074,14 @@ function closeMobileDrawer() {
 function setDrawerMode(mode) {
   document.getElementById('drawerMode4s').className = 'drawer-mode-btn' + (mode==='4s' ? ' active-4s' : '');
   document.getElementById('drawerMode6s').className = 'drawer-mode-btn' + (mode==='6s' ? ' active-6s' : '');
+  var dme = document.getElementById('drawerModeEst');
+  if (dme) dme.className = 'drawer-mode-btn' + (mode==='est' ? ' active-est' : '');
   const dSeason = document.getElementById('drawerSeasonText');
-  if (dSeason) dSeason.textContent = mode === '6s' ? 'SAISON 3 · 6S · WORLD OF CHEL' : 'SAISON 5 · WORLD OF CHEL';
+  if (dSeason) dSeason.textContent = mode === '6s' ? 'SAISON 3 · 6S · WORLD OF CHEL' : (mode === 'est' ? 'SAISON ESTIVALE 2026' : 'SAISON 5 · WORLD OF CHEL');
   document.getElementById('drawerNav4s').style.display = mode==='4s' ? '' : 'none';
   document.getElementById('drawerNav6s').style.display = mode==='6s' ? '' : 'none';
+  var dne = document.getElementById('drawerNavEst');
+  if (dne) dne.style.display = mode==='est' ? '' : 'none';
   // Changer le mode du site
   if (typeof setGameMode === 'function') setGameMode(mode);
 }
