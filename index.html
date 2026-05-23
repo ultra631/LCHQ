@@ -1548,6 +1548,21 @@
   }
 
   /* 20. Désactiver les animations pour ceux qui préfèrent */
+  /* Lisibilité des menus déroulants (selects/options) sur tous navigateurs */
+  select {
+    color: #fff;
+    background-color: #16161f;
+  }
+  select option {
+    background-color: #16161f !important;
+    color: #ffffff !important;
+  }
+  select option:checked,
+  select option:hover {
+    background-color: #e63946 !important;
+    color: #ffffff !important;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -6952,13 +6967,13 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
                   ...goaliePool.filter(g => (!g.team || g.status === 'sub') && !existing.has(g.id))];
 
     return `<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);font-size:13px;">
-        <option value="">➕ Joueurs de l'équipe</option>
-        ${teamPlayers.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+      <select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);font-size:13px;">
+        <option value="" style="background:#16161f;color:#fff;">➕ Joueurs de l'équipe</option>
+        ${teamPlayers.map(p => `<option value="${p.id}" style="background:#16161f;color:#fff;">${p.name}</option>`).join('')}
       </select>
-      <select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:rgba(245,158,11,0.1);color:#fff;border:1px solid rgba(245,158,11,0.4);font-size:13px;">
-        <option value="">🔄 Remplaçants</option>
-        ${subs.map(p => `<option value="${p.id}">${p.name}${p.positions?.length ? ' ('+p.positions.join('/')+')'  : ''}</option>`).join('')}
+      <select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:#2a2112;color:#fff;border:1px solid rgba(245,158,11,0.4);font-size:13px;">
+        <option value="" style="background:#16161f;color:#fff;">🔄 Remplaçants</option>
+        ${subs.map(p => `<option value="${p.id}" style="background:#16161f;color:#fff;">${p.name}${p.positions?.length ? ' ('+p.positions.join('/')+')'  : ''}</option>`).join('')}
       </select>
     </div>`;
   };
@@ -7294,8 +7309,8 @@ function openAddSubToSeasonMatch(teamKey) {
       <h3 style="font-family:'Bebas Neue';font-size:22px;margin-bottom:12px;">➕ Ajouter remplaçant</h3>
       <input type="text" placeholder="🔍 Rechercher..." oninput="this.nextElementSibling.querySelectorAll('option').forEach(o => o.style.display = o.text.toLowerCase().includes(this.value.toLowerCase()) ? '' : 'none')"
         style="width:100%;padding:8px;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);margin-bottom:8px;">
-      <select size="8" style="width:100%;border-radius:8px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);" onchange="addSubToSeasonMatch('${teamKey}',this.value)">
-        ${available.map(p => `<option value="${p.id}">${p.name} (${DATA.teams[p.team]?.name||p.team||'Libre'})</option>`).join('')}
+      <select size="8" style="width:100%;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);font-size:14px;padding:4px;" onchange="addSubToSeasonMatch('${teamKey}',this.value)">
+        ${available.map(p => `<option value="${p.id}" style="background:#16161f;color:#fff;padding:6px;">${p.name} (${DATA.teams[p.team]?.name||p.team||'Libre'})</option>`).join('')}
       </select>
       <div style="margin-top:12px;text-align:right;">
         <button onclick="this.closest('[style*=fixed]').remove()" style="padding:8px 16px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;color:#fff;cursor:pointer;">Fermer</button>
