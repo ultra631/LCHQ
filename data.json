@@ -44350,5 +44350,331 @@
     ]
   },
   "matchStats": {},
-  "tournaments": {}
+  "tournaments": {},
+  "summer_2026": {
+    "name": "Saison Estivale 2026",
+    "season": "Saison Estivale 2026",
+    "subtitle": "Été · Hockey · Passion",
+    "platform": "World of Chel - NHL 26",
+    "format": "4v4 (3 patineurs + 1 gardien)",
+    "banner": "logo-estival-2026.jpg",
+    "status": "À venir",
+    "countries": [
+      "canada",
+      "grande-bretagne",
+      "kazakhstan",
+      "etats-unis",
+      "suisse",
+      "republique-tcheque",
+      "norvege",
+      "allemagne",
+      "ukraine",
+      "finlande",
+      "slovenie",
+      "danemark",
+      "autriche",
+      "lettonie",
+      "pologne",
+      "italie",
+      "france"
+    ],
+    "teams": {
+      "canada": {
+        "name": "Canada",
+        "country_code": "ca",
+        "flag": "https://flagcdn.com/w320/ca.png",
+        "emoji": "🇨🇦",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "grande-bretagne": {
+        "name": "Grande-Bretagne",
+        "country_code": "gb",
+        "flag": "https://flagcdn.com/w320/gb.png",
+        "emoji": "🇬🇧",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "kazakhstan": {
+        "name": "Kazakhstan",
+        "country_code": "kz",
+        "flag": "https://flagcdn.com/w320/kz.png",
+        "emoji": "🇰🇿",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "etats-unis": {
+        "name": "États-Unis",
+        "country_code": "us",
+        "flag": "https://flagcdn.com/w320/us.png",
+        "emoji": "🇺🇸",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "suisse": {
+        "name": "Suisse",
+        "country_code": "ch",
+        "flag": "https://flagcdn.com/w320/ch.png",
+        "emoji": "🇨🇭",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "republique-tcheque": {
+        "name": "République Tchèque",
+        "country_code": "cz",
+        "flag": "https://flagcdn.com/w320/cz.png",
+        "emoji": "🇨🇿",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "norvege": {
+        "name": "Norvège",
+        "country_code": "no",
+        "flag": "https://flagcdn.com/w320/no.png",
+        "emoji": "🇳🇴",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "allemagne": {
+        "name": "Allemagne",
+        "country_code": "de",
+        "flag": "https://flagcdn.com/w320/de.png",
+        "emoji": "🇩🇪",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "ukraine": {
+        "name": "Ukraine",
+        "country_code": "ua",
+        "flag": "https://flagcdn.com/w320/ua.png",
+        "emoji": "🇺🇦",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "finlande": {
+        "name": "Finlande",
+        "country_code": "fi",
+        "flag": "https://flagcdn.com/w320/fi.png",
+        "emoji": "🇫🇮",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "slovenie": {
+        "name": "Slovénie",
+        "country_code": "si",
+        "flag": "https://flagcdn.com/w320/si.png",
+        "emoji": "🇸🇮",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "danemark": {
+        "name": "Danemark",
+        "country_code": "dk",
+        "flag": "https://flagcdn.com/w320/dk.png",
+        "emoji": "🇩🇰",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "autriche": {
+        "name": "Autriche",
+        "country_code": "at",
+        "flag": "https://flagcdn.com/w320/at.png",
+        "emoji": "🇦🇹",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "lettonie": {
+        "name": "Lettonie",
+        "country_code": "lv",
+        "flag": "https://flagcdn.com/w320/lv.png",
+        "emoji": "🇱🇻",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "pologne": {
+        "name": "Pologne",
+        "country_code": "pl",
+        "flag": "https://flagcdn.com/w320/pl.png",
+        "emoji": "🇵🇱",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "italie": {
+        "name": "Italie",
+        "country_code": "it",
+        "flag": "https://flagcdn.com/w320/it.png",
+        "emoji": "🇮🇹",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      },
+      "france": {
+        "name": "France",
+        "country_code": "fr",
+        "flag": "https://flagcdn.com/w320/fr.png",
+        "emoji": "🇫🇷",
+        "record": {
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "gp": 0,
+          "gf": 0,
+          "ga": 0,
+          "pts": 0,
+          "streak": "—",
+          "diff": 0
+        }
+      }
+    },
+    "players": [],
+    "goalies": [],
+    "schedule": {
+      "current_week": 1,
+      "season_start": "",
+      "weeks": []
+    }
+  }
 }
