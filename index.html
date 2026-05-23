@@ -3615,10 +3615,22 @@ async function loadData() {
                   [...(local||[])].forEach(x => { if(x.id) map[x.id] = x; });
                   return Object.values(map);
                 };
+                // Merge des équipes : garder le record le plus "avancé" (plus de matchs joués gagne)
+                const mergeTeams = (local, remote) => {
+                  const out = { ...(remote||{}) };
+                  Object.keys(local||{}).forEach(k => {
+                    const lr = (local[k]||{}).record || {};
+                    const rr = (out[k]||{}).record || {};
+                    // Si la version locale a plus de matchs joués, on la garde
+                    if ((lr.gp||0) >= (rr.gp||0)) out[k] = local[k];
+                  });
+                  return out;
+                };
                 DATA = {
                   ...freshData,
                   players: mergeById(DATA.players, freshData.players),
                   goalies: mergeById(DATA.goalies, freshData.goalies),
+                  teams: mergeTeams(DATA.teams, freshData.teams),
                   matchStats: { ...(freshData.matchStats||{}), ...(DATA.matchStats||{}) },
                   season_3_6v6: {
                     ...freshData.season_3_6v6,
@@ -3706,6 +3718,19 @@ async function saveToFirebase() {
   
   try {
     const { db, doc, setDoc } = window.firebase;
+
+    // === FILET DE SÉCURITÉ : sauvegarde de secours avant d'écrire ===
+    // On garde les 10 dernières versions dans localStorage, horodatées.
+    try {
+      const stamp = new Date().toISOString();
+      let backups = [];
+      try { backups = JSON.parse(localStorage.getItem('lchq_backups') || '[]'); } catch(e) { backups = []; }
+      backups.unshift({ at: stamp, data: JSON.stringify(DATA) });
+      backups = backups.slice(0, 10); // garder les 10 plus récentes
+      localStorage.setItem('lchq_backups', JSON.stringify(backups));
+      // Toujours garder la toute dernière version sauvegardée à part (restauration rapide)
+      localStorage.setItem('lchq_data_prev', localStorage.getItem('lchq_data') || '');
+    } catch(e) { console.warn('Backup local impossible:', e); }
     
     // Add admin key for security (required by Firestore rules)
     const dataWithKey = {
@@ -3724,6 +3749,42 @@ async function saveToFirebase() {
     updateFirebaseStatus('error', 'Erreur sync');
     // Fallback to localStorage
     localStorage.setItem('lchq_data', JSON.stringify(DATA));
+  }
+}
+
+// === RESTAURATION : revenir à une version précédente en cas de problème ===
+function listBackups() {
+  let backups = [];
+  try { backups = JSON.parse(localStorage.getItem('lchq_backups') || '[]'); } catch(e) {}
+  if (!backups.length) { console.log('Aucune sauvegarde disponible.'); return []; }
+  console.log('=== SAUVEGARDES DISPONIBLES (la #0 est la plus récente) ===');
+  backups.forEach((b,i) => {
+    let info = '';
+    try {
+      const d = JSON.parse(b.data);
+      const nbJoueurs = (d.players||[]).length;
+      const nbStats = Object.keys(d.matchStats||{}).length;
+      info = `${nbJoueurs} joueurs, ${nbStats} feuilles de match`;
+    } catch(e) {}
+    console.log(`  #${i} — ${new Date(b.at).toLocaleString('fr-CA')} (${info})`);
+  });
+  console.log('Pour restaurer une version : restoreBackup(numéro)  — ex: restoreBackup(1)');
+  return backups;
+}
+
+async function restoreBackup(index) {
+  let backups = [];
+  try { backups = JSON.parse(localStorage.getItem('lchq_backups') || '[]'); } catch(e) {}
+  if (!backups[index]) { alert('Sauvegarde #' + index + ' introuvable. Tape listBackups() pour voir la liste.'); return; }
+  if (!confirm('Restaurer la sauvegarde du ' + new Date(backups[index].at).toLocaleString('fr-CA') + ' ?\nLa version actuelle sera remplacée (mais aussi sauvegardée avant).')) return;
+  try {
+    DATA = JSON.parse(backups[index].data);
+    await saveToFirebase();
+    if (typeof rerenderAll === 'function') rerenderAll();
+    alert('✅ Version restaurée et synchronisée!');
+  } catch(e) {
+    console.error(e);
+    alert('❌ Erreur lors de la restauration: ' + e.message);
   }
 }
 
