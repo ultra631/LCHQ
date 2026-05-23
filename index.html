@@ -4486,6 +4486,27 @@ function estUndoResult() {
 
 // PLACEHOLDER_EST_FUNCS
 
+// Navigation clavier dans le modal de stats de match :
+// Entrée = passer à la case suivante ; à la fin d'une ligne, ça continue
+// naturellement au premier champ du joueur suivant (ordre du DOM).
+function matchStatsEnterNav(el, event) {
+  if (event.key !== 'Enter') return;
+  event.preventDefault();
+  event.stopPropagation();
+  const inputs = Array.from(document.querySelectorAll(
+    '#matchPeriodTable input, #matchStatsContent input'
+  )).filter(i => !i.disabled && i.offsetParent !== null); // visibles seulement
+  const i = inputs.indexOf(el);
+  if (i === -1) return;
+  if (i < inputs.length - 1) {
+    const next = inputs[i + 1];
+    next.focus();
+    if (next.select) next.select();
+  } else {
+    el.blur(); // dernière case : on sort
+  }
+}
+
 // PLAYERS
 function populateTeamFilters() {
   const nhlSel = document.getElementById('playerNhlTeamFilter');
@@ -6901,7 +6922,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
             const tot = teamKey === away ? (match.away_score ?? '?') : (match.home_score ?? '?');
             return `<tr>
               <td style="font-weight:700;">${escapeHtml(tName)}</td>
-              <td class="num">${isAdmin ? `<input type="number" min="0" value="${p1}" onfocus="this.select()" onkeydown="if(event.key==='Enter'){event.preventDefault();const inp=document.querySelectorAll('#matchPeriodTable input,#matchStatsContent input');const i=Array.from(inp).indexOf(this);if(i<inp.length-1)inp[i+1].focus();}" onchange="updatePeriodStat('${teamKey}','p1',this.value)" style="width:45px;padding:3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : p1}</td>
+              <td class="num">${isAdmin ? `<input type="number" min="0" value="${p1}" onfocus="this.select()" onkeydown="matchStatsEnterNav(this,event)" onchange="updatePeriodStat('${teamKey}','p1',this.value)" style="width:45px;padding:3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : p1}</td>
               <td class="num">${isAdmin ? `<input type="number" min="0" value="${p2}" onfocus="this.select()" onchange="updatePeriodStat('${teamKey}','p2',this.value)" style="width:45px;padding:3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : p2}</td>
               <td class="num">${isAdmin ? `<input type="number" min="0" value="${p3}" onfocus="this.select()" onchange="updatePeriodStat('${teamKey}','p3',this.value)" style="width:45px;padding:3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : p3}</td>
               <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${tot}</td>
@@ -6949,7 +6970,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   const skaterRow = (p, idx) => {
     const pmClass = (p.plusminus||0)>0?'diff-pos':(p.plusminus||0)<0?'diff-neg':'';
     const makeInput = (field, width=40) => isAdmin
-      ? `<input type="number" value="${p[field]||''}" placeholder="0" onfocus="this.select()" onkeydown="event.stopPropagation();if(event.key==='Enter'){event.preventDefault();const inputs=document.querySelectorAll('#matchPeriodTable input,#matchStatsContent input');const i=Array.from(inputs).indexOf(this);if(i<inputs.length-1)inputs[i+1].focus();}" onchange="updateMatchStatFieldById('${p.id}','${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
+      ? `<input type="number" value="${p[field]||''}" placeholder="0" onfocus="this.select()" onkeydown="matchStatsEnterNav(this,event)" onchange="updateMatchStatFieldById('${p.id}','${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
       : (p[field]||0);
     const pts = (p.g||0)+(p.a||0);
     return `<tr>
@@ -7005,7 +7026,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   const goalieRow = (g, idx) => {
     const realIdx = skaters.length + idx;
     const makeInput = (field, width=45) => isAdmin
-      ? `<input type="number" value="${g[field]||''}" placeholder="0" onfocus="this.select()" onkeydown="event.stopPropagation();if(event.key==='Enter'){event.preventDefault();const inputs=document.querySelectorAll('#matchPeriodTable input,#matchStatsContent input');const i=Array.from(inputs).indexOf(this);if(i<inputs.length-1)inputs[i+1].focus();}" onchange="updateMatchStatFieldById('${g.id}','${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
+      ? `<input type="number" value="${g[field]||''}" placeholder="0" onfocus="this.select()" onkeydown="matchStatsEnterNav(this,event)" onchange="updateMatchStatFieldById('${g.id}','${field}',this.value)" style="width:${width}px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">`
       : (g[field]||0);
     return `<tr>
       <td class="num" style="color:var(--text-tertiary);font-size:11px;">${idx+1}</td>
