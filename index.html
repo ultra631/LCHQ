@@ -6515,7 +6515,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
       <td class="num">${makeInput('g')}</td>
       <td class="num">${makeInput('a')}</td>
       <td class="num pts-cell" style="color:var(--red-bright);font-weight:800;">${pts}</td>
-      <td class="num ${pmClass}">${isAdmin ? `<input type="number" value="${p.plusminus||0}" onchange="updateMatchStatField(${idx},'plusminus',this.value)" style="width:45px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : (p.plusminus||0)}</td>
+      <td class="num ${pmClass}">${isAdmin ? `<input type="number" value="${p.plusminus||''}" placeholder="0" onfocus="this.select()" onchange="updateMatchStatFieldById('${p.id}','plusminus',this.value)" style="width:45px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;">` : (p.plusminus||0)}</td>
       <td class="num">${makeInput('hits')}</td>
       <td class="num">${makeInput('mjg')}</td>
       <td class="num">${makeInput('mjf',45)}</td>
@@ -6566,11 +6566,13 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
       <td style="font-weight:600;font-size:13px;">🥅 ${escapeHtml(g.name)}</td>
       <td class="num">${makeInput('sa')}</td>
       <td class="num">${makeInput('ga')}</td>
-      <td class="num">${isAdmin ? `<input type="checkbox" ${g.w?'checked':''} onchange="updateMatchStatField(${realIdx},'w',this.checked?1:0)" style="accent-color:#22c55e;">` : (g.w?'✅':'')}</td>
-      <td class="num">${isAdmin ? `<input type="checkbox" ${g.l?'checked':''} onchange="updateMatchStatField(${realIdx},'l',this.checked?1:0)" style="accent-color:#ef4444;">` : (g.l?'❌':'')}</td>
+      <td class="num">${isAdmin ? `<input type="checkbox" ${g.w?'checked':''} onchange="updateMatchStatFieldById('${g.id}','w',this.checked?1:0)" style="accent-color:#22c55e;">` : (g.w?'✅':'')}</td>
+      <td class="num">${isAdmin ? `<input type="checkbox" ${g.l?'checked':''} onchange="updateMatchStatFieldById('${g.id}','l',this.checked?1:0)" style="accent-color:#ef4444;">` : (g.l?'❌':'')}</td>
       <td class="num">${makeInput('g')}</td>
       <td class="num">${makeInput('a')}</td>
-      <td class="num">${isAdmin ? `<input type="text" value="${g.min||'0:00'}" onchange="updateMatchStatField(${realIdx},'min',this.value)" style="width:55px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;" placeholder="0:00">` : (g.min||'0:00')}</td>
+      <td class="num">${isAdmin ? `<input type="text" value="${g.min||'0:00'}" onchange="updateMatchStatFieldById('${g.id}','min',this.value)" style="width:55px;padding:2px 3px;background:var(--bg-elevated);color:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;" placeholder="0:00">` : (g.min||'0:00')}</td>
+      <td class="num" style="color:#3b82f6;" id="gmoy_${g.id}">${g.sa > 0 ? (g.ga/Math.max(g.gp||1,1)).toFixed(2) : '0.00'}</td>
+      <td class="num" style="color:#3b82f6;" id="garr_${g.id}">${g.sa > 0 ? ((g.sa-g.ga)/g.sa).toFixed(3) : '0.000'}</td>
       ${isAdmin ? `<td><button onclick="removeMatchStatPlayer('${g.id}')" style="background:rgba(220,38,38,0.2);border:none;border-radius:4px;padding:2px 6px;cursor:pointer;color:#ef4444;">🗑️</button></td>` : ''}
     </tr>`;
   };
@@ -6582,7 +6584,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   const homeGoalies = goalies.filter(p => p.team === home);
 
   const skaterHeaders = `<th class="num">#</th><th>JOUEUR</th><th class="num">POS</th><th class="num">B</th><th class="num">A</th><th class="num pts-cell">PTS</th><th class="num">+/-</th><th class="num">MEC</th><th class="num">MJG</th><th class="num">MJ</th><th class="num" style="color:#3b82f6;">%MJ</th><th class="num">TB</th><th class="num">INT</th><th class="num">PERT</th><th class="num">PRIS</th><th class="num">PT</th><th class="num">PR</th><th class="num" style="color:#3b82f6;">%PR</th>${isAdmin?'<th></th>':''}`;
-  const goalieHeaders = `<th class="num">#</th><th>GARDIEN</th><th class="num">LAN</th><th class="num">BA</th><th class="num">V</th><th class="num">D</th><th class="num">B</th><th class="num">A</th><th class="num">MIN</th>${isAdmin?'<th></th>':''}`;
+  const goalieHeaders = `<th class="num">#</th><th>GARDIEN</th><th class="num">LAN</th><th class="num">BA</th><th class="num">V</th><th class="num">D</th><th class="num">B</th><th class="num">A</th><th class="num">MIN</th><th class="num" style="color:#3b82f6;">MOY</th><th class="num" style="color:#3b82f6;">%ARR</th>${isAdmin?'<th></th>':''}`;
 
   const makeTeamSection = (teamKey, tSkaters, tGoalies, color) => {
     const tName = DATA.teams[teamKey]?.name || teamKey;
@@ -6678,6 +6680,14 @@ function updateMatchStatField(idx, field, value) {
     const pct = p.pt > 0 ? ((p.pr/p.pt)*100).toFixed(1)+'%' : '—';
     const prEl = document.getElementById(`prpct_${idx}`);
     if (prEl) prEl.textContent = pct;
+  }
+  // Recalculer MOY et %ARR pour les gardiens
+  if (field === 'sa' || field === 'ga' || field === 'gp') {
+    const gp2 = matchStats.players[idx];
+    const moyEl = document.getElementById(`gmoy_${gp2.id}`);
+    const arrEl = document.getElementById(`garr_${gp2.id}`);
+    if (moyEl) moyEl.textContent = gp2.sa > 0 ? (gp2.ga/Math.max(gp2.gp||1,1)).toFixed(2) : '0.00';
+    if (arrEl) arrEl.textContent = gp2.sa > 0 ? ((gp2.sa-gp2.ga)/gp2.sa).toFixed(3) : '0.000';
   }
   // Mettre à jour PTS live
   if (field === 'g' || field === 'a') {
