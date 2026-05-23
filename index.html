@@ -6510,7 +6510,7 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
       <td class="num" style="color:var(--text-tertiary);font-size:11px;">${idx+1}</td>
       <td style="font-weight:600;font-size:13px;">${escapeHtml(p.name)}</td>
       <td class="num"><input type="text" value="${p.pos||''}" placeholder="—" maxlength="3" 
-        oninput="clearTimeout(this._t);this._t=setTimeout(()=>{if(DATA.matchStats[currentMatchStats]?.players[${idx}]){DATA.matchStats[currentMatchStats].players[${idx}].pos=this.value;saveToFirebase();}},600);"
+        oninput="clearTimeout(this._t);this._t=setTimeout(()=>{const ms=DATA.matchStats?.[currentMatchStats];const pl=ms?.players?.find(x=>x.id==='${p.id}');if(pl){pl.pos=this.value;saveToFirebase();}},400);"
         style="width:38px;padding:2px 4px;background:${isAdmin?'var(--bg-elevated)':'transparent'};color:#fff;border:${isAdmin?'1px solid var(--border)':'none'};border-radius:4px;font-size:12px;text-align:center;" ${isAdmin?'':'readonly'}></td>
       <td class="num">${makeInput('g')}</td>
       <td class="num">${makeInput('a')}</td>
@@ -11244,9 +11244,9 @@ function addPlayerFromDropdown(teamKey, playerId, selectEl) {
   const isGoalie = inGoaliePool && !inPlayerPool;
 
   if (isGoalie) {
-    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'goalie', pos: 'G', gp:1,w:0,l:0,sa:0,ga:0,sv:0,so:0,gaa:0,svpct:0 });
+    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'goalie', pos:'G', gp:1,w:0,l:0,sa:0,ga:0,sv:0,so:0,gaa:0,svpct:0 });
   } else {
-    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'player', gp:1,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 });
+    matchStats.players.push({ id: playerId, name: person.name, team: teamKey, type: 'player', pos:'', gp:1,g:0,a:0,plusminus:0,hits:0,tb:0,mjg:0,mjf:0,pt:0,pr:0,intc:0,prises:0,pert:0 });
   }
 
   selectEl.value = '';
