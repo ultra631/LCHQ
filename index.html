@@ -5210,12 +5210,12 @@ function savePlayerLink(old4sId, old6sId) {
     if (p4) p4.linked_id = new6sId;
     if (p6) p6.linked_id = new4sId;
     alert('✅ Lien sauvegardé!');
-    saveData();
+    saveToFirebase();
     // Recharger le profil
     showPlayerDetail(new4sId, '4s');
   } else {
     alert('✅ Lien effacé!');
-    saveData();
+    saveToFirebase();
   }
 }
 
@@ -5893,6 +5893,7 @@ function savePlayer() {
   }
 
   closeModal('playerModal');
+  saveToFirebase();
   rerenderAll();
 }
 
@@ -5903,6 +5904,7 @@ function confirmDeletePlayer(id) {
   document.getElementById('confirmActionBtn').onclick = () => {
     DATA.players = DATA.players.filter(x => x.id !== id);
     closeModal('confirmModal');
+    saveToFirebase();
     rerenderAll();
   };
   openModal('confirmModal');
@@ -5915,6 +5917,7 @@ function confirmDeletePlayer6S(id) {
   document.getElementById('confirmActionBtn').onclick = () => {
     DATA.season_3_6v6.players = DATA.season_3_6v6.players.filter(x => x.id !== id);
     closeModal('confirmModal');
+    saveToFirebase();
     rerenderAll();
   };
   openModal('confirmModal');
@@ -5927,6 +5930,7 @@ function confirmDeleteGoalie6S(id) {
   document.getElementById('confirmActionBtn').onclick = () => {
     DATA.season_3_6v6.goalies = DATA.season_3_6v6.goalies.filter(x => x.id !== id);
     closeModal('confirmModal');
+    saveToFirebase();
     rerenderAll();
   };
   openModal('confirmModal');
@@ -6850,7 +6854,7 @@ function saveMatchScore() {
   } else {
     renderSchedule();
   }
-  saveData();
+  saveToFirebase();
 }
 
 function clearMatchScore() {
@@ -6877,7 +6881,7 @@ function clearMatchScore() {
   } else {
     renderSchedule();
   }
-  saveData();
+  saveToFirebase();
 }
 
 // ============ STATS DE MATCH ============
