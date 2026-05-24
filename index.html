@@ -3655,6 +3655,11 @@ async function loadData() {
         // Remove admin key from data (security)
         const { _adminKey, ...cleanData } = rawData;
         DATA = cleanData;
+        // Normaliser awayScore → away_score pour la compatibilité
+        (DATA.schedule?.weeks || []).forEach(w => (w.matches || []).forEach(m => {
+          if (m.awayScore !== undefined && m.away_score === undefined) m.away_score = m.awayScore;
+          if (m.homeScore !== undefined && m.home_score === undefined) m.home_score = m.homeScore;
+        }));
         console.log('✅ Données chargées depuis Firebase!');
         updateFirebaseStatus('connected', 'Synchronisé');
         if (typeof restoreAdminSession === 'function') restoreAdminSession();
@@ -3704,6 +3709,15 @@ async function loadData() {
               } else {
                 DATA = freshData;
               }
+
+              // Normaliser les scores des matchs (awayScore → away_score)
+              const normalizeMatches = (weeks) => {
+                (weeks || []).forEach(w => (w.matches || []).forEach(m => {
+                  if (m.awayScore !== undefined && m.away_score === undefined) { m.away_score = m.awayScore; }
+                  if (m.homeScore !== undefined && m.home_score === undefined) { m.home_score = m.homeScore; }
+                }));
+              };
+              normalizeMatches(DATA.schedule?.weeks);
 
               console.log('🔄 Données mises à jour en temps réel!');
               updateFirebaseStatus('syncing', 'Mise à jour...');
@@ -6373,7 +6387,9 @@ function getWeekDates(weekNum) {
 }
 
 function isMatchPlayed(match) {
-  return match.away_score !== null && match.away_score !== undefined && match.home_score !== null && match.home_score !== undefined;
+  const away = match.away_score ?? match.awayScore;
+  const home = match.home_score ?? match.homeScore;
+  return away !== null && away !== undefined && home !== null && home !== undefined;
 }
 
 function teamMiniDisplay(teamKey, alignment) {
@@ -6580,12 +6596,14 @@ function renderMatchCard(m) {
 
   let center;
   if (played) {
-    const awayWin = m.away_score > m.home_score;
-    const homeWin = m.home_score > m.away_score;
+    const awayS = m.away_score ?? m.awayScore;
+    const homeS = m.home_score ?? m.homeScore;
+    const awayWin = awayS > homeS;
+    const homeWin = homeS > awayS;
     center = `<div class="match-center match-score">
-      <span class="${awayWin ? 'winner' : 'loser'}">${m.away_score}</span>
+      <span class="${awayWin ? 'winner' : 'loser'}">${awayS}</span>
       <span style="color:var(--text-tertiary);"> – </span>
-      <span class="${homeWin ? 'winner' : 'loser'}">${m.home_score}</span>
+      <span class="${homeWin ? 'winner' : 'loser'}">${homeS}</span>
     </div>`;
   } else {
     center = `<div class="match-center">VS</div>`;
@@ -6631,8 +6649,8 @@ function openMatchModal(matchId) {
   document.getElementById('matchHomeName').textContent = home.name;
 
   // Pré-remplir les scores si existants
-  document.getElementById('matchAwayScore').value = match.away_score ?? 0;
-  document.getElementById('matchHomeScore').value = match.home_score ?? 0;
+  document.getElementById('matchAwayScore').value = (match.away_score ?? match.awayScore) ?? 0;
+  document.getElementById('matchHomeScore').value = (match.home_score ?? match.homeScore) ?? 0;
   document.querySelector(`input[name="matchType"][value="${match.is_dp ? 'dp' : 'reg'}"]`).checked = true;
 
   // Bouton effacer (visible si match déjà joué)
@@ -6681,15 +6699,17 @@ function computeStandingsFromSchedule() {
     const sortedMatches = [...(week.matches || [])].sort((a, b) => a.time.localeCompare(b.time));
 
     for (const match of sortedMatches) {
-      if (match.away_score === null || match.away_score === undefined) continue;
-      if (match.home_score === null || match.home_score === undefined) continue;
+      const awayScore = match.away_score ?? match.awayScore;
+      const homeScore = match.home_score ?? match.homeScore;
+      if (awayScore === null || awayScore === undefined) continue;
+      if (homeScore === null || homeScore === undefined) continue;
 
       const away = DATA.teams[match.away];
       const home = DATA.teams[match.home];
       if (!away || !home) continue;
 
-      const as = match.away_score;
-      const hs = match.home_score;
+      const as = match.away_score ?? match.awayScore;
+      const hs = match.home_score ?? match.homeScore;
       const dp = match.is_dp;
 
       away.record.gp++;
@@ -6772,8 +6792,10 @@ function computeStandings6SFromSchedule() {
   for (const week of weeks6s) {
     const sortedMatches = [...(week.matches || [])].sort((a, b) => a.time.localeCompare(b.time));
     for (const match of sortedMatches) {
-      if (match.away_score === null || match.away_score === undefined) continue;
-      if (match.home_score === null || match.home_score === undefined) continue;
+      const awayScore = match.away_score ?? match.awayScore;
+      const homeScore = match.home_score ?? match.homeScore;
+      if (awayScore === null || awayScore === undefined) continue;
+      if (homeScore === null || homeScore === undefined) continue;
 
       let awayS = standings.find(s => s.team === match.away);
       let homeS = standings.find(s => s.team === match.home);
@@ -6784,8 +6806,8 @@ function computeStandings6SFromSchedule() {
       if (!teamHistory6S[match.away]) teamHistory6S[match.away] = [];
       if (!teamHistory6S[match.home]) teamHistory6S[match.home] = [];
 
-      const as = match.away_score;
-      const hs = match.home_score;
+      const as = match.away_score ?? match.awayScore;
+      const hs = match.home_score ?? match.homeScore;
       const dp = match.is_dp;
 
       awayS.gp++; homeS.gp++;
@@ -8534,8 +8556,8 @@ function openMatchModal6S(matchId) {
 
   document.getElementById('matchAwayName').textContent = away.name || match.away;
   document.getElementById('matchHomeName').textContent = home.name || match.home;
-  document.getElementById('matchAwayScore').value = match.away_score ?? 0;
-  document.getElementById('matchHomeScore').value = match.home_score ?? 0;
+  document.getElementById('matchAwayScore').value = (match.away_score ?? match.awayScore) ?? 0;
+  document.getElementById('matchHomeScore').value = (match.home_score ?? match.homeScore) ?? 0;
 
   const radios = document.querySelectorAll('input[name="matchType"]');
   radios.forEach(r => r.checked = (r.value === (match.is_dp ? 'dp' : 'regular')));
