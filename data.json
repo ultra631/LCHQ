@@ -19379,7 +19379,7 @@
       "w": 12,
       "name": "KickUrAss9260",
       "id": "g30",
-      "team": "capitals",
+      "team": "phoenix",
       "toi": "0:00",
       "gp": 14,
       "svpct": 0.689,
@@ -19417,7 +19417,7 @@
       "g": 0,
       "status": "regular",
       "otl": 1,
-      "division": "nhl"
+      "division": "lhjmq"
     },
     {
       "g": 1,
@@ -19525,7 +19525,7 @@
       "stats_lhjmq": {}
     },
     {
-      "division": "nhl",
+      "division": "lhjmq",
       "status": "regular",
       "otl": 0,
       "l": 8,
@@ -19562,7 +19562,7 @@
       },
       "svpct": 0.542,
       "gp": 14,
-      "team": "canadiens",
+      "team": "remparts",
       "toi": "0:00",
       "name": "LCHQ_falken",
       "id": "g34",
@@ -19640,7 +19640,7 @@
       "otl": 0,
       "l": 7,
       "g": 0,
-      "division": "nhl",
+      "division": "lhjmq",
       "sv": 206,
       "w": 5,
       "pts": 0,
@@ -19785,7 +19785,7 @@
       "otl": 1,
       "g": 1,
       "l": 5,
-      "division": "nhl",
+      "division": "lhjmq",
       "sa": 346,
       "stats_lhjmq": {
         "gp": 12,
@@ -19810,7 +19810,7 @@
       "sv": 256,
       "w": 7,
       "pts": 2,
-      "team": "sharks",
+      "team": "oceanic",
       "toi": "0:00",
       "name": "titou05yt9939",
       "id": "g41"
@@ -19847,7 +19847,7 @@
       "w": 1,
       "name": "XOshie-77",
       "id": "g42",
-      "team": "kings",
+      "team": "saguenéens",
       "toi": "0:00"
     },
     {
