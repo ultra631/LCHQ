@@ -1999,6 +1999,19 @@
   </div>
 </div>
 
+
+<!-- PAGE TRANSACTIONS -->
+<section id="page-transactions" class="page-section" style="display:none;">
+  <div class="page-header" style="border-left: 4px solid #f59e0b;">
+    <div class="page-header-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🔄</div>
+    <div>
+      <h1 class="page-title">Transactions</h1>
+      <p class="page-subtitle">Échanges, libérations et signatures LHJMQ</p>
+    </div>
+  </div>
+  <div id="transactionsContent"></div>
+</section>
+
 <!-- STANDINGS NHL -->
 <section id="page-standings-all" class="page">
   <div id="standings-all-nhl"></div>
@@ -7935,7 +7948,59 @@ function openEveningLeaders(div, weekNum, dateLabel) {
 
   openModal('eveningLeadersModal');
 }
-// ============ FIN LEADERS DE LA SOIRÉE ============
+// ============ PAGE TRANSACTIONS ============
+const TRANSACTIONS = [
+  { date: '2026-05-10', type: 'liberation', team: 'wildcats',
+    desc: 'Libération de <strong>DemonicParrot75</strong>. Signature de <strong>IFxtI92</strong> (réclamé au ballotage).' },
+  { date: '2026-05-10', type: 'liberation', team: 'voltigeurs',
+    desc: 'Libération de <strong>Dripper54</strong>. Signature de <strong>Crinq3r</strong>.' },
+  { date: '2026-05-10', type: 'echange', team: 'remparts',
+    desc: '<strong>Remparts</strong> échangent <strong>Jeanphiff</strong> aux <strong>Voltigeurs</strong>. En retour, les Remparts obtiennent <strong>Ritchvod111</strong>.' },
+  { date: '2026-05-11', type: 'signature', team: 'drakkar',
+    desc: 'Compensation: départ de <strong>Ti-Quik21</strong>. Signature de <strong>LCHQ I SmoQc</strong>.' },
+  { date: '2026-05-16', type: 'liberation', team: 'wildcats',
+    desc: 'Libération de <strong>Diam_clap_you</strong>. Signature de <strong>Henry RB5640</strong>.' },
+  { date: '2026-05-16', type: 'liberation', team: 'drakkar',
+    desc: 'Libération de <strong>IboeserIx6</strong>. Signature de <strong>nitrousVAZZ</strong>.' },
+  { date: '2026-05-16', type: 'echange', team: 'oceanic',
+    desc: '<strong>Remparts</strong> échangent <strong>Ritchvod111</strong> à l\'<strong>Océanic</strong>. En retour, les Remparts obtiennent <strong>Mamanetore</strong>.' },
+  { date: '2026-05-18', type: 'echange', team: 'mooseheads',
+    desc: '<strong>Mooseheads</strong> acquièrent <strong>TomyHabs11</strong> du <strong>Drakkar</strong>. Le Drakkar obtient <strong>UNSHAKED_QC</strong>.' },
+  { date: '2026-05-18', type: 'permutation', team: 'huskies',
+    desc: 'Permutation: <strong>LookEazY</strong> (Predators) permuté aux <strong>Huskies</strong> pour compenser le départ de <strong>MXSX WXNTXD</strong>.' },
+];
+
+function renderTransactions() {
+  const typeLabel = { echange: '🔄 ÉCHANGE', liberation: '✂️ LIBÉRATION / SIGNATURE', signature: '✍️ SIGNATURE', permutation: '↔️ PERMUTATION' };
+  const typeColor = { echange: '#3b82f6', liberation: '#ef4444', signature: '#10b981', permutation: '#f59e0b' };
+
+  const sorted = [...TRANSACTIONS].sort((a,b) => new Date(b.date)-new Date(a.date));
+
+  let html = '<div style="max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:12px;">';
+  for (const t of sorted) {
+    const team = DATA.teams[t.team];
+    const teamName = team ? team.name : t.team;
+    const color = typeColor[t.type] || '#888';
+    const label = typeLabel[t.type] || t.type;
+    const dateStr = new Date(t.date).toLocaleDateString('fr-CA', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    html += `
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-left:4px solid ${color};border-radius:12px;padding:16px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="min-width:100px;text-align:center;">
+          <div style="font-size:10px;font-weight:800;letter-spacing:1px;color:${color};background:${color}22;padding:4px 8px;border-radius:6px;">${label}</div>
+          <div style="font-size:11px;color:var(--text-tertiary);margin-top:6px;">${dateStr}</div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:13px;color:var(--text-primary);line-height:1.6;">${t.desc}</div>
+          ${team ? `<div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">Équipe concernée: ${teamName}</div>` : ''}
+        </div>
+      </div>`;
+  }
+  html += '</div>';
+  document.getElementById('transactionsContent').innerHTML = html;
+}
+// ============ FIN TRANSACTIONS ============
+
+
 
 
 
