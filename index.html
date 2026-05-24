@@ -1988,6 +1988,17 @@
   </div>
 </section>
 
+<!-- MODAL LEADERS DE LA SOIRÉE -->
+<div class="modal-overlay" id="eveningLeadersModal" onclick="if(event.target===this)closeModal('eveningLeadersModal')">
+  <div class="modal" style="max-width:700px;">
+    <h3 id="eveningLeadersTitle" style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;">🏆 Leaders de la soirée</h3>
+    <div id="eveningLeadersContent" style="margin-top:16px;"></div>
+    <div style="margin-top:20px;text-align:right;">
+      <button class="btn btn-secondary" onclick="closeModal('eveningLeadersModal')">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <!-- STANDINGS NHL -->
 <section id="page-standings-all" class="page">
   <div id="standings-all-nhl"></div>
@@ -6553,9 +6564,15 @@ function renderSchedule() {
       const divLabel = div === 'lhjmq' ? 'LHJMQ' : 'NHL';
 
       html += `<div class="schedule-day">
-        <div class="schedule-day-header">
-          <span class="division-badge ${div}">${divLabel}</span>
-          ${formatDateFr(dayDate)}
+        <div class="schedule-day-header" style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <span class="division-badge ${div}">${divLabel}</span>
+            ${formatDateFr(dayDate)}
+          </div>
+          <button onclick="openEveningLeaders('${div}',${week.num},'${formatDateFr(dayDate)}')" 
+            style="padding:5px 12px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);border-radius:8px;color:#f59e0b;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">
+            🏆 Leaders
+          </button>
         </div>`;
 
       // Grouper par horaire
@@ -7832,7 +7849,85 @@ function openMatchModalFromStats() {
   openMatchModal(currentMatchStats);
 }
 
-// ============ FIN CALENDRIER ============
+// ============ LEADERS DE LA SOIRÉE ============
+function openEveningLeaders(div, weekNum, dateLabel) {
+  // Trouver tous les matchs joués ce soir-là
+  const week = DATA.schedule?.weeks?.find(w => w.num === weekNum);
+  if (!week) return;
+  const matches = (week.matches || []).filter(m => m.division === div && isMatchPlayed(m));
+  if (matches.length === 0) {
+    alert('Aucun match joué cette soirée.');
+    return;
+  }
+
+  // Agréger les stats de tous les joueurs de la soirée
+  const skatersMap = {};
+  const goaliesMap = {};
+
+  matches.forEach(m => {
+    const ms = DATA.matchStats?.[m.id];
+    if (!ms) return;
+    (ms.players || []).forEach(p => {
+      if (p.type === 'goalie') {
+        if (!goaliesMap[p.id]) goaliesMap[p.id] = { name: p.name, team: p.team, sa: 0, ga: 0, sv: 0, w: 0, gp: 0 };
+        const g = goaliesMap[p.id];
+        g.gp += 1; g.sa += (p.sa||0); g.ga += (p.ga||0); g.sv += (p.sv||0); g.w += (p.w||0);
+        g.svpct = g.sa > 0 ? (g.sv/g.sa) : 0;
+        g.gaa = g.gp > 0 ? (g.ga/g.gp) : 0;
+      } else {
+        if (!skatersMap[p.id]) skatersMap[p.id] = { name: p.name, team: p.team, g: 0, a: 0, pts: 0, plusminus: 0, gp: 0 };
+        const s = skatersMap[p.id];
+        s.gp += 1; s.g += (p.g||0); s.a += (p.a||0);
+        s.pts = s.g + s.a;
+        s.plusminus += (p.plusminus||0);
+      }
+    });
+  });
+
+  const skaters = Object.values(skatersMap);
+  const goalies = Object.values(goaliesMap);
+
+  const top3 = (arr, sortFn) => arr.sort(sortFn).slice(0, 3);
+  const teamName = (key) => DATA.teams[key]?.name || key;
+
+  const row = (p, val, suffix='') => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div style="font-family:'Bebas Neue';font-size:18px;color:var(--red-bright);min-width:20px;">${val}${suffix}</div>
+      <div>
+        <div style="font-weight:700;font-size:13px;">${escapeHtml(p.name)}</div>
+        <div style="font-size:11px;color:var(--text-tertiary);">${escapeHtml(teamName(p.team))}</div>
+      </div>
+    </div>`;
+
+  const card = (title, icon, players, valFn, suffix='') => {
+    if (!players.length) return '';
+    return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px;">
+      <div style="font-family:'Bebas Neue';font-size:15px;letter-spacing:1px;color:var(--text-secondary);margin-bottom:8px;">${icon} ${title}</div>
+      ${players.map(p => row(p, valFn(p), suffix)).join('')}
+    </div>`;
+  };
+
+  const topPts   = top3([...skaters], (a,b) => b.pts - a.pts || b.g - a.g);
+  const topG     = top3([...skaters], (a,b) => b.g - a.g || b.pts - a.pts);
+  const topA     = top3([...skaters], (a,b) => b.a - a.a || b.pts - a.pts);
+  const topPM    = top3([...skaters], (a,b) => b.plusminus - a.plusminus);
+  const topGoalie= top3([...goalies], (a,b) => b.svpct - a.svpct || a.gaa - b.gaa);
+
+  document.getElementById('eveningLeadersTitle').textContent = `🏆 Leaders · ${dateLabel}`;
+  document.getElementById('eveningLeadersContent').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      ${card('Top Pointeurs','🎯', topPts, p => p.pts + ' pts')}
+      ${card('Top Buteurs','🏆', topG, p => p.g + 'B')}
+      ${card('Top Passeurs','🤝', topA, p => p.a + 'A')}
+      ${card('Meilleur +/-','➕', topPM, p => (p.plusminus > 0 ? '+' : '') + p.plusminus)}
+      ${card('Top Gardien','🥅', topGoalie, p => (p.svpct*100).toFixed(1) + '%')}
+    </div>`;
+
+  openModal('eveningLeadersModal');
+}
+// ============ FIN LEADERS DE LA SOIRÉE ============
+
+
 
 // ============ ARCHIVES SAISON 4 ============
 
