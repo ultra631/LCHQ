@@ -1548,6 +1548,22 @@
   }
 
   /* 20. Désactiver les animations pour ceux qui préfèrent */
+  /* Petit badge de division (NHL/LHJMQ) à côté du nom d'un joueur */
+  .player-div-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-right: 4px;
+    color: #fff;
+    line-height: 1;
+  }
+  .player-div-badge.nhl { background: var(--nhl-color, #2563eb); }
+  .player-div-badge.lhjmq { background: var(--lhjmq-color, #e63946); }
+
   /* Lisibilité des menus déroulants (selects/options) sur tous navigateurs */
   select {
     color: #fff;
@@ -4689,8 +4705,16 @@ function showTeamDetail(teamKey) {
   const affiliate = DATA.teams[t.affiliate];
   // Seulement les joueurs RÉGULIERS de cette équipe
   const roster = DATA.players.filter(p => p.team === teamKey && (p.status || 'regular') === 'regular');
-  const goalie = DATA.goalies.find(g => g.team === teamKey);
+  // TOUS les gardiens de cette équipe (une équipe peut en avoir eu plusieurs durant la saison)
+  const teamGoalies = DATA.goalies.filter(g => g.team === teamKey);
   const diff = t.record.gf - t.record.ga;
+
+  // Petit badge de division (NHL / LHJMQ) à afficher à côté du nom d'un joueur
+  const divBadge = (div) => {
+    if (div === 'nhl') return '<span class="player-div-badge nhl">NHL</span>';
+    if (div === 'lhjmq') return '<span class="player-div-badge lhjmq">LHJMQ</span>';
+    return '';
+  };
 
   const teamLogoBig = t.logo
     ? `<img src="${t.logo}" alt="${escapeHtml(t.name)}" class="team-header-logo" onerror="this.outerHTML='<div style=\\'font-size:80px;\\'>${t.emoji}</div>'">`
@@ -4735,7 +4759,7 @@ function showTeamDetail(teamKey) {
             const foPct = (p.mjf||0) > 0 ? ((p.mjg||0)/(p.mjf||1)*100).toFixed(1)+'%' : '0.0%';
             const isAdminRoster = document.body.classList.contains('admin-mode');
             return `<tr onclick="showPlayerDetail('${p.id}','4s')" style="cursor:pointer;">
-              <td style="font-weight: 600;">${escapeHtml(p.name)}
+              <td style="font-weight: 600;">${divBadge(p.division || t.division)} ${escapeHtml(p.name)}
                 ${isAdminRoster ? `<span class="admin-row-actions">
                   <button class="row-action-btn" onclick="event.stopPropagation();openPlayerModal('${p.id}','4s')" title="Modifier">✏️</button>
                   <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer('${p.id}')" title="Supprimer">🗑️</button>
@@ -4754,17 +4778,17 @@ function showTeamDetail(teamKey) {
               <td class="num">${foPct}</td>
             </tr>`;
           }).join('') : '<tr><td colspan="12" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun joueur régulier dans cette équipe.</td></tr>'}
-          ${goalie ? `<tr style="background: var(--bg-elevated);">
-            <td style="font-weight: 600;">🥅 ${escapeHtml(goalie.name)}
+          ${teamGoalies.length ? teamGoalies.map(goalie => `<tr style="background: var(--bg-elevated);">
+            <td style="font-weight: 600;">${divBadge(goalie.division || t.division)} 🥅 ${escapeHtml(goalie.name)}
               ${document.body.classList.contains('admin-mode') ? `<span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openGoalieModal('${goalie.id}','nhl')" title="Modifier">✏️</button></span>` : ''}
             </td>
             <td><span class="pos-badge pos-badge-main">G</span></td>
-            <td class="num">${goalie.gp}</td>
-            <td class="num" colspan="2">${goalie.w}V – ${goalie.l}D – ${goalie.otl}DP</td>
+            <td class="num">${goalie.gp||0}</td>
+            <td class="num" colspan="2">${goalie.w||0}V – ${goalie.l||0}D – ${goalie.otl||0}DP</td>
             <td class="num">${(goalie.gaa||0).toFixed(2)} MOY</td>
-            <td class="num" colspan="3">${(goalie.svpct * 100).toFixed(1)}% ARR</td>
-            <td class="num">${goalie.so} BL</td>
-          </tr>` : ''}
+            <td class="num" colspan="3">${((goalie.svpct||0) * 100).toFixed(1)}% ARR</td>
+            <td class="num">${goalie.so||0} BL</td>
+          </tr>`).join('') : ''}
         </tbody>
       </table>
     </div>
