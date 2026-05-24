@@ -4218,7 +4218,7 @@ function teamLogoHtml(team, size = 'table') {
 function renderHome() {
   // === 4S (Saison 5) ===
   // Joueurs actifs (réguliers + remplaçants), pas les inactifs
-  const activePlayers = DATA.players.filter(p => (p.status || 'regular') !== 'inactive');
+  const activePlayers = DATA.players.filter(p => (p.status || 'regular') !== 'inactive' && (p.g > 0 || p.a > 0 || p.pts > 0));
   const nhlPlayers = activePlayers.filter(p => p.team && DATA.teams[p.team] && DATA.teams[p.team].division === 'nhl');
   const lhjmqPlayers = activePlayers.filter(p => p.team && DATA.teams[p.team] && DATA.teams[p.team].division === 'lhjmq');
   const nhlGoalies = DATA.goalies.filter(g => DATA.teams[g.team] && DATA.teams[g.team].division === 'nhl');
@@ -4614,8 +4614,10 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
 
   let players = DATA.players.filter(p => {
     const status = p.status || 'regular';
-    if (status !== 'regular') return false;
-    if (!p.team || !DATA.teams[p.team] || DATA.teams[p.team].division !== division) return false;
+    if (status === 'inactive') return false;
+    // Inclure réguliers ET remplaçants (sub) de la bonne division
+    const playerDiv = p.division || (p.team && DATA.teams[p.team] ? DATA.teams[p.team].division : null);
+    if (playerDiv !== division) return false;
     if (search && !p.name.toLowerCase().includes(search)) return false;
     if (teamF && p.team !== teamF) return false;
     return true;
@@ -5246,7 +5248,11 @@ function savePlayerLink(old4sId, old6sId) {
 
 // TROPHIES
 function renderTrophiesNHL() {
-  const players = DATA.players.filter(p => (p.status||'regular') !== 'inactive' && p.team && DATA.teams[p.team] && DATA.teams[p.team].division === 'nhl');
+  const players = DATA.players.filter(p => {
+    if ((p.status||'regular') === 'inactive') return false;
+    const div = p.division || (p.team && DATA.teams[p.team] ? DATA.teams[p.team].division : null);
+    return div === 'nhl' && (p.g > 0 || p.a > 0 || p.pts > 0);
+  });
   const goalies = DATA.goalies.filter(g => DATA.teams[g.team] && DATA.teams[g.team].division === 'nhl');
   document.getElementById('trophyNhlGoals').innerHTML = renderLeaderList([...players].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
   document.getElementById('trophyNhlPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
@@ -5256,7 +5262,11 @@ function renderTrophiesNHL() {
 }
 
 function renderTrophiesLHJMQ() {
-  const players = DATA.players.filter(p => (p.status||'regular') !== 'inactive' && p.team && DATA.teams[p.team] && DATA.teams[p.team].division === 'lhjmq');
+  const players = DATA.players.filter(p => {
+    if ((p.status||'regular') === 'inactive') return false;
+    const div = p.division || (p.team && DATA.teams[p.team] ? DATA.teams[p.team].division : null);
+    return div === 'lhjmq' && (p.g > 0 || p.a > 0 || p.pts > 0);
+  });
   const goalies = DATA.goalies.filter(g => DATA.teams[g.team] && DATA.teams[g.team].division === 'lhjmq');
   document.getElementById('trophyLhjmqGoals').innerHTML = renderLeaderList([...players].sort((a,b)=>b.g-a.g).slice(0,5), 'g');
   document.getElementById('trophyLhjmqPoints').innerHTML = renderLeaderList([...players].sort((a,b)=>b.pts-a.pts).slice(0,5), 'pts');
