@@ -4220,11 +4220,12 @@ function toggleMenu() {
 
 // LOGO HELPER — affiche le vrai logo, fallback sur emoji
 function teamLogoHtml(team, size = 'table') {
+  if (!team) return '<span class="team-emoji-fallback">🏒</span>';
   const cls = size === 'table' ? 'team-logo-table' : 'team-card-logo';
   if (team.logo) {
-    return `<img src="${team.logo}" alt="${escapeHtml(team.name)}" class="${cls}" onerror="this.outerHTML='<span class=\\'team-emoji-fallback\\'>${team.emoji}</span>'">`;
+    return `<img src="${team.logo}" alt="${escapeHtml(team.name)}" class="${cls}" onerror="this.outerHTML='<span class=\\'team-emoji-fallback\\'>${team.emoji||'🏒'}</span>'">`;
   }
-  return `<span class="team-emoji-fallback">${team.emoji}</span>`;
+  return `<span class="team-emoji-fallback">${team.emoji||'🏒'}</span>`;
 }
 
 // HOME
@@ -4661,7 +4662,7 @@ function renderPlayersByDivision(division, sort, searchId, teamFilterId, bodyId)
       <tr onclick="if(!document.body.classList.contains('admin-mode'))showPlayerDetail('${p.id}', '4s')" style="cursor:pointer;">
         <td class="num">${i + 1}</td>
         <td style="font-weight: 600;">${escapeHtml(p.name)} ${adminActions}</td>
-        <td><div class="team-cell">${teamLogoHtml(team)}<span>${team.name}</span></div></td>
+        <td><div class="team-cell">${teamLogoHtml(team)}<span>${team ? team.name : p.team}</span></div></td>
         <td class="mobile-hide">${posBadges(p)}</td>
         <td class="num">${p.gp || 0}</td>
         <td class="num">${p.g || 0}</td>
