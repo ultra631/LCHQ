@@ -8231,8 +8231,8 @@ function renderArchiveTeamDetails(team, standing, rank, division, players, goali
         <td class="num">${p.a || 0}</td>
         <td class="num pts-cell">${p.pts || 0}</td>
         <td class="num ${p.plusminus > 0 ? 'diff-pos' : p.plusminus < 0 ? 'diff-neg' : ''}">${p.plusminus > 0 ? '+' + p.plusminus : (p.plusminus || 0)}</td>
-        <td class="num">${p.pim || 0}</td>
-        <td class="num">${p.shots || 0}</td>
+        <td class="num">${p.hits || 0}</td>
+        <td class="num">${p.tb || 0}</td>
       </tr>
     `).join('');
     playersTable = `<h4 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--text-secondary);margin:20px 0 12px;">🏒 Patineurs (${players.length})</h4>
