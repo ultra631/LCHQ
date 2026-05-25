@@ -4690,15 +4690,44 @@ function renderPlayersLHJMQ() { renderPlayersByDivision('lhjmq', playersLhjmqSor
 
 // GOALIES
 function renderGoaliesByDivision(division, sort, bodyId) {
-  let goalies = DATA.goalies.filter(g => g && g.team && DATA.teams[g.team] && DATA.teams[g.team].division === division)
-    .map(g => {
-      const divStats = division === 'nhl' ? g.stats_nhl : g.stats_lhjmq;
-      return divStats ? { ...g, ...divStats } : g;
-    });
+  // Inclure les gardiens dont l'équipe est dans cette division
+  // OU qui ont des stats dans cette division (joueurs des 2 divisions)
+  let goalies = DATA.goalies.filter(g => {
+    if (!g) return false;
+    const divStats = division === 'nhl' ? g.stats_nhl : g.stats_lhjmq;
+    const teamDiv = g.team && DATA.teams[g.team] ? DATA.teams[g.team].division : null;
+    // Inclure si équipe dans cette division OU si a des stats dans cette division
+    return teamDiv === division || (divStats && divStats.gp > 0);
+  }).map(g => {
+    const divStats = division === 'nhl' ? g.stats_nhl : g.stats_lhjmq;
+    // Pour l'affichage, utiliser les stats de la division demandée
+    // mais garder l'équipe principale pour le logo
+    if (divStats && divStats.gp > 0) {
+      return { ...g, ...divStats };
+    }
+    return g;
+  });
   goalies.sort((a, b) => sort.dir === 'desc' ? b[sort.key] - a[sort.key] : a[sort.key] - b[sort.key]);
 
   document.getElementById(bodyId).innerHTML = goalies.map((g, i) => {
-    const team = DATA.teams[g.team];
+    // Pour les gardiens jouant dans 2 divisions, trouver leur équipe dans cette division
+    let displayTeamKey = g.team;
+    const teamDiv = g.team && DATA.teams[g.team] ? DATA.teams[g.team].division : null;
+    if (teamDiv !== division) {
+      // Chercher leur équipe dans cette division depuis les feuilles de match
+      const divStats = division === 'nhl' ? g.stats_nhl : g.stats_lhjmq;
+      if (divStats && divStats.gp > 0) {
+        // Trouver l'équipe dans les matchStats
+        for (const ms of Object.values(DATA.matchStats || {})) {
+          const sp = (ms.players || []).find(p => p.id === g.id && p.type === 'goalie');
+          if (sp && sp.team && DATA.teams[sp.team] && DATA.teams[sp.team].division === division) {
+            displayTeamKey = sp.team;
+            break;
+          }
+        }
+      }
+    }
+    const team = DATA.teams[displayTeamKey];
     const adminActions = `<span class="admin-row-actions">
       <button class="row-action-btn" onclick="event.stopPropagation();openGoalieModal('${g.id}', '${division}')" title="Modifier">✏️</button>
       <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeleteGoalie('${g.id}')" title="Supprimer">🗑️</button>
