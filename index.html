@@ -7153,21 +7153,23 @@ function renderMatchStatsContent(match, awayTeam, homeTeam) {
   const makeDropdown = (teamKey, side) => {
     if (!isAdmin) return '';
     const existing = new Set(matchStats.players.map(p => p.id));
+    const goalieIds = new Set(goaliePool.map(g => g.id));
     // Joueurs de l'équipe
     const teamPlayers = [...playerPool.filter(p => p.team === teamKey), ...goaliePool.filter(g => g.team === teamKey)]
       .filter(p => !existing.has(p.id));
     // Remplaçants (pas d'équipe ou status sub)
     const subs = [...playerPool.filter(p => (!p.team || p.status === 'sub') && !existing.has(p.id)),
                   ...goaliePool.filter(g => (!g.team || g.status === 'sub') && !existing.has(g.id))];
+    const lbl = (p) => goalieIds.has(p.id) ? `🥅 ${p.name} (G)` : p.name;
 
     return `<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
       <select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);font-size:13px;">
         <option value="" style="background:#16161f;color:#fff;">➕ Joueurs de l'équipe</option>
-        ${teamPlayers.map(p => `<option value="${p.id}" style="background:#16161f;color:#fff;">${p.name}</option>`).join('')}
+        ${teamPlayers.map(p => `<option value="${p.id}" style="background:#16161f;color:#fff;">${lbl(p)}</option>`).join('')}
       </select>
       <select onchange="addPlayerFromDropdown('${teamKey}',this.value,this)" style="padding:7px;border-radius:8px;background:#2a2112;color:#fff;border:1px solid rgba(245,158,11,0.4);font-size:13px;">
         <option value="" style="background:#16161f;color:#fff;">🔄 Remplaçants</option>
-        ${subs.map(p => `<option value="${p.id}" style="background:#16161f;color:#fff;">${p.name}${p.positions?.length ? ' ('+p.positions.join('/')+')'  : ''}</option>`).join('')}
+        ${subs.map(p => `<option value="${p.id}" style="background:#16161f;color:#fff;">${lbl(p)}${p.positions?.length ? ' ('+p.positions.join('/')+')'  : ''}</option>`).join('')}
       </select>
     </div>`;
   };
