@@ -6217,8 +6217,12 @@ function saveGoalie() {
   const gpos6s3 = document.getElementById('gPos6s3')?.value || '';
 
   if (!mode4s && !mode6s) { alert('Le gardien doit participer à au moins un mode!'); return; }
-  if (mode4s && !team4s) { alert('Sélectionne une équipe 4S!'); return; }
-  if (mode6s && !team6s) { alert('Sélectionne une équipe 6S!'); return; }
+  const gStatusCheck = document.getElementById('gStatus')?.value || 'regular';
+  // Les remplaçants n'ont pas besoin d'équipe fixe
+  if (gStatusCheck !== 'sub') {
+    if (mode4s && !team4s) { alert('Sélectionne une équipe 4S!'); return; }
+    if (mode6s && !team6s) { alert('Sélectionne une équipe 6S!'); return; }
+  }
 
   const newVal = (key) => parseFloat(document.getElementById(`g${key}New`).textContent) || 0;
 
