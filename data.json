@@ -54984,5 +54984,338 @@
       },
       "stats_nhl": {}
     }
-  ]
+  ],
+  "summer_2026": {
+    "status": "À venir",
+    "countries": [
+      "canada",
+      "grande_bretagne",
+      "kazakhstan",
+      "etats_unis",
+      "suisse",
+      "rep_tcheque",
+      "norvege",
+      "allemagne",
+      "ukraine",
+      "finlande",
+      "slovenie",
+      "danemark",
+      "autriche",
+      "lettonie",
+      "pologne",
+      "italie",
+      "france"
+    ],
+    "teams": {
+      "canada": {
+        "name": "Canada",
+        "emoji": "🇨🇦",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "grande_bretagne": {
+        "name": "Grande-Bretagne",
+        "emoji": "🇬🇧",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "kazakhstan": {
+        "name": "Kazakhstan",
+        "emoji": "🇰🇿",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "etats_unis": {
+        "name": "États-Unis",
+        "emoji": "🇺🇸",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "suisse": {
+        "name": "Suisse",
+        "emoji": "🇨🇭",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "rep_tcheque": {
+        "name": "République Tchèque",
+        "emoji": "🇨🇿",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "norvege": {
+        "name": "Norvège",
+        "emoji": "🇳🇴",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "allemagne": {
+        "name": "Allemagne",
+        "emoji": "🇩🇪",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "ukraine": {
+        "name": "Ukraine",
+        "emoji": "🇺🇦",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "finlande": {
+        "name": "Finlande",
+        "emoji": "🇫🇮",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "slovenie": {
+        "name": "Slovénie",
+        "emoji": "🇸🇮",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "danemark": {
+        "name": "Danemark",
+        "emoji": "🇩🇰",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "autriche": {
+        "name": "Autriche",
+        "emoji": "🇦🇹",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "lettonie": {
+        "name": "Lettonie",
+        "emoji": "🇱🇻",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "pologne": {
+        "name": "Pologne",
+        "emoji": "🇵🇱",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "italie": {
+        "name": "Italie",
+        "emoji": "🇮🇹",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      },
+      "france": {
+        "name": "France",
+        "emoji": "🇫🇷",
+        "flag": "",
+        "record": {
+          "gp": 0,
+          "w": 0,
+          "l": 0,
+          "otl": 0,
+          "vp": 0,
+          "dp": 0,
+          "gf": 0,
+          "ga": 0,
+          "diff": 0,
+          "pts": 0,
+          "streak": "-"
+        }
+      }
+    },
+    "players": [],
+    "goalies": [],
+    "schedule": []
+  }
 }
