@@ -3073,6 +3073,13 @@
         <option value="lhjmq" style="background:#16161f;color:#fff;">🔴 LHJMQ</option>
       </select>
     </div>
+    <div class="modal-form-group">
+      <label>Statut</label>
+      <select id="gStatus" style="width:100%;padding:8px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);">
+        <option value="regular" style="background:#16161f;color:#fff;">✅ Régulier</option>
+        <option value="sub" style="background:#16161f;color:#fff;">🔄 Remplaçant</option>
+      </select>
+    </div>
 
     <!-- Modes 4S / 6S -->
     <div class="modal-form-group">
@@ -6148,6 +6155,7 @@ function openGoalieModal(goalieId, division) {
     document.getElementById('goalieModalTitle').textContent = '✏️ Modifier gardien';
     document.getElementById('gName').value = g.name;
     document.getElementById('gDivisionBadge').value = g.division || (g.team && DATA.teams[g.team] ? DATA.teams[g.team].division : 'nhl') || 'nhl';
+    if(document.getElementById('gStatus')) document.getElementById('gStatus').value = g.status || 'regular';
     document.getElementById('gToi').value = g.toi || '0:00';
 
     // Cocher 4S
@@ -6178,6 +6186,7 @@ function openGoalieModal(goalieId, division) {
     document.getElementById('goalieModalTitle').textContent = '➕ Nouveau gardien';
     document.getElementById('gName').value = '';
     document.getElementById('gDivisionBadge').value = division === '6s' ? 'nhl' : (division || 'nhl');
+    if(document.getElementById('gStatus')) document.getElementById('gStatus').value = 'regular';
     document.getElementById('gToi').value = '0:00';
 
     const is6s = division === '6s';
@@ -6223,9 +6232,10 @@ function saveGoalie() {
   const svpct = sa > 0 ? Math.round((sv / sa) * 1000) / 1000 : 0;
 
   const gDivisionBadge = document.getElementById('gDivisionBadge')?.value || 'nhl';
+  const gStatus = document.getElementById('gStatus')?.value || 'regular';
 
   const baseData = {
-    name, division: gDivisionBadge, gp, sa, sv, ga, gaa, svpct,
+    name, division: gDivisionBadge, status: gStatus, gp, sa, sv, ga, gaa, svpct,
     w: newVal('W'), l: newVal('L'), otl: newVal('Otl'),
     so: newVal('So'), g: goals, a: assists,
     pts: goals + assists,
