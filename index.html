@@ -4813,11 +4813,11 @@ function showTeamDetail(teamKey) {
       }
     });
   });
-  // Joueurs réguliers de cette équipe OU qui ont joué pour elle (autre division)
+  // Joueurs réguliers de cette équipe OU qui ont joué pour elle (autre division ou remplaçant)
   const roster = DATA.players.filter(p => {
     if (p.team === teamKey && (p.status || 'regular') === 'regular') return true;
-    // Inclure joueur d'une autre équipe principale qui a des stats dans cette division pour cette équipe
-    if (playedForTeamPlayers.has(p.id) && p.team !== teamKey) return true;
+    // Inclure remplaçant/autre équipe qui a joué pour cette équipe
+    if (playedForTeamPlayers.has(p.id) && (p.team !== teamKey || (p.status||'regular') !== 'regular')) return true;
     return false;
   });
   // Gardiens de cette équipe OU qui ont gardé pour elle
