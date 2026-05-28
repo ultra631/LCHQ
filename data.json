@@ -55010,7 +55010,7 @@
       "canada": {
         "name": "Canada",
         "emoji": "🇨🇦",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/ca.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55028,7 +55028,7 @@
       "grande_bretagne": {
         "name": "Grande-Bretagne",
         "emoji": "🇬🇧",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/gb.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55046,7 +55046,7 @@
       "kazakhstan": {
         "name": "Kazakhstan",
         "emoji": "🇰🇿",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/kz.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55064,7 +55064,7 @@
       "etats_unis": {
         "name": "États-Unis",
         "emoji": "🇺🇸",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/us.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55082,7 +55082,7 @@
       "suisse": {
         "name": "Suisse",
         "emoji": "🇨🇭",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/ch.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55100,7 +55100,7 @@
       "rep_tcheque": {
         "name": "République Tchèque",
         "emoji": "🇨🇿",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/cz.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55118,7 +55118,7 @@
       "norvege": {
         "name": "Norvège",
         "emoji": "🇳🇴",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/no.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55136,7 +55136,7 @@
       "allemagne": {
         "name": "Allemagne",
         "emoji": "🇩🇪",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/de.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55154,7 +55154,7 @@
       "ukraine": {
         "name": "Ukraine",
         "emoji": "🇺🇦",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/ua.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55172,7 +55172,7 @@
       "finlande": {
         "name": "Finlande",
         "emoji": "🇫🇮",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/fi.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55190,7 +55190,7 @@
       "slovenie": {
         "name": "Slovénie",
         "emoji": "🇸🇮",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/si.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55208,7 +55208,7 @@
       "danemark": {
         "name": "Danemark",
         "emoji": "🇩🇰",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/dk.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55226,7 +55226,7 @@
       "autriche": {
         "name": "Autriche",
         "emoji": "🇦🇹",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/at.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55244,7 +55244,7 @@
       "lettonie": {
         "name": "Lettonie",
         "emoji": "🇱🇻",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/lv.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55262,7 +55262,7 @@
       "pologne": {
         "name": "Pologne",
         "emoji": "🇵🇱",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/pl.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55280,7 +55280,7 @@
       "italie": {
         "name": "Italie",
         "emoji": "🇮🇹",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/it.png",
         "record": {
           "gp": 0,
           "w": 0,
@@ -55298,7 +55298,7 @@
       "france": {
         "name": "France",
         "emoji": "🇫🇷",
-        "flag": "",
+        "flag": "https://flagcdn.com/w320/fr.png",
         "record": {
           "gp": 0,
           "w": 0,
