@@ -4862,15 +4862,19 @@ function showTeamDetail(teamKey) {
       }
     });
   });
-  // Joueurs réguliers de cette équipe OU qui ont joué pour elle (autre division ou remplaçant)
+  // Joueurs RÉGULIERS de cette équipe seulement (pas les remplaçants)
   const roster = DATA.players.filter(p => {
-    if (p.team === teamKey && (p.status || 'regular') === 'regular') return true;
-    // Inclure remplaçant/autre équipe qui a joué pour cette équipe
-    if (playedForTeamPlayers.has(p.id) && (p.team !== teamKey || (p.status||'regular') !== 'regular')) return true;
+    if ((p.status || 'regular') !== 'regular') return false;
+    if (p.team === teamKey) return true;
+    // Inclure joueur régulier d'une autre équipe principale qui a joué pour cette équipe (affilié 2 divisions)
+    if (playedForTeamPlayers.has(p.id) && p.team !== teamKey) return true;
     return false;
   });
-  // Gardiens de cette équipe OU qui ont gardé pour elle
-  const teamGoalies = DATA.goalies.filter(g => g.team === teamKey || playedForTeamGoalies.has(g.id));
+  // Gardiens RÉGULIERS de cette équipe OU qui ont gardé pour elle (réguliers seulement)
+  const teamGoalies = DATA.goalies.filter(g => {
+    if ((g.status || 'regular') !== 'regular') return false;
+    return g.team === teamKey || playedForTeamGoalies.has(g.id);
+  });
   const diff = t.record.gf - t.record.ga;
 
   // Petit badge de division (NHL / LHJMQ) à afficher à côté du nom d'un joueur
