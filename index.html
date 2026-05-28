@@ -4880,7 +4880,7 @@ function showTeamDetail(teamKey) {
             const foPct = (p.mjf||0) > 0 ? ((p.mjg||0)/(p.mjf||1)*100).toFixed(1)+'%' : '0.0%';
             const isAdminRoster = document.body.classList.contains('admin-mode');
             return `<tr onclick="showPlayerDetail('${p.id}','4s')" style="cursor:pointer;">
-              <td style="font-weight: 600;">${divBadge(teamDiv)} ${escapeHtml(p.name)}
+              <td style="font-weight: 600;">${divBadge(p.division || teamDiv)} ${escapeHtml(p.name)}
                 ${isAdminRoster ? `<span class="admin-row-actions">
                   <button class="row-action-btn" onclick="event.stopPropagation();openPlayerModal('${p.id}','4s')" title="Modifier">✏️</button>
                   <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer('${p.id}')" title="Supprimer">🗑️</button>
@@ -4907,7 +4907,7 @@ function showTeamDetail(teamKey) {
               if (divStats && divStats.gp > 0) goalie = { ...goalie0, ...divStats };
             }
             return `<tr style="background: var(--bg-elevated);">
-            <td style="font-weight: 600;">${divBadge(teamDiv)} 🥅 ${escapeHtml(goalie.name)}
+            <td style="font-weight: 600;">${divBadge(goalie.division || teamDiv)} 🥅 ${escapeHtml(goalie.name)}
               ${document.body.classList.contains('admin-mode') ? `<span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openGoalieModal('${goalie.id}','nhl')" title="Modifier">✏️</button></span>` : ''}
             </td>
             <td><span class="pos-badge pos-badge-main">G</span></td>
