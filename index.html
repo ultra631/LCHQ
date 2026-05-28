@@ -2617,12 +2617,15 @@
 </section>
 
 <section id="page-schedule-6s" class="page">
-  <div class="division-banner" style="--division-color: #3b82f6">
-    <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">📅</div>
-    <div class="division-banner-text">
-      <h3>Calendrier 6S — Saison 3</h3>
-      <p>Matchs et résultats · Format 6v6</p>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <div class="division-banner" style="--division-color: #3b82f6; margin:0; flex:1;">
+      <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">📅</div>
+      <div class="division-banner-text">
+        <h3>Calendrier 6S — Saison 3</h3>
+        <p>Matchs et résultats · Format 6v6</p>
+      </div>
     </div>
+    <button class="btn btn-primary admin-only" onclick="openAddMatchModal6S()" style="display:none;margin-left:12px;white-space:nowrap;">➕ Ajouter un match</button>
   </div>
   <div id="schedule6s"></div>
 </section>
@@ -3631,6 +3634,52 @@
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeModal('addMatchModal')">Annuler</button>
       <button class="btn btn-primary" onclick="saveNewMatch()">💾 Ajouter le match</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AJOUTER MATCH 6S -->
+<div class="modal-overlay" id="addMatch6sModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">➕ Ajouter un match 6S</h2>
+      <button class="modal-close" onclick="closeModal('addMatch6sModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-form-group">
+        <label>Semaine (num)</label>
+        <input type="number" id="match6sWeek" min="1" placeholder="ex: 1" style="width:100%;padding:8px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);">
+      </div>
+      <div class="modal-form-group">
+        <label>Heure</label>
+        <input type="text" id="match6sTime" value="20:00" placeholder="ex: 20:00" style="width:100%;padding:8px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);">
+      </div>
+      <div class="modal-form-group">
+        <label>Équipe visiteur</label>
+        <select id="match6sAwayTeam" style="width:100%;padding:8px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);"></select>
+      </div>
+      <div class="modal-form-group">
+        <label>Équipe locale</label>
+        <select id="match6sHomeTeam" style="width:100%;padding:8px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);"></select>
+      </div>
+      <div class="modal-form-group">
+        <label>Statut</label>
+        <select id="match6sStatus" style="width:100%;padding:8px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);">
+          <option value="upcoming" style="background:#16161f;color:#fff;">À venir</option>
+          <option value="played" style="background:#16161f;color:#fff;">Joué</option>
+        </select>
+      </div>
+      <div class="modal-form-group" id="match6sScoreSection" style="display:none;">
+        <label>Score (visiteur / local)</label>
+        <div style="display:flex;gap:8px;">
+          <input type="number" id="match6sAwayScore" min="0" value="0" style="width:50%;padding:8px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);">
+          <input type="number" id="match6sHomeScore" min="0" value="0" style="width:50%;padding:8px;border-radius:8px;background:#16161f;color:#fff;border:1px solid var(--border);">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('addMatch6sModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveNewMatch6S()">💾 Ajouter le match</button>
     </div>
   </div>
 </div>
@@ -6615,6 +6664,67 @@ async function saveNewMatch() {
   // Fermer le modal
   closeModal('addMatchModal');
   showToast('✅ Match ajouté!');
+}
+
+// ===== AJOUT DE MATCH 6S =====
+function openAddMatchModal6S() {
+  if (!document.body.classList.contains('admin-mode')) return;
+  // Remplir les listes d'équipes 6S
+  const teams6s = (DATA.season_3_6v6?.standings || []).map(s => s.team);
+  const teamName = (k) => DATA.teams[k]?.name || k.replace('_6v6','');
+  const homeSel = document.getElementById('match6sHomeTeam');
+  const awaySel = document.getElementById('match6sAwayTeam');
+  const opts = teams6s.map(k => `<option value="${k}" style="background:#16161f;color:#fff;">${teamName(k)}</option>`).join('');
+  homeSel.innerHTML = '<option value="">— Équipe locale —</option>' + opts;
+  awaySel.innerHTML = '<option value="">— Équipe visiteur —</option>' + opts;
+  document.getElementById('match6sStatus').onchange = function() {
+    document.getElementById('match6sScoreSection').style.display = this.value === 'played' ? 'block' : 'none';
+  };
+  document.getElementById('match6sWeek').value = '';
+  document.getElementById('match6sTime').value = '20:00';
+  document.getElementById('match6sStatus').value = 'upcoming';
+  document.getElementById('match6sScoreSection').style.display = 'none';
+  document.getElementById('match6sHomeScore').value = 0;
+  document.getElementById('match6sAwayScore').value = 0;
+  openModal('addMatch6sModal');
+}
+
+async function saveNewMatch6S() {
+  if (!document.body.classList.contains('admin-mode')) return;
+  const week = parseInt(document.getElementById('match6sWeek').value);
+  const time = document.getElementById('match6sTime').value || '20:00';
+  const homeTeam = document.getElementById('match6sHomeTeam').value;
+  const awayTeam = document.getElementById('match6sAwayTeam').value;
+  const status = document.getElementById('match6sStatus').value;
+
+  if (!week || !homeTeam || !awayTeam) { alert('Veuillez remplir la semaine et les deux équipes'); return; }
+  if (homeTeam === awayTeam) { alert('Les deux équipes doivent être différentes'); return; }
+
+  if (!DATA.season_3_6v6.calendar) DATA.season_3_6v6.calendar = [];
+  // Trouver ou créer la semaine
+  let weekObj = DATA.season_3_6v6.calendar.find(w => w.num === week);
+  if (!weekObj) {
+    weekObj = { num: week, matches: [] };
+    DATA.season_3_6v6.calendar.push(weekObj);
+    DATA.season_3_6v6.calendar.sort((a,b) => a.num - b.num);
+  }
+  // Générer un ID unique
+  const matchCount = weekObj.matches.length + 1;
+  const matchId = `6S-W${week}L${String(matchCount).padStart(2,'0')}`;
+  const match = {
+    id: matchId, home: homeTeam, away: awayTeam,
+    division: '6v6', time: time, is_dp: false
+  };
+  if (status === 'played') {
+    match.home_score = parseInt(document.getElementById('match6sHomeScore').value) || 0;
+    match.away_score = parseInt(document.getElementById('match6sAwayScore').value) || 0;
+  }
+  weekObj.matches.push(match);
+
+  await saveToFirebase();
+  renderSchedule6S();
+  closeModal('addMatch6sModal');
+  showToast('✅ Match 6S ajouté!');
 }
 
 function renderSchedule() {
