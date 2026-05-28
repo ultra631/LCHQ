@@ -4801,10 +4801,27 @@ function showTeamDetail(teamKey) {
   const t = DATA.teams[teamKey];
   if (!t) return;
   const affiliate = DATA.teams[t.affiliate];
-  // Seulement les joueurs RÉGULIERS de cette équipe
-  const roster = DATA.players.filter(p => p.team === teamKey && (p.status || 'regular') === 'regular');
-  // TOUS les gardiens de cette équipe (une équipe peut en avoir eu plusieurs durant la saison)
-  const teamGoalies = DATA.goalies.filter(g => g.team === teamKey);
+  const teamDiv = t.division;
+  // Trouver les joueurs/gardiens qui ont joué pour cette équipe dans les feuilles de match
+  const playedForTeamPlayers = new Set();
+  const playedForTeamGoalies = new Set();
+  Object.values(DATA.matchStats || {}).forEach(ms => {
+    (ms.players || []).forEach(sp => {
+      if (sp.team === teamKey) {
+        if (sp.type === 'goalie') playedForTeamGoalies.add(sp.id);
+        else playedForTeamPlayers.add(sp.id);
+      }
+    });
+  });
+  // Joueurs réguliers de cette équipe OU qui ont joué pour elle (autre division)
+  const roster = DATA.players.filter(p => {
+    if (p.team === teamKey && (p.status || 'regular') === 'regular') return true;
+    // Inclure joueur d'une autre équipe principale qui a des stats dans cette division pour cette équipe
+    if (playedForTeamPlayers.has(p.id) && p.team !== teamKey) return true;
+    return false;
+  });
+  // Gardiens de cette équipe OU qui ont gardé pour elle
+  const teamGoalies = DATA.goalies.filter(g => g.team === teamKey || playedForTeamGoalies.has(g.id));
   const diff = t.record.gf - t.record.ga;
 
   // Petit badge de division (NHL / LHJMQ) à afficher à côté du nom d'un joueur
@@ -4851,13 +4868,19 @@ function showTeamDetail(teamKey) {
           </tr>
         </thead>
         <tbody>
-          ${roster.length ? roster.map(p => {
+          ${roster.length ? roster.map(p0 => {
+            // Si le joueur a une équipe principale différente, afficher ses stats de la division de CETTE équipe
+            let p = p0;
+            if (p0.team !== teamKey) {
+              const divStats = teamDiv === 'nhl' ? p0.stats_nhl : p0.stats_lhjmq;
+              if (divStats && divStats.gp > 0) p = { ...p0, ...divStats };
+            }
             const pmClass = (p.plusminus||0) > 0 ? 'diff-pos' : (p.plusminus||0) < 0 ? 'diff-neg' : '';
             const pmStr = (p.plusminus||0) > 0 ? `+${p.plusminus}` : (p.plusminus||0);
             const foPct = (p.mjf||0) > 0 ? ((p.mjg||0)/(p.mjf||1)*100).toFixed(1)+'%' : '0.0%';
             const isAdminRoster = document.body.classList.contains('admin-mode');
             return `<tr onclick="showPlayerDetail('${p.id}','4s')" style="cursor:pointer;">
-              <td style="font-weight: 600;">${divBadge(p.division || t.division)} ${escapeHtml(p.name)}
+              <td style="font-weight: 600;">${divBadge(teamDiv)} ${escapeHtml(p.name)}
                 ${isAdminRoster ? `<span class="admin-row-actions">
                   <button class="row-action-btn" onclick="event.stopPropagation();openPlayerModal('${p.id}','4s')" title="Modifier">✏️</button>
                   <button class="row-action-btn delete" onclick="event.stopPropagation();confirmDeletePlayer('${p.id}')" title="Supprimer">🗑️</button>
@@ -4876,8 +4899,15 @@ function showTeamDetail(teamKey) {
               <td class="num">${foPct}</td>
             </tr>`;
           }).join('') : '<tr><td colspan="12" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun joueur régulier dans cette équipe.</td></tr>'}
-          ${teamGoalies.length ? teamGoalies.map(goalie => `<tr style="background: var(--bg-elevated);">
-            <td style="font-weight: 600;">${divBadge(goalie.division || t.division)} 🥅 ${escapeHtml(goalie.name)}
+          ${teamGoalies.length ? teamGoalies.map(goalie0 => {
+            // Si le gardien a une équipe principale différente, afficher ses stats de la division de CETTE équipe
+            let goalie = goalie0;
+            if (goalie0.team !== teamKey) {
+              const divStats = teamDiv === 'nhl' ? goalie0.stats_nhl : goalie0.stats_lhjmq;
+              if (divStats && divStats.gp > 0) goalie = { ...goalie0, ...divStats };
+            }
+            return `<tr style="background: var(--bg-elevated);">
+            <td style="font-weight: 600;">${divBadge(teamDiv)} 🥅 ${escapeHtml(goalie.name)}
               ${document.body.classList.contains('admin-mode') ? `<span class="admin-row-actions"><button class="row-action-btn" onclick="event.stopPropagation();openGoalieModal('${goalie.id}','nhl')" title="Modifier">✏️</button></span>` : ''}
             </td>
             <td><span class="pos-badge pos-badge-main">G</span></td>
@@ -4886,7 +4916,7 @@ function showTeamDetail(teamKey) {
             <td class="num">${(goalie.gaa||0).toFixed(2)} MOY</td>
             <td class="num" colspan="3">${((goalie.svpct||0) * 100).toFixed(1)}% ARR</td>
             <td class="num">${goalie.so||0} BL</td>
-          </tr>`).join('') : ''}
+          </tr>`;}).join('') : ''}
         </tbody>
       </table>
     </div>
