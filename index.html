@@ -1065,6 +1065,9 @@
     letter-spacing: 1px;
     font-weight: 700;
   }
+  /* Le badge DP se place du côté du perdant (équipe avec le moins de buts) */
+  .match-dp-badge.dp-left { left: 6px; right: auto; }
+  .match-dp-badge.dp-right { right: 6px; left: auto; }
 
   /* Nav admin items */
   .nav-btn.admin-nav { display: none; }
@@ -6846,8 +6849,8 @@ function renderSchedule() {
 
 function renderMatchCard(m) {
   const played = isMatchPlayed(m);
-  const dpBadge = m.is_dp ? '<span class="match-dp-badge">DP</span>' : '';
-  
+  let dpBadge = '';
+
   // Clic sur match ouvre toujours le résumé/stats
   let clickAttr = `onclick="openMatchStatsModal('${m.id}')"`;
 
@@ -6857,6 +6860,12 @@ function renderMatchCard(m) {
     const homeS = m.home_score ?? m.homeScore;
     const awayWin = awayS > homeS;
     const homeWin = homeS > awayS;
+    // Le badge DP va du côté du perdant (équipe avec le moins de buts).
+    // Visiteur (away) = à gauche, Local (home) = à droite.
+    if (m.is_dp) {
+      const dpSide = awayS < homeS ? 'dp-left' : 'dp-right';
+      dpBadge = `<span class="match-dp-badge ${dpSide}">DP</span>`;
+    }
     center = `<div class="match-center match-score">
       <span class="${awayWin ? 'winner' : 'loser'}">${awayS}</span>
       <span style="color:var(--text-tertiary);"> – </span>
