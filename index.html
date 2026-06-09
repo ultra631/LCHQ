@@ -6028,21 +6028,45 @@ function savePlayer() {
 
   const divisionBadge = document.getElementById('pDivisionBadge')?.value || 'nhl';
 
-  const baseData = {
+  // OPTION A : les stats tapées vont SEULEMENT au mode d'où le joueur a été ouvert.
+  // L'autre mode garde ses propres stats (ou démarre à 0 si nouveau profil).
+  const statsTarget = (editingDivision === '6s') ? '6s' : '4s';
+
+  // Champs PARTAGÉS entre les 2 modes (nom, statut, positions)
+  const shared = {
     name, status, division: divisionBadge,
-    position_main: posMain, position_sec: posSec, position_ter: posTer, position: posMain,
+    position_main: posMain, position_sec: posSec, position_ter: posTer, position: posMain
+  };
+  // Champs de STATS (propres à chaque mode)
+  const statsObj = {
     gp: newVal('Gp'), g, a, pts: g + a,
     plusminus: newVal('PM'), hits: newVal('Hits'),
     toi: document.getElementById('pToi').value || '0:00',
     tb: newVal('Tb'), mjg, mjf, fopct, pt, pr, passpct,
     intc: newVal('Int'), prises: newVal('Prises'), pert: newVal('Pert')
   };
+  const zeroStats = {
+    gp:0, g:0, a:0, pts:0, plusminus:0, hits:0, toi:'0:00',
+    tb:0, mjg:0, mjf:0, fopct:0, pt:0, pr:0, passpct:0, intc:0, prises:0, pert:0
+  };
 
-  // Si on modifie un joueur existant → chercher SEULEMENT par ID
+  // Retrouver les profils existants.
+  // - Mode de l'ID édité : par ID (sûr, pas de mélange — protège contre l'ancien bug).
+  // - AUTRE mode : par linked_id sinon par nom, pour mettre à jour le bon profil
+  //   au lieu d'en créer un doublon (les IDs 4S='p..' et 6S='p6_..' ne matchent jamais).
   let existing4s, existing6s;
   if (editingPlayerId) {
     existing4s = DATA.players.find(x => x.id === editingPlayerId);
     existing6s = (DATA.season_3_6v6?.players || []).find(x => x.id === editingPlayerId);
+    const edited = existing4s || existing6s;
+    if (!existing4s) {
+      existing4s = (edited?.linked_id ? DATA.players.find(x => x.id === edited.linked_id) : null)
+                || DATA.players.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+    }
+    if (!existing6s) {
+      existing6s = (edited?.linked_id ? (DATA.season_3_6v6?.players || []).find(x => x.id === edited.linked_id) : null)
+                || (DATA.season_3_6v6?.players || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+    }
   } else {
     existing4s = DATA.players.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
     existing6s = (DATA.season_3_6v6?.players || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
@@ -6050,22 +6074,13 @@ function savePlayer() {
 
   // SAUVEGARDER EN 4S
   if (mode4s) {
-    const data4s = { ...baseData, team: team4s };
+    const stats4s = (statsTarget === '4s') ? statsObj : null; // null = garder les stats 4S existantes
     if (existing4s) {
       const idx = DATA.players.findIndex(x => x.id === existing4s.id);
-      const oldTeam = DATA.players[idx].team;
-      const oldDiv = DATA.teams[oldTeam]?.division;
-      const newDiv = DATA.teams[team4s]?.division;
-      // Si changement de division NHL <-> LHJMQ, reset les stats
-      if (oldTeam && team4s && oldDiv !== newDiv && oldDiv && newDiv) {
-        // Juste changer l'équipe, garder toutes les stats
-        DATA.players[idx] = { ...DATA.players[idx], ...data4s };
-      } else {
-        DATA.players[idx] = { ...DATA.players[idx], ...data4s };
-      }
+      DATA.players[idx] = { ...DATA.players[idx], ...shared, team: team4s, ...(stats4s || {}) };
     } else {
       const newId = 'p' + (Math.max(0, ...DATA.players.map(p => parseInt(p.id.replace('p',''))||0)) + 1);
-      DATA.players.push({ id: newId, ...data4s });
+      DATA.players.push({ id: newId, ...shared, ...(stats4s || zeroStats), team: team4s });
     }
   } else if (existing4s && editingPlayerId === existing4s.id) {
     existing4s.team = '';
@@ -6078,14 +6093,15 @@ function savePlayer() {
   const pos6s2 = document.getElementById('pPos6s2')?.value || '';
   const pos6s3 = document.getElementById('pPos6s3')?.value || '';
   if (mode6s) {
-    const data6s = { ...baseData, team: team6s, position_6s: pos6s, position_6s2: pos6s2, position_6s3: pos6s3 };
+    const stats6s = (statsTarget === '6s') ? statsObj : null; // null = garder les stats 6S existantes
+    const pos6sData = { position_6s: pos6s, position_6s2: pos6s2, position_6s3: pos6s3 };
     if (existing6s) {
       const idx = DATA.season_3_6v6.players.findIndex(x => x.id === existing6s.id);
-      DATA.season_3_6v6.players[idx] = { ...DATA.season_3_6v6.players[idx], ...data6s };
+      DATA.season_3_6v6.players[idx] = { ...DATA.season_3_6v6.players[idx], ...shared, team: team6s, ...pos6sData, ...(stats6s || {}) };
     } else {
       const ids6s = DATA.season_3_6v6.players.map(p => parseInt(p.id.replace('p6_',''))||0);
       const newId = 'p6_' + (Math.max(0, ...ids6s) + 1);
-      DATA.season_3_6v6.players.push({ id: newId, ...data6s });
+      DATA.season_3_6v6.players.push({ id: newId, ...shared, ...(stats6s || zeroStats), team: team6s, ...pos6sData });
     }
   } else if (existing6s && editingPlayerId === existing6s.id) {
     existing6s.team = '';
@@ -6346,19 +6362,35 @@ function saveGoalie() {
   const gDivisionBadge = document.getElementById('gDivisionBadge')?.value || 'nhl';
   const gStatus = document.getElementById('gStatus')?.value || 'regular';
 
-  const baseData = {
-    name, division: gDivisionBadge, status: gStatus, gp, sa, sv, ga, gaa, svpct,
+  // OPTION A : stats seulement au mode d'où le gardien a été ouvert.
+  const statsTarget = (editingDivision === '6s') ? '6s' : '4s';
+
+  const shared = { name, division: gDivisionBadge, status: gStatus };
+  const statsObj = {
+    gp, sa, sv, ga, gaa, svpct,
     w: newVal('W'), l: newVal('L'), otl: newVal('Otl'),
-    so: newVal('So'), g: goals, a: assists,
-    pts: goals + assists,
+    so: newVal('So'), g: goals, a: assists, pts: goals + assists,
     toi: document.getElementById('gToi').value || '0:00'
   };
+  const zeroStats = {
+    gp:0, sa:0, sv:0, ga:0, gaa:0, svpct:0,
+    w:0, l:0, otl:0, so:0, g:0, a:0, pts:0, toi:'0:00'
+  };
 
-  // Chercher existants par id ou nom
+  // Retrouver les profils : mode de l'ID par ID, autre mode par linked_id/nom (anti-doublon)
   let existing4s, existing6s;
   if (editingGoalieId) {
     existing4s = DATA.goalies.find(x => x.id === editingGoalieId);
     existing6s = (DATA.season_3_6v6?.goalies || []).find(x => x.id === editingGoalieId);
+    const edited = existing4s || existing6s;
+    if (!existing4s) {
+      existing4s = (edited?.linked_id ? DATA.goalies.find(x => x.id === edited.linked_id) : null)
+                || DATA.goalies.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+    }
+    if (!existing6s) {
+      existing6s = (edited?.linked_id ? (DATA.season_3_6v6?.goalies || []).find(x => x.id === edited.linked_id) : null)
+                || (DATA.season_3_6v6?.goalies || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
+    }
   } else {
     existing4s = DATA.goalies.find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
     existing6s = (DATA.season_3_6v6?.goalies || []).find(x => x.name.toLowerCase().trim() === name.toLowerCase().trim());
@@ -6366,31 +6398,28 @@ function saveGoalie() {
 
   // SAUVEGARDER 4S
   if (mode4s) {
-    const data4s = { ...baseData, team: team4s, position: pos4s };
+    const stats4s = (statsTarget === '4s') ? statsObj : null;
     if (existing4s) {
       const idx = DATA.goalies.findIndex(x => x.id === existing4s.id);
-      const oldTeamG = DATA.goalies[idx].team;
-      const oldDivG = DATA.teams[oldTeamG]?.division;
-      const newDivG = DATA.teams[team4s]?.division;
-      // Juste changer l'équipe, ne jamais effacer les stats automatiquement
-      DATA.goalies[idx] = { ...DATA.goalies[idx], ...data4s };
+      DATA.goalies[idx] = { ...DATA.goalies[idx], ...shared, team: team4s, position: pos4s, ...(stats4s || {}) };
     } else {
       const newId = 'g' + (Math.max(0, ...DATA.goalies.map(g => parseInt(g.id.replace('g',''))||0)) + 1);
-      DATA.goalies.push({ id: newId, ...data4s });
+      DATA.goalies.push({ id: newId, ...shared, ...(stats4s || zeroStats), team: team4s, position: pos4s });
     }
   }
 
   // SAUVEGARDER 6S
   if (!DATA.season_3_6v6.goalies) DATA.season_3_6v6.goalies = [];
   if (mode6s) {
-    const data6s = { ...baseData, team: team6s, position: pos6s, position_6s: pos6s, position_6s2: pos6s2, position_6s3: gpos6s3 };
+    const stats6s = (statsTarget === '6s') ? statsObj : null;
+    const pos6sData = { position: pos6s, position_6s: pos6s, position_6s2: pos6s2, position_6s3: gpos6s3 };
     if (existing6s) {
       const idx = DATA.season_3_6v6.goalies.findIndex(x => x.id === existing6s.id);
-      DATA.season_3_6v6.goalies[idx] = { ...DATA.season_3_6v6.goalies[idx], ...data6s };
+      DATA.season_3_6v6.goalies[idx] = { ...DATA.season_3_6v6.goalies[idx], ...shared, team: team6s, ...pos6sData, ...(stats6s || {}) };
     } else {
       const ids6s = DATA.season_3_6v6.goalies.map(g => parseInt(g.id.replace('g6_',''))||0);
       const newId = 'g6_' + (Math.max(0, ...ids6s) + 1);
-      DATA.season_3_6v6.goalies.push({ id: newId, ...data6s });
+      DATA.season_3_6v6.goalies.push({ id: newId, ...shared, ...(stats6s || zeroStats), team: team6s, ...pos6sData });
     }
   }
 
