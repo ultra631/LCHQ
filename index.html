@@ -2026,6 +2026,7 @@
       <p id="estPlayersSubtitle">Patineurs inscrits · Format 4v4</p>
     </div>
   </div>
+  <button class="admin-add-btn" onclick="openEstCreateModal(false)" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;">➕ Ajouter un joueur estival</button>
   <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
     <input type="text" id="estPlayersSearch" placeholder="🔍 Rechercher un joueur..." oninput="renderEstPlayers()"
       style="flex:1;min-width:200px;max-width:400px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
@@ -2058,6 +2059,7 @@
       <p id="estGoaliesSubtitle">Gardiens inscrits · Format 4v4</p>
     </div>
   </div>
+  <button class="admin-add-btn" onclick="openEstCreateModal(true)" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;">➕ Ajouter un gardien estival</button>
   <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
     <input type="text" id="estGoaliesSearch" placeholder="🔍 Rechercher un gardien..." oninput="renderEstGoalies()"
       style="flex:1;min-width:200px;max-width:400px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
@@ -4339,7 +4341,7 @@ function renderEstPlayers() {
   body.innerHTML = list.map((p,i) => {
     const pos = [p.position_main, p.position_sec, p.position_ter].filter(Boolean).join(' / ') || (p.position || '—');
     const teamCell = admin ? estCountrySelect(est, p.id, false, p.team || '') : estCountryLabel(est, p.team);
-    const delBtn = admin ? `<td style="white-space:nowrap;"><button onclick="openEstEditModal('${p.id}', false)" title="Modifier le profil" style="background:none;border:none;cursor:pointer;font-size:14px;">✏️</button> <button onclick="estDeleteEntry('${p.id}', false)" title="Supprimer" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;">✖</button></td>` : '';
+    const delBtn = admin ? `<td style="white-space:nowrap;"><button onclick="openEstEditModal('${p.id}', false)" title="Modifier le profil" style="background:none;border:none;cursor:pointer;font-size:15px;padding:4px 8px;">✏️</button><button onclick="estDeleteEntry('${p.id}', false)" title="Supprimer" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:15px;padding:4px 8px;margin-left:22px;">✖</button></td>` : '';
     return `<tr>
       <td class="num">${i+1}</td>
       <td><strong>${escapeHtml(p.name||'?')}</strong></td>
@@ -4381,7 +4383,7 @@ function renderEstGoalies() {
   body.innerHTML = list.map((g,i) => {
     const posSec = [g.position_sec, g.position_ter].filter(Boolean).join(' / ') || '—';
     const teamCell = admin ? estCountrySelect(est, g.id, true, g.team || '') : estCountryLabel(est, g.team);
-    const delBtn = admin ? `<td style="white-space:nowrap;"><button onclick="openEstEditModal('${g.id}', true)" title="Modifier le profil" style="background:none;border:none;cursor:pointer;font-size:14px;">✏️</button> <button onclick="estDeleteEntry('${g.id}', true)" title="Supprimer" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;">✖</button></td>` : '';
+    const delBtn = admin ? `<td style="white-space:nowrap;"><button onclick="openEstEditModal('${g.id}', true)" title="Modifier le profil" style="background:none;border:none;cursor:pointer;font-size:15px;padding:4px 8px;">✏️</button><button onclick="estDeleteEntry('${g.id}', true)" title="Supprimer" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:15px;padding:4px 8px;margin-left:22px;">✖</button></td>` : '';
     return `<tr>
       <td class="num">${i+1}</td>
       <td><strong>${escapeHtml(g.name||'?')}</strong></td>
@@ -4421,6 +4423,36 @@ function estAssignTeam(entryId, isGoalie, teamKey) {
 // --- ÉDITION DE PROFIL ESTIVAL (crayon ✏️) ---
 let estEditingId = null;
 let estEditingIsGoalie = false;
+let estCreating = false;
+
+// Créer un nouveau joueur/gardien estival (mêmes champs que l'édition)
+function openEstCreateModal(isGoalie) {
+  if (typeof isAdmin === 'undefined' || !isAdmin) { alert('Accès admin requis'); return; }
+  const est = getEstData();
+  if (!est) return;
+
+  estEditingId = null;
+  estCreating = true;
+  estEditingIsGoalie = !!isGoalie;
+
+  document.getElementById('estEditTitle').textContent = isGoalie ? '➕ Nouveau gardien estival' : '➕ Nouveau joueur estival';
+  document.getElementById('estEditName').value = '';
+  document.getElementById('estEditType').value = isGoalie ? 'goalie' : 'skater';
+  document.getElementById('estEditPos1').value = isGoalie ? 'G' : 'C';
+  document.getElementById('estEditPos2').value = '';
+  document.getElementById('estEditPos3').value = '';
+  document.getElementById('estEditConsole').value = '';
+
+  const teamSel = document.getElementById('estEditTeam');
+  const order = est.countries || Object.keys(est.teams || {});
+  teamSel.innerHTML = '<option value="">— Sans pays</option>' + order.map(k => {
+    const t = est.teams[k];
+    if (!t) return '';
+    return `<option value="${k}">${t.emoji||''} ${escapeHtml(t.name)}</option>`;
+  }).join('');
+
+  openModal('estEditModal');
+}
 
 function openEstEditModal(entryId, isGoalie) {
   if (typeof isAdmin === 'undefined' || !isAdmin) { alert('Accès admin requis'); return; }
@@ -4431,6 +4463,7 @@ function openEstEditModal(entryId, isGoalie) {
   if (!entry) { alert('Profil introuvable'); return; }
 
   estEditingId = entryId;
+  estCreating = false;
   estEditingIsGoalie = isGoalie;
 
   document.getElementById('estEditTitle').textContent = '✏️ ' + (entry.name || 'Modifier le profil');
@@ -4455,10 +4488,7 @@ function openEstEditModal(entryId, isGoalie) {
 
 function saveEstEdit() {
   const est = getEstData();
-  if (!est || !estEditingId) return;
-  const srcList = estEditingIsGoalie ? (est.goalies || []) : (est.players || []);
-  const entry = srcList.find(x => x.id === estEditingId);
-  if (!entry) { alert('Profil introuvable'); return; }
+  if (!est) return;
 
   const name = document.getElementById('estEditName').value.trim();
   if (!name) { alert('Le nom ne peut pas être vide!'); return; }
@@ -4468,6 +4498,47 @@ function saveEstEdit() {
   const pos3 = document.getElementById('estEditPos3').value;
   const cons = document.getElementById('estEditConsole').value;
   const team = document.getElementById('estEditTeam').value;
+
+  // ===== MODE CRÉATION =====
+  if (estCreating) {
+    // Anti-doublon par nom
+    const norm = (s) => (s || '').toLowerCase().trim();
+    const exists = [...(est.players||[]), ...(est.goalies||[])].some(x => norm(x.name) === norm(name));
+    if (exists) { alert('Un profil avec le nom "' + name + '" existe déjà dans la Saison Estivale!'); return; }
+
+    if (newType === 'goalie') {
+      if (!Array.isArray(est.goalies)) est.goalies = [];
+      const nextG = Math.max(0, ...est.goalies.map(g => parseInt(String(g.id).replace('estg_','')) || 0)) + 1;
+      est.goalies.push({
+        id: 'estg_' + nextG,
+        name: name, team: team, status: 'regular', console: cons,
+        position: 'G', position_main: 'G', position_sec: pos2 || (pos1 !== 'G' ? pos1 : ''), position_ter: pos3,
+        gp:0, sa:0, sv:0, ga:0, gaa:0, svpct:0, w:0, l:0, otl:0, so:0, g:0, a:0, pts:0, toi:'0:00'
+      });
+    } else {
+      if (!Array.isArray(est.players)) est.players = [];
+      const nextP = Math.max(0, ...est.players.map(p => parseInt(String(p.id).replace('est_','')) || 0)) + 1;
+      est.players.push({
+        id: 'est_' + nextP,
+        name: name, team: team, status: 'regular', console: cons,
+        position: pos1 !== 'G' ? pos1 : 'C', position_main: pos1 !== 'G' ? pos1 : 'C', position_sec: pos2, position_ter: pos3,
+        gp:0, g:0, a:0, pts:0, plusminus:0, hits:0, toi:'0:00',
+        tb:0, mjg:0, mjf:0, fopct:0, pt:0, pr:0, passpct:0, intc:0, prises:0, pert:0
+      });
+    }
+    closeModal('estEditModal');
+    estCreating = false;
+    saveToFirebase();
+    renderEstPlayers();
+    renderEstGoalies();
+    return;
+  }
+
+  // ===== MODE ÉDITION =====
+  if (!estEditingId) return;
+  const srcList = estEditingIsGoalie ? (est.goalies || []) : (est.players || []);
+  const entry = srcList.find(x => x.id === estEditingId);
+  if (!entry) { alert('Profil introuvable'); return; }
 
   const typeChanged = (newType === 'goalie') !== estEditingIsGoalie;
 
