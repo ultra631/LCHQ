@@ -1648,6 +1648,8 @@
       <!-- ESTIVAL 2026 -->
       <button class="nav-btn mode-est" data-page="est-teams" onclick="navigate('est-teams')" style="display:none;">🏝️ Pays</button>
       <button class="nav-btn mode-est" data-page="est-standings" onclick="navigate('est-standings')" style="display:none;">Classement</button>
+      <button class="nav-btn mode-est" data-page="est-players" onclick="navigate('est-players')" style="display:none;">👤 Joueurs</button>
+      <button class="nav-btn mode-est" data-page="est-goalies" onclick="navigate('est-goalies')" style="display:none;">🥅 Gardiens</button>
       <button class="nav-btn mode-est" data-page="est-schedule" onclick="navigate('est-schedule')" style="display:none;">Calendrier</button>
 
       <!-- Joueurs -->
@@ -1708,6 +1710,7 @@
           <button class="nav-btn" data-page="subs" onclick="navigate('subs')">🔄 Remplaçants</button>
           <button class="nav-btn" data-page="inactive" onclick="navigate('inactive')">🔴 Joueurs inactifs</button>
           <button class="nav-btn" onclick="openImportArchiveModal()">📥 Importer Archives</button>
+          <button class="nav-btn" id="estOnlyToggleBtn" onclick="toggleEstOnly()">🏝️ Mode Estival seul: OFF</button>
         </div>
       </div>
     </nav>
@@ -1924,6 +1927,7 @@
         <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
           <button onclick="navigate('est-teams')" style="padding:10px 20px;background:rgba(245,158,11,0.9);border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">🌍 Les Pays</button>
           <button onclick="navigate('est-standings')" style="padding:10px 20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">📊 Classement</button>
+          <button onclick="navigate('est-players')" style="padding:10px 20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">👤 Joueurs</button>
         </div>
       </div>
     </div>
@@ -2010,6 +2014,70 @@
       <div class="empty-state-icon">📅</div>
       <p>Le calendrier de la Saison Estivale 2026 sera bientôt disponible.</p>
     </div>
+  </div>
+</section>
+
+<!-- ESTIVAL — JOUEURS -->
+<section id="page-est-players" class="page">
+  <div class="division-banner" style="--division-color:#f59e0b">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">👤</div>
+    <div class="division-banner-text">
+      <h3>Joueurs · Saison Estivale 2026</h3>
+      <p id="estPlayersSubtitle">Patineurs inscrits · Format 4v4</p>
+    </div>
+  </div>
+  <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+    <input type="text" id="estPlayersSearch" placeholder="🔍 Rechercher un joueur..." oninput="renderEstPlayers()"
+      style="flex:1;min-width:200px;max-width:400px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+    <select id="estPlayersTeamFilter" onchange="renderEstPlayers()"
+      style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+      <option value="">🌍 Tous les pays</option>
+      <option value="__none__">❔ Sans pays</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="estPlayersTable">
+      <thead>
+        <tr>
+          <th>#</th><th>Joueur</th><th>Pos</th><th>Console</th><th>Pays</th>
+          <th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th>
+          <th class="admin-only-th" style="display:none;"></th>
+        </tr>
+      </thead>
+      <tbody id="estPlayersBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ESTIVAL — GARDIENS -->
+<section id="page-est-goalies" class="page">
+  <div class="division-banner" style="--division-color:#f59e0b">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🥅</div>
+    <div class="division-banner-text">
+      <h3>Gardiens · Saison Estivale 2026</h3>
+      <p id="estGoaliesSubtitle">Gardiens inscrits · Format 4v4</p>
+    </div>
+  </div>
+  <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+    <input type="text" id="estGoaliesSearch" placeholder="🔍 Rechercher un gardien..." oninput="renderEstGoalies()"
+      style="flex:1;min-width:200px;max-width:400px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+    <select id="estGoaliesTeamFilter" onchange="renderEstGoalies()"
+      style="padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+      <option value="">🌍 Tous les pays</option>
+      <option value="__none__">❔ Sans pays</option>
+    </select>
+  </div>
+  <div class="table-wrap">
+    <table id="estGoaliesTable">
+      <thead>
+        <tr>
+          <th>#</th><th>Gardien</th><th>Pos sec.</th><th>Console</th><th>Pays</th>
+          <th class="num">PJ</th><th class="num">V</th><th class="num">D</th><th class="num">MOY</th><th class="num">%ARR</th>
+          <th class="admin-only-th" style="display:none;"></th>
+        </tr>
+      </thead>
+      <tbody id="estGoaliesBody"></tbody>
+    </table>
   </div>
 </section>
 
@@ -4023,7 +4091,10 @@ async function migrateLocalStorageToFirebase() {
 
 function initApp() {
   populateTeamFilters();
-  setGameMode('4s'); // Initialiser le mode 4S et cacher les éléments selon le mode
+  // Mode Estival seul : démarrer directement en EST, sinon 4S par défaut
+  const estOnly = !!(DATA && DATA.summer_2026 && DATA.summer_2026.est_only);
+  setGameMode(estOnly ? 'est' : '4s'); // Initialiser le mode et cacher les éléments selon le mode
+  if (typeof applyEstOnly === 'function') applyEstOnly();
   renderHome();
   computeGoalieStats();
   computeStandingsFromSchedule();
@@ -4147,14 +4218,211 @@ function renderEstStandings() {
   }).join('');
 }
 
+// --- Helpers section Joueurs/Gardiens estival ---
+function estCountryLabel(est, key) {
+  const t = est?.teams?.[key];
+  if (!t) return '<span style="color:var(--text-tertiary);">— Sans pays</span>';
+  const flag = t.flag
+    ? `<img src="${t.flag}" class="team-logo-table" style="border-radius:3px;" onerror="this.outerHTML='${t.emoji||'🏒'}'">`
+    : `<span class="team-emoji-fallback">${t.emoji||'🏒'}</span>`;
+  return `<div class="team-cell">${flag}${escapeHtml(t.name)}</div>`;
+}
+
+function estCountrySelect(est, entryId, isGoalie, currentTeam) {
+  const order = est.countries || Object.keys(est.teams || {});
+  const opts = order.map(k => {
+    const t = est.teams[k];
+    if (!t) return '';
+    return `<option value="${k}" ${currentTeam === k ? 'selected' : ''}>${t.emoji||''} ${escapeHtml(t.name)}</option>`;
+  }).join('');
+  return `<select onchange="estAssignTeam('${entryId}', ${isGoalie}, this.value)" onclick="event.stopPropagation()"
+    style="padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;max-width:150px;">
+    <option value="">— Sans pays</option>${opts}
+  </select>`;
+}
+
+function estFillTeamFilter(selectId, est) {
+  const sel = document.getElementById(selectId);
+  if (!sel || sel.dataset.filled === '1') return;
+  const order = est.countries || Object.keys(est.teams || {});
+  order.forEach(k => {
+    const t = est.teams[k];
+    if (!t) return;
+    const o = document.createElement('option');
+    o.value = k;
+    o.textContent = (t.emoji||'') + ' ' + t.name;
+    sel.appendChild(o);
+  });
+  sel.dataset.filled = '1';
+}
+
+function renderEstPlayers() {
+  const est = getEstData();
+  const body = document.getElementById('estPlayersBody');
+  if (!body) return;
+  const players = est?.players || [];
+  const sub = document.getElementById('estPlayersSubtitle');
+  const noTeam = players.filter(p => !p.team).length;
+  if (sub) sub.textContent = players.length + ' patineurs inscrits · ' + noTeam + ' sans pays · Format 4v4';
+  if (est) estFillTeamFilter('estPlayersTeamFilter', est);
+  if (!players.length) {
+    body.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-tertiary);padding:30px;">Aucun joueur inscrit pour l\'instant.</td></tr>';
+    return;
+  }
+  const search = (document.getElementById('estPlayersSearch')?.value || '').toLowerCase().trim();
+  const teamF = document.getElementById('estPlayersTeamFilter')?.value || '';
+  let list = players.slice();
+  if (search) list = list.filter(p => (p.name||'').toLowerCase().includes(search));
+  if (teamF === '__none__') list = list.filter(p => !p.team);
+  else if (teamF) list = list.filter(p => p.team === teamF);
+  list.sort((a,b) => (b.pts||0)-(a.pts||0) || (b.g||0)-(a.g||0) || (a.name||'').localeCompare(b.name||''));
+  const admin = (typeof isAdmin !== 'undefined' && isAdmin);
+  body.innerHTML = list.map((p,i) => {
+    const pos = [p.position_main, p.position_sec, p.position_ter].filter(Boolean).join(' / ') || (p.position || '—');
+    const teamCell = admin ? estCountrySelect(est, p.id, false, p.team || '') : estCountryLabel(est, p.team);
+    const delBtn = admin ? `<td><button onclick="estDeleteEntry('${p.id}', false)" title="Supprimer" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;">✖</button></td>` : '';
+    return `<tr>
+      <td class="num">${i+1}</td>
+      <td><strong>${escapeHtml(p.name||'?')}</strong></td>
+      <td>${escapeHtml(pos)}</td>
+      <td>${escapeHtml(p.console||'—')}</td>
+      <td>${teamCell}</td>
+      <td class="num">${p.gp||0}</td>
+      <td class="num">${p.g||0}</td>
+      <td class="num">${p.a||0}</td>
+      <td class="num pts-cell">${p.pts||0}</td>
+      ${delBtn}
+    </tr>`;
+  }).join('') || '<tr><td colspan="10" style="text-align:center;color:var(--text-tertiary);padding:30px;">Aucun résultat.</td></tr>';
+  // Colonne suppression visible seulement en admin
+  document.querySelectorAll('#estPlayersTable .admin-only-th').forEach(th => th.style.display = admin ? '' : 'none');
+}
+
+function renderEstGoalies() {
+  const est = getEstData();
+  const body = document.getElementById('estGoaliesBody');
+  if (!body) return;
+  const goalies = est?.goalies || [];
+  const sub = document.getElementById('estGoaliesSubtitle');
+  const noTeam = goalies.filter(g => !g.team).length;
+  if (sub) sub.textContent = goalies.length + ' gardiens inscrits · ' + noTeam + ' sans pays · Format 4v4';
+  if (est) estFillTeamFilter('estGoaliesTeamFilter', est);
+  if (!goalies.length) {
+    body.innerHTML = '<tr><td colspan="11" style="text-align:center;color:var(--text-tertiary);padding:30px;">Aucun gardien inscrit pour l\'instant.</td></tr>';
+    return;
+  }
+  const search = (document.getElementById('estGoaliesSearch')?.value || '').toLowerCase().trim();
+  const teamF = document.getElementById('estGoaliesTeamFilter')?.value || '';
+  let list = goalies.slice();
+  if (search) list = list.filter(g => (g.name||'').toLowerCase().includes(search));
+  if (teamF === '__none__') list = list.filter(g => !g.team);
+  else if (teamF) list = list.filter(g => g.team === teamF);
+  list.sort((a,b) => (b.w||0)-(a.w||0) || (a.name||'').localeCompare(b.name||''));
+  const admin = (typeof isAdmin !== 'undefined' && isAdmin);
+  body.innerHTML = list.map((g,i) => {
+    const posSec = [g.position_sec, g.position_ter].filter(Boolean).join(' / ') || '—';
+    const teamCell = admin ? estCountrySelect(est, g.id, true, g.team || '') : estCountryLabel(est, g.team);
+    const delBtn = admin ? `<td><button onclick="estDeleteEntry('${g.id}', true)" title="Supprimer" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;">✖</button></td>` : '';
+    return `<tr>
+      <td class="num">${i+1}</td>
+      <td><strong>${escapeHtml(g.name||'?')}</strong></td>
+      <td>${escapeHtml(posSec)}</td>
+      <td>${escapeHtml(g.console||'—')}</td>
+      <td>${teamCell}</td>
+      <td class="num">${g.gp||0}</td>
+      <td class="num">${g.w||0}</td>
+      <td class="num">${g.l||0}</td>
+      <td class="num">${(g.gaa||0).toFixed ? (g.gaa||0).toFixed(2) : (g.gaa||0)}</td>
+      <td class="num">${(g.svpct||0).toFixed ? (g.svpct||0).toFixed(1) : (g.svpct||0)}</td>
+      ${delBtn}
+    </tr>`;
+  }).join('') || '<tr><td colspan="11" style="text-align:center;color:var(--text-tertiary);padding:30px;">Aucun résultat.</td></tr>';
+  document.querySelectorAll('#estGoaliesTable .admin-only-th').forEach(th => th.style.display = admin ? '' : 'none');
+}
+
+// Assigner un joueur/gardien estival à un pays (admin)
+function estAssignTeam(entryId, isGoalie, teamKey) {
+  const est = getEstData();
+  if (!est) return;
+  const list = isGoalie ? (est.goalies || []) : (est.players || []);
+  const entry = list.find(x => x.id === entryId);
+  if (!entry) return;
+  entry.team = teamKey || '';
+  saveToFirebaseDebounced();
+  // Mettre à jour seulement les sous-titres (compte sans pays) sans re-render complet
+  if (isGoalie) {
+    const sub = document.getElementById('estGoaliesSubtitle');
+    if (sub) sub.textContent = list.length + ' gardiens inscrits · ' + list.filter(g => !g.team).length + ' sans pays · Format 4v4';
+  } else {
+    const sub = document.getElementById('estPlayersSubtitle');
+    if (sub) sub.textContent = list.length + ' patineurs inscrits · ' + list.filter(p => !p.team).length + ' sans pays · Format 4v4';
+  }
+}
+
+// Supprimer un joueur/gardien estival (admin)
+function estDeleteEntry(entryId, isGoalie) {
+  const est = getEstData();
+  if (!est) return;
+  const list = isGoalie ? (est.goalies || []) : (est.players || []);
+  const entry = list.find(x => x.id === entryId);
+  if (!entry) return;
+  if (!confirm('Supprimer "' + entry.name + '" de la Saison Estivale? Cette action ne peut pas être annulée.')) return;
+  if (isGoalie) est.goalies = list.filter(x => x.id !== entryId);
+  else est.players = list.filter(x => x.id !== entryId);
+  saveToFirebase();
+  if (isGoalie) renderEstGoalies(); else renderEstPlayers();
+}
+
+// --- MODE ESTIVAL SEULEMENT ---
+// Cache/affiche les boutons 4S et 6S selon DATA.summer_2026.est_only
+function applyEstOnly() {
+  const on = !!(DATA && DATA.summer_2026 && DATA.summer_2026.est_only);
+  const b4 = document.getElementById('mode4s');
+  const b6 = document.getElementById('mode6s');
+  if (b4) b4.style.display = on ? 'none' : '';
+  if (b6) b6.style.display = on ? 'none' : '';
+  const d4 = document.getElementById('drawerMode4s');
+  const d6 = document.getElementById('drawerMode6s');
+  if (d4) d4.style.display = on ? 'none' : '';
+  if (d6) d6.style.display = on ? 'none' : '';
+  const btn = document.getElementById('estOnlyToggleBtn');
+  if (btn) btn.textContent = '🏝️ Mode Estival seul: ' + (on ? 'ON ✅' : 'OFF');
+  // Si activé et qu'on n'est pas en mode est, forcer le mode est
+  if (on && typeof currentGameMode !== 'undefined' && currentGameMode !== 'est') {
+    setGameMode('est');
+  }
+}
+
+// Toggle admin: activer/désactiver le mode estival seulement (persisté dans Firebase)
+function toggleEstOnly() {
+  if (typeof isAdmin === 'undefined' || !isAdmin) { alert('Accès admin requis'); return; }
+  if (!DATA.summer_2026) { alert('Données de la Saison Estivale introuvables!'); return; }
+  DATA.summer_2026.est_only = !DATA.summer_2026.est_only;
+  saveToFirebase();
+  applyEstOnly();
+  if (!DATA.summer_2026.est_only) {
+    // On vient de désactiver : revenir au mode 4S normal
+    setGameMode('4s');
+  }
+  alert(DATA.summer_2026.est_only
+    ? '🏝️ Mode Estival seul ACTIVÉ — le 4S et le 6S sont cachés pour tout le monde.'
+    : '✅ Mode Estival seul DÉSACTIVÉ — le 4S et le 6S sont de retour.');
+}
+
 function renderEstAll() {
   try { renderEstHome(); } catch(e) { console.warn('renderEstHome', e); }
   try { renderEstTeams(); } catch(e) { console.warn('renderEstTeams', e); }
   try { renderEstStandings(); } catch(e) { console.warn('renderEstStandings', e); }
+  try { renderEstPlayers(); } catch(e) { console.warn('renderEstPlayers', e); }
+  try { renderEstGoalies(); } catch(e) { console.warn('renderEstGoalies', e); }
 }
 // =================== FIN SAISON ESTIVALE 2026 ===================
 
 function setGameMode(mode) {
+  // Mode Estival seul : bloquer le retour vers 4S/6S
+  if (DATA && DATA.summer_2026 && DATA.summer_2026.est_only && mode !== 'est') {
+    mode = 'est';
+  }
   currentGameMode = mode;
   
   // Mettre à jour les boutons toggle
@@ -4200,7 +4468,7 @@ function setGameMode(mode) {
   // Mode estival : rendre les données et aller à l'accueil si on était sur une page d'un autre mode
   if (mode === 'est') {
     renderEstAll();
-    const estPages = ['home','est-teams','est-standings','est-schedule'];
+    const estPages = ['home','est-teams','est-standings','est-schedule','est-players','est-goalies'];
     if (!estPages.includes(currentPage)) {
       navigate('home');
     }
@@ -4296,6 +4564,10 @@ function navigate(page) {
     renderEstTeams();
   } else if (page === 'est-standings') {
     renderEstStandings();
+  } else if (page === 'est-players') {
+    renderEstPlayers();
+  } else if (page === 'est-goalies') {
+    renderEstGoalies();
   } else if (page === 'home') {
     if (currentGameMode === 'est') renderEstHome();
   }
@@ -9207,6 +9479,9 @@ function rerenderAll() {
   // Pages estivales
   if (activeId === 'page-est-standings') { if (typeof renderEstStandings === 'function') renderEstStandings(); }
   if (activeId === 'page-est-teams') { if (typeof renderEstTeams === 'function') renderEstTeams(); }
+  if (activeId === 'page-est-players') { if (typeof renderEstPlayers === 'function') renderEstPlayers(); }
+  if (activeId === 'page-est-goalies') { if (typeof renderEstGoalies === 'function') renderEstGoalies(); }
+  if (typeof applyEstOnly === 'function') applyEstOnly();
   if (activeId === 'page-home' && currentGameMode === 'est') { if (typeof renderEstHome === 'function') renderEstHome(); }
 }
 
@@ -12799,6 +13074,8 @@ if (window.innerWidth <= 900) {
     <div class="drawer-section-label">Saison Estivale 2026</div>
     <button class="drawer-btn" onclick="drawerNav('est-teams')"><span class="drawer-btn-icon">🌍</span>Les Pays</button>
     <button class="drawer-btn" onclick="drawerNav('est-standings')"><span class="drawer-btn-icon">📊</span>Classement</button>
+    <button class="drawer-btn" onclick="drawerNav('est-players')"><span class="drawer-btn-icon">👤</span>Joueurs</button>
+    <button class="drawer-btn" onclick="drawerNav('est-goalies')"><span class="drawer-btn-icon">🥅</span>Gardiens</button>
     <button class="drawer-btn" onclick="drawerNav('est-schedule')"><span class="drawer-btn-icon">📅</span>Calendrier</button>
   </div>
 </div>
@@ -12814,6 +13091,7 @@ function openMobileDrawer() {
   document.body.style.overflow = 'hidden';
   // Sync mode avec currentGameMode (pas de navigate, juste afficher le bon menu)
   const mode = typeof currentGameMode !== 'undefined' ? currentGameMode : '4s';
+  if (typeof applyEstOnly === 'function') applyEstOnly();
   document.getElementById('drawerMode4s').className = 'drawer-mode-btn' + (mode==='4s' ? ' active-4s' : '');
   document.getElementById('drawerMode6s').className = 'drawer-mode-btn' + (mode==='6s' ? ' active-6s' : '');
   var dmeOpen = document.getElementById('drawerModeEst');
@@ -12839,6 +13117,10 @@ function closeMobileDrawer() {
   }, 320);
 }
 function setDrawerMode(mode) {
+  // Mode Estival seul : bloquer le retour vers 4S/6S
+  if (typeof DATA !== 'undefined' && DATA && DATA.summer_2026 && DATA.summer_2026.est_only && mode !== 'est') {
+    mode = 'est';
+  }
   document.getElementById('drawerMode4s').className = 'drawer-mode-btn' + (mode==='4s' ? ' active-4s' : '');
   document.getElementById('drawerMode6s').className = 'drawer-mode-btn' + (mode==='6s' ? ' active-6s' : '');
   var dme = document.getElementById('drawerModeEst');
