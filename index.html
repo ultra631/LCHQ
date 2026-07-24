@@ -2096,6 +2096,11 @@
   </div>
 </section>
 
+<!-- ESTIVAL — DÉTAIL D'UN PAYS -->
+<section id="page-est-team-detail" class="page">
+  <div id="estTeamDetailContent"></div>
+</section>
+
 <!-- MODAL ÉDITION PROFIL ESTIVAL -->
 <div class="modal-overlay" id="estEditModal" onclick="if(event.target===this)closeModal('estEditModal')">
   <div class="modal" style="max-width:480px;">
@@ -2151,6 +2156,34 @@
     <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;">
       <button class="btn btn-secondary" onclick="closeModal('estEditModal')">Annuler</button>
       <button class="btn btn-primary" onclick="saveEstEdit()" style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SCORE MATCH ESTIVAL -->
+<div class="modal-overlay" id="estMatchModal" onclick="if(event.target===this)closeModal('estMatchModal')">
+  <div class="modal" style="max-width:420px;">
+    <h3 id="estMatchTitle" style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:#f59e0b;">Score du match</h3>
+    <div style="display:flex;align-items:center;gap:14px;margin-top:18px;">
+      <div style="flex:1;text-align:center;">
+        <div id="estMatchHomeLabel" style="font-weight:700;font-size:13px;margin-bottom:6px;">Domicile</div>
+        <input type="number" id="estMatchHomeScore" min="0" placeholder="0" style="width:100%;padding:12px;text-align:center;font-size:22px;font-family:'Bebas Neue';border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+      </div>
+      <div style="font-family:'Bebas Neue';font-size:20px;color:var(--text-tertiary);padding-top:22px;">—</div>
+      <div style="flex:1;text-align:center;">
+        <div id="estMatchAwayLabel" style="font-weight:700;font-size:13px;margin-bottom:6px;">Visiteur</div>
+        <input type="number" id="estMatchAwayScore" min="0" placeholder="0" style="width:100%;padding:12px;text-align:center;font-size:22px;font-family:'Bebas Neue';border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+      </div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:16px;cursor:pointer;font-size:13px;">
+      <input type="checkbox" id="estMatchOT" style="width:16px;height:16px;accent-color:#f59e0b;"> ⏱️ Match gagné en prolongation / tirs de barrage
+    </label>
+    <div style="margin-top:20px;display:flex;justify-content:space-between;gap:10px;">
+      <button class="btn btn-secondary" onclick="clearEstMatch()" style="color:#ef4444;">🗑️ Effacer le score</button>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-secondary" onclick="closeModal('estMatchModal')">Annuler</button>
+        <button class="btn btn-primary" onclick="saveEstMatch()" style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;">💾 Enregistrer</button>
+      </div>
     </div>
   </div>
 </div>
@@ -4224,7 +4257,7 @@ function estCountryCard(key, t) {
     ? `<img src="${t.flag}" alt="${escapeHtml(t.name)}" class="team-card-logo" style="border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.4);" onerror="this.outerHTML='<div class=&quot;team-card-logo&quot; style=&quot;font-size:60px&quot;>${t.emoji||'🏒'}</div>'">`
     : `<div class="team-card-logo" style="font-size:60px">${t.emoji||'🏒'}</div>`;
   const rec = (r.gp ? `${r.w||0}-${r.l||0}-${r.otl||0}` : 'Aucun match');
-  return `<div class="team-card" style="--team-color:#f59e0b" onclick="navigate('est-standings')">
+  return `<div class="team-card" style="--team-color:#f59e0b" onclick="openEstTeamDetail('${key}')">
     ${flag}
     <div class="team-card-name">${escapeHtml(t.name)}</div>
     <div class="team-card-city">Saison Estivale 2026</div>
@@ -4341,7 +4374,9 @@ function renderEstStandings() {
       ? `<img src="${t.flag}" class="team-logo-table" style="border-radius:3px;" onerror="this.outerHTML='${t.emoji||'🏒'}'">`
       : `<span class="team-emoji-fallback">${t.emoji||'🏒'}</span>`;
     const diff = (r.diff||0) > 0 ? `<span class="diff-pos">+${r.diff}</span>` : ((r.diff||0) < 0 ? `<span class="diff-neg">${r.diff}</span>` : '0');
-    const clickable = (typeof isAdmin !== 'undefined' && isAdmin) ? `style="cursor:pointer;" onclick="editTeamStandingEst('${x.key}')" title="Cliquer pour éditer"` : '';
+    const clickable = (typeof isAdmin !== 'undefined' && isAdmin)
+      ? `style="cursor:pointer;" onclick="editTeamStandingEst('${x.key}')" title="Cliquer pour éditer"`
+      : `style="cursor:pointer;" onclick="openEstTeamDetail('${x.key}')" title="Voir le résumé"`;
     return `<tr ${clickable}>
       <td class="num">${i+1}</td>
       <td><div class="team-cell">${flag}${escapeHtml(t.name)}</div></td>
@@ -4498,6 +4533,292 @@ function estAssignTeam(entryId, isGoalie, teamKey) {
     const sub = document.getElementById('estPlayersSubtitle');
     if (sub) sub.textContent = list.length + ' patineurs inscrits · ' + list.filter(p => !p.team).length + ' sans pays · Format 4v4';
   }
+}
+
+// --- RÉSUMÉ D'UN PAYS (clic sur une carte) ---
+let currentEstTeamKey = null;
+
+function openEstTeamDetail(key) {
+  currentEstTeamKey = key;
+  renderEstTeamDetail();
+  navigate('est-team-detail');
+}
+
+function renderEstTeamDetail() {
+  const container = document.getElementById('estTeamDetailContent');
+  if (!container) return;
+  const est = getEstData();
+  const t = est?.teams?.[currentEstTeamKey];
+  if (!t) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🌍</div><p>Pays introuvable.</p></div>';
+    return;
+  }
+  const r = t.record || {};
+  const flag = t.flag
+    ? `<img src="${t.flag}" style="width:110px;height:74px;object-fit:cover;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.5);">`
+    : `<div style="font-size:70px;">${t.emoji||'🏒'}</div>`;
+  const diff = (r.diff||0) > 0 ? `+${r.diff}` : (r.diff||0);
+  const diffColor = (r.diff||0) > 0 ? '#22c55e' : ((r.diff||0) < 0 ? '#ef4444' : 'var(--text-primary)');
+
+  // --- Alignement ---
+  const skaters = (est.players || []).filter(p => p.team === currentEstTeamKey)
+    .sort((a,b) => (b.pts||0)-(a.pts||0) || (a.name||'').localeCompare(b.name||''));
+  const goalies = (est.goalies || []).filter(g => g.team === currentEstTeamKey)
+    .sort((a,b) => (b.w||0)-(a.w||0) || (a.name||'').localeCompare(b.name||''));
+
+  const skaterRows = skaters.map((p,i) => {
+    const pos = [p.position_main, p.position_sec, p.position_ter].filter(Boolean).join(' / ') || (p.position || '—');
+    return `<tr>
+      <td class="num">${i+1}</td>
+      <td><strong>${escapeHtml(p.name)}</strong></td>
+      <td>${escapeHtml(pos)}</td>
+      <td>${escapeHtml(p.console||'—')}</td>
+      <td class="num">${p.gp||0}</td>
+      <td class="num">${p.g||0}</td>
+      <td class="num">${p.a||0}</td>
+      <td class="num pts-cell">${p.pts||0}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun joueur assigné à ce pays pour l\'instant.</td></tr>';
+
+  const goalieRows = goalies.map((g,i) => `<tr>
+      <td class="num">${i+1}</td>
+      <td><strong>${escapeHtml(g.name)}</strong></td>
+      <td>${escapeHtml(g.console||'—')}</td>
+      <td class="num">${g.gp||0}</td>
+      <td class="num">${g.w||0}</td>
+      <td class="num">${g.l||0}</td>
+      <td class="num">${(g.gaa||0).toFixed ? (g.gaa||0).toFixed(2) : (g.gaa||0)}</td>
+      <td class="num">${(g.svpct||0).toFixed ? (g.svpct||0).toFixed(1) : (g.svpct||0)}</td>
+    </tr>`).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun gardien assigné à ce pays pour l\'instant.</td></tr>';
+
+  // --- Matchs de ce pays ---
+  const weeks = est.schedule?.weeks || [];
+  const teamMatches = [];
+  weeks.forEach((w, wi) => (w.matches || []).forEach(m => {
+    if (m.home === currentEstTeamKey || m.away === currentEstTeamKey) teamMatches.push({ w, wi, m });
+  }));
+  const matchRows = teamMatches.map(({ w, wi, m }) => {
+    const isHome = m.home === currentEstTeamKey;
+    const oppKey = isHome ? m.away : m.home;
+    const opp = est.teams[oppKey];
+    const oppFlag = opp?.flag ? `<img src="${opp.flag}" style="width:28px;height:19px;object-fit:cover;border-radius:3px;">` : `<span>${opp?.emoji||'🏒'}</span>`;
+    let result, resultColor;
+    if (m.played) {
+      const my = isHome ? m.home_score : m.away_score;
+      const their = isHome ? m.away_score : m.home_score;
+      const won = my > their;
+      result = `${won ? 'V' : (m.ot ? 'DP' : 'D')} ${my}-${their}${m.ot ? ' (Prol)' : ''}`;
+      resultColor = won ? '#22c55e' : '#ef4444';
+    } else {
+      result = 'À venir';
+      resultColor = 'var(--text-tertiary)';
+    }
+    const editBtn = (typeof isAdmin !== 'undefined' && isAdmin)
+      ? `<button onclick="openEstMatchModal(${wi}, '${m.id}')" title="Entrer le score" style="background:none;border:none;cursor:pointer;font-size:13px;padding:4px 8px;">✏️</button>` : '';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+      <span style="font-size:12px;color:var(--text-tertiary);min-width:64px;">${escapeHtml(w.label || ('Ronde ' + (w.week || wi+1)))}</span>
+      <span style="font-size:12px;color:var(--text-tertiary);">${isHome ? 'vs' : '@'}</span>
+      ${oppFlag}
+      <span style="flex:1;font-weight:700;font-size:13px;cursor:pointer;" onclick="openEstTeamDetail('${oppKey}')">${escapeHtml(opp?.name||oppKey)}</span>
+      <span style="font-weight:700;font-size:13px;color:${resultColor};">${result}</span>
+      ${editBtn}
+    </div>`;
+  }).join('') || '<div class="empty-state"><p>Aucun match au calendrier pour ce pays.</p></div>';
+
+  const statBox = (label, val, color) => `<div style="flex:1;min-width:70px;text-align:center;padding:12px 8px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+    <div style="font-family:'Bebas Neue';font-size:24px;color:${color||'var(--text-primary)'};">${val}</div>
+    <div style="font-size:10px;color:var(--text-tertiary);letter-spacing:1px;">${label}</div>
+  </div>`;
+
+  container.innerHTML = `
+    <button onclick="navigate('est-teams')" style="background:none;border:none;color:#f59e0b;cursor:pointer;font-weight:700;font-size:13px;margin-bottom:16px;">← Retour aux pays</button>
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px;">
+      ${flag}
+      <div>
+        <h2 style="font-family:'Bebas Neue';font-size:36px;letter-spacing:2px;margin:0;color:#f59e0b;">${escapeHtml(t.name)}</h2>
+        <div style="color:var(--text-tertiary);font-size:13px;">Saison Estivale 2026 · ${r.gp ? `Fiche ${r.w||0}-${r.l||0}-${r.otl||0}` : 'Aucun match joué'} ${r.streak && r.streak !== '—' ? '· Séquence ' + r.streak : ''}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;">
+      ${statBox('PJ', r.gp||0)}
+      ${statBox('V', r.w||0, '#22c55e')}
+      ${statBox('VP', r.vp||0, '#22c55e')}
+      ${statBox('D', r.l||0, '#ef4444')}
+      ${statBox('DP', r.otl||0, '#f59e0b')}
+      ${statBox('BP', r.gf||0)}
+      ${statBox('BC', r.ga||0)}
+      ${statBox('DIFF', diff, diffColor)}
+      ${statBox('PTS', r.pts||0, '#f59e0b')}
+    </div>
+    <h3 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;color:#f59e0b;margin-bottom:10px;">🏒 Joueurs (${skaters.length})</h3>
+    <div class="table-wrap" style="margin-bottom:24px;">
+      <table>
+        <thead><tr><th>#</th><th>Joueur</th><th>Pos</th><th>Console</th><th class="num">PJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th></tr></thead>
+        <tbody>${skaterRows}</tbody>
+      </table>
+    </div>
+    <h3 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;color:#f59e0b;margin-bottom:10px;">🥅 Gardiens (${goalies.length})</h3>
+    <div class="table-wrap" style="margin-bottom:24px;">
+      <table>
+        <thead><tr><th>#</th><th>Gardien</th><th>Console</th><th class="num">PJ</th><th class="num">V</th><th class="num">D</th><th class="num">MOY</th><th class="num">%ARR</th></tr></thead>
+        <tbody>${goalieRows}</tbody>
+      </table>
+    </div>
+    <h3 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;color:#f59e0b;margin-bottom:10px;">📅 Matchs (${teamMatches.length})</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">${matchRows}</div>
+  `;
+}
+
+// --- CALENDRIER ESTIVAL (rondes + scores) ---
+function renderEstSchedule() {
+  const est = getEstData();
+  const container = document.getElementById('estScheduleContent');
+  if (!container) return;
+  const weeks = est?.schedule?.weeks || [];
+  if (!Array.isArray(weeks) || !weeks.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>Le calendrier de la Saison Estivale 2026 sera bientôt disponible.</p></div>';
+    return;
+  }
+  const admin = (typeof isAdmin !== 'undefined' && isAdmin);
+  container.innerHTML = weeks.map((w, wi) => {
+    const matches = (w.matches || []).map(m => {
+      const th = est.teams[m.home], ta = est.teams[m.away];
+      const fh = th?.flag ? `<img src="${th.flag}" style="width:30px;height:20px;object-fit:cover;border-radius:3px;">` : `<span>${th?.emoji||'🏒'}</span>`;
+      const fa = ta?.flag ? `<img src="${ta.flag}" style="width:30px;height:20px;object-fit:cover;border-radius:3px;">` : `<span>${ta?.emoji||'🏒'}</span>`;
+      let center;
+      if (m.played) {
+        const hWin = (m.home_score||0) > (m.away_score||0);
+        center = `<span style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;">
+          <span style="color:${hWin?'#22c55e':'var(--text-tertiary)'};">${m.home_score}</span>
+          <span style="color:var(--text-tertiary);margin:0 4px;">-</span>
+          <span style="color:${!hWin?'#22c55e':'var(--text-tertiary)'};">${m.away_score}</span>
+        </span>${m.ot ? '<span style="font-size:10px;color:#f59e0b;font-weight:700;margin-left:4px;">PROL</span>' : ''}`;
+      } else {
+        center = '<span style="color:var(--text-tertiary);font-weight:700;font-size:13px;">VS</span>';
+      }
+      const editBtn = admin ? `<button onclick="openEstMatchModal(${wi}, '${m.id}')" title="Entrer le score" style="background:none;border:none;cursor:pointer;font-size:14px;padding:4px 8px;margin-left:8px;">✏️</button>` : '';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+        <div style="flex:1;display:flex;align-items:center;gap:8px;justify-content:flex-end;min-width:0;">
+          <span style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(th?.name||m.home)}</span>${fh}
+        </div>
+        <div style="min-width:86px;text-align:center;">${center}</div>
+        <div style="flex:1;display:flex;align-items:center;gap:8px;min-width:0;">
+          ${fa}<span style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(ta?.name||m.away)}</span>
+        </div>
+        ${editBtn}
+      </div>`;
+    }).join('');
+    return `<div style="margin-bottom:24px;">
+      <h3 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;color:#f59e0b;margin-bottom:10px;">${escapeHtml(w.label || ('Ronde ' + (w.week || wi+1)))}</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">${matches}</div>
+    </div>`;
+  }).join('');
+}
+
+// Recalcule tout le classement estival à partir des matchs joués
+function recalcEstStandings() {
+  const est = getEstData();
+  if (!est || !est.teams) return;
+  const order = est.countries || Object.keys(est.teams);
+  const streaks = {};
+  order.forEach(k => {
+    if (!est.teams[k]) return;
+    est.teams[k].record = { w:0, vp:0, l:0, otl:0, gp:0, gf:0, ga:0, pts:0, diff:0, streak:'—' };
+    streaks[k] = [];
+  });
+  const weeks = est.schedule?.weeks || [];
+  weeks.forEach(w => (w.matches || []).forEach(m => {
+    if (!m.played || m.home_score == null || m.away_score == null) return;
+    const rh = est.teams[m.home]?.record, ra = est.teams[m.away]?.record;
+    if (!rh || !ra) return;
+    rh.gp++; ra.gp++;
+    rh.gf += m.home_score; rh.ga += m.away_score;
+    ra.gf += m.away_score; ra.ga += m.home_score;
+    const homeWin = m.home_score > m.away_score;
+    const wk = homeWin ? m.home : m.away, lk = homeWin ? m.away : m.home;
+    const rw = homeWin ? rh : ra, rl = homeWin ? ra : rh;
+    if (m.ot) { rw.vp++; rw.pts += 2; rl.otl++; rl.pts += 1; streaks[wk]?.push('V'); streaks[lk]?.push('DP'); }
+    else { rw.w++; rw.pts += 2; rl.l++; streaks[wk]?.push('V'); streaks[lk]?.push('D'); }
+  }));
+  order.forEach(k => {
+    const t = est.teams[k];
+    if (!t) return;
+    t.record.diff = t.record.gf - t.record.ga;
+    const s = streaks[k] || [];
+    if (s.length) {
+      const last = s[s.length-1];
+      let n = 0;
+      for (let i = s.length-1; i >= 0 && s[i] === last; i--) n++;
+      t.record.streak = n + last;
+    }
+  });
+}
+
+// --- Modal de score estival ---
+let estMatchEditing = null; // {weekIdx, matchId}
+
+function openEstMatchModal(weekIdx, matchId) {
+  if (typeof isAdmin === 'undefined' || !isAdmin) { alert('Accès admin requis'); return; }
+  const est = getEstData();
+  const week = est?.schedule?.weeks?.[weekIdx];
+  const match = week?.matches?.find(m => m.id === matchId);
+  if (!match) { alert('Match introuvable'); return; }
+  estMatchEditing = { weekIdx, matchId };
+  const th = est.teams[match.home], ta = est.teams[match.away];
+  document.getElementById('estMatchTitle').textContent = (week.label || ('Ronde ' + (week.week || weekIdx+1))) + ' — ' + (th?.name||match.home) + ' vs ' + (ta?.name||match.away);
+  document.getElementById('estMatchHomeLabel').textContent = th?.name || match.home;
+  document.getElementById('estMatchAwayLabel').textContent = ta?.name || match.away;
+  document.getElementById('estMatchHomeScore').value = match.played && match.home_score != null ? match.home_score : '';
+  document.getElementById('estMatchAwayScore').value = match.played && match.away_score != null ? match.away_score : '';
+  document.getElementById('estMatchOT').checked = !!match.ot;
+  openModal('estMatchModal');
+}
+
+function saveEstMatch() {
+  const est = getEstData();
+  if (!est || !estMatchEditing) return;
+  const week = est.schedule?.weeks?.[estMatchEditing.weekIdx];
+  const match = week?.matches?.find(m => m.id === estMatchEditing.matchId);
+  if (!match) return;
+  const hs = document.getElementById('estMatchHomeScore').value.trim();
+  const as = document.getElementById('estMatchAwayScore').value.trim();
+  if (hs === '' || as === '') { alert('Entre les deux scores!'); return; }
+  const h = parseInt(hs), a = parseInt(as);
+  if (isNaN(h) || isNaN(a) || h < 0 || a < 0) { alert('Scores invalides!'); return; }
+  if (h === a) { alert('Pas de match nul au hockey! Il faut un gagnant.'); return; }
+  match.home_score = h;
+  match.away_score = a;
+  match.ot = document.getElementById('estMatchOT').checked;
+  match.played = true;
+  recalcEstStandings();
+  closeModal('estMatchModal');
+  estMatchEditing = null;
+  saveToFirebase();
+  renderEstSchedule();
+  renderEstStandings();
+  renderEstTeams();
+  renderEstHome();
+}
+
+function clearEstMatch() {
+  const est = getEstData();
+  if (!est || !estMatchEditing) return;
+  const week = est.schedule?.weeks?.[estMatchEditing.weekIdx];
+  const match = week?.matches?.find(m => m.id === estMatchEditing.matchId);
+  if (!match) return;
+  if (!confirm('Effacer le score de ce match? Il redeviendra "à venir".')) return;
+  match.home_score = null;
+  match.away_score = null;
+  match.ot = false;
+  match.played = false;
+  recalcEstStandings();
+  closeModal('estMatchModal');
+  estMatchEditing = null;
+  saveToFirebase();
+  renderEstSchedule();
+  renderEstStandings();
+  renderEstTeams();
+  renderEstHome();
 }
 
 // --- ÉDITION DE PROFIL ESTIVAL (crayon ✏️) ---
@@ -4723,6 +5044,7 @@ function renderEstAll() {
   try { renderEstStandings(); } catch(e) { console.warn('renderEstStandings', e); }
   try { renderEstPlayers(); } catch(e) { console.warn('renderEstPlayers', e); }
   try { renderEstGoalies(); } catch(e) { console.warn('renderEstGoalies', e); }
+  try { renderEstSchedule(); } catch(e) { console.warn('renderEstSchedule', e); }
 }
 // =================== FIN SAISON ESTIVALE 2026 ===================
 
@@ -4776,7 +5098,7 @@ function setGameMode(mode) {
   // Mode estival : rendre les données et aller à l'accueil si on était sur une page d'un autre mode
   if (mode === 'est') {
     renderEstAll();
-    const estPages = ['home','est-teams','est-standings','est-schedule','est-players','est-goalies'];
+    const estPages = ['home','est-teams','est-standings','est-schedule','est-players','est-goalies','est-team-detail'];
     if (!estPages.includes(currentPage)) {
       navigate('home');
     }
@@ -4876,6 +5198,10 @@ function navigate(page) {
     renderEstPlayers();
   } else if (page === 'est-goalies') {
     renderEstGoalies();
+  } else if (page === 'est-schedule') {
+    renderEstSchedule();
+  } else if (page === 'est-team-detail') {
+    renderEstTeamDetail();
   } else if (page === 'home') {
     if (currentGameMode === 'est') renderEstHome();
   }
@@ -9789,6 +10115,8 @@ function rerenderAll() {
   if (activeId === 'page-est-teams') { if (typeof renderEstTeams === 'function') renderEstTeams(); }
   if (activeId === 'page-est-players') { if (typeof renderEstPlayers === 'function') renderEstPlayers(); }
   if (activeId === 'page-est-goalies') { if (typeof renderEstGoalies === 'function') renderEstGoalies(); }
+  if (activeId === 'page-est-schedule') { if (typeof renderEstSchedule === 'function') renderEstSchedule(); }
+  if (activeId === 'page-est-team-detail') { if (typeof renderEstTeamDetail === 'function') renderEstTeamDetail(); }
   if (typeof applyEstOnly === 'function') applyEstOnly();
   if (activeId === 'page-home' && currentGameMode === 'est') { if (typeof renderEstHome === 'function') renderEstHome(); }
 }
