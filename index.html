@@ -2162,7 +2162,7 @@
 
 <!-- MODAL SCORE MATCH ESTIVAL -->
 <div class="modal-overlay" id="estMatchModal" onclick="if(event.target===this)closeModal('estMatchModal')">
-  <div class="modal" style="max-width:420px;">
+  <div class="modal" style="max-width:700px;">
     <h3 id="estMatchTitle" style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:#f59e0b;">Score du match</h3>
     <div style="display:flex;align-items:center;gap:14px;margin-top:18px;">
       <div style="flex:1;text-align:center;">
@@ -2178,7 +2178,8 @@
     <label style="display:flex;align-items:center;gap:8px;margin-top:16px;cursor:pointer;font-size:13px;">
       <input type="checkbox" id="estMatchOT" style="width:16px;height:16px;accent-color:#f59e0b;"> ⏱️ Match gagné en prolongation / tirs de barrage
     </label>
-    <div style="margin-top:20px;display:flex;justify-content:space-between;gap:10px;">
+    <div id="estMatchStatsArea" style="margin-top:18px;"></div>
+    <div style="margin-top:20px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-secondary" onclick="clearEstMatch()" style="color:#ef4444;">🗑️ Effacer le score</button>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-secondary" onclick="closeModal('estMatchModal')">Annuler</button>
@@ -4738,7 +4739,7 @@ function recalcEstStandings() {
     const wk = homeWin ? m.home : m.away, lk = homeWin ? m.away : m.home;
     const rw = homeWin ? rh : ra, rl = homeWin ? ra : rh;
     if (m.ot) { rw.vp++; rw.pts += 2; rl.otl++; rl.pts += 1; streaks[wk]?.push('V'); streaks[lk]?.push('DP'); }
-    else { rw.w++; rw.pts += 2; rl.l++; streaks[wk]?.push('V'); streaks[lk]?.push('D'); }
+    else { rw.w++; rw.pts += 3; rl.l++; streaks[wk]?.push('V'); streaks[lk]?.push('D'); }
   }));
   order.forEach(k => {
     const t = est.teams[k];
@@ -4754,8 +4755,62 @@ function recalcEstStandings() {
   });
 }
 
-// --- Modal de score estival ---
+// --- Modal de score estival avec stats automatiques ---
 let estMatchEditing = null; // {weekIdx, matchId}
+
+// Construit le formulaire de stats pour un côté (domicile ou visiteur)
+function buildEstMatchStatsSide(est, teamKey, side, match) {
+  const t = est.teams[teamKey];
+  const roster = (est.players || []).filter(p => p.team === teamKey);
+  const goalies = (est.goalies || []).filter(g => g.team === teamKey);
+  const savedStats = match.player_stats || [];
+  const savedGoalies = match.goalie_stats || [];
+  const savedGoalie = savedGoalies.find(g => g.side === side);
+
+  const flag = t?.flag ? `<img src="${t.flag}" style="width:26px;height:18px;object-fit:cover;border-radius:3px;">` : `<span>${t?.emoji||'🏒'}</span>`;
+
+  let playerRows;
+  if (!roster.length) {
+    playerRows = '<div style="color:var(--text-tertiary);font-size:12px;padding:8px 0;">Aucun joueur assigné à ce pays. Assigne-les dans la section 👤 Joueurs.</div>';
+  } else {
+    playerRows = `<div style="display:grid;grid-template-columns:auto 1fr 52px 52px;gap:6px;align-items:center;font-size:12px;">
+      <div></div><div style="color:var(--text-tertiary);font-size:10px;">JOUEUR</div>
+      <div style="color:var(--text-tertiary);font-size:10px;text-align:center;">B</div>
+      <div style="color:var(--text-tertiary);font-size:10px;text-align:center;">A</div>
+      ${roster.map(p => {
+        const s = savedStats.find(x => x.id === p.id);
+        const checked = match.played ? !!s : true; // nouveau match: tous cochés par défaut
+        return `
+        <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" ${checked ? 'checked' : ''} style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
+        <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)}</span>
+        <input type="number" class="est-ms-g" data-id="${p.id}" min="0" value="${s?.g || 0}" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
+        <input type="number" class="est-ms-a" data-id="${p.id}" min="0" value="${s?.a || 0}" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`;
+      }).join('')}
+    </div>`;
+  }
+
+  let goalieRow;
+  if (!goalies.length) {
+    goalieRow = '<div style="color:var(--text-tertiary);font-size:12px;">Aucun gardien assigné à ce pays.</div>';
+  } else {
+    goalieRow = `<div style="display:flex;gap:8px;align-items:center;">
+      <select class="est-ms-goalie" data-side="${side}" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
+        <option value="">— Aucun gardien</option>
+        ${goalies.map(g => `<option value="${g.id}" ${savedGoalie?.id === g.id ? 'selected' : ''}>${escapeHtml(g.name)}</option>`).join('')}
+      </select>
+      <input type="number" class="est-ms-saves" data-side="${side}" min="0" value="${savedGoalie?.saves ?? ''}" placeholder="Arrêts" title="Nombre d'arrêts" style="width:76px;padding:6px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
+    </div>`;
+  }
+
+  return `<div style="flex:1;min-width:260px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;">
+    <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;margin-bottom:10px;">${flag}${escapeHtml(t?.name||teamKey)}</div>
+    ${playerRows}
+    <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+      <div style="color:var(--text-tertiary);font-size:10px;margin-bottom:6px;">🥅 GARDIEN (buts accordés et V/D calculés automatiquement)</div>
+      ${goalieRow}
+    </div>
+  </div>`;
+}
 
 function openEstMatchModal(weekIdx, matchId) {
   if (typeof isAdmin === 'undefined' || !isAdmin) { alert('Accès admin requis'); return; }
@@ -4771,6 +4826,16 @@ function openEstMatchModal(weekIdx, matchId) {
   document.getElementById('estMatchHomeScore').value = match.played && match.home_score != null ? match.home_score : '';
   document.getElementById('estMatchAwayScore').value = match.played && match.away_score != null ? match.away_score : '';
   document.getElementById('estMatchOT').checked = !!match.ot;
+
+  // Zone de stats des joueurs (B, A cochés par joueur) + gardiens
+  const statsArea = document.getElementById('estMatchStatsArea');
+  statsArea.innerHTML = `
+    <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:8px;">✅ Coche les joueurs qui ont joué (MJ et +/- automatiques) et entre leurs Buts / Passes (PTS automatiques).</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      ${buildEstMatchStatsSide(est, match.home, 'home', match)}
+      ${buildEstMatchStatsSide(est, match.away, 'away', match)}
+    </div>`;
+
   openModal('estMatchModal');
 }
 
@@ -4786,11 +4851,46 @@ function saveEstMatch() {
   const h = parseInt(hs), a = parseInt(as);
   if (isNaN(h) || isNaN(a) || h < 0 || a < 0) { alert('Scores invalides!'); return; }
   if (h === a) { alert('Pas de match nul au hockey! Il faut un gagnant.'); return; }
+
+  // Collecter les stats des joueurs cochés
+  const playerStats = [];
+  let sumG = { home: 0, away: 0 };
+  document.querySelectorAll('#estMatchStatsArea .est-ms-played').forEach(cb => {
+    if (!cb.checked) return;
+    const id = cb.dataset.id, side = cb.dataset.side;
+    const gInput = document.querySelector(`#estMatchStatsArea .est-ms-g[data-id="${id}"]`);
+    const aInput = document.querySelector(`#estMatchStatsArea .est-ms-a[data-id="${id}"]`);
+    const g = parseInt(gInput?.value) || 0;
+    const asst = parseInt(aInput?.value) || 0;
+    sumG[side] += g;
+    playerStats.push({ id, side, g, a: asst });
+  });
+
+  // Avertir si le total des buts des joueurs ne correspond pas au score
+  const warn = [];
+  if (sumG.home !== h) warn.push('Domicile: ' + sumG.home + ' but(s) de joueurs pour un score de ' + h);
+  if (sumG.away !== a) warn.push('Visiteur: ' + sumG.away + ' but(s) de joueurs pour un score de ' + a);
+  if (warn.length && !confirm('⚠️ Les buts des joueurs ne correspondent pas au score:\n' + warn.join('\n') + '\n\nEnregistrer quand même?')) return;
+
+  // Collecter les gardiens
+  const goalieStats = [];
+  ['home', 'away'].forEach(side => {
+    const sel = document.querySelector(`#estMatchStatsArea .est-ms-goalie[data-side="${side}"]`);
+    if (!sel || !sel.value) return;
+    const savesInput = document.querySelector(`#estMatchStatsArea .est-ms-saves[data-side="${side}"]`);
+    const saves = parseInt(savesInput?.value);
+    goalieStats.push({ id: sel.value, side, saves: isNaN(saves) ? 0 : saves });
+  });
+
   match.home_score = h;
   match.away_score = a;
   match.ot = document.getElementById('estMatchOT').checked;
   match.played = true;
+  match.player_stats = playerStats;
+  match.goalie_stats = goalieStats;
+
   recalcEstStandings();
+  recalcEstPlayerStats();
   closeModal('estMatchModal');
   estMatchEditing = null;
   saveToFirebase();
@@ -4798,6 +4898,8 @@ function saveEstMatch() {
   renderEstStandings();
   renderEstTeams();
   renderEstHome();
+  renderEstPlayers();
+  renderEstGoalies();
 }
 
 function clearEstMatch() {
@@ -4806,12 +4908,15 @@ function clearEstMatch() {
   const week = est.schedule?.weeks?.[estMatchEditing.weekIdx];
   const match = week?.matches?.find(m => m.id === estMatchEditing.matchId);
   if (!match) return;
-  if (!confirm('Effacer le score de ce match? Il redeviendra "à venir".')) return;
+  if (!confirm('Effacer le score et les stats de ce match? Il redeviendra "à venir".')) return;
   match.home_score = null;
   match.away_score = null;
   match.ot = false;
   match.played = false;
+  delete match.player_stats;
+  delete match.goalie_stats;
   recalcEstStandings();
+  recalcEstPlayerStats();
   closeModal('estMatchModal');
   estMatchEditing = null;
   saveToFirebase();
@@ -4819,6 +4924,57 @@ function clearEstMatch() {
   renderEstStandings();
   renderEstTeams();
   renderEstHome();
+  renderEstPlayers();
+  renderEstGoalies();
+}
+
+// Recalcule TOUTES les stats des joueurs et gardiens estival à partir des matchs joués.
+// Stats auto joueurs: MJ, Buts, Passes, Points, +/-
+// Stats auto gardiens: MJ, V, D, DP, buts accordés, arrêts, MOY, %ARR, blanchissages
+function recalcEstPlayerStats() {
+  const est = getEstData();
+  if (!est) return;
+  (est.players || []).forEach(p => { p.gp = 0; p.g = 0; p.a = 0; p.pts = 0; p.plusminus = 0; });
+  (est.goalies || []).forEach(g => { g.gp = 0; g.w = 0; g.l = 0; g.otl = 0; g.ga = 0; g.sa = 0; g.sv = 0; g.so = 0; g.gaa = 0; g.svpct = 0; });
+
+  const weeks = est.schedule?.weeks || [];
+  weeks.forEach(w => (w.matches || []).forEach(m => {
+    if (!m.played || m.home_score == null || m.away_score == null) return;
+    const hs = m.home_score, as = m.away_score;
+
+    // Joueurs: MJ, B, A, +/-
+    (m.player_stats || []).forEach(s => {
+      const p = (est.players || []).find(x => x.id === s.id);
+      if (!p) return;
+      p.gp++;
+      p.g += s.g || 0;
+      p.a += s.a || 0;
+      p.plusminus += (s.side === 'home') ? (hs - as) : (as - hs);
+    });
+
+    // Gardiens: MJ, V/D/DP, BA, arrêts, blanchissage
+    (m.goalie_stats || []).forEach(s => {
+      const g = (est.goalies || []).find(x => x.id === s.id);
+      if (!g) return;
+      const isHome = s.side === 'home';
+      const gaMatch = isHome ? as : hs;
+      const won = isHome ? (hs > as) : (as > hs);
+      g.gp++;
+      g.ga += gaMatch;
+      g.sv += s.saves || 0;
+      g.sa += (s.saves || 0) + gaMatch;
+      if (won) g.w++;
+      else if (m.ot) g.otl++;
+      else g.l++;
+      if (gaMatch === 0) g.so++;
+    });
+  }));
+
+  (est.players || []).forEach(p => { p.pts = p.g + p.a; });
+  (est.goalies || []).forEach(g => {
+    g.gaa = g.gp ? Math.round((g.ga / g.gp) * 100) / 100 : 0;
+    g.svpct = g.sa ? Math.round((g.sv / g.sa) * 1000) / 10 : 0;
+  });
 }
 
 // --- ÉDITION DE PROFIL ESTIVAL (crayon ✏️) ---
