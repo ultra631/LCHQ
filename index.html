@@ -1653,6 +1653,7 @@
       <button class="nav-btn mode-est est-admin-nav" data-page="est-players" onclick="navigate('est-players')" style="display:none;">👤 Joueurs</button>
       <button class="nav-btn mode-est est-admin-nav" data-page="est-goalies" onclick="navigate('est-goalies')" style="display:none;">🥅 Gardiens</button>
       <button class="nav-btn mode-est" data-page="est-topstats" onclick="navigate('est-topstats')" style="display:none;">🏆 Top Stats</button>
+      <button class="nav-btn mode-est" data-page="est-trophies" onclick="navigate('est-trophies')" style="display:none;">🏆 Trophées</button>
       <button class="nav-btn mode-est" data-page="est-schedule" onclick="navigate('est-schedule')" style="display:none;">Calendrier</button>
 
       <!-- Joueurs -->
@@ -2142,6 +2143,19 @@
   <div id="estTopStatsContent"></div>
 </section>
 
+<!-- ESTIVAL — TROPHÉES -->
+<section id="page-est-trophies" class="page">
+  <div class="division-banner" style="--division-color:#f59e0b">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🏆</div>
+    <div class="division-banner-text">
+      <h3>Trophées · Saison Estivale 2026</h3>
+      <p>Finalistes et vainqueurs · Format 4v4</p>
+    </div>
+  </div>
+  <button class="admin-add-btn" onclick="openTrophyImgModal('est')" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;">➕ Ajouter une image de trophée</button>
+  <div id="trophyGallery-est"></div>
+</section>
+
 <!-- MODAL ÉDITION PROFIL ESTIVAL -->
 <div class="modal-overlay" id="estEditModal" onclick="if(event.target===this)closeModal('estEditModal')">
   <div class="modal" style="max-width:480px;">
@@ -2226,6 +2240,28 @@
         <button class="btn btn-secondary" onclick="closeModal('estMatchModal')">Annuler</button>
         <button class="btn btn-primary" onclick="saveEstMatch()" style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;">💾 Enregistrer</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AJOUT IMAGE DE TROPHÉE -->
+<div class="modal-overlay" id="trophyImgModal" onclick="if(event.target===this)closeModal('trophyImgModal')">
+  <div class="modal" style="max-width:460px;">
+    <h3 style="font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:#f59e0b;">🏆 Ajouter une image de trophée</h3>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px;">
+      <div>
+        <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:4px;">Titre (optionnel — ex: Trophée Art-Ross · Finalistes)</label>
+        <input type="text" id="trophyImgTitle" placeholder="Trophée..." style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-tertiary);display:block;margin-bottom:4px;">Lien de l'image (https://...)</label>
+        <input type="text" id="trophyImgUrl" placeholder="https://..." style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:4px;">💡 Uploade ton image sur le repo GitHub, ou clic droit → « Copier l'adresse de l'image » sur Discord/Facebook.</div>
+      </div>
+    </div>
+    <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;">
+      <button class="btn btn-secondary" onclick="closeModal('trophyImgModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveTrophyImage()" style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;">💾 Ajouter</button>
     </div>
   </div>
 </div>
@@ -2585,13 +2621,8 @@
       <p>Les meilleurs de la Division NHL</p>
     </div>
   </div>
-  <div class="grid-3">
-    <div class="card nhl"><h3>🏆 Top Buteurs<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Trophée Maurice-Richard</span></h3><div id="trophyNhlGoals"></div></div>
-    <div class="card nhl"><h3>🎯 Top Pointeurs<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Trophée Art-Ross</span></h3><div id="trophyNhlPoints"></div></div>
-    <div class="card nhl"><h3>🤝 Top Passeurs<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Meneur des passes</span></h3><div id="trophyNhlAssists"></div></div>
-    <div class="card nhl"><h3>➕ Meilleur +/-<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Trophée Plus-Minus</span></h3><div id="trophyNhlPM"></div></div>
-    <div class="card nhl"><h3>🥅 Meilleur Gardien<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Trophée Vézina</span></h3><div id="trophyNhlVezina"></div></div>
-  </div>
+  <button class="admin-add-btn" onclick="openTrophyImgModal('nhl')">➕ Ajouter une image de trophée</button>
+  <div id="trophyGallery-nhl"></div>
 </section>
 
 <!-- TROPHIES LHJMQ -->
@@ -2603,13 +2634,8 @@
       <p>Les meilleurs de la Division LHJMQ</p>
     </div>
   </div>
-  <div class="grid-3">
-    <div class="card lhjmq"><h3>🏆 Top Buteurs<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Trophée Michel-Bergeron</span></h3><div id="trophyLhjmqGoals"></div></div>
-    <div class="card lhjmq"><h3>🎯 Top Pointeurs<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Trophée Jean-Béliveau</span></h3><div id="trophyLhjmqPoints"></div></div>
-    <div class="card lhjmq"><h3>🤝 Top Passeurs<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Meneur des passes</span></h3><div id="trophyLhjmqAssists"></div></div>
-    <div class="card lhjmq"><h3>➕ Meilleur +/-<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Trophée Plus-Minus</span></h3><div id="trophyLhjmqPM"></div></div>
-    <div class="card lhjmq"><h3>🥅 Meilleur Gardien<br><span style="font-size:12px;color:var(--text-tertiary);font-weight:400;letter-spacing:0.5px;">Trophée Jacques-Plante</span></h3><div id="trophyLhjmqVezina"></div></div>
-  </div>
+  <button class="admin-add-btn" onclick="openTrophyImgModal('lhjmq')">➕ Ajouter une image de trophée</button>
+  <div id="trophyGallery-lhjmq"></div>
 </section>
 
 <!-- SUBS (REMPLAÇANTS) — Admin only -->
@@ -2897,10 +2923,11 @@
     <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">🏆</div>
     <div class="division-banner-text">
       <h3>Trophées 6S — Saison 3</h3>
-      <p>Top 5 par catégorie · Format 6v6</p>
+      <p>Finalistes et vainqueurs · Format 6v6</p>
     </div>
   </div>
-  <div id="trophies6s"></div>
+  <button class="admin-add-btn" onclick="openTrophyImgModal('6s')">➕ Ajouter une image de trophée</button>
+  <div id="trophyGallery-6s"></div>
 </section>
 
 <!-- ============ REPÊCHAGE ============ -->
@@ -5302,6 +5329,7 @@ function renderEstAll() {
   try { renderEstGoalies(); } catch(e) { console.warn('renderEstGoalies', e); }
   try { renderEstSchedule(); } catch(e) { console.warn('renderEstSchedule', e); }
   try { renderEstTopStats(); } catch(e) { console.warn('renderEstTopStats', e); }
+  try { renderTrophyGallery('est'); } catch(e) { console.warn('renderTrophyGallery est', e); }
 }
 // =================== FIN SAISON ESTIVALE 2026 ===================
 
@@ -5355,7 +5383,7 @@ function setGameMode(mode) {
   // Mode estival : rendre les données et aller à l'accueil si on était sur une page d'un autre mode
   if (mode === 'est') {
     renderEstAll();
-    const estPages = ['home','est-teams','est-standings','est-schedule','est-players','est-goalies','est-team-detail','est-topstats'];
+    const estPages = ['home','est-teams','est-standings','est-schedule','est-players','est-goalies','est-team-detail','est-topstats','est-trophies'];
     if (!estPages.includes(currentPage)) {
       navigate('home');
     }
@@ -5468,6 +5496,8 @@ function navigate(page) {
     renderEstTeamDetail();
   } else if (page === 'est-topstats') {
     renderEstTopStats();
+  } else if (page === 'est-trophies') {
+    renderTrophyGallery('est');
   } else if (page === 'home') {
     if (currentGameMode === 'est') renderEstHome();
   }
@@ -6583,7 +6613,72 @@ function savePlayerLink(old4sId, old6sId) {
 }
 
 // TROPHIES
-function renderTrophiesNHL() {
+// ============ GALERIE DE TROPHÉES (images finalistes/vainqueurs) ============
+function trophyGalleryList(key) {
+  if (!DATA.trophy_galleries) DATA.trophy_galleries = {};
+  if (!Array.isArray(DATA.trophy_galleries[key])) DATA.trophy_galleries[key] = [];
+  return DATA.trophy_galleries[key];
+}
+
+function renderTrophyGallery(key) {
+  const container = document.getElementById('trophyGallery-' + key);
+  if (!container) return;
+  const list = trophyGalleryList(key);
+  const admin = (typeof isAdmin !== 'undefined' && isAdmin);
+  if (!list.length) {
+    container.innerHTML = `<div class="empty-state" style="padding:60px 20px;">
+      <div class="empty-state-icon">🏆</div>
+      <p style="font-size:18px;font-weight:700;">En cours de traitement</p>
+      <p style="margin-top:8px;color:var(--text-tertiary);">Les finalistes et les vainqueurs seront annoncés bientôt!</p>
+    </div>`;
+    return;
+  }
+  container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;">
+    ${list.map(t => `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+      ${t.title ? `<div style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);">
+        <span style="font-family:'Bebas Neue';font-size:19px;letter-spacing:1px;">${escapeHtml(t.title)}</span>
+        ${admin ? `<button onclick="deleteTrophyImage('${key}','${t.id}')" title="Supprimer" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:15px;padding:4px 8px;">✖</button>` : ''}
+      </div>` : (admin ? `<div style="padding:8px 16px;text-align:right;"><button onclick="deleteTrophyImage('${key}','${t.id}')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:15px;">✖</button></div>` : '')}
+      <img src="${t.url}" alt="${escapeHtml(t.title||'Trophée')}" style="width:100%;display:block;" onerror="this.parentElement.querySelector('img').style.display='none';this.insertAdjacentHTML('afterend','<div style=\'padding:30px;text-align:center;color:var(--text-tertiary);font-size:13px;\'>⚠️ Image introuvable — vérifie le lien</div>')">
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderAllTrophyGalleries() {
+  ['nhl','lhjmq','6s','est'].forEach(k => renderTrophyGallery(k));
+}
+
+let trophyModalKey = null;
+function openTrophyImgModal(key) {
+  if (typeof isAdmin === 'undefined' || !isAdmin) { alert('Accès admin requis'); return; }
+  trophyModalKey = key;
+  document.getElementById('trophyImgTitle').value = '';
+  document.getElementById('trophyImgUrl').value = '';
+  openModal('trophyImgModal');
+}
+
+function saveTrophyImage() {
+  if (!trophyModalKey) return;
+  const title = document.getElementById('trophyImgTitle').value.trim();
+  const url = document.getElementById('trophyImgUrl').value.trim();
+  if (!url || !/^https?:\/\//i.test(url)) { alert('Colle un lien d\'image valide (qui commence par https://)'); return; }
+  const list = trophyGalleryList(trophyModalKey);
+  list.push({ id: 'trophy_' + Date.now(), title: title, url: url });
+  closeModal('trophyImgModal');
+  saveToFirebase();
+  renderTrophyGallery(trophyModalKey);
+  trophyModalKey = null;
+}
+
+function deleteTrophyImage(key, id) {
+  if (typeof isAdmin === 'undefined' || !isAdmin) return;
+  if (!confirm('Supprimer cette image de trophée?')) return;
+  DATA.trophy_galleries[key] = trophyGalleryList(key).filter(t => t.id !== id);
+  saveToFirebase();
+  renderTrophyGallery(key);
+}
+
+function renderTrophiesNHL() { renderTrophyGallery('nhl'); return; } function _ancien_renderTrophiesNHL() {
   const players = DATA.players.filter(p => {
     if ((p.status||'regular') === 'inactive') return false;
     const div = p.division || (p.team && DATA.teams[p.team] ? DATA.teams[p.team].division : null);
@@ -6597,7 +6692,7 @@ function renderTrophiesNHL() {
   document.getElementById('trophyNhlVezina').innerHTML = renderGoalieLeaderList([...goalies].sort((a,b)=>(b.svpct-a.svpct)||(b.w-a.w)).slice(0,5), 'w');
 }
 
-function renderTrophiesLHJMQ() {
+function renderTrophiesLHJMQ() { renderTrophyGallery('lhjmq'); return; } function _ancien_renderTrophiesLHJMQ() {
   const players = DATA.players.filter(p => {
     if ((p.status||'regular') === 'inactive') return false;
     const div = p.division || (p.team && DATA.teams[p.team] ? DATA.teams[p.team].division : null);
@@ -10294,7 +10389,7 @@ function renderStats6S() {
   document.getElementById('stats6sGoalies').innerHTML = goaliesHtml;
 }
 
-function renderTrophies6S() {
+function renderTrophies6S() { renderTrophyGallery('6s'); return; } function _ancien_renderTrophies6S() {
   const players = DATA.season_3_6v6?.players || [];
   const goalies = DATA.season_3_6v6?.goalies || [];
 
@@ -10384,6 +10479,7 @@ function rerenderAll() {
   if (activeId === 'page-est-schedule') { if (typeof renderEstSchedule === 'function') renderEstSchedule(); }
   if (activeId === 'page-est-team-detail') { if (typeof renderEstTeamDetail === 'function') renderEstTeamDetail(); }
   if (activeId === 'page-est-topstats') { if (typeof renderEstTopStats === 'function') renderEstTopStats(); }
+  if (activeId === 'page-est-trophies') { if (typeof renderTrophyGallery === 'function') renderTrophyGallery('est'); }
   if (typeof applyEstOnly === 'function') applyEstOnly();
   if (activeId === 'page-home' && currentGameMode === 'est') { if (typeof renderEstHome === 'function') renderEstHome(); }
 }
@@ -13997,6 +14093,7 @@ if (window.innerWidth <= 900) {
     <button class="drawer-btn est-admin-nav" onclick="drawerNav('est-players')"><span class="drawer-btn-icon">👤</span>Joueurs</button>
     <button class="drawer-btn est-admin-nav" onclick="drawerNav('est-goalies')"><span class="drawer-btn-icon">🥅</span>Gardiens</button>
     <button class="drawer-btn" onclick="drawerNav('est-topstats')"><span class="drawer-btn-icon">🏆</span>Top Stats</button>
+    <button class="drawer-btn" onclick="drawerNav('est-trophies')"><span class="drawer-btn-icon">🏆</span>Trophées</button>
     <button class="drawer-btn" onclick="drawerNav('est-schedule')"><span class="drawer-btn-icon">📅</span>Calendrier</button>
   </div>
 </div>
