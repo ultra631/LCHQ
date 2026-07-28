@@ -1657,16 +1657,16 @@
 
       <!-- Joueurs -->
       <div class="nav-group">
-        <button class="nav-btn mode-4s" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
-        <button class="nav-btn mode-4s" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
-        <button class="nav-btn mode-6s" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">Joueurs 6S</button>
+        <button class="nav-btn mode-4s est-admin-nav" data-page="players-nhl" onclick="navigate('players-nhl')">Joueurs NHL</button>
+        <button class="nav-btn mode-4s est-admin-nav" data-page="players-lhjmq" onclick="navigate('players-lhjmq')">Joueurs LHJMQ</button>
+        <button class="nav-btn mode-6s est-admin-nav" data-page="players-6s" onclick="navigate('players-6s')" style="display:none;">Joueurs 6S</button>
       </div>
 
       <!-- Gardiens -->
       <div class="nav-group">
-        <button class="nav-btn mode-4s" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
-        <button class="nav-btn mode-4s" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
-        <button class="nav-btn mode-6s" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">Gardiens 6S</button>
+        <button class="nav-btn mode-4s est-admin-nav" data-page="goalies-nhl" onclick="navigate('goalies-nhl')">Gardiens NHL</button>
+        <button class="nav-btn mode-4s est-admin-nav" data-page="goalies-lhjmq" onclick="navigate('goalies-lhjmq')">Gardiens LHJMQ</button>
+        <button class="nav-btn mode-6s est-admin-nav" data-page="goalies-6s" onclick="navigate('goalies-6s')" style="display:none;">Gardiens 6S</button>
       </div>
 
       <!-- Équipes -->
@@ -5405,6 +5405,11 @@ function setGameMode(mode) {
 }
 
 function navigate(page) {
+  // Sections Joueurs/Gardiens (4S, 6S, EST): réservées au mode admin
+  const pagesAdmin = ['players-nhl','players-lhjmq','goalies-nhl','goalies-lhjmq','players-6s','goalies-6s','est-players','est-goalies'];
+  if (pagesAdmin.includes(page) && (typeof isAdmin === 'undefined' || !isAdmin)) {
+    page = (typeof currentGameMode !== 'undefined' && currentGameMode === 'est') ? 'est-topstats' : 'home';
+  }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const target = document.getElementById('page-' + page);
   if (target) target.classList.add('active');
@@ -13938,12 +13943,12 @@ if (window.innerWidth <= 900) {
     <button class="drawer-btn" onclick="drawerNav('standings-lhjmq')"><span class="drawer-btn-icon"><img src="https://ultra631.github.io/LCHQ/ChatGPT%20Image%2017%20mai%202026%2C%2006_05_54.png" style="width:22px;height:22px;object-fit:contain;mix-blend-mode:screen;" onerror="this.outerHTML='⚜️'"></span>Division LHJMQ</button>
     
     <div class="drawer-section-label">Joueurs</div>
-    <button class="drawer-btn" onclick="drawerNav('players-nhl')"><span class="drawer-btn-icon">👤</span>Joueurs NHL</button>
-    <button class="drawer-btn" onclick="drawerNav('players-lhjmq')"><span class="drawer-btn-icon">👤</span>Joueurs LHJMQ</button>
+    <button class="drawer-btn est-admin-nav" onclick="drawerNav('players-nhl')"><span class="drawer-btn-icon">👤</span>Joueurs NHL</button>
+    <button class="drawer-btn est-admin-nav" onclick="drawerNav('players-lhjmq')"><span class="drawer-btn-icon">👤</span>Joueurs LHJMQ</button>
     
     <div class="drawer-section-label">Gardiens</div>
-    <button class="drawer-btn" onclick="drawerNav('goalies-nhl')"><span class="drawer-btn-icon">🥅</span>Gardiens NHL</button>
-    <button class="drawer-btn" onclick="drawerNav('goalies-lhjmq')"><span class="drawer-btn-icon">🥅</span>Gardiens LHJMQ</button>
+    <button class="drawer-btn est-admin-nav" onclick="drawerNav('goalies-nhl')"><span class="drawer-btn-icon">🥅</span>Gardiens NHL</button>
+    <button class="drawer-btn est-admin-nav" onclick="drawerNav('goalies-lhjmq')"><span class="drawer-btn-icon">🥅</span>Gardiens LHJMQ</button>
     
     <div class="drawer-section-label">Saison</div>
     <button class="drawer-btn" onclick="drawerNav('teams')"><span class="drawer-btn-icon">🛡️</span>Équipes</button>
@@ -13967,8 +13972,8 @@ if (window.innerWidth <= 900) {
     
     <div class="drawer-section-label">Classement & Stats</div>
     <button class="drawer-btn" onclick="drawerNav('standings-6s')"><span class="drawer-btn-icon">📊</span>Classement 6S</button>
-    <button class="drawer-btn" onclick="drawerNav('players-6s')"><span class="drawer-btn-icon">👤</span>Joueurs 6S</button>
-    <button class="drawer-btn" onclick="drawerNav('goalies-6s')"><span class="drawer-btn-icon">🥅</span>Gardiens 6S</button>
+    <button class="drawer-btn est-admin-nav" onclick="drawerNav('players-6s')"><span class="drawer-btn-icon">👤</span>Joueurs 6S</button>
+    <button class="drawer-btn est-admin-nav" onclick="drawerNav('goalies-6s')"><span class="drawer-btn-icon">🥅</span>Gardiens 6S</button>
     
     <div class="drawer-section-label">Saison</div>
     <button class="drawer-btn" onclick="drawerNav('teams-6s')"><span class="drawer-btn-icon">🛡️</span>Équipes 6S</button>
