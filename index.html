@@ -2599,7 +2599,13 @@
   <div class="tabs">
     <button class="tab active" onclick="switchStatsDiv('nhl', this)">Division NHL</button>
     <button class="tab" onclick="switchStatsDiv('lhjmq', this)">Division LHJMQ</button>
-    <button class="tab admin-only" onclick="openEditModal('stats_4s')" style="margin-left:auto;background:var(--accent-color);">✏️ Éditer</button>
+    <select onchange="setStatsLimit('4s', this.value)" style="margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;cursor:pointer;">
+      <option value="5">Top 5</option>
+      <option value="10" selected>Top 10</option>
+      <option value="15">Top 15</option>
+      <option value="all">Tous</option>
+    </select>
+    <button class="tab admin-only" onclick="openEditModal('stats_4s')" style="margin-left:8px;background:var(--accent-color);">✏️ Éditer</button>
   </div>
 
   <h3 class="section-title" style="font-size: 26px;">🏒 Patineurs</h3>
@@ -2905,7 +2911,13 @@
       <h3>Statistiques 6S — Saison 3</h3>
       <p>Analyse et comparaisons · Format 6v6</p>
     </div>
-    <button class="tab admin-only" onclick="openEditModal('stats_6s')" style="margin-left:auto;background:var(--accent-color);">✏️ Éditer</button>
+    <select onchange="setStatsLimit('6s', this.value)" style="margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;cursor:pointer;">
+      <option value="5">Top 5</option>
+      <option value="10" selected>Top 10</option>
+      <option value="15">Top 15</option>
+      <option value="all">Tous</option>
+    </select>
+    <button class="tab admin-only" onclick="openEditModal('stats_6s')" style="margin-left:8px;background:var(--accent-color);">✏️ Éditer</button>
   </div>
 
   <h3 class="section-title" style="font-size: 26px; color: #3b82f6;">🏒 Patineurs 6S</h3>
@@ -6757,7 +6769,7 @@ function renderStatsPage() {
     if (cat.customCalc) {
       filtered = filtered.map(p => ({ ...p, [cat.key]: cat.customCalc(p) }));
     }
-    const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, statsLimit['4s']);
     const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} ${cat.minStat.key === 'shots' ? 'tirs' : cat.minStat.key === 'pt' ? 'passes' : 'MJ'}</div>` : '';
     return `<div class="card">
       <h3>${cat.title}</h3>
@@ -6789,7 +6801,7 @@ function renderStatsPage() {
   ];
 
   const defendersHtml = defenderCategories.map(cat => {
-    const sorted = [...defenders].sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    const sorted = [...defenders].sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, statsLimit['4s']);
     return `<div class="card" style="border-color: rgba(91, 155, 213, 0.3);">
       <h3 style="color: #5b9bd5;">${cat.title}</h3>
       ${renderStatsLeaderList(sorted, cat.key, cat.format)}
@@ -6819,7 +6831,7 @@ function renderStatsPage() {
       const av = a[cat.key] || 0;
       const bv = b[cat.key] || 0;
       return cat.asc ? av - bv : bv - av;
-    }).slice(0, 10);
+    }).slice(0, statsLimit['4s']);
     const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} parties</div>` : '';
     return `<div class="card">
       <h3>${cat.title}</h3>
@@ -10311,7 +10323,7 @@ function renderStats6S() {
     if (cat.customCalc) {
       filtered = filtered.map(p => ({ ...p, [cat.key]: cat.customCalc(p) }));
     }
-    const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, statsLimit['6s']);
     const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} ${cat.minStat.key === 'shots' ? 'tirs' : cat.minStat.key === 'pt' ? 'passes' : 'MJ'}</div>` : '';
     return `<div class="card">
       <h3>${cat.title}</h3>
@@ -10346,7 +10358,7 @@ function renderStats6S() {
     if (cat.minStat) {
       filtered = filtered.filter(p => (p[cat.minStat.key] || 0) >= cat.minStat.val);
     }
-    const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, 10);
+    const sorted = filtered.sort((a, b) => (b[cat.key] || 0) - (a[cat.key] || 0)).slice(0, statsLimit['6s']);
     const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} ${cat.minStat.key === 'shots' ? 'tirs' : 'passes'}</div>` : '';
     return `<div class="card" style="border-color: rgba(91, 155, 213, 0.3);">
       <h3 style="color: #5b9bd5;">${cat.title}</h3>
@@ -10377,7 +10389,7 @@ function renderStats6S() {
     const sorted = filtered.sort((a, b) => {
       if (cat.asc) return (a[cat.key] || 999) - (b[cat.key] || 999);
       return (b[cat.key] || 0) - (a[cat.key] || 0);
-    }).slice(0, 10);
+    }).slice(0, statsLimit['6s']);
     const minNote = cat.minStat ? `<div style="font-size:10px;color:var(--text-tertiary);margin-bottom:6px;letter-spacing:0.5px;">min. ${cat.minStat.val} PJ</div>` : '';
     return `<div class="card">
       <h3>${cat.title}</h3>
@@ -13011,6 +13023,13 @@ function renderHomeStandings() {
 
 // Limites d'affichage des Top Stats par mode (5, 10, 15 ou Infinity = tous)
 const leadersLimit = { '4s': 10, '6s': 10, 'est': 10 };
+// Limites d'affichage des pages Stats (4S et 6S)
+const statsLimit = { '4s': 10, '6s': 10 };
+function setStatsLimit(mode, val) {
+  statsLimit[mode] = val === 'all' ? Infinity : parseInt(val);
+  if (mode === '4s' && typeof renderStatsPage === 'function') renderStatsPage();
+  if (mode === '6s' && typeof renderStats6S === 'function') renderStats6S();
+}
 function setLeadersLimit(mode, val) {
   leadersLimit[mode] = val === 'all' ? Infinity : parseInt(val);
   if (mode === '4s' && typeof renderHomeLeaders4s === 'function') renderHomeLeaders4s(currentHomeLeader4s);
