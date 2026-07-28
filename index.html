@@ -1650,6 +1650,7 @@
       <button class="nav-btn mode-est" data-page="est-standings" onclick="navigate('est-standings')" style="display:none;">Classement</button>
       <button class="nav-btn mode-est" data-page="est-players" onclick="navigate('est-players')" style="display:none;">👤 Joueurs</button>
       <button class="nav-btn mode-est" data-page="est-goalies" onclick="navigate('est-goalies')" style="display:none;">🥅 Gardiens</button>
+      <button class="nav-btn mode-est" data-page="est-topstats" onclick="navigate('est-topstats')" style="display:none;">🏆 Top Stats</button>
       <button class="nav-btn mode-est" data-page="est-schedule" onclick="navigate('est-schedule')" style="display:none;">Calendrier</button>
 
       <!-- Joueurs -->
@@ -2099,6 +2100,18 @@
 <!-- ESTIVAL — DÉTAIL D'UN PAYS -->
 <section id="page-est-team-detail" class="page">
   <div id="estTeamDetailContent"></div>
+</section>
+
+<!-- ESTIVAL — TOP STATS -->
+<section id="page-est-topstats" class="page">
+  <div class="division-banner" style="--division-color:#f59e0b">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🏆</div>
+    <div class="division-banner-text">
+      <h3>Top Stats · Saison Estivale 2026</h3>
+      <p id="estTopStatsSubtitle">Meneurs de la saison · Format 4v4</p>
+    </div>
+  </div>
+  <div id="estTopStatsContent"></div>
 </section>
 
 <!-- MODAL ÉDITION PROFIL ESTIVAL -->
@@ -4536,6 +4549,64 @@ function estAssignTeam(entryId, isGoalie, teamKey) {
   }
 }
 
+// --- PAGE TOP STATS ESTIVAL (4 catégories, top 10) ---
+function renderEstTopStats() {
+  const container = document.getElementById('estTopStatsContent');
+  if (!container) return;
+  const est = getEstData();
+  const players = est?.players || [];
+  const sub = document.getElementById('estTopStatsSubtitle');
+  if (sub) sub.textContent = players.length + ' joueurs · Points, Buts, Passes, +/- · Format 4v4';
+
+  if (!players.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏆</div><p>Aucun joueur inscrit pour l\'instant.</p></div>';
+    return;
+  }
+  const hasGames = players.some(p => (p.gp || 0) > 0);
+  if (!hasGames) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div><p>Les Top Stats apparaîtront dès les premiers matchs de la saison!</p></div>';
+    return;
+  }
+
+  const cats = [
+    { key:'pts', label:'🎯 Points', unit:'PTS' },
+    { key:'g', label:'🥅 Buts', unit:'B' },
+    { key:'a', label:'🤝 Passes', unit:'A' },
+    { key:'pm', label:'📈 Plus / Moins', unit:'+/-' }
+  ];
+
+  container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;">
+    ${cats.map(cat => {
+      const statKey = cat.key === 'pm' ? 'plusminus' : cat.key;
+      const list = [...players]
+        .filter(p => (p.gp||0) > 0)
+        .sort((a,b) => (b[statKey]||0)-(a[statKey]||0) || (b.pts||0)-(a.pts||0) || (b.g||0)-(a.g||0))
+        .slice(0, 10);
+      const rows = list.map((p, i) => {
+        const team = p.team ? est.teams?.[p.team] : null;
+        const flag = team?.flag
+          ? `<img src="${team.flag}" style="width:24px;height:16px;object-fit:cover;border-radius:3px;">`
+          : `<span style="font-size:15px;">${team?.emoji || '🏒'}</span>`;
+        const val = p[statKey] || 0;
+        const valColor = cat.key === 'pm' ? (val > 0 ? '#22c55e' : val < 0 ? '#ef4444' : 'var(--text-primary)') : '#f59e0b';
+        const valStr = cat.key === 'pm' && val > 0 ? `+${val}` : val;
+        const rankColor = i === 0 ? '#f59e0b' : i === 1 ? '#cbd5e1' : i === 2 ? '#b45309' : 'var(--text-tertiary)';
+        return `<div onclick="${p.team ? `openEstTeamDetail('${p.team}')` : `navigate('est-players')`}" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;">
+          <span style="font-family:'Bebas Neue';font-size:16px;color:${rankColor};min-width:20px;">${i+1}</span>
+          ${flag}
+          <span style="flex:1;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)}</span>
+          <span style="font-size:10px;color:var(--text-tertiary);">${p.gp||0} PJ</span>
+          <span style="font-family:'Bebas Neue';font-size:20px;color:${valColor};min-width:36px;text-align:right;">${valStr}</span>
+        </div>`;
+      }).join('') || '<div style="padding:16px;color:var(--text-tertiary);font-size:12px;text-align:center;">Aucune donnée</div>';
+      return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 14px;background:linear-gradient(135deg,rgba(245,158,11,0.15),transparent);border-bottom:1px solid var(--border);font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:#f59e0b;">${cat.label}</div>
+        ${rows}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
 // --- RÉSUMÉ D'UN PAYS (clic sur une carte) ---
 let currentEstTeamKey = null;
 
@@ -5202,6 +5273,7 @@ function renderEstAll() {
   try { renderEstPlayers(); } catch(e) { console.warn('renderEstPlayers', e); }
   try { renderEstGoalies(); } catch(e) { console.warn('renderEstGoalies', e); }
   try { renderEstSchedule(); } catch(e) { console.warn('renderEstSchedule', e); }
+  try { renderEstTopStats(); } catch(e) { console.warn('renderEstTopStats', e); }
 }
 // =================== FIN SAISON ESTIVALE 2026 ===================
 
@@ -5255,7 +5327,7 @@ function setGameMode(mode) {
   // Mode estival : rendre les données et aller à l'accueil si on était sur une page d'un autre mode
   if (mode === 'est') {
     renderEstAll();
-    const estPages = ['home','est-teams','est-standings','est-schedule','est-players','est-goalies','est-team-detail'];
+    const estPages = ['home','est-teams','est-standings','est-schedule','est-players','est-goalies','est-team-detail','est-topstats'];
     if (!estPages.includes(currentPage)) {
       navigate('home');
     }
@@ -5359,6 +5431,8 @@ function navigate(page) {
     renderEstSchedule();
   } else if (page === 'est-team-detail') {
     renderEstTeamDetail();
+  } else if (page === 'est-topstats') {
+    renderEstTopStats();
   } else if (page === 'home') {
     if (currentGameMode === 'est') renderEstHome();
   }
@@ -10274,6 +10348,7 @@ function rerenderAll() {
   if (activeId === 'page-est-goalies') { if (typeof renderEstGoalies === 'function') renderEstGoalies(); }
   if (activeId === 'page-est-schedule') { if (typeof renderEstSchedule === 'function') renderEstSchedule(); }
   if (activeId === 'page-est-team-detail') { if (typeof renderEstTeamDetail === 'function') renderEstTeamDetail(); }
+  if (activeId === 'page-est-topstats') { if (typeof renderEstTopStats === 'function') renderEstTopStats(); }
   if (typeof applyEstOnly === 'function') applyEstOnly();
   if (activeId === 'page-home' && currentGameMode === 'est') { if (typeof renderEstHome === 'function') renderEstHome(); }
 }
@@ -13869,6 +13944,7 @@ if (window.innerWidth <= 900) {
     <button class="drawer-btn" onclick="drawerNav('est-standings')"><span class="drawer-btn-icon">📊</span>Classement</button>
     <button class="drawer-btn" onclick="drawerNav('est-players')"><span class="drawer-btn-icon">👤</span>Joueurs</button>
     <button class="drawer-btn" onclick="drawerNav('est-goalies')"><span class="drawer-btn-icon">🥅</span>Gardiens</button>
+    <button class="drawer-btn" onclick="drawerNav('est-topstats')"><span class="drawer-btn-icon">🏆</span>Top Stats</button>
     <button class="drawer-btn" onclick="drawerNav('est-schedule')"><span class="drawer-btn-icon">📅</span>Calendrier</button>
   </div>
 </div>
