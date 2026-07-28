@@ -741,6 +741,8 @@
     box-shadow: 0 4px 20px var(--red-glow);
   }
   body.admin-mode .admin-add-btn { display: inline-block; }
+  /* Sections Joueurs/Gardiens estival: visibles en mode admin seulement */
+  body:not(.admin-mode) .est-admin-nav { display: none !important; }
 
   .modal-info {
     background: rgba(255,184,28,0.1);
@@ -1648,8 +1650,8 @@
       <!-- ESTIVAL 2026 -->
       <button class="nav-btn mode-est" data-page="est-teams" onclick="navigate('est-teams')" style="display:none;">🏝️ Pays</button>
       <button class="nav-btn mode-est" data-page="est-standings" onclick="navigate('est-standings')" style="display:none;">Classement</button>
-      <button class="nav-btn mode-est" data-page="est-players" onclick="navigate('est-players')" style="display:none;">👤 Joueurs</button>
-      <button class="nav-btn mode-est" data-page="est-goalies" onclick="navigate('est-goalies')" style="display:none;">🥅 Gardiens</button>
+      <button class="nav-btn mode-est est-admin-nav" data-page="est-players" onclick="navigate('est-players')" style="display:none;">👤 Joueurs</button>
+      <button class="nav-btn mode-est est-admin-nav" data-page="est-goalies" onclick="navigate('est-goalies')" style="display:none;">🥅 Gardiens</button>
       <button class="nav-btn mode-est" data-page="est-topstats" onclick="navigate('est-topstats')" style="display:none;">🏆 Top Stats</button>
       <button class="nav-btn mode-est" data-page="est-schedule" onclick="navigate('est-schedule')" style="display:none;">Calendrier</button>
 
@@ -1817,6 +1819,12 @@
       <button class="tab" id="homeLeaderTab4s-a" onclick="switchHomeLeaders4s('a',this)" style="white-space:nowrap;">🤝 Passes</button>
       <button class="tab" id="homeLeaderTab4s-pm" onclick="switchHomeLeaders4s('pm',this)" style="white-space:nowrap;">📈 +/-</button>
       <button class="tab" id="homeLeaderTab4s-goalie" onclick="switchHomeLeaders4s('goalie',this)" style="white-space:nowrap;">🥅 Gardiens</button>
+      <select id="leadersLimitSel4s" onchange="setLeadersLimit('4s', this.value)" style="margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;cursor:pointer;">
+        <option value="5">Top 5</option>
+        <option value="10" selected>Top 10</option>
+        <option value="15">Top 15</option>
+        <option value="all">Tous</option>
+      </select>
     </div>
     <div id="homeLeaders4s"></div>
 
@@ -1900,6 +1908,12 @@
       <button class="tab" id="homeLeaderTab6s-g" onclick="switchHomeLeaders6s('g',this)" style="white-space:nowrap;">🥅 Buts</button>
       <button class="tab" id="homeLeaderTab6s-a" onclick="switchHomeLeaders6s('a',this)" style="white-space:nowrap;">🤝 Passes</button>
       <button class="tab" id="homeLeaderTab6s-goalie" onclick="switchHomeLeaders6s('goalie',this)" style="white-space:nowrap;">🥅 Gardiens</button>
+      <select id="leadersLimitSel6s" onchange="setLeadersLimit('6s', this.value)" style="margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;cursor:pointer;">
+        <option value="5">Top 5</option>
+        <option value="10" selected>Top 10</option>
+        <option value="15">Top 15</option>
+        <option value="all">Tous</option>
+      </select>
     </div>
     <div id="homeLeaders6s"></div>
 
@@ -1928,7 +1942,7 @@
         <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
           <button onclick="navigate('est-teams')" style="padding:10px 20px;background:rgba(245,158,11,0.9);border:none;border-radius:10px;color:#000;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">🌍 Les Pays</button>
           <button onclick="navigate('est-standings')" style="padding:10px 20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">📊 Classement</button>
-          <button onclick="navigate('est-players')" style="padding:10px 20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">👤 Joueurs</button>
+          <button onclick="navigate('est-players')" class="est-admin-nav" style="padding:10px 20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;backdrop-filter:blur(4px);">👤 Joueurs</button>
         </div>
       </div>
     </div>
@@ -1962,13 +1976,19 @@
     <!-- TOP STATS ESTIVAL -->
     <div style="margin:32px 0 12px;display:flex;justify-content:space-between;align-items:center;">
       <h2 class="section-title" style="margin:0;color:#f59e0b;">🏆 Top Stats</h2>
-      <button onclick="navigate('est-players')" style="font-size:13px;color:#f59e0b;background:none;border:none;cursor:pointer;font-weight:700;">Tous les joueurs →</button>
+      <button onclick="navigate('est-topstats')" style="font-size:13px;color:#f59e0b;background:none;border:none;cursor:pointer;font-weight:700;">Top Stats complet →</button>
     </div>
     <div class="tabs" style="margin-bottom:14px;overflow-x:auto;">
       <button class="tab active" id="homeLeaderTabEst-pts" onclick="switchHomeLeadersEst('pts',this)" style="white-space:nowrap;">🎯 Points</button>
       <button class="tab" id="homeLeaderTabEst-g" onclick="switchHomeLeadersEst('g',this)" style="white-space:nowrap;">🥅 Buts</button>
       <button class="tab" id="homeLeaderTabEst-a" onclick="switchHomeLeadersEst('a',this)" style="white-space:nowrap;">🤝 Passes</button>
       <button class="tab" id="homeLeaderTabEst-pm" onclick="switchHomeLeadersEst('pm',this)" style="white-space:nowrap;">📈 +/-</button>
+      <select id="leadersLimitSelEstHome" onchange="setLeadersLimit('est', this.value)" style="margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;cursor:pointer;">
+        <option value="5">Top 5</option>
+        <option value="10" selected>Top 10</option>
+        <option value="15">Top 15</option>
+        <option value="all">Tous</option>
+      </select>
     </div>
     <div id="homeLeadersEst"></div>
   </div>
@@ -2110,6 +2130,14 @@
       <h3>Top Stats · Saison Estivale 2026</h3>
       <p id="estTopStatsSubtitle">Meneurs de la saison · Format 4v4</p>
     </div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+    <select id="leadersLimitSelEstPage" onchange="setLeadersLimit('est', this.value)" style="margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;cursor:pointer;">
+        <option value="5">Top 5</option>
+        <option value="10" selected>Top 10</option>
+        <option value="15">Top 15</option>
+        <option value="all">Tous</option>
+      </select>
   </div>
   <div id="estTopStatsContent"></div>
 </section>
@@ -4335,7 +4363,7 @@ function renderHomeLeadersEst(type) {
   const statKey = type === 'pm' ? 'plusminus' : type;
   const list = [...players]
     .sort((a,b) => (b[statKey]||0)-(a[statKey]||0) || (b.pts||0)-(a.pts||0) || (b.g||0)-(a.g||0))
-    .slice(0, 10);
+    .slice(0, leadersLimit['est']);
   container.innerHTML = renderEstLeaderCards(list, type, est);
 }
 
@@ -4356,7 +4384,7 @@ function renderEstLeaderCards(list, type, est) {
       const teamIcon = team?.flag
         ? `<img src="${team.flag}" style="width:32px;height:22px;object-fit:cover;border-radius:4px;">`
         : `<span style="font-size:24px;">${team?.emoji || '🏒'}</span>`;
-      return `<div onclick="navigate('est-players')" style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:transform 0.15s,border-color 0.15s;" onmouseover="this.style.transform='translateY(-1px)';this.style.borderColor='rgba(245,158,11,0.5)'" onmouseout="this.style.transform='';this.style.borderColor='var(--border)'">
+      return `<div onclick="navigate('est-topstats')" style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:transform 0.15s,border-color 0.15s;" onmouseover="this.style.transform='translateY(-1px)';this.style.borderColor='rgba(245,158,11,0.5)'" onmouseout="this.style.transform='';this.style.borderColor='var(--border)'">
         <span style="font-family:'Bebas Neue';font-size:20px;color:var(--text-tertiary);min-width:24px;">${i+1}</span>
         ${teamIcon}
         <div style="flex:1;min-width:0;">
@@ -4581,7 +4609,7 @@ function renderEstTopStats() {
       const list = [...players]
         .filter(p => (p.gp||0) > 0)
         .sort((a,b) => (b[statKey]||0)-(a[statKey]||0) || (b.pts||0)-(a.pts||0) || (b.g||0)-(a.g||0))
-        .slice(0, 10);
+        .slice(0, leadersLimit['est']);
       const rows = list.map((p, i) => {
         const team = p.team ? est.teams?.[p.team] : null;
         const flag = team?.flag
@@ -4591,7 +4619,7 @@ function renderEstTopStats() {
         const valColor = cat.key === 'pm' ? (val > 0 ? '#22c55e' : val < 0 ? '#ef4444' : 'var(--text-primary)') : '#f59e0b';
         const valStr = cat.key === 'pm' && val > 0 ? `+${val}` : val;
         const rankColor = i === 0 ? '#f59e0b' : i === 1 ? '#cbd5e1' : i === 2 ? '#b45309' : 'var(--text-tertiary)';
-        return `<div onclick="${p.team ? `openEstTeamDetail('${p.team}')` : `navigate('est-players')`}" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;">
+        return `<div onclick="${p.team ? `openEstTeamDetail('${p.team}')` : `void(0)`}" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:${p.team ? 'pointer' : 'default'};">
           <span style="font-family:'Bebas Neue';font-size:16px;color:${rankColor};min-width:20px;">${i+1}</span>
           ${flag}
           <span style="flex:1;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)}</span>
@@ -5424,8 +5452,10 @@ function navigate(page) {
   } else if (page === 'est-standings') {
     renderEstStandings();
   } else if (page === 'est-players') {
+    if (typeof isAdmin === 'undefined' || !isAdmin) { return navigate('est-topstats'); }
     renderEstPlayers();
   } else if (page === 'est-goalies') {
+    if (typeof isAdmin === 'undefined' || !isAdmin) { return navigate('est-topstats'); }
     renderEstGoalies();
   } else if (page === 'est-schedule') {
     renderEstSchedule();
@@ -12878,6 +12908,23 @@ function renderHomeStandings() {
   }
 }
 
+// Limites d'affichage des Top Stats par mode (5, 10, 15 ou Infinity = tous)
+const leadersLimit = { '4s': 10, '6s': 10, 'est': 10 };
+function setLeadersLimit(mode, val) {
+  leadersLimit[mode] = val === 'all' ? Infinity : parseInt(val);
+  if (mode === '4s' && typeof renderHomeLeaders4s === 'function') renderHomeLeaders4s(currentHomeLeader4s);
+  if (mode === '6s' && typeof renderHomeLeaders6s === 'function') renderHomeLeaders6s(currentHomeLeader6s);
+  if (mode === 'est') {
+    if (typeof renderHomeLeadersEst === 'function') renderHomeLeadersEst(currentEstLeaderType);
+    if (typeof renderEstTopStats === 'function') renderEstTopStats();
+    // Synchroniser les deux sélecteurs estival (accueil + page)
+    ['leadersLimitSelEstHome','leadersLimitSelEstPage'].forEach(id => {
+      const s = document.getElementById(id);
+      if (s) s.value = val;
+    });
+  }
+}
+
 function switchHomeLeaders4s(type, btn) {
   currentHomeLeader4s = type;
   document.querySelectorAll('[id^="homeLeaderTab4s-"]').forEach(b => b.classList.remove('active'));
@@ -12897,16 +12944,16 @@ function renderHomeLeaders4s(type) {
   if (!container) return;
 
   if (type === 'goalie') {
-    const nhlGoalies   = [...(DATA.goalies || [])].filter(g => g.gp > 0 && DATA.teams[g.team]?.division === 'nhl').sort((a,b) => (b.w||0)-(a.w||0)).slice(0,10);
-    const lhjmqGoalies = [...(DATA.goalies || [])].filter(g => g.gp > 0 && DATA.teams[g.team]?.division === 'lhjmq').sort((a,b) => (b.w||0)-(a.w||0)).slice(0,10);
+    const nhlGoalies   = [...(DATA.goalies || [])].filter(g => g.gp > 0 && DATA.teams[g.team]?.division === 'nhl').sort((a,b) => (b.w||0)-(a.w||0)).slice(0, leadersLimit['4s']);
+    const lhjmqGoalies = [...(DATA.goalies || [])].filter(g => g.gp > 0 && DATA.teams[g.team]?.division === 'lhjmq').sort((a,b) => (b.w||0)-(a.w||0)).slice(0, leadersLimit['4s']);
     container.innerHTML =
       `<div style="margin-bottom:8px;"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--nhl-color);margin-bottom:8px;">DIVISION NHL</div>${renderHomeLeaderCards(nhlGoalies, 'goalie')}</div>` +
       `<div style="margin-top:24px;"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--lhjmq-color);margin-bottom:8px;">DIVISION LHJMQ</div>${renderHomeLeaderCards(lhjmqGoalies, 'goalie')}</div>`;
     return;
   }
 
-  const nhlPlayers   = [...(DATA.players || [])].filter(p => DATA.teams[p.team]?.division === 'nhl').sort((a,b) => (b[type]||0)-(a[type]||0)).slice(0,10);
-  const lhjmqPlayers = [...(DATA.players || [])].filter(p => DATA.teams[p.team]?.division === 'lhjmq').sort((a,b) => (b[type]||0)-(a[type]||0)).slice(0,10);
+  const nhlPlayers   = [...(DATA.players || [])].filter(p => DATA.teams[p.team]?.division === 'nhl').sort((a,b) => (b[type]||0)-(a[type]||0)).slice(0, leadersLimit['4s']);
+  const lhjmqPlayers = [...(DATA.players || [])].filter(p => DATA.teams[p.team]?.division === 'lhjmq').sort((a,b) => (b[type]||0)-(a[type]||0)).slice(0, leadersLimit['4s']);
 
   container.innerHTML =
     `<div style="margin-bottom:8px;"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--nhl-color);margin-bottom:8px;">DIVISION NHL</div>${renderHomeLeaderCards(nhlPlayers, type)}</div>` +
@@ -12918,12 +12965,12 @@ function renderHomeLeaders6s(type) {
   if (!container) return;
 
   if (type === 'goalie') {
-    const goalies = [...(DATA.season_3_6v6?.goalies || [])].filter(g => g.gp > 0).sort((a,b) => (b.w||0)-(a.w||0)).slice(0,10);
+    const goalies = [...(DATA.season_3_6v6?.goalies || [])].filter(g => g.gp > 0).sort((a,b) => (b.w||0)-(a.w||0)).slice(0, leadersLimit['6s']);
     container.innerHTML = renderHomeLeaderCards(goalies, 'goalie');
     return;
   }
 
-  const players = [...(DATA.season_3_6v6?.players || [])].sort((a,b) => (b[type]||0)-(a[type]||0)).slice(0,10);
+  const players = [...(DATA.season_3_6v6?.players || [])].sort((a,b) => (b[type]||0)-(a[type]||0)).slice(0, leadersLimit['6s']);
   container.innerHTML = renderHomeLeaderCards(players, type);
 }
 
@@ -13942,8 +13989,8 @@ if (window.innerWidth <= 900) {
     <div class="drawer-section-label">Saison Estivale 2026</div>
     <button class="drawer-btn" onclick="drawerNav('est-teams')"><span class="drawer-btn-icon">🌍</span>Les Pays</button>
     <button class="drawer-btn" onclick="drawerNav('est-standings')"><span class="drawer-btn-icon">📊</span>Classement</button>
-    <button class="drawer-btn" onclick="drawerNav('est-players')"><span class="drawer-btn-icon">👤</span>Joueurs</button>
-    <button class="drawer-btn" onclick="drawerNav('est-goalies')"><span class="drawer-btn-icon">🥅</span>Gardiens</button>
+    <button class="drawer-btn est-admin-nav" onclick="drawerNav('est-players')"><span class="drawer-btn-icon">👤</span>Joueurs</button>
+    <button class="drawer-btn est-admin-nav" onclick="drawerNav('est-goalies')"><span class="drawer-btn-icon">🥅</span>Gardiens</button>
     <button class="drawer-btn" onclick="drawerNav('est-topstats')"><span class="drawer-btn-icon">🏆</span>Top Stats</button>
     <button class="drawer-btn" onclick="drawerNav('est-schedule')"><span class="drawer-btn-icon">📅</span>Calendrier</button>
   </div>
