@@ -4748,13 +4748,27 @@ function renderEstTeamDetail() {
   const diffColor = (r.diff||0) > 0 ? '#22c55e' : ((r.diff||0) < 0 ? '#ef4444' : 'var(--text-primary)');
 
   // --- Alignement ---
-  const skaters = (est.players || []).filter(p => p.team === currentEstTeamKey)
+  // Joueurs: TOUS les membres de l'équipe (les gardiens sans profil patineur apparaissent avec des zéros)
+  const skatersReal = (est.players || []).filter(p => p.team === currentEstTeamKey);
+  const skaterNames = new Set(skatersReal.map(p => estNorm(p.name)));
+  const goalieVirtualRows = (est.goalies || [])
+    .filter(g => g.team === currentEstTeamKey && !skaterNames.has(estNorm(g.name)))
+    .map(g => ({
+      id: g.id, name: g.name, console: g.console,
+      position_main: (g.position_sec && g.position_sec !== 'G') ? g.position_sec : '',
+      position_sec: g.position_ter || '', position_ter: '',
+      position: 'G', gp: 0, g: 0, a: 0, pts: 0, _isGoalieMember: true
+    }));
+  const skaters = [...skatersReal, ...goalieVirtualRows]
     .sort((a,b) => (b.pts||0)-(a.pts||0) || (a.name||'').localeCompare(b.name||''));
-  const goalies = (est.goalies || []).filter(g => g.team === currentEstTeamKey)
+  // Gardiens: seulement ceux qui ont joué au moins un match devant le filet
+  const goalies = (est.goalies || []).filter(g => g.team === currentEstTeamKey && (g.gp||0) > 0)
     .sort((a,b) => (b.w||0)-(a.w||0) || (a.name||'').localeCompare(b.name||''));
 
   const skaterRows = skaters.map((p,i) => {
-    const pos = [p.position_main, p.position_sec, p.position_ter].filter(Boolean).join(' / ') || (p.position || '—');
+    const pos = p._isGoalieMember
+      ? ('G' + ([p.position_main, p.position_sec].filter(Boolean).length ? ' / ' + [p.position_main, p.position_sec].filter(Boolean).join(' / ') : ''))
+      : ([p.position_main, p.position_sec, p.position_ter].filter(Boolean).join(' / ') || (p.position || '—'));
     return `<tr>
       <td class="num">${i+1}</td>
       <td><strong>${escapeHtml(p.name)}</strong></td>
@@ -4776,7 +4790,7 @@ function renderEstTeamDetail() {
       <td class="num">${g.l||0}</td>
       <td class="num">${(g.gaa||0).toFixed ? (g.gaa||0).toFixed(2) : (g.gaa||0)}</td>
       <td class="num">${(g.svpct||0).toFixed ? (g.svpct||0).toFixed(1) : (g.svpct||0)}</td>
-    </tr>`).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun gardien assigné à ce pays pour l\'instant.</td></tr>';
+    </tr>`).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun gardien n\'a encore joué de match pour ce pays.</td></tr>';
 
   // --- Matchs de ce pays ---
   const weeks = est.schedule?.weeks || [];
