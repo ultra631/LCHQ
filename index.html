@@ -4432,7 +4432,7 @@ function renderEstLeaderCards(list, type, est) {
       const valColor = type === 'pts' ? '#f59e0b' : type === 'pm' && val > 0 ? '#22c55e' : type === 'pm' && val < 0 ? '#ef4444' : 'var(--text-primary)';
       const valStr = type === 'pm' && val > 0 ? `+${val}` : val;
       const sub = type === 'goalie'
-        ? `${p.gp||0} PJ · ${(p.gaa||0).toFixed ? (p.gaa||0).toFixed(2) : p.gaa} MOY · ${(p.svpct||0).toFixed ? (p.svpct||0).toFixed(1) : p.svpct}%`
+        ? `${p.gp||0} PJ · ${p.sv||0} arrêts · ${(p.gaa||0).toFixed ? (p.gaa||0).toFixed(2) : p.gaa} MOY · ${(p.svpct||0).toFixed ? (p.svpct||0).toFixed(1) : p.svpct}% ARR`
         : `${p.gp||0} PJ · ${p.g||0}B ${p.a||0}A`;
       const teamIcon = team?.flag
         ? `<img src="${team.flag}" style="width:32px;height:22px;object-fit:cover;border-radius:4px;">`
@@ -4656,32 +4656,37 @@ function renderEstTopStats() {
     { key:'pm', label:'📈 Plus / Moins', unit:'+/-' }
   ];
 
-  // Bloc des gardiens (classés par victoires, ensuite %ARR)
+  // Blocs des gardiens: 4 classements (V, %ARR, MOY, Arrêts)
   const goaliesBlock = (() => {
-    const list = [...(est.goalies || [])]
-      .filter(g => (g.gp||0) > 0)
-      .sort((a,b) => (b.w||0)-(a.w||0) || (b.svpct||0)-(a.svpct||0))
-      .slice(0, leadersLimit['est']);
-    const rows = list.map((g, i) => {
-      const team = g.team ? est.teams?.[g.team] : null;
-      const flag = team?.flag
-        ? `<img src="${team.flag}" style="width:24px;height:16px;object-fit:cover;border-radius:3px;">`
-        : `<span style="font-size:15px;">${team?.emoji || '🥅'}</span>`;
-      const rankColor = i === 0 ? '#f59e0b' : i === 1 ? '#cbd5e1' : i === 2 ? '#b45309' : 'var(--text-tertiary)';
-      const moy = (g.gaa||0).toFixed ? (g.gaa||0).toFixed(2) : g.gaa;
-      const arr = (g.svpct||0).toFixed ? (g.svpct||0).toFixed(1) : g.svpct;
-      return `<div onclick="${g.team ? `openEstTeamDetail('${g.team}')` : `void(0)`}" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:${g.team ? 'pointer' : 'default'};">
-        <span style="font-family:'Bebas Neue';font-size:16px;color:${rankColor};min-width:20px;">${i+1}</span>
-        ${flag}
-        <span style="flex:1;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(g.name)}</span>
-        <span style="font-size:10px;color:var(--text-tertiary);">${g.gp||0} PJ · ${moy} MOY · ${arr}%</span>
-        <span style="font-family:'Bebas Neue';font-size:20px;color:#f59e0b;min-width:36px;text-align:right;">${g.w||0}V</span>
+    const actifs = [...(est.goalies || [])].filter(g => (g.gp||0) > 0);
+    const fmt = (v, dec) => (v||0).toFixed ? (v||0).toFixed(dec) : v;
+    const goalieCats = [
+      { label:'🥅 Victoires (Gardiens)', sort:(a,b)=>(b.w||0)-(a.w||0)||(b.svpct||0)-(a.svpct||0), val:g=>(g.w||0)+'V', sub:g=>`${g.gp||0} PJ · ${fmt(g.gaa,2)} MOY` },
+      { label:'🛡️ % Arrêts (Gardiens)', sort:(a,b)=>(b.svpct||0)-(a.svpct||0)||(b.sv||0)-(a.sv||0), val:g=>fmt(g.svpct,1)+'%', sub:g=>`${g.gp||0} PJ · ${g.sv||0} arrêts` },
+      { label:'📉 Moyenne de buts (Gardiens)', sort:(a,b)=>(a.gaa??99)-(b.gaa??99)||(b.gp||0)-(a.gp||0), val:g=>fmt(g.gaa,2), sub:g=>`${g.gp||0} PJ · ${g.ga||0} BA` },
+      { label:'🧤 Arrêts (Gardiens)', sort:(a,b)=>(b.sv||0)-(a.sv||0), val:g=>g.sv||0, sub:g=>`${g.gp||0} PJ · ${fmt(g.svpct,1)}%` }
+    ];
+    return goalieCats.map(cat => {
+      const list = [...actifs].sort(cat.sort).slice(0, leadersLimit['est']);
+      const rows = list.map((g, i) => {
+        const team = g.team ? est.teams?.[g.team] : null;
+        const flag = team?.flag
+          ? `<img src="${team.flag}" style="width:24px;height:16px;object-fit:cover;border-radius:3px;">`
+          : `<span style="font-size:15px;">${team?.emoji || '🥅'}</span>`;
+        const rankColor = i === 0 ? '#f59e0b' : i === 1 ? '#cbd5e1' : i === 2 ? '#b45309' : 'var(--text-tertiary)';
+        return `<div onclick="${g.team ? `openEstTeamDetail('${g.team}')` : `void(0)`}" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:${g.team ? 'pointer' : 'default'};">
+          <span style="font-family:'Bebas Neue';font-size:16px;color:${rankColor};min-width:20px;">${i+1}</span>
+          ${flag}
+          <span style="flex:1;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(g.name)}</span>
+          <span style="font-size:10px;color:var(--text-tertiary);">${cat.sub(g)}</span>
+          <span style="font-family:'Bebas Neue';font-size:20px;color:#f59e0b;min-width:44px;text-align:right;">${cat.val(g)}</span>
+        </div>`;
+      }).join('') || '<div style="padding:16px;color:var(--text-tertiary);font-size:12px;text-align:center;">Aucune donnée</div>';
+      return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 14px;background:linear-gradient(135deg,rgba(245,158,11,0.15),transparent);border-bottom:1px solid var(--border);font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:#f59e0b;">${cat.label}</div>
+        ${rows}
       </div>`;
-    }).join('') || '<div style="padding:16px;color:var(--text-tertiary);font-size:12px;text-align:center;">Aucune donnée</div>';
-    return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-      <div style="padding:12px 14px;background:linear-gradient(135deg,rgba(245,158,11,0.15),transparent);border-bottom:1px solid var(--border);font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:#f59e0b;">🥅 Gardiens</div>
-      ${rows}
-    </div>`;
+    }).join('');
   })();
 
   container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;">
@@ -5012,53 +5017,65 @@ function buildEstMatchStatsSide(est, teamKey, side, match) {
       <input type="number" class="est-ms-a" data-id="${p.id}" min="0" value="${s?.a || 0}" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`;
   };
 
+  // Les gardiens de l'ÉQUIPE apparaissent aussi dans la liste des joueurs (décochés par défaut).
+  // Si on les coche et qu'ils comptent des points, leur profil patineur se crée automatiquement.
+  const shownSkaterNames = new Set([...roster, ...savedSubs].map(p => estNorm(p.name)));
+  const teamGoalieRows = goalies
+    .filter(g => !shownSkaterNames.has(estNorm(g.name)))
+    .map(g => `
+      <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="g:${g.id}" style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match comme patineur">
+      <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(g.name)} <span style="color:#3b82f6;font-size:10px;font-weight:700;" title="Gardien qui joue comme patineur">🥅→🏒</span></span>
+      <input type="number" class="est-ms-g" data-id="g:${g.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
+      <input type="number" class="est-ms-a" data-id="g:${g.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`).join('');
+
   const playerRows = `<div class="est-ms-grid" id="estMsGrid-${side}" style="display:grid;grid-template-columns:auto 1fr 52px 52px;gap:6px;align-items:center;font-size:12px;">
     <div></div><div style="color:var(--text-tertiary);font-size:10px;">JOUEUR</div>
     <div style="color:var(--text-tertiary);font-size:10px;text-align:center;">B</div>
     <div style="color:var(--text-tertiary);font-size:10px;text-align:center;">A</div>
     ${roster.map(p => rowHtml(p, false)).join('')}
+    ${teamGoalieRows}
     ${savedSubs.map(p => rowHtml(p, true)).join('')}
   </div>
   ${!roster.length && !savedSubs.length ? '<div style="color:var(--text-tertiary);font-size:12px;padding:6px 0;">Aucun joueur assigné à ce pays — ajoute des remplaçants ci-dessous.</div>' : ''}`;
 
-  // Dropdown pour ajouter un remplaçant (tous les joueurs pas déjà affichés)
+  // Dropdown pour ajouter un remplaçant: JOUEURS SANS PAYS seulement (les vrais remplaçants)
   const shownIds = new Set([...roster.map(p => p.id), ...savedSubs.map(p => p.id)]);
-  const dispo = (est.players || []).filter(p => !shownIds.has(p.id))
-    .sort((a,b) => {
-      const at = a.team ? 1 : 0, bt = b.team ? 1 : 0;
-      return at - bt || (a.name||'').localeCompare(b.name||'');
-    });
-  // Gardiens qui pourraient jouer comme patineurs (exclut ceux déjà affichés OU qui ont déjà un profil patineur listé)
+  const dispo = (est.players || []).filter(p => !p.team && !shownIds.has(p.id))
+    .sort((a,b) => (a.name||'').localeCompare(b.name||''));
+  // Gardiens SANS PAYS qui pourraient jouer comme patineurs remplaçants
   const allSkaterNames = new Set((est.players || []).map(p => estNorm(p.name)));
-  const shownNames = new Set([...roster, ...savedSubs].map(p => estNorm(p.name)));
-  const goaliesAsSkaters = (est.goalies || []).filter(g => !shownNames.has(estNorm(g.name)) && !allSkaterNames.has(estNorm(g.name)))
+  const goaliesAsSkaters = (est.goalies || []).filter(g => !g.team && !shownSkaterNames.has(estNorm(g.name)) && !allSkaterNames.has(estNorm(g.name)))
     .sort((a,b) => (a.name||'').localeCompare(b.name||''));
   const subSelect = (dispo.length || goaliesAsSkaters.length) ? `<div style="margin-top:8px;">
     <select class="est-ms-addsub" data-side="${side}" onchange="estAddSubRow(this)" style="width:100%;padding:6px 8px;border-radius:6px;border:1px dashed #f59e0b;background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
-      <option value="">➕ Ajouter un remplaçant / joueur...</option>
-      ${dispo.map(p => `<option value="${p.id}">${escapeHtml(p.name)} ${p.team ? '(' + escapeHtml(est.teams[p.team]?.name || p.team) + ')' : '(Sans pays)'}</option>`).join('')}
-      ${goaliesAsSkaters.length ? `<optgroup label="🥅 Gardiens (jouer comme patineur)">${goaliesAsSkaters.map(g => `<option value="g:${g.id}">${escapeHtml(g.name)} ${g.team ? '(' + escapeHtml(est.teams[g.team]?.name || g.team) + ')' : '(Sans pays)'}</option>`).join('')}</optgroup>` : ''}
+      <option value="">➕ Ajouter un remplaçant (Sans pays)...</option>
+      ${dispo.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}
+      ${goaliesAsSkaters.length ? `<optgroup label="🥅 Gardiens remplaçants (comme patineur)">${goaliesAsSkaters.map(g => `<option value="g:${g.id}">${escapeHtml(g.name)}</option>`).join('')}</optgroup>` : ''}
     </select>
   </div>` : '';
 
-  // Gardien: ceux du pays + tous les autres comme remplaçants
+  // Gardien: ceux du pays + les JOUEURS DE L'ÉQUIPE (comme gardien) + remplaçants sans pays.
+  // Exception: si un gardien d'une autre équipe a déjà été sauvegardé sur ce match, on le garde visible.
   const goalieIds = new Set(goalies.map(g => g.id));
-  const otherGoalies = (est.goalies || []).filter(g => !goalieIds.has(g.id))
-    .sort((a,b) => {
-      const at = a.team ? 1 : 0, bt = b.team ? 1 : 0;
-      return at - bt || (a.name||'').localeCompare(b.name||'');
-    });
+  const goalieNamesTeam = new Set(goalies.map(g => estNorm(g.name)));
+  const teamSkatersAsGoalies = roster.filter(p => !goalieNamesTeam.has(estNorm(p.name)));
+  const subGoalies = (est.goalies || []).filter(g => !g.team && !goalieIds.has(g.id))
+    .sort((a,b) => (a.name||'').localeCompare(b.name||''));
+  const savedOtherGoalie = (savedGoalie && !goalieIds.has(savedGoalie.id) && !subGoalies.some(g => g.id === savedGoalie.id))
+    ? (est.goalies || []).find(g => g.id === savedGoalie.id) : null;
   const goalieRow = `<div style="display:flex;gap:8px;align-items:center;">
       <select class="est-ms-goalie" data-side="${side}" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
         <option value="">— Aucun gardien</option>
         ${goalies.map(g => `<option value="${g.id}" ${savedGoalie?.id === g.id ? 'selected' : ''}>${escapeHtml(g.name)}</option>`).join('')}
-        ${otherGoalies.length ? `<optgroup label="🔄 Remplaçants">${otherGoalies.map(g => `<option value="${g.id}" ${savedGoalie?.id === g.id ? 'selected' : ''}>${escapeHtml(g.name)} ${g.team ? '(' + escapeHtml(est.teams[g.team]?.name || g.team) + ')' : '(Sans pays)'}</option>`).join('')}</optgroup>` : ''}
+        ${teamSkatersAsGoalies.length ? `<optgroup label="🏒 Joueurs de l'équipe (comme gardien)">${teamSkatersAsGoalies.map(p => `<option value="p:${p.id}" ${savedGoalie && (est.goalies||[]).find(x => x.id === savedGoalie.id && estNorm(x.name) === estNorm(p.name)) ? '' : ''}>${escapeHtml(p.name)}</option>`).join('')}</optgroup>` : ''}
+        ${subGoalies.length ? `<optgroup label="🔄 Gardiens remplaçants (Sans pays)">${subGoalies.map(g => `<option value="${g.id}" ${savedGoalie?.id === g.id ? 'selected' : ''}>${escapeHtml(g.name)}</option>`).join('')}</optgroup>` : ''}
         ${(() => {
-          const goalieNames = new Set((est.goalies||[]).map(x => estNorm(x.name)));
-          const skatersAsGoalies = (est.players || []).filter(p => !goalieNames.has(estNorm(p.name)))
+          const goalieNamesAll = new Set((est.goalies||[]).map(x => estNorm(x.name)));
+          const subSkatersAsGoalies = (est.players || []).filter(p => !p.team && !goalieNamesAll.has(estNorm(p.name)))
             .sort((a,b) => (a.name||'').localeCompare(b.name||''));
-          return skatersAsGoalies.length ? `<optgroup label="🏒 Patineurs (jouer comme gardien)">${skatersAsGoalies.map(p => `<option value="p:${p.id}">${escapeHtml(p.name)} ${p.team ? '(' + escapeHtml(est.teams[p.team]?.name || p.team) + ')' : '(Sans pays)'}</option>`).join('')}</optgroup>` : '';
+          return subSkatersAsGoalies.length ? `<optgroup label="🔄 Joueurs remplaçants (comme gardien)">${subSkatersAsGoalies.map(p => `<option value="p:${p.id}">${escapeHtml(p.name)}</option>`).join('')}</optgroup>` : '';
         })()}
+        ${savedOtherGoalie ? `<optgroup label="📌 Déjà sur ce match"><option value="${savedOtherGoalie.id}" selected>${escapeHtml(savedOtherGoalie.name)} ${savedOtherGoalie.team ? '(' + escapeHtml(est.teams[savedOtherGoalie.team]?.name || savedOtherGoalie.team) + ')' : ''}</option></optgroup>` : ''}
       </select>
       <input type="number" class="est-ms-saves" data-side="${side}" min="0" value="${savedGoalie?.saves ?? ''}" placeholder="Arrêts" title="Nombre d'arrêts" style="width:76px;padding:6px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
     </div>`;
@@ -5147,11 +5164,18 @@ function saveEstMatch() {
   let sumG = { home: 0, away: 0 };
   document.querySelectorAll('#estMatchStatsArea .est-ms-played').forEach(cb => {
     if (!cb.checked) return;
-    const id = cb.dataset.id, side = cb.dataset.side;
-    const gInput = document.querySelector(`#estMatchStatsArea .est-ms-g[data-id="${id}"]`);
-    const aInput = document.querySelector(`#estMatchStatsArea .est-ms-a[data-id="${id}"]`);
+    let id = cb.dataset.id;
+    const side = cb.dataset.side;
+    const gInput = document.querySelector(`#estMatchStatsArea .est-ms-g[data-id="${CSS.escape(id)}"]`);
+    const aInput = document.querySelector(`#estMatchStatsArea .est-ms-a[data-id="${CSS.escape(id)}"]`);
     const g = parseInt(gInput?.value) || 0;
     const asst = parseInt(aInput?.value) || 0;
+    // Un gardien de l'équipe coché comme patineur: créer/retrouver son profil patineur
+    if (id.startsWith('g:')) {
+      const skater = estEnsureSkaterProfile(id.slice(2));
+      if (!skater) return;
+      id = skater.id;
+    }
     sumG[side] += g;
     playerStats.push({ id, side, g, a: asst });
   });
