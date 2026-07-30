@@ -4907,47 +4907,92 @@ function buildEstMatchStatsSide(est, teamKey, side, match) {
 
   const flag = t?.flag ? `<img src="${t.flag}" style="width:26px;height:18px;object-fit:cover;border-radius:3px;">` : `<span>${t?.emoji||'🏒'}</span>`;
 
-  let playerRows;
-  if (!roster.length) {
-    playerRows = '<div style="color:var(--text-tertiary);font-size:12px;padding:8px 0;">Aucun joueur assigné à ce pays. Assigne-les dans la section 👤 Joueurs.</div>';
-  } else {
-    playerRows = `<div style="display:grid;grid-template-columns:auto 1fr 52px 52px;gap:6px;align-items:center;font-size:12px;">
-      <div></div><div style="color:var(--text-tertiary);font-size:10px;">JOUEUR</div>
-      <div style="color:var(--text-tertiary);font-size:10px;text-align:center;">B</div>
-      <div style="color:var(--text-tertiary);font-size:10px;text-align:center;">A</div>
-      ${roster.map(p => {
-        const s = savedStats.find(x => x.id === p.id);
-        const checked = match.played ? !!s : true; // nouveau match: tous cochés par défaut
-        return `
-        <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" ${checked ? 'checked' : ''} style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
-        <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)}</span>
-        <input type="number" class="est-ms-g" data-id="${p.id}" min="0" value="${s?.g || 0}" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
-        <input type="number" class="est-ms-a" data-id="${p.id}" min="0" value="${s?.a || 0}" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`;
-      }).join('')}
-    </div>`;
-  }
+  // Remplaçants déjà sauvegardés dans ce match (joueurs pas dans l'alignement du pays)
+  const rosterIds = new Set(roster.map(p => p.id));
+  const savedSubs = savedStats
+    .filter(s => s.side === side && !rosterIds.has(s.id))
+    .map(s => (est.players || []).find(p => p.id === s.id))
+    .filter(Boolean);
 
-  let goalieRow;
-  if (!goalies.length) {
-    goalieRow = '<div style="color:var(--text-tertiary);font-size:12px;">Aucun gardien assigné à ce pays.</div>';
-  } else {
-    goalieRow = `<div style="display:flex;gap:8px;align-items:center;">
+  const rowHtml = (p, isSub) => {
+    const s = savedStats.find(x => x.id === p.id);
+    const checked = isSub ? true : (match.played ? !!s : true);
+    const subBadge = isSub ? ' <span style="color:#f59e0b;font-size:10px;font-weight:700;">(R)</span>' : '';
+    return `
+      <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" ${checked ? 'checked' : ''} style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
+      <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)}${subBadge}</span>
+      <input type="number" class="est-ms-g" data-id="${p.id}" min="0" value="${s?.g || 0}" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
+      <input type="number" class="est-ms-a" data-id="${p.id}" min="0" value="${s?.a || 0}" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`;
+  };
+
+  const playerRows = `<div class="est-ms-grid" id="estMsGrid-${side}" style="display:grid;grid-template-columns:auto 1fr 52px 52px;gap:6px;align-items:center;font-size:12px;">
+    <div></div><div style="color:var(--text-tertiary);font-size:10px;">JOUEUR</div>
+    <div style="color:var(--text-tertiary);font-size:10px;text-align:center;">B</div>
+    <div style="color:var(--text-tertiary);font-size:10px;text-align:center;">A</div>
+    ${roster.map(p => rowHtml(p, false)).join('')}
+    ${savedSubs.map(p => rowHtml(p, true)).join('')}
+  </div>
+  ${!roster.length && !savedSubs.length ? '<div style="color:var(--text-tertiary);font-size:12px;padding:6px 0;">Aucun joueur assigné à ce pays — ajoute des remplaçants ci-dessous.</div>' : ''}`;
+
+  // Dropdown pour ajouter un remplaçant (tous les joueurs pas déjà affichés)
+  const shownIds = new Set([...roster.map(p => p.id), ...savedSubs.map(p => p.id)]);
+  const dispo = (est.players || []).filter(p => !shownIds.has(p.id))
+    .sort((a,b) => {
+      const at = a.team ? 1 : 0, bt = b.team ? 1 : 0;
+      return at - bt || (a.name||'').localeCompare(b.name||'');
+    });
+  const subSelect = dispo.length ? `<div style="margin-top:8px;">
+    <select class="est-ms-addsub" data-side="${side}" onchange="estAddSubRow(this)" style="width:100%;padding:6px 8px;border-radius:6px;border:1px dashed #f59e0b;background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
+      <option value="">➕ Ajouter un remplaçant...</option>
+      ${dispo.map(p => `<option value="${p.id}">${escapeHtml(p.name)} ${p.team ? '(' + escapeHtml(est.teams[p.team]?.name || p.team) + ')' : '(Sans pays)'}</option>`).join('')}
+    </select>
+  </div>` : '';
+
+  // Gardien: ceux du pays + tous les autres comme remplaçants
+  const goalieIds = new Set(goalies.map(g => g.id));
+  const otherGoalies = (est.goalies || []).filter(g => !goalieIds.has(g.id))
+    .sort((a,b) => {
+      const at = a.team ? 1 : 0, bt = b.team ? 1 : 0;
+      return at - bt || (a.name||'').localeCompare(b.name||'');
+    });
+  const goalieRow = `<div style="display:flex;gap:8px;align-items:center;">
       <select class="est-ms-goalie" data-side="${side}" style="flex:1;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
         <option value="">— Aucun gardien</option>
         ${goalies.map(g => `<option value="${g.id}" ${savedGoalie?.id === g.id ? 'selected' : ''}>${escapeHtml(g.name)}</option>`).join('')}
+        ${otherGoalies.length ? `<optgroup label="🔄 Remplaçants">${otherGoalies.map(g => `<option value="${g.id}" ${savedGoalie?.id === g.id ? 'selected' : ''}>${escapeHtml(g.name)} ${g.team ? '(' + escapeHtml(est.teams[g.team]?.name || g.team) + ')' : '(Sans pays)'}</option>`).join('')}</optgroup>` : ''}
       </select>
       <input type="number" class="est-ms-saves" data-side="${side}" min="0" value="${savedGoalie?.saves ?? ''}" placeholder="Arrêts" title="Nombre d'arrêts" style="width:76px;padding:6px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
     </div>`;
-  }
 
   return `<div style="flex:1;min-width:260px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;">
     <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;margin-bottom:10px;">${flag}${escapeHtml(t?.name||teamKey)}</div>
     ${playerRows}
+    ${subSelect}
     <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
       <div style="color:var(--text-tertiary);font-size:10px;margin-bottom:6px;">🥅 GARDIEN (buts accordés et V/D calculés automatiquement)</div>
       ${goalieRow}
     </div>
   </div>`;
+}
+
+// Ajouter un remplaçant dans le formulaire de match (rangée dynamique)
+function estAddSubRow(sel) {
+  const playerId = sel.value;
+  if (!playerId) return;
+  const side = sel.dataset.side;
+  const est = getEstData();
+  const p = (est?.players || []).find(x => x.id === playerId);
+  const grid = document.getElementById('estMsGrid-' + side);
+  if (!p || !grid) { sel.value = ''; return; }
+  grid.insertAdjacentHTML('beforeend', `
+    <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" checked style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
+    <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)} <span style="color:#f59e0b;font-size:10px;font-weight:700;">(R)</span></span>
+    <input type="number" class="est-ms-g" data-id="${p.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
+    <input type="number" class="est-ms-a" data-id="${p.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`);
+  // Retirer ce joueur du dropdown
+  const opt = sel.querySelector('option[value="' + playerId + '"]');
+  if (opt) opt.remove();
+  sel.value = '';
 }
 
 function openEstMatchModal(weekIdx, matchId) {
