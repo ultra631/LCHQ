@@ -2813,7 +2813,7 @@
 
 <!-- ============ PAGES 6S ============ -->
 
-<section id="page-standings-6s" class="page">
+<section id="page-standings-6s-legacy" class="page">
   <div class="division-banner" style="--division-color: #3b82f6">
     <div class="division-banner-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">⚡</div>
     <div class="division-banner-text">
@@ -3904,11 +3904,11 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div class="modal-form-group">
           <label>Score domicile</label>
-          <input type="number" id="matchHomeScore" min="0" value="0">
+          <input type="number" id="addMatchHomeScore" min="0" value="0">
         </div>
         <div class="modal-form-group">
           <label>Score visiteur</label>
-          <input type="number" id="matchAwayScore" min="0" value="0">
+          <input type="number" id="addMatchAwayScore" min="0" value="0">
         </div>
       </div>
     </div>
@@ -10471,13 +10471,10 @@ function openMatchModal6S(matchId) {
 }
 
 function renderStats6S() {
-  console.log('🔍 renderStats6S appelée');
   const players = DATA.season_3_6v6?.players || [];
   const goalies = DATA.season_3_6v6?.goalies || [];
-  console.log('📊 Joueurs 6S:', players.length, 'Gardiens 6S:', goalies.length);
 
   if (players.length === 0 && goalies.length === 0) {
-    console.log('⚠️ Aucune donnée - affichage message vide');
     document.getElementById('stats6sSkaters').innerHTML = `<div class="empty-state">
       <div class="empty-state-icon">📊</div>
       <p style="font-size: 16px;"><strong>Statistiques à venir</strong></p>
@@ -14268,7 +14265,8 @@ if (window.innerWidth <= 900) {
     <button class="drawer-btn" onclick="drawerNav('draft')"><span class="drawer-btn-icon">🎯</span>Repêchage</button>
     <button class="drawer-btn" onclick="drawerNav('playoffs')"><span class="drawer-btn-icon">🏆</span>Playoffs</button>
     <button class="drawer-btn" onclick="drawerNav('stats')"><span class="drawer-btn-icon">📊</span>Stats</button>
-    <button class="drawer-btn" onclick="drawerNav('trophies')"><span class="drawer-btn-icon">🏆</span>Trophées</button>
+    <button class="drawer-btn" onclick="drawerNav('trophies-nhl')"><span class="drawer-btn-icon">🏆</span>Trophées NHL</button>
+    <button class="drawer-btn" onclick="drawerNav('trophies-lhjmq')"><span class="drawer-btn-icon">🏆</span>Trophées LHJMQ</button>
     <button class="drawer-btn" onclick="drawerNav('tournois-4s')"><span class="drawer-btn-icon">🥇</span>Tournois</button>
     
     <div class="drawer-section-label">Archives</div>
