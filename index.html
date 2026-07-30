@@ -1984,6 +1984,7 @@
       <button class="tab" id="homeLeaderTabEst-g" onclick="switchHomeLeadersEst('g',this)" style="white-space:nowrap;">🥅 Buts</button>
       <button class="tab" id="homeLeaderTabEst-a" onclick="switchHomeLeadersEst('a',this)" style="white-space:nowrap;">🤝 Passes</button>
       <button class="tab" id="homeLeaderTabEst-pm" onclick="switchHomeLeadersEst('pm',this)" style="white-space:nowrap;">📈 +/-</button>
+      <button class="tab" id="homeLeaderTabEst-goalie" onclick="switchHomeLeadersEst('goalie',this)" style="white-space:nowrap;">🥅 Gardiens</button>
       <select id="leadersLimitSelEstHome" onchange="setLeadersLimit('est', this.value)" style="margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;cursor:pointer;">
         <option value="5">Top 5</option>
         <option value="10" selected>Top 10</option>
@@ -4393,14 +4394,25 @@ function renderHomeLeadersEst(type) {
   }
 
   // Avant les premiers matchs, tout est à zéro
-  const hasGames = players.some(p => (p.gp || 0) > 0);
+  const goaliesAll = est?.goalies || [];
+  const hasGames = players.some(p => (p.gp || 0) > 0) || goaliesAll.some(g => (g.gp || 0) > 0);
   if (!hasGames) {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div><p>Les Top Stats apparaîtront dès les premiers matchs de la saison!</p></div>';
     return;
   }
 
+  if (type === 'goalie') {
+    const list = [...goaliesAll]
+      .filter(g => (g.gp||0) > 0)
+      .sort((a,b) => (b.w||0)-(a.w||0) || (b.svpct||0)-(a.svpct||0))
+      .slice(0, leadersLimit['est']);
+    container.innerHTML = renderEstLeaderCards(list, 'goalie', est);
+    return;
+  }
+
   const statKey = type === 'pm' ? 'plusminus' : type;
   const list = [...players]
+    .filter(p => (p.gp||0) > 0)
     .sort((a,b) => (b[statKey]||0)-(a[statKey]||0) || (b.pts||0)-(a.pts||0) || (b.g||0)-(a.g||0))
     .slice(0, leadersLimit['est']);
   container.innerHTML = renderEstLeaderCards(list, type, est);
@@ -4409,9 +4421,9 @@ function renderHomeLeadersEst(type) {
 function renderEstLeaderCards(list, type, est) {
   if (!list || list.length === 0) return '<div class="empty-state"><p>Aucune donnée disponible</p></div>';
 
-  const labels = { pts:'PTS', g:'BUTS', a:'PASSES', pm:'+/-' };
+  const labels = { pts:'PTS', g:'BUTS', a:'PASSES', pm:'+/-', goalie:'V' };
   const label = labels[type] || type.toUpperCase();
-  const statKey = type === 'pm' ? 'plusminus' : type;
+  const statKey = type === 'pm' ? 'plusminus' : (type === 'goalie' ? 'w' : type);
 
   return `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
     ${list.map((p, i) => {
@@ -4419,7 +4431,9 @@ function renderEstLeaderCards(list, type, est) {
       const val = p[statKey] || 0;
       const valColor = type === 'pts' ? '#f59e0b' : type === 'pm' && val > 0 ? '#22c55e' : type === 'pm' && val < 0 ? '#ef4444' : 'var(--text-primary)';
       const valStr = type === 'pm' && val > 0 ? `+${val}` : val;
-      const sub = `${p.gp||0} PJ · ${p.g||0}B ${p.a||0}A`;
+      const sub = type === 'goalie'
+        ? `${p.gp||0} PJ · ${(p.gaa||0).toFixed ? (p.gaa||0).toFixed(2) : p.gaa} MOY · ${(p.svpct||0).toFixed ? (p.svpct||0).toFixed(1) : p.svpct}%`
+        : `${p.gp||0} PJ · ${p.g||0}B ${p.a||0}A`;
       const teamIcon = team?.flag
         ? `<img src="${team.flag}" style="width:32px;height:22px;object-fit:cover;border-radius:4px;">`
         : `<span style="font-size:24px;">${team?.emoji || '🏒'}</span>`;
@@ -4642,6 +4656,34 @@ function renderEstTopStats() {
     { key:'pm', label:'📈 Plus / Moins', unit:'+/-' }
   ];
 
+  // Bloc des gardiens (classés par victoires, ensuite %ARR)
+  const goaliesBlock = (() => {
+    const list = [...(est.goalies || [])]
+      .filter(g => (g.gp||0) > 0)
+      .sort((a,b) => (b.w||0)-(a.w||0) || (b.svpct||0)-(a.svpct||0))
+      .slice(0, leadersLimit['est']);
+    const rows = list.map((g, i) => {
+      const team = g.team ? est.teams?.[g.team] : null;
+      const flag = team?.flag
+        ? `<img src="${team.flag}" style="width:24px;height:16px;object-fit:cover;border-radius:3px;">`
+        : `<span style="font-size:15px;">${team?.emoji || '🥅'}</span>`;
+      const rankColor = i === 0 ? '#f59e0b' : i === 1 ? '#cbd5e1' : i === 2 ? '#b45309' : 'var(--text-tertiary)';
+      const moy = (g.gaa||0).toFixed ? (g.gaa||0).toFixed(2) : g.gaa;
+      const arr = (g.svpct||0).toFixed ? (g.svpct||0).toFixed(1) : g.svpct;
+      return `<div onclick="${g.team ? `openEstTeamDetail('${g.team}')` : `void(0)`}" style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:${g.team ? 'pointer' : 'default'};">
+        <span style="font-family:'Bebas Neue';font-size:16px;color:${rankColor};min-width:20px;">${i+1}</span>
+        ${flag}
+        <span style="flex:1;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(g.name)}</span>
+        <span style="font-size:10px;color:var(--text-tertiary);">${g.gp||0} PJ · ${moy} MOY · ${arr}%</span>
+        <span style="font-family:'Bebas Neue';font-size:20px;color:#f59e0b;min-width:36px;text-align:right;">${g.w||0}V</span>
+      </div>`;
+    }).join('') || '<div style="padding:16px;color:var(--text-tertiary);font-size:12px;text-align:center;">Aucune donnée</div>';
+    return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+      <div style="padding:12px 14px;background:linear-gradient(135deg,rgba(245,158,11,0.15),transparent);border-bottom:1px solid var(--border);font-family:'Bebas Neue';font-size:18px;letter-spacing:1px;color:#f59e0b;">🥅 Gardiens</div>
+      ${rows}
+    </div>`;
+  })();
+
   container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;">
     ${cats.map(cat => {
       const statKey = cat.key === 'pm' ? 'plusminus' : cat.key;
@@ -4671,6 +4713,7 @@ function renderEstTopStats() {
         ${rows}
       </div>`;
     }).join('')}
+    ${goaliesBlock}
   </div>`;
 }
 
