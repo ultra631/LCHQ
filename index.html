@@ -4124,20 +4124,18 @@ async function loadData() {
     console.log('📂 Chargement depuis data.json...');
     const res = await fetch('data.json');
     DATA = await res.json();
-    console.log('✅ Données chargées depuis data.json!');
-    updateFirebaseStatus('offline', 'Mode local');
-    
-    // Upload to Firebase if available
-    if (firebaseReady && DATA) {
-      console.log('📤 Upload vers Firebase...');
-      await saveToFirebase();
-    }
+    console.log('✅ Données chargées depuis data.json (MODE SECOURS — lecture seule)');
+    updateFirebaseStatus('offline', 'Mode secours (lecture seule)');
+    // 🛡️ PROTECTION: en mode secours, le data.json peut être vieux.
+    // On ne l'envoie JAMAIS vers Firebase et toute sauvegarde est bloquée.
+    window.loadedFromFallback = true;
   } catch (e) {
     console.error('❌ Erreur chargement data.json:', e);
     
     // Last resort: check localStorage
     const localData = localStorage.getItem('lchq_data');
     if (localData) {
+      window.loadedFromFallback = true;
       DATA = JSON.parse(localData);
       console.log('✅ Données restaurées depuis localStorage!');
       updateFirebaseStatus('offline', 'Mode local');
@@ -4158,6 +4156,13 @@ function saveToFirebaseDebounced() {
 }
 
 async function saveToFirebase() {
+  // 🛡️ Si les données viennent du data.json de secours (possiblement vieilles),
+  // on REFUSE de sauvegarder pour ne jamais écraser Firebase avec du vieux stock.
+  if (window.loadedFromFallback) {
+    console.warn('🛡️ Sauvegarde BLOQUÉE: données de secours chargées. Recharge la page (Ctrl+F5) quand la connexion est bonne.');
+    if (typeof isAdmin !== 'undefined' && isAdmin) alert('🛡️ SAUVEGARDE BLOQUÉE\n\nLe site roule sur les données de secours (data.json) parce que Firebase a pas répondu au chargement.\n\nPour protéger les vraies données, aucune sauvegarde est permise dans ce mode.\n\nRecharge la page (Ctrl+F5) et réessaie.');
+    return;
+  }
   if (!window.firebase || !DATA) return;
   
   try {
