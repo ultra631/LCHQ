@@ -2234,6 +2234,20 @@
     <label style="display:flex;align-items:center;gap:8px;margin-top:16px;cursor:pointer;font-size:13px;">
       <input type="checkbox" id="estMatchOT" style="width:16px;height:16px;accent-color:#f59e0b;"> ⏱️ Match gagné en prolongation / tirs de barrage
     </label>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;cursor:pointer;">
+      <input type="checkbox" id="estMatchForfeit" onchange="estToggleForfeit()" style="width:16px;height:16px;accent-color:#ef4444;"> 🚫 Match perdu par forfait (abandon / crashs répétés)
+    </label>
+    <div id="estForfeitBox" style="display:none;margin-top:8px;padding:10px 12px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.35);border-radius:8px;">
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">Équipe qui déclare forfait:</div>
+      <select id="estForfeitTeam" onchange="estApplyForfeitScore()" style="width:100%;padding:7px 9px;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:13px;">
+        <option value="home" id="estForfeitOptHome">Domicile</option>
+        <option value="away" id="estForfeitOptAway">Visiteur</option>
+      </select>
+      <div style="font-size:11px;color:var(--text-tertiary);margin-top:8px;line-height:1.5;">
+        Le score officiel devient <b>5-0</b> pour l'équipe gagnante (modifiable ci-dessus).<br>
+        Les <b>points des joueurs restent comptés</b> — seul le score du match change.
+      </div>
+    </div>
     <div id="estMatchStatsArea" style="margin-top:18px;"></div>
     <div style="margin-top:20px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-secondary" onclick="clearEstMatch()" style="color:#ef4444;">🗑️ Effacer le score</button>
@@ -4375,7 +4389,7 @@ function estCountryCard(key, t, rank) {
   const flag = t.flag
     ? `<img src="${t.flag}" alt="${escapeHtml(t.name)}" class="team-card-logo" style="border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.4);" onerror="this.outerHTML='<div class=&quot;team-card-logo&quot; style=&quot;font-size:60px&quot;>${t.emoji||'🏒'}</div>'">`
     : `<div class="team-card-logo" style="font-size:60px">${t.emoji||'🏒'}</div>`;
-  const rec = (r.gp ? `${r.w||0}-${r.l||0}-${r.otl||0}` : 'Aucun match');
+  const rec = (r.gp ? `${r.w||0}-${r.vp||0}-${r.l||0}-${r.otl||0}` : 'Aucun match');
   const color = EST_COUNTRY_COLORS[key] || '#f59e0b';
   // Médaille pour le podium, numéro sinon
   const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
@@ -4851,7 +4865,7 @@ function renderEstTeamDetail() {
       const my = isHome ? m.home_score : m.away_score;
       const their = isHome ? m.away_score : m.home_score;
       const won = my > their;
-      result = `${won ? 'V' : (m.ot ? 'DP' : 'D')} ${my}-${their}${m.ot ? ' (Prol)' : ''}`;
+      result = `${won ? (m.ot ? 'VP' : 'V') : (m.ot ? 'DP' : 'D')} ${my}-${their}${m.ot ? ' (Prol)' : ''}${m.forfeit ? ' (Forfait)' : ''}`;
       resultColor = won ? '#22c55e' : '#ef4444';
     } else {
       result = 'À venir';
@@ -4880,7 +4894,7 @@ function renderEstTeamDetail() {
       ${flag}
       <div>
         <h2 style="font-family:'Bebas Neue';font-size:36px;letter-spacing:2px;margin:0;color:#f59e0b;">${escapeHtml(t.name)}</h2>
-        <div style="color:var(--text-tertiary);font-size:13px;">Saison Estivale 2026 · ${r.gp ? `Fiche ${r.w||0}-${r.l||0}-${r.otl||0}` : 'Aucun match joué'} ${r.streak && r.streak !== '—' ? '· Séquence ' + r.streak : ''}</div>
+        <div style="color:var(--text-tertiary);font-size:13px;">Saison Estivale 2026 · ${r.gp ? `Fiche ${r.w||0}-${r.vp||0}-${r.l||0}-${r.otl||0} (V-VP-D-DP)` : 'Aucun match joué'} ${r.streak && r.streak !== '—' ? '· Séquence ' + r.streak : ''}</div>
       </div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;">
@@ -4936,7 +4950,7 @@ function renderEstSchedule() {
           <span style="color:${hWin?'#22c55e':'var(--text-tertiary)'};">${m.home_score}</span>
           <span style="color:var(--text-tertiary);margin:0 4px;">-</span>
           <span style="color:${!hWin?'#22c55e':'var(--text-tertiary)'};">${m.away_score}</span>
-        </span>${m.ot ? '<span style="font-size:10px;color:#f59e0b;font-weight:700;margin-left:4px;">PROL</span>' : ''}`;
+        </span>${m.ot ? '<span style="font-size:10px;color:#f59e0b;font-weight:700;margin-left:4px;">PROL</span>' : ''}${m.forfeit ? '<span style="font-size:10px;color:#ef4444;font-weight:700;margin-left:4px;" title="Match perdu par forfait">FORFAIT</span>' : ''}`;
       } else {
         center = '<span style="color:var(--text-tertiary);font-weight:700;font-size:13px;">VS</span>';
       }
@@ -4996,6 +5010,27 @@ function recalcEstStandings() {
       t.record.streak = n + last;
     }
   });
+}
+
+// --- FORFAIT: affiche/masque le bloc et applique le score officiel ---
+function estToggleForfeit() {
+  const on = document.getElementById('estMatchForfeit')?.checked;
+  const box = document.getElementById('estForfeitBox');
+  if (box) box.style.display = on ? 'block' : 'none';
+  const ot = document.getElementById('estMatchOT');
+  if (on && ot) ot.checked = false;  // un forfait n'est jamais une prolongation
+  if (on) estApplyForfeitScore();
+}
+
+function estApplyForfeitScore() {
+  if (!document.getElementById('estMatchForfeit')?.checked) return;
+  const side = document.getElementById('estForfeitTeam')?.value || 'home';
+  const hs = document.getElementById('estMatchHomeScore');
+  const as = document.getElementById('estMatchAwayScore');
+  if (!hs || !as) return;
+  // Score officiel de forfait: 5-0 pour l'équipe qui n'a pas abandonné
+  hs.value = side === 'home' ? '0' : '5';
+  as.value = side === 'home' ? '5' : '0';
 }
 
 // --- Modal de score estival avec stats automatiques ---
@@ -5190,6 +5225,17 @@ function openEstMatchModal(weekIdx, matchId) {
   document.getElementById('estMatchHomeScore').value = match.played && match.home_score != null ? match.home_score : '';
   document.getElementById('estMatchAwayScore').value = match.played && match.away_score != null ? match.away_score : '';
   document.getElementById('estMatchOT').checked = !!match.ot;
+  // Forfait
+  const fFor = document.getElementById('estMatchForfeit');
+  const fSel = document.getElementById('estForfeitTeam');
+  const optH = document.getElementById('estForfeitOptHome');
+  const optA = document.getElementById('estForfeitOptAway');
+  if (optH) optH.textContent = est.teams[match.home]?.name || 'Domicile';
+  if (optA) optA.textContent = est.teams[match.away]?.name || 'Visiteur';
+  if (fFor) fFor.checked = !!match.forfeit;
+  if (fSel && match.forfeit) fSel.value = match.forfeit;
+  const fBox = document.getElementById('estForfeitBox');
+  if (fBox) fBox.style.display = match.forfeit ? 'block' : 'none';
 
   // Zone de stats des joueurs (B, A cochés par joueur) + gardiens
   const statsArea = document.getElementById('estMatchStatsArea');
@@ -5239,8 +5285,11 @@ function saveEstMatch() {
 
   // Avertir si le total des buts des joueurs ne correspond pas au score
   const warn = [];
-  if (sumG.home !== h) warn.push('Domicile: ' + sumG.home + ' but(s) de joueurs pour un score de ' + h);
-  if (sumG.away !== a) warn.push('Visiteur: ' + sumG.away + ' but(s) de joueurs pour un score de ' + a);
+  const _forfeitChecked = document.getElementById('estMatchForfeit')?.checked;
+  if (!_forfeitChecked) {  // sur un forfait, l'écart score/buts est normal
+    if (sumG.home !== h) warn.push('Domicile: ' + sumG.home + ' but(s) de joueurs pour un score de ' + h);
+    if (sumG.away !== a) warn.push('Visiteur: ' + sumG.away + ' but(s) de joueurs pour un score de ' + a);
+  }
   if (warn.length && !confirm('⚠️ Les buts des joueurs ne correspondent pas au score:\n' + warn.join('\n') + '\n\nEnregistrer quand même?')) return;
 
   // Collecter les gardiens
@@ -5263,6 +5312,19 @@ function saveEstMatch() {
   match.home_score = h;
   match.away_score = a;
   match.ot = document.getElementById('estMatchOT').checked;
+  // Forfait: le score officiel (5-0) est déjà dans les cases; on garde le score réel
+  // joué à part pour ne pas fausser les buts accordés des gardiens.
+  const forfeitOn = document.getElementById('estMatchForfeit')?.checked;
+  if (forfeitOn) {
+    match.forfeit = document.getElementById('estForfeitTeam')?.value || 'home';
+    match.ot = false;
+    match.real_home_score = sumG.home;
+    match.real_away_score = sumG.away;
+  } else {
+    delete match.forfeit;
+    delete match.real_home_score;
+    delete match.real_away_score;
+  }
   match.played = true;
   match.player_stats = playerStats;
   match.goalie_stats = goalieStats;
@@ -5318,7 +5380,10 @@ function recalcEstPlayerStats() {
   const weeks = est.schedule?.weeks || [];
   weeks.forEach(w => (w.matches || []).forEach(m => {
     if (!m.played || m.home_score == null || m.away_score == null) return;
-    const hs = m.home_score, as = m.away_score;
+    // Sur un forfait, les gardiens sont jugés sur le score RÉELLEMENT joué,
+    // pas sur le 5-0 officiel (ils n'ont pas accordé ces buts-là).
+    const hs = (m.forfeit && m.real_home_score != null) ? m.real_home_score : m.home_score;
+    const as = (m.forfeit && m.real_away_score != null) ? m.real_away_score : m.away_score;
 
     // Joueurs: MJ, B, A, +/-
     (m.player_stats || []).forEach(s => {
@@ -5336,8 +5401,10 @@ function recalcEstPlayerStats() {
       const g = (est.goalies || []).find(x => x.id === s.id);
       if (!g) return;
       const isHome = s.side === 'home';
-      const gaMatch = isHome ? as : hs;
-      const won = isHome ? (hs > as) : (as > hs);
+      const gaMatch = isHome ? as : hs;   // buts accordés = score réellement joué
+      // Le résultat V/D suit le score OFFICIEL (donc le forfait l'emporte)
+      const offH = m.home_score, offA = m.away_score;
+      const won = isHome ? (offH > offA) : (offA > offH);
       g.gp++;
       g.ga += gaMatch;
       g.sv += s.saves || 0;
