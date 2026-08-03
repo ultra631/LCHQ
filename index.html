@@ -5101,7 +5101,9 @@ function buildEstMatchStatsSide(est, teamKey, side, match) {
   const rowHtml = (p, isSub) => {
     const s = savedStats.find(x => x.id === p.id);
     const checked = isSub ? true : (match.played ? !!s : true);
-    const subBadge = isSub ? ' <span style="color:#f59e0b;font-size:10px;font-weight:700;">(R)</span>' : '';
+    const subBadge = isSub
+      ? ` <span style="color:#f59e0b;font-size:10px;font-weight:700;">(R)</span> <button type="button" onclick="estRemoveSubRow(this)" data-pid="${p.id}" data-pname="${escapeHtml(p.name)}" data-side="${side}" title="Retirer ce remplaçant du match" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:12px;padding:0 3px;line-height:1;">✖</button>`
+      : '';
     return `
       <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" ${checked ? 'checked' : ''} style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
       <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)}${subBadge}</span>
@@ -5184,6 +5186,26 @@ function buildEstMatchStatsSide(est, teamKey, side, match) {
 }
 
 // Ajouter un remplaçant dans le formulaire de match (rangée dynamique)
+// Retirer un remplaçant du match (enlève sa rangée et le remet dans le menu)
+function estRemoveSubRow(btn) {
+  const pid = btn.dataset.pid, pname = btn.dataset.pname, side = btn.dataset.side;
+  const grid = document.getElementById('estMsGrid-' + side);
+  if (!grid) return;
+  // Une rangée = 4 éléments: case à cocher, nom, buts, passes
+  const cb = grid.querySelector('.est-ms-played[data-id="' + CSS.escape(pid) + '"]');
+  const gI = grid.querySelector('.est-ms-g[data-id="' + CSS.escape(pid) + '"]');
+  const aI = grid.querySelector('.est-ms-a[data-id="' + CSS.escape(pid) + '"]');
+  const nameCell = btn.closest('span')?.parentElement === grid ? btn.closest('span') : btn.parentElement;
+  [cb, nameCell, gI, aI].forEach(el => { if (el && el.parentElement === grid) el.remove(); });
+  // Le remettre dans le menu déroulant pour pouvoir le rajouter
+  const sel = document.querySelector('.est-ms-addsub[data-side="' + side + '"]');
+  if (sel && !sel.querySelector('option[value="' + pid + '"]')) {
+    const opt = document.createElement('option');
+    opt.value = pid; opt.textContent = pname;
+    sel.appendChild(opt);
+  }
+}
+
 function estAddSubRow(sel) {
   let playerId = sel.value;
   if (!playerId) return;
@@ -5202,11 +5224,11 @@ function estAddSubRow(sel) {
   if (grid.querySelector('.est-ms-played[data-id="' + p.id + '"]')) { sel.value = ''; return; }
   grid.insertAdjacentHTML('beforeend', `
     <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" checked style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
-    <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)} <span style="color:#f59e0b;font-size:10px;font-weight:700;">(R)</span></span>
+    <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)} <span style="color:#f59e0b;font-size:10px;font-weight:700;">(R)</span> <button type="button" onclick="estRemoveSubRow(this)" data-pid="${p.id}" data-pname="${escapeHtml(p.name)}" data-side="${side}" title="Retirer ce remplaçant du match" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:12px;padding:0 3px;line-height:1;">✖</button></span>
     <input type="number" class="est-ms-g" data-id="${p.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
     <input type="number" class="est-ms-a" data-id="${p.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`);
-  // Retirer ce joueur du dropdown
-  const opt = sel.querySelector('option[value="' + playerId + '"]');
+  // Retirer l'option choisie du menu (garde l'id d'origine, ex: "g:estg_3")
+  const opt = sel.querySelector('option[value="' + CSS.escape(sel.value) + '"]') || sel.querySelector('option[value="' + CSS.escape(playerId) + '"]');
   if (opt) opt.remove();
   sel.value = '';
 }
