@@ -413,7 +413,7 @@
   .team-card:hover {
     border-color: var(--team-color, var(--red));
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45), 0 8px 26px -10px var(--team-color, var(--red));
   }
   .team-card-logo {
     width: 80px; height: 80px;
@@ -4338,13 +4338,51 @@ function getEstData() {
   return (DATA && DATA.summer_2026) ? DATA.summer_2026 : null;
 }
 
-function estCountryCard(key, t) {
+// Couleur distinctive de chaque pays (tirée de son drapeau)
+const EST_COUNTRY_COLORS = {
+  canada: '#e63946',          // rouge canadien
+  grande_bretagne: '#1e3a8a', // bleu royal
+  suede: '#fecc02',           // jaune suédois
+  etats_unis: '#3c5aa8',      // bleu US
+  suisse: '#d52b1e',          // rouge suisse
+  rep_tcheque: '#11457e',     // bleu tchèque
+  norvege: '#ba0c2f',         // rouge norvégien
+  allemagne: '#ffce00',       // or allemand
+  ukraine: '#0057b7',         // bleu ukrainien
+  finlande: '#003580',        // bleu finlandais
+  slovenie: '#0000a0',        // bleu slovène
+  danemark: '#c8102e',        // rouge danois
+  autriche: '#ef3340',        // rouge autrichien
+  lettonie: '#9e3039',        // carmin letton
+  pologne: '#dc143c',         // cramoisi polonais
+  italie: '#009246'           // vert italien
+};
+
+// Ordre du CLASSEMENT (mêmes règles que la page Classement) — recalculé à chaque affichage
+function estCountriesByStandings(est) {
+  const keys = (est.countries || Object.keys(est.teams || {})).filter(k => est.teams?.[k]);
+  return keys.sort((a, b) => {
+    const ra = est.teams[a].record || {}, rb = est.teams[b].record || {};
+    return (rb.pts||0)-(ra.pts||0)
+      || (rb.diff||0)-(ra.diff||0)
+      || (rb.gf||0)-(ra.gf||0)
+      || (est.teams[a].name||'').localeCompare(est.teams[b].name||'');
+  });
+}
+
+function estCountryCard(key, t, rank) {
   const r = t.record || {};
   const flag = t.flag
     ? `<img src="${t.flag}" alt="${escapeHtml(t.name)}" class="team-card-logo" style="border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.4);" onerror="this.outerHTML='<div class=&quot;team-card-logo&quot; style=&quot;font-size:60px&quot;>${t.emoji||'🏒'}</div>'">`
     : `<div class="team-card-logo" style="font-size:60px">${t.emoji||'🏒'}</div>`;
   const rec = (r.gp ? `${r.w||0}-${r.l||0}-${r.otl||0}` : 'Aucun match');
-  return `<div class="team-card" style="--team-color:#f59e0b" onclick="openEstTeamDetail('${key}')">
+  const color = EST_COUNTRY_COLORS[key] || '#f59e0b';
+  // Médaille pour le podium, numéro sinon
+  const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+  const rankBadge = rank ? `<div style="position:absolute;top:10px;left:12px;display:flex;align-items:center;gap:4px;font-family:'Bebas Neue';font-size:18px;color:${rank<=3 ? color : 'var(--text-tertiary)'};z-index:2;">${medal || '#' + rank}</div>` : '';
+  const pts = r.gp ? `<div style="position:absolute;top:10px;right:12px;font-family:'Bebas Neue';font-size:20px;color:${color};z-index:2;">${r.pts||0} <span style="font-size:11px;color:var(--text-tertiary);">PTS</span></div>` : '';
+  return `<div class="team-card" style="--team-color:${color}" onclick="openEstTeamDetail('${key}')">
+    ${rankBadge}${pts}
     ${flag}
     <div class="team-card-name">${escapeHtml(t.name)}</div>
     <div class="team-card-city">Saison Estivale 2026</div>
@@ -4357,8 +4395,8 @@ function renderEstTeams() {
   const grid = document.getElementById('estTeamsGrid');
   if (!grid) return;
   if (!est || !est.teams) { grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🌍</div><p>Aucun pays pour l\'instant.</p></div>'; return; }
-  const order = est.countries || Object.keys(est.teams);
-  grid.innerHTML = order.map(k => est.teams[k] ? estCountryCard(k, est.teams[k]) : '').join('');
+  const order = estCountriesByStandings(est);
+  grid.innerHTML = order.map((k, i) => estCountryCard(k, est.teams[k], i + 1)).join('');
 }
 
 function renderEstHome() {
@@ -4367,10 +4405,10 @@ function renderEstHome() {
   const statTeams = document.getElementById('homeStatEstTeams');
   const statStatus = document.getElementById('homeStatEstStatus');
   if (est) {
-    const order = est.countries || Object.keys(est.teams || {});
+    const order = estCountriesByStandings(est);
     if (statTeams) statTeams.textContent = order.length;
     if (statStatus) statStatus.textContent = est.status || 'À venir';
-    if (grid) grid.innerHTML = order.map(k => est.teams[k] ? estCountryCard(k, est.teams[k]) : '').join('');
+    if (grid) grid.innerHTML = order.map((k, i) => estCountryCard(k, est.teams[k], i + 1)).join('');
   } else if (grid) {
     grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🌍</div><p>Aucun pays pour l\'instant.</p></div>';
   }
