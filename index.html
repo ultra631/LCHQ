@@ -4189,10 +4189,25 @@ async function saveToFirebase() {
       let backups = [];
       try { backups = JSON.parse(localStorage.getItem('lchq_backups') || '[]'); } catch(e) { backups = []; }
       backups.unshift({ at: stamp, data: JSON.stringify(DATA) });
-      backups = backups.slice(0, 10); // garder les 10 plus récentes
-      localStorage.setItem('lchq_backups', JSON.stringify(backups));
-      // Toujours garder la toute dernière version sauvegardée à part (restauration rapide)
-      localStorage.setItem('lchq_data_prev', localStorage.getItem('lchq_data') || '');
+      // Le navigateur ne permet qu'environ 5 Mo: on garde peu de copies et on
+      // réduit progressivement si ça déborde (sinon AUCUN backup ne se fait).
+      let ecrit = false;
+      for (const n of [3, 2, 1]) {
+        try {
+          localStorage.setItem('lchq_backups', JSON.stringify(backups.slice(0, n)));
+          ecrit = true;
+          break;
+        } catch(e) { /* trop gros: on réessaie avec moins de copies */ }
+      }
+      if (!ecrit) {
+        // Même une seule copie ne rentre pas: on libère la place et on garde
+        // au moins la dernière version connue.
+        try { localStorage.removeItem('lchq_backups'); } catch(e) {}
+        try { localStorage.setItem('lchq_backups', JSON.stringify([backups[0]])); ecrit = true; } catch(e) {}
+      }
+      if (!ecrit) console.warn('⚠️ Backup local impossible (mémoire du navigateur pleine) — Firebase reste la sauvegarde principale.');
+      // Version précédente à part, seulement si la place le permet
+      try { localStorage.setItem('lchq_data_prev', localStorage.getItem('lchq_data') || ''); } catch(e) {}
     } catch(e) { console.warn('Backup local impossible:', e); }
     
     // Add admin key for security (required by Firestore rules)
@@ -4205,8 +4220,8 @@ async function saveToFirebase() {
     console.log('✅ Données sauvegardées dans Firebase!');
     updateFirebaseStatus('connected', 'Synchronisé');
     
-    // Also save to localStorage as backup (without the key)
-    localStorage.setItem('lchq_data', JSON.stringify(DATA));
+    // Copie locale de la dernière version (protégée contre le manque de place)
+    try { localStorage.setItem('lchq_data', JSON.stringify(DATA)); } catch(e) { console.warn('Copie locale impossible (mémoire pleine)'); }
   } catch (e) {
     console.error('❌ Erreur sauvegarde Firebase:', e);
     updateFirebaseStatus('error', 'Erreur sync');
@@ -5377,6 +5392,11 @@ function clearEstMatch() {
   match.played = false;
   delete match.player_stats;
   delete match.goalie_stats;
+  // Nettoyer aussi les traces de forfait et d'import EA (sinon elles resteraient
+  // collées au match et fausseraient un futur enregistrement)
+  delete match.forfeit;
+  delete match.real_home_score;
+  delete match.real_away_score;
   recalcEstStandings();
   recalcEstPlayerStats();
   closeModal('estMatchModal');
@@ -5927,7 +5947,7 @@ function renderHome() {
 function renderLeaderList(players, statKey) {
   if (!players.length) return '<div class="empty-state"><p>Aucune donnée</p></div>';
   return players.map((p, i) => {
-    const team = DATA.teams[p.team];
+    const team = DATA.teams[p.team] || { name: 'Sans équipe', emoji: '🏒', logo: '', color: 'var(--red)' };
     const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
     const logoHtml = team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji;
     
@@ -5949,7 +5969,7 @@ function renderLeaderList(players, statKey) {
 function renderGoalieLeaderList(goalies, statKey) {
   if (!goalies.length) return '<div class="empty-state"><p>Aucune donnée</p></div>';
   return goalies.map((g, i) => {
-    const team = DATA.teams[g.team];
+    const team = DATA.teams[g.team] || { name: 'Sans équipe', emoji: '🏒', logo: '', color: 'var(--red)' };
     const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
     const logoHtml = team.logo ? `<img src="${team.logo}" class="team-mini-logo" onerror="this.outerHTML='${team.emoji}'">` : team.emoji;
     
@@ -8085,7 +8105,9 @@ function openTeamModal(teamKey) {
 }
 
 function saveTeam() {
-  const newVal = (key) => parseFloat(document.getElementById(`t${key}New`).textContent) || 0;
+  // Sécurité: aucune équipe en cours d'édition (bouton cliqué hors contexte)
+  if (!editingTeamKey) return;
+  const newVal = (key) => parseFloat(document.getElementById(`t${key}New`)?.textContent) || 0;
   const w = newVal('W');
   const otl = newVal('Otl');
   
@@ -12321,9 +12343,13 @@ function loadTpStats(stats, isGoalie) {
 }
 
 async function saveTournoisPlayerStats() {
+  // Sécurité: rien de sélectionné (bouton cliqué hors contexte) → on sort proprement
+  if (!currentTournoisTeam || !currentTournoisPlayer) return;
   const { mode, division, teamNum } = currentTournoisTeam;
-  const team = DATA.tournaments[mode][division].find(t => t.teamNum === teamNum);
-  if (!team || !currentTournoisPlayer) return;
+  const liste = DATA.tournaments?.[mode]?.[division];
+  if (!Array.isArray(liste)) return;
+  const team = liste.find(t => t.teamNum === teamNum);
+  if (!team) return;
 
   const sPositions = team?.player_positions?.[currentTournoisPlayer] || [];
   const sIsGoalie = sPositions.includes('G');
