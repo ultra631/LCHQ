@@ -2244,9 +2244,11 @@
         <option value="away" id="estForfeitOptAway">Visiteur</option>
       </select>
       <div style="font-size:11px;color:var(--text-tertiary);margin-top:8px;line-height:1.5;">
-        Le score officiel devient <b>6-0</b> pour l'équipe gagnante (modifiable ci-dessus).<br>
-        Règle de la ligue: 3 joueurs du gagnant à <b>2B 4A</b>, gardien gagnant <b>,750</b> (sans blanchissage), gardien perdant <b>,500</b>.<br>
-        Les <b>points des joueurs restent comptés</b> — seul le score du match change.
+        ✨ <b>Rempli automatiquement:</b> score <b>6-0</b>, les 3 premiers joueurs du gagnant à <b>2B 4A</b> chacun,
+        et les arrêts des deux gardiens.<br>
+        🥅 <b>À toi de choisir les 2 gardiens</b> dans les menus ci-dessous — leurs stats donneront
+        <b>,750</b> au gagnant (sans blanchissage) et <b>,500</b> au perdant.<br>
+        Tu peux ajuster n'importe quoi avant d'enregistrer.
       </div>
     </div>
     <div id="estMatchStatsArea" style="margin-top:18px;"></div>
@@ -5041,15 +5043,61 @@ function estToggleForfeit() {
   if (on) estApplyForfeitScore();
 }
 
+// Règles officielles de forfait de la ligue
+const EST_FORFAIT = {
+  score: 6,            // 6-0 pour le gagnant
+  nbJoueurs: 3,        // les 3 de l'alignement 4v4
+  buts: 2, passes: 4,  // 3 × 2 buts = 6 ✓
+  arretsGagnant: 6, baGagnant: 2,   // 6/8 = ,750 · les 2 BA évitent le blanchissage
+  arretsPerdant: 6, baPerdant: 6    // 6/12 = ,500
+};
+
+// Remplit TOUT le formulaire automatiquement quand un forfait est déclaré
 function estApplyForfeitScore() {
   if (!document.getElementById('estMatchForfeit')?.checked) return;
-  const side = document.getElementById('estForfeitTeam')?.value || 'home';
+  const sideFF = document.getElementById('estForfeitTeam')?.value || 'home';   // côté qui forfait
+  const sideW = sideFF === 'home' ? 'away' : 'home';                            // côté gagnant
   const hs = document.getElementById('estMatchHomeScore');
   const as = document.getElementById('estMatchAwayScore');
   if (!hs || !as) return;
-  // Score officiel de forfait: 6-0 pour l'équipe qui n'a pas abandonné
-  hs.value = side === 'home' ? '0' : '6';
-  as.value = side === 'home' ? '6' : '0';
+  const F = EST_FORFAIT;
+
+  // 1. Score officiel 6-0 pour le gagnant
+  hs.value = sideFF === 'home' ? '0' : String(F.score);
+  as.value = sideFF === 'home' ? String(F.score) : '0';
+
+  // 2. Côté GAGNANT: cocher les 3 premiers joueurs, 2 buts / 4 passes chacun
+  const gridW = document.getElementById('estMsGrid-' + sideW);
+  if (gridW) {
+    const cases = [...gridW.querySelectorAll('.est-ms-played')];
+    cases.forEach((cb, i) => {
+      const id = cb.dataset.id;
+      const gI = gridW.querySelector('.est-ms-g[data-id="' + CSS.escape(id) + '"]');
+      const aI = gridW.querySelector('.est-ms-a[data-id="' + CSS.escape(id) + '"]');
+      const actif = i < F.nbJoueurs;
+      cb.checked = actif;
+      if (gI) gI.value = actif ? String(F.buts) : '0';
+      if (aI) aI.value = actif ? String(F.passes) : '0';
+    });
+    const svW = document.querySelector('.est-ms-saves[data-side="' + sideW + '"]');
+    if (svW) svW.value = String(F.arretsGagnant);
+  }
+
+  // 3. Côté PERDANT: personne n'a joué, seulement le gardien encaisse
+  const gridL = document.getElementById('estMsGrid-' + sideFF);
+  if (gridL) {
+    gridL.querySelectorAll('.est-ms-played').forEach(cb => {
+      const id = cb.dataset.id;
+      cb.checked = false;
+      const gI = gridL.querySelector('.est-ms-g[data-id="' + CSS.escape(id) + '"]');
+      const aI = gridL.querySelector('.est-ms-a[data-id="' + CSS.escape(id) + '"]');
+      if (gI) gI.value = '0';
+      if (aI) aI.value = '0';
+    });
+    const svL = document.querySelector('.est-ms-saves[data-side="' + sideFF + '"]');
+    if (svL) svL.value = String(F.arretsPerdant);
+  }
+  // Les GARDIENS restent à choisir par l'admin dans les menus 🥅 (leurs arrêts sont déjà remplis)
 }
 
 // --- Modal de score estival avec stats automatiques ---
@@ -5359,8 +5407,12 @@ function saveEstMatch() {
   if (forfeitOn) {
     match.forfeit = document.getElementById('estForfeitTeam')?.value || 'home';
     match.ot = false;
-    match.real_home_score = sumG.home;
-    match.real_away_score = sumG.away;
+    // Buts accordés des gardiens selon les règles: gagnant ,750 (sans blanchissage), perdant ,500
+    // Le gardien du côté X encaisse le score "réel" du côté ADVERSE.
+    // Perdant → doit encaisser baPerdant (6) · Gagnant → baGagnant (2)
+    const sideFF = match.forfeit;
+    match.real_home_score = sideFF === 'home' ? EST_FORFAIT.baGagnant : EST_FORFAIT.baPerdant;
+    match.real_away_score = sideFF === 'home' ? EST_FORFAIT.baPerdant : EST_FORFAIT.baGagnant;
   } else {
     delete match.forfeit;
     delete match.real_home_score;
