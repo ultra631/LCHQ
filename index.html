@@ -2244,7 +2244,8 @@
         <option value="away" id="estForfeitOptAway">Visiteur</option>
       </select>
       <div style="font-size:11px;color:var(--text-tertiary);margin-top:8px;line-height:1.5;">
-        Le score officiel devient <b>5-0</b> pour l'équipe gagnante (modifiable ci-dessus).<br>
+        Le score officiel devient <b>6-0</b> pour l'équipe gagnante (modifiable ci-dessus).<br>
+        Règle de la ligue: 3 joueurs du gagnant à <b>2B 4A</b>, gardien gagnant <b>,750</b> (sans blanchissage), gardien perdant <b>,500</b>.<br>
         Les <b>points des joueurs restent comptés</b> — seul le score du match change.
       </div>
     </div>
@@ -4392,7 +4393,9 @@ function estCountriesByStandings(est) {
   const keys = (est.countries || Object.keys(est.teams || {})).filter(k => est.teams?.[k]);
   return keys.sort((a, b) => {
     const ra = est.teams[a].record || {}, rb = est.teams[b].record || {};
+    // Même ordre que la page Classement: POINTS → VICTOIRES → DIFFÉRENTIEL
     return (rb.pts||0)-(ra.pts||0)
+      || (rb.w||0)-(ra.w||0)
       || (rb.diff||0)-(ra.diff||0)
       || (rb.gf||0)-(ra.gf||0)
       || (est.teams[a].name||'').localeCompare(est.teams[b].name||'');
@@ -4530,10 +4533,11 @@ function renderEstStandings() {
   if (!est || !est.teams) { body.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--text-tertiary);padding:30px;">Aucun pays</td></tr>'; return; }
   const order = est.countries || Object.keys(est.teams);
   const rows = order.map(k => ({ key:k, t:est.teams[k] })).filter(x => x.t);
-  // Trier par points puis différentiel
+  // Trier: points → victoires → différentiel
   rows.sort((a,b) => {
     const ra=a.t.record||{}, rb=b.t.record||{};
-    return (rb.pts||0)-(ra.pts||0) || (rb.diff||0)-(ra.diff||0) || (rb.gf||0)-(ra.gf||0);
+    // Ordre de priorité: POINTS → VICTOIRES → DIFFÉRENTIEL → buts pour
+    return (rb.pts||0)-(ra.pts||0) || (rb.w||0)-(ra.w||0) || (rb.diff||0)-(ra.diff||0) || (rb.gf||0)-(ra.gf||0);
   });
   body.innerHTML = rows.map((x,i) => {
     const t = x.t, r = t.record || {};
@@ -5043,9 +5047,9 @@ function estApplyForfeitScore() {
   const hs = document.getElementById('estMatchHomeScore');
   const as = document.getElementById('estMatchAwayScore');
   if (!hs || !as) return;
-  // Score officiel de forfait: 5-0 pour l'équipe qui n'a pas abandonné
-  hs.value = side === 'home' ? '0' : '5';
-  as.value = side === 'home' ? '5' : '0';
+  // Score officiel de forfait: 6-0 pour l'équipe qui n'a pas abandonné
+  hs.value = side === 'home' ? '0' : '6';
+  as.value = side === 'home' ? '6' : '0';
 }
 
 // --- Modal de score estival avec stats automatiques ---
