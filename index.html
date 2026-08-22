@@ -5062,26 +5062,33 @@ function estApplyForfeitScore() {
   if (!hs || !as) return;
   const F = EST_FORFAIT;
 
-  // 1. Score officiel 6-0 pour le gagnant
-  hs.value = sideFF === 'home' ? '0' : String(F.score);
-  as.value = sideFF === 'home' ? String(F.score) : '0';
-
-  // 2. Côté GAGNANT: cocher les 3 premiers joueurs, 2 buts / 4 passes chacun
+  // 1. Côté GAGNANT: les joueurs DÉJÀ COCHÉS reçoivent 2 buts / 4 passes.
+  //    (Coche d'abord les gars présents, PUIS coche la case forfait.)
   const gridW = document.getElementById('estMsGrid-' + sideW);
+  let nbCoches = F.nbJoueurs;
   if (gridW) {
     const cases = [...gridW.querySelectorAll('.est-ms-played')];
-    cases.forEach((cb, i) => {
+    let coches = cases.filter(cb => cb.checked);
+    if (!coches.length) {            // personne de coché: on dépanne avec les 3 premiers
+      coches = cases.slice(0, F.nbJoueurs);
+      coches.forEach(cb => cb.checked = true);
+    }
+    nbCoches = coches.length;
+    cases.forEach(cb => {
       const id = cb.dataset.id;
       const gI = gridW.querySelector('.est-ms-g[data-id="' + CSS.escape(id) + '"]');
       const aI = gridW.querySelector('.est-ms-a[data-id="' + CSS.escape(id) + '"]');
-      const actif = i < F.nbJoueurs;
-      cb.checked = actif;
-      if (gI) gI.value = actif ? String(F.buts) : '0';
-      if (aI) aI.value = actif ? String(F.passes) : '0';
+      if (gI) gI.value = cb.checked ? String(F.buts) : '0';
+      if (aI) aI.value = cb.checked ? String(F.passes) : '0';
     });
     const svW = document.querySelector('.est-ms-saves[data-side="' + sideW + '"]');
     if (svW) svW.value = String(F.arretsGagnant);
   }
+
+  // 2. Score officiel: suit le nombre de joueurs cochés (3 × 2 buts = 6-0)
+  const totalButs = nbCoches * F.buts;
+  hs.value = sideFF === 'home' ? '0' : String(totalButs);
+  as.value = sideFF === 'home' ? String(totalButs) : '0';
 
   // 3. Côté PERDANT: personne n'a joué, seulement le gardien encaisse
   const gridL = document.getElementById('estMsGrid-' + sideFF);
@@ -5172,7 +5179,7 @@ function buildEstMatchStatsSide(est, teamKey, side, match) {
       ? ` <span style="color:#f59e0b;font-size:10px;font-weight:700;">(R)</span> <button type="button" onclick="estRemoveSubRow(this)" data-pid="${p.id}" data-pname="${escapeHtml(p.name)}" data-side="${side}" title="Retirer ce remplaçant du match" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:12px;padding:0 3px;line-height:1;">✖</button>`
       : '';
     return `
-      <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" ${checked ? 'checked' : ''} style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
+      <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" ${checked ? 'checked' : ''} onchange="if(document.getElementById('estMatchForfeit')?.checked) estApplyForfeitScore();" style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
       <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)}${subBadge}</span>
       <input type="number" class="est-ms-g" data-id="${p.id}" min="0" value="${s?.g || 0}" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
       <input type="number" class="est-ms-a" data-id="${p.id}" min="0" value="${s?.a || 0}" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`;
@@ -5184,7 +5191,7 @@ function buildEstMatchStatsSide(est, teamKey, side, match) {
   const teamGoalieRows = goalies
     .filter(g => !shownSkaterNames.has(estNorm(g.name)))
     .map(g => `
-      <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="g:${g.id}" style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match comme patineur">
+      <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="g:${g.id}" onchange="if(document.getElementById('estMatchForfeit')?.checked) estApplyForfeitScore();" style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match comme patineur">
       <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(g.name)} <span style="color:#3b82f6;font-size:10px;font-weight:700;" title="Gardien qui joue comme patineur">🥅→🏒</span></span>
       <input type="number" class="est-ms-g" data-id="g:${g.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
       <input type="number" class="est-ms-a" data-id="g:${g.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`).join('');
@@ -5290,7 +5297,7 @@ function estAddSubRow(sel) {
   // Éviter les doublons si son profil est déjà dans la liste
   if (grid.querySelector('.est-ms-played[data-id="' + p.id + '"]')) { sel.value = ''; return; }
   grid.insertAdjacentHTML('beforeend', `
-    <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" checked style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
+    <input type="checkbox" class="est-ms-played" data-side="${side}" data-id="${p.id}" checked onchange="if(document.getElementById('estMatchForfeit')?.checked) estApplyForfeitScore();" style="width:15px;height:15px;accent-color:#f59e0b;" title="A joué ce match">
     <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)} <span style="color:#f59e0b;font-size:10px;font-weight:700;">(R)</span> <button type="button" onclick="estRemoveSubRow(this)" data-pid="${p.id}" data-pname="${escapeHtml(p.name)}" data-side="${side}" title="Retirer ce remplaçant du match" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:12px;padding:0 3px;line-height:1;">✖</button></span>
     <input type="number" class="est-ms-g" data-id="${p.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">
     <input type="number" class="est-ms-a" data-id="${p.id}" min="0" value="0" style="width:100%;padding:5px;text-align:center;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;">`);
