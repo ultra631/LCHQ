@@ -2242,13 +2242,16 @@
       <select id="estForfeitTeam" onchange="estApplyForfeitScore()" style="width:100%;padding:7px 9px;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:13px;">
         <option value="home" id="estForfeitOptHome">Domicile</option>
         <option value="away" id="estForfeitOptAway">Visiteur</option>
+        <option value="both">⚠️ LES DEUX ÉQUIPES (double forfait)</option>
       </select>
       <div style="font-size:11px;color:var(--text-tertiary);margin-top:8px;line-height:1.5;">
         📋 <b>Marche à suivre:</b> coche d'abord <b>les joueurs présents</b> de l'équipe gagnante et
         <b>choisis les 2 gardiens</b> 🥅, puis coche cette case.<br>
         ✨ Chaque joueur coché reçoit <b>2 buts / 2 passes</b> et le score suit (3 joueurs = 6-0).
         Gardiens: <b>,750</b> au gagnant (sans blanchissage), <b>,500</b> au perdant.<br>
-        Tu peux encore cocher/décocher des joueurs après — tout se recalcule.
+        Tu peux encore cocher/décocher des joueurs après — tout se recalcule.<br>
+        ⚠️ <b>Double forfait</b> (les 2 équipes absentes): choisis « LES DEUX ÉQUIPES » →
+        match <b>0-0</b>, une défaite chacune, <b>aucun point</b> et aucune stat.
       </div>
     </div>
     <div id="estMatchStatsArea" style="margin-top:18px;"></div>
@@ -4886,7 +4889,9 @@ function renderEstTeamDetail() {
       const my = isHome ? m.home_score : m.away_score;
       const their = isHome ? m.away_score : m.home_score;
       const won = my > their;
-      result = `${won ? (m.ot ? 'VP' : 'V') : (m.ot ? 'DP' : 'D')} ${my}-${their}${m.ot ? ' (Prol)' : ''}${m.forfeit ? ' (Forfait)' : ''}`;
+      result = m.forfeit === 'both'
+        ? `D ${my}-${their} (Double forfait)`
+        : `${won ? (m.ot ? 'VP' : 'V') : (m.ot ? 'DP' : 'D')} ${my}-${their}${m.ot ? ' (Prol)' : ''}${m.forfeit ? ' (Forfait)' : ''}`;
       resultColor = won ? '#22c55e' : '#ef4444';
     } else {
       result = 'À venir';
@@ -4971,7 +4976,7 @@ function renderEstSchedule() {
           <span style="color:${hWin?'#22c55e':'var(--text-tertiary)'};">${m.home_score}</span>
           <span style="color:var(--text-tertiary);margin:0 4px;">-</span>
           <span style="color:${!hWin?'#22c55e':'var(--text-tertiary)'};">${m.away_score}</span>
-        </span>${m.ot ? '<span style="font-size:10px;color:#f59e0b;font-weight:700;margin-left:4px;">PROL</span>' : ''}${m.forfeit ? '<span style="font-size:10px;color:#ef4444;font-weight:700;margin-left:4px;" title="Match perdu par forfait">FORFAIT</span>' : ''}`;
+        </span>${m.ot ? '<span style="font-size:10px;color:#f59e0b;font-weight:700;margin-left:4px;">PROL</span>' : ''}${m.forfeit ? '<span style="font-size:10px;color:#ef4444;font-weight:700;margin-left:4px;" title="' + (m.forfeit === 'both' ? 'Double forfait: les deux équipes perdent' : 'Match perdu par forfait') + '">' + (m.forfeit === 'both' ? 'DOUBLE FORFAIT' : 'FORFAIT') + '</span>' : ''}`;
       } else {
         center = '<span style="color:var(--text-tertiary);font-weight:700;font-size:13px;">VS</span>';
       }
@@ -5013,6 +5018,12 @@ function recalcEstStandings() {
     rh.gp++; ra.gp++;
     rh.gf += m.home_score; rh.ga += m.away_score;
     ra.gf += m.away_score; ra.ga += m.home_score;
+    // DOUBLE FORFAIT: les deux équipes perdent, personne ne marque de point
+    if (m.forfeit === 'both') {
+      rh.l++; ra.l++;
+      streaks[m.home]?.push('D'); streaks[m.away]?.push('D');
+      return;
+    }
     const homeWin = m.home_score > m.away_score;
     const wk = homeWin ? m.home : m.away, lk = homeWin ? m.away : m.home;
     const rw = homeWin ? rh : ra, rl = homeWin ? ra : rh;
@@ -5061,6 +5072,29 @@ function estApplyForfeitScore() {
   const as = document.getElementById('estMatchAwayScore');
   if (!hs || !as) return;
   const F = EST_FORFAIT;
+
+  // CAS SPÉCIAL: les DEUX équipes forfait → 0-0, aucune stat, aucun point
+  if (sideFF === 'both') {
+    hs.value = '0'; as.value = '0';
+    ['home','away'].forEach(s => {
+      const grid = document.getElementById('estMsGrid-' + s);
+      if (grid) {
+        grid.querySelectorAll('.est-ms-played').forEach(cb => {
+          cb.checked = false;
+          const id = cb.dataset.id;
+          const gI = grid.querySelector('.est-ms-g[data-id="' + CSS.escape(id) + '"]');
+          const aI = grid.querySelector('.est-ms-a[data-id="' + CSS.escape(id) + '"]');
+          if (gI) gI.value = '0';
+          if (aI) aI.value = '0';
+        });
+      }
+      const sv = document.querySelector('.est-ms-saves[data-side="' + s + '"]');
+      if (sv) sv.value = '0';
+      const gsel = document.querySelector('.est-ms-goalie[data-side="' + s + '"]');
+      if (gsel) gsel.value = '';   // aucun gardien: personne n'a joué
+    });
+    return;
+  }
 
   // 1. Côté GAGNANT: les joueurs DÉJÀ COCHÉS reçoivent 2 buts / 2 passes.
   //    (Coche d'abord les gars présents, PUIS coche la case forfait.)
@@ -5356,7 +5390,10 @@ function saveEstMatch() {
   if (hs === '' || as === '') { alert('Entre les deux scores!'); return; }
   const h = parseInt(hs), a = parseInt(as);
   if (isNaN(h) || isNaN(a) || h < 0 || a < 0) { alert('Scores invalides!'); return; }
-  if (h === a) { alert('Pas de match nul au hockey! Il faut un gagnant.'); return; }
+  // Un match nul est interdit... sauf en cas de DOUBLE FORFAIT (0-0, personne ne gagne)
+  const _ffDouble = document.getElementById('estMatchForfeit')?.checked
+    && document.getElementById('estForfeitTeam')?.value === 'both';
+  if (h === a && !_ffDouble) { alert('Pas de match nul au hockey! Il faut un gagnant.'); return; }
 
   // Collecter les stats des joueurs cochés
   const playerStats = [];
@@ -5418,8 +5455,16 @@ function saveEstMatch() {
     // Le gardien du côté X encaisse le score "réel" du côté ADVERSE.
     // Perdant → doit encaisser baPerdant (6) · Gagnant → baGagnant (2)
     const sideFF = match.forfeit;
-    match.real_home_score = sideFF === 'home' ? EST_FORFAIT.baGagnant : EST_FORFAIT.baPerdant;
-    match.real_away_score = sideFF === 'home' ? EST_FORFAIT.baPerdant : EST_FORFAIT.baGagnant;
+    if (sideFF === 'both') {
+      // Double forfait: personne n'a joué, aucune stat pour personne
+      match.real_home_score = 0;
+      match.real_away_score = 0;
+      match.player_stats = [];
+      match.goalie_stats = [];
+    } else {
+      match.real_home_score = sideFF === 'home' ? EST_FORFAIT.baGagnant : EST_FORFAIT.baPerdant;
+      match.real_away_score = sideFF === 'home' ? EST_FORFAIT.baPerdant : EST_FORFAIT.baGagnant;
+    }
   } else {
     delete match.forfeit;
     delete match.real_home_score;
