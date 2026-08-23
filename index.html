@@ -2002,7 +2002,7 @@
     <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🌍</div>
     <div class="division-banner-text">
       <h3>Les Nations · Saison Estivale 2026</h3>
-      <p>17 pays · Format 4v4</p>
+      <p id="estTeamsCount">16 pays · Format 4v4</p>
     </div>
   </div>
   <div id="estTeamsGrid" class="teams-grid"></div>
@@ -2014,7 +2014,7 @@
     <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">📊</div>
     <div class="division-banner-text">
       <h3>Classement · Saison Estivale 2026</h3>
-      <p>17 pays · Saison régulière</p>
+      <p id="estStandingsCount">16 pays · Saison régulière</p>
     </div>
     <button class="btn btn-primary admin-only" onclick="alert('Pour éditer : clique directement sur un pays dans le tableau ci-dessous.')" style="margin-left:auto;">✏️ Éditer</button>
   </div>
@@ -4434,6 +4434,9 @@ function renderEstTeams() {
   if (!est || !est.teams) { grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🌍</div><p>Aucun pays pour l\'instant.</p></div>'; return; }
   const order = estCountriesByStandings(est);
   grid.innerHTML = order.map((k, i) => estCountryCard(k, est.teams[k], i + 1)).join('');
+  // Le nombre de pays suit toujours la réalité
+  const cnt = document.getElementById('estTeamsCount');
+  if (cnt) cnt.textContent = order.length + ' pays · Format 4v4';
 }
 
 function renderEstHome() {
@@ -4532,6 +4535,13 @@ function renderEstLeaderCards(list, type, est) {
 }
 
 function renderEstStandings() {
+  // Nombre de pays affiché dans l'en-tête (toujours à jour)
+  (() => {
+    const e = getEstData();
+    const n = (e?.countries || Object.keys(e?.teams || {})).filter(k => e?.teams?.[k]).length;
+    const el = document.getElementById('estStandingsCount');
+    if (el) el.textContent = n + ' pays · Saison régulière';
+  })();
   const est = getEstData();
   const body = document.getElementById('estStandingsBody');
   if (!body) return;
