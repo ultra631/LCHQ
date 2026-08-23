@@ -2244,11 +2244,11 @@
         <option value="away" id="estForfeitOptAway">Visiteur</option>
       </select>
       <div style="font-size:11px;color:var(--text-tertiary);margin-top:8px;line-height:1.5;">
-        ✨ <b>Rempli automatiquement:</b> score <b>6-0</b>, les 3 premiers joueurs du gagnant à <b>2B 4A</b> chacun,
-        et les arrêts des deux gardiens.<br>
-        🥅 <b>À toi de choisir les 2 gardiens</b> dans les menus ci-dessous — leurs stats donneront
-        <b>,750</b> au gagnant (sans blanchissage) et <b>,500</b> au perdant.<br>
-        Tu peux ajuster n'importe quoi avant d'enregistrer.
+        📋 <b>Marche à suivre:</b> coche d'abord <b>les joueurs présents</b> de l'équipe gagnante et
+        <b>choisis les 2 gardiens</b> 🥅, puis coche cette case.<br>
+        ✨ Chaque joueur coché reçoit <b>2 buts / 2 passes</b> et le score suit (3 joueurs = 6-0).
+        Gardiens: <b>,750</b> au gagnant (sans blanchissage), <b>,500</b> au perdant.<br>
+        Tu peux encore cocher/décocher des joueurs après — tout se recalcule.
       </div>
     </div>
     <div id="estMatchStatsArea" style="margin-top:18px;"></div>
@@ -5047,7 +5047,7 @@ function estToggleForfeit() {
 const EST_FORFAIT = {
   score: 6,            // 6-0 pour le gagnant
   nbJoueurs: 3,        // les 3 de l'alignement 4v4
-  buts: 2, passes: 4,  // 3 × 2 buts = 6 ✓
+  buts: 2, passes: 2,  // 3 × 2 buts = 6 ✓
   arretsGagnant: 6, baGagnant: 2,   // 6/8 = ,750 · les 2 BA évitent le blanchissage
   arretsPerdant: 6, baPerdant: 6    // 6/12 = ,500
 };
@@ -5062,7 +5062,7 @@ function estApplyForfeitScore() {
   if (!hs || !as) return;
   const F = EST_FORFAIT;
 
-  // 1. Côté GAGNANT: les joueurs DÉJÀ COCHÉS reçoivent 2 buts / 4 passes.
+  // 1. Côté GAGNANT: les joueurs DÉJÀ COCHÉS reçoivent 2 buts / 2 passes.
   //    (Coche d'abord les gars présents, PUIS coche la case forfait.)
   const gridW = document.getElementById('estMsGrid-' + sideW);
   let nbCoches = F.nbJoueurs;
