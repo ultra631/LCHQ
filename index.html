@@ -4757,8 +4757,11 @@ function renderEstTopStats() {
   if (!container) return;
   const est = getEstData();
   const enSeries = estTopStatsMode === 'series';
-  // En mode Séries, on "regarde" les compteurs po de chacun (mêmes noms de champs)
-  const vue = x => enSeries ? Object.assign({}, x, x.po || {}) : x;
+  // En mode Séries, on "regarde" les compteurs po de chacun (mêmes noms de champs).
+  // ⚠️ Si po n'existe pas encore (recalcul jamais roulé depuis la mise à jour),
+  // on affiche des ZÉROS — jamais les stats de la saison par accident.
+  const PO_VIDE = { gp:0, g:0, a:0, pts:0, plusminus:0, w:0, l:0, otl:0, ga:0, sa:0, sv:0, so:0, gaa:0, svpct:0 };
+  const vue = x => enSeries ? Object.assign({}, x, PO_VIDE, x.po || {}) : x;
   const players = (est?.players || []).map(vue);
   const sub = document.getElementById('estTopStatsSubtitle');
   if (sub) sub.textContent = enSeries
