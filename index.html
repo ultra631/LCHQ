@@ -2134,7 +2134,9 @@
       <p id="estTopStatsSubtitle">Meneurs de la saison · Format 4v4</p>
     </div>
   </div>
-  <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <button id="estTopTabSaison" onclick="setEstTopStatsMode('saison', this)" style="padding:8px 16px;border-radius:8px;border:1px solid #f59e0b;background:rgba(245,158,11,0.18);color:#f59e0b;font-weight:800;font-size:13px;cursor:pointer;">📅 Saison régulière</button>
+    <button id="estTopTabSeries" onclick="setEstTopStatsMode('series', this)" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-secondary);font-weight:700;font-size:13px;cursor:pointer;">🏆 Séries</button>
     <select id="leadersLimitSelEstPage" onchange="setLeadersLimit('est', this.value)" style="margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);font-size:12px;cursor:pointer;">
         <option value="5">Top 5</option>
         <option value="10" selected>Top 10</option>
@@ -4736,20 +4738,43 @@ function estAssignTeam(entryId, isGoalie, teamKey) {
 }
 
 // --- PAGE TOP STATS ESTIVAL (4 catégories, top 10) ---
+// Onglet actif de la page Top Stats: 'saison' ou 'series'
+let estTopStatsMode = 'saison';
+function setEstTopStatsMode(mode, btn) {
+  estTopStatsMode = mode;
+  const on = (el, actif) => { if (!el) return;
+    el.style.border = '1px solid ' + (actif ? '#f59e0b' : 'var(--border)');
+    el.style.background = actif ? 'rgba(245,158,11,0.18)' : 'var(--bg-elevated)';
+    el.style.color = actif ? '#f59e0b' : 'var(--text-secondary)';
+  };
+  on(document.getElementById('estTopTabSaison'), mode === 'saison');
+  on(document.getElementById('estTopTabSeries'), mode === 'series');
+  renderEstTopStats();
+}
+
 function renderEstTopStats() {
   const container = document.getElementById('estTopStatsContent');
   if (!container) return;
   const est = getEstData();
-  const players = est?.players || [];
+  const enSeries = estTopStatsMode === 'series';
+  // En mode Séries, on "regarde" les compteurs po de chacun (mêmes noms de champs)
+  const vue = x => enSeries ? Object.assign({}, x, x.po || {}) : x;
+  const players = (est?.players || []).map(vue);
   const sub = document.getElementById('estTopStatsSubtitle');
-  if (sub) sub.textContent = players.length + ' joueurs · Points, Buts, Passes, +/- · Format 4v4';
+  if (sub) sub.textContent = enSeries
+    ? '🏆 Meneurs des SÉRIES · stats séparées de la saison régulière'
+    : players.length + ' joueurs · Points, Buts, Passes, +/- · Format 4v4';
 
   if (!players.length) {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏆</div><p>Aucun joueur inscrit pour l\'instant.</p></div>';
     return;
   }
+  if (enSeries && !(est?.schedule?.weeks || []).some(w => w.playoff)) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏆</div><p>Le bracket des séries n\'a pas encore été généré.</p><p style="font-size:12px;color:var(--text-tertiary);margin-top:6px;">Les Top Stats des séries apparaîtront ici dès que les séries commenceront.</p></div>';
+    return;
+  }
   const hasGames = players.some(p => (p.gp || 0) > 0);
-  if (!hasGames) {
+  if (!hasGames && !enSeries) {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div><p>Les Top Stats apparaîtront dès les premiers matchs de la saison!</p></div>';
     return;
   }
@@ -4763,7 +4788,7 @@ function renderEstTopStats() {
 
   // Blocs des gardiens: 4 classements (V, %ARR, MOY, Arrêts)
   const goaliesBlock = (() => {
-    const actifs = [...(est.goalies || [])].filter(g => (g.gp||0) > 0);
+    const actifs = [...(est.goalies || [])].map(vue).filter(g => (g.gp||0) > 0);
     const fmt = (v, dec) => (v||0).toFixed ? (v||0).toFixed(dec) : v;
     const goalieCats = [
       { label:'🥅 Victoires (Gardiens)', sort:(a,b)=>(b.w||0)-(a.w||0)||(b.svpct||0)-(a.svpct||0), val:g=>(g.w||0)+'V', sub:g=>`${g.gp||0} PJ · ${fmt(g.gaa,2)} MOY` },
