@@ -4897,6 +4897,50 @@ function renderEstTeamDetail() {
       <td class="num">${fmtARR(g.svpct)}</td>
     </tr>`).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:20px;">Aucun gardien n\'a encore joué de match pour ce pays.</td></tr>';
 
+  // --- 🏆 Stats des SÉRIES pour ce pays (visibles dès que le bracket existe) ---
+  const bracketExiste = (est.schedule?.weeks || []).some(w => w.playoff);
+  let poSection = '';
+  if (bracketExiste) {
+    const poSkaters = skatersReal
+      .filter(p => p.po)
+      .sort((a,b) => (b.po?.pts||0)-(a.po?.pts||0) || (a.name||'').localeCompare(b.name||''));
+    const poGoalies = (est.goalies || []).filter(g => g.team === currentEstTeamKey && g.po && (g.po.gp||0) > 0)
+      .sort((a,b) => (b.po.w||0)-(a.po.w||0));
+    const poSkRows = poSkaters.map((p,i) => `<tr>
+        <td class="num">${i+1}</td>
+        <td><strong>${escapeHtml(p.name)}</strong></td>
+        <td class="num">${p.po?.gp||0}</td>
+        <td class="num">${p.po?.g||0}</td>
+        <td class="num">${p.po?.a||0}</td>
+        <td class="num pts-cell">${p.po?.pts||0}</td>
+        <td class="num" style="color:${(p.po?.plusminus||0) > 0 ? '#22c55e' : (p.po?.plusminus||0) < 0 ? '#ef4444' : 'var(--text-tertiary)'};">${(p.po?.plusminus||0) > 0 ? '+' : ''}${p.po?.plusminus||0}</td>
+      </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:16px;">🏒 Les stats apparaîtront dès le premier match des séries.</td></tr>';
+    const poGlRows = poGoalies.map((g,i) => `<tr>
+        <td class="num">${i+1}</td>
+        <td><strong>${escapeHtml(g.name)}</strong></td>
+        <td class="num">${g.po.gp||0}</td>
+        <td class="num">${g.po.w||0}</td>
+        <td class="num">${g.po.l||0}</td>
+        <td class="num">${(g.po.gaa||0).toFixed ? (g.po.gaa||0).toFixed(2) : (g.po.gaa||0)}</td>
+        <td class="num">${fmtARR(g.po.svpct)}</td>
+      </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:16px;">🥅 Aucun gardien n\'a encore joué en séries.</td></tr>';
+    poSection = `
+    <h3 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;color:#f59e0b;margin-bottom:4px;">🏆 Séries éliminatoires</h3>
+    <p style="font-size:11px;color:var(--text-tertiary);margin-bottom:10px;">Stats séparées de la saison régulière · <a href="#" onclick="navigate('est-playoffs');return false;" style="color:#f59e0b;">voir le bracket →</a></p>
+    <div class="table-container" style="margin-bottom:16px;">
+      <table>
+        <thead><tr><th>#</th><th>Joueur</th><th class="num">MJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th><th class="num">+/-</th></tr></thead>
+        <tbody>${poSkRows}</tbody>
+      </table>
+    </div>
+    <div class="table-container" style="margin-bottom:24px;">
+      <table>
+        <thead><tr><th>#</th><th>Gardien</th><th class="num">MJ</th><th class="num">V</th><th class="num">D</th><th class="num">MOY</th><th class="num">%ARR</th></tr></thead>
+        <tbody>${poGlRows}</tbody>
+      </table>
+    </div>`;
+  }
+
   // --- Matchs de ce pays ---
   const weeks = est.schedule?.weeks || [];
   const teamMatches = [];
@@ -4972,6 +5016,7 @@ function renderEstTeamDetail() {
         <tbody>${goalieRows}</tbody>
       </table>
     </div>
+    ${poSection}
     <h3 style="font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;color:#f59e0b;margin-bottom:10px;">📅 Matchs (${teamMatches.length})</h3>
     <div style="display:flex;flex-direction:column;gap:8px;">${matchRows}</div>
   `;
