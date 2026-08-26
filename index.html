@@ -5169,8 +5169,52 @@ function renderEstPlayoffs() {
       '<div style="font-size:19px;font-weight:800;margin-top:4px;">' + nomEq(champion) + '</div></div>'
     : '';
 
+  // ===== 📊 STATS DES SÉRIES (compteurs séparés de la saison) =====
+  let statsHtml = '';
+  const aDesMatchsJoues = weeks.some(w => (w.matches||[]).some(m => m.played));
+  if (aDesMatchsJoues) {
+    const sk = (est.players || []).filter(p => p.po && p.po.gp > 0)
+      .sort((a,b) => (b.po.pts - a.po.pts) || (b.po.g - a.po.g) || (a.po.gp - b.po.gp)).slice(0, 15);
+    const gl = (est.goalies || []).filter(g => g.po && g.po.gp > 0)
+      .sort((a,b) => (b.po.w - a.po.w) || (b.po.svpct - a.po.svpct)).slice(0, 10);
+    const eqDe = p => { const t = p.team ? est.teams[p.team] : null;
+      return t ? (t.flag ? '<img src="' + t.flag + '" style="width:20px;height:13px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:5px;">' : (t.emoji||'') + ' ') : ''; };
+    const fmtPct = v => { const s = (Math.round(v*10)/1000).toFixed(3); return s.startsWith('0') ? s.slice(1).replace('.', ',') : s.replace('.', ','); };
+
+    const rangsSk = sk.map((p, i) =>
+      '<tr' + (i < 3 ? ' style="background:rgba(245,158,11,0.06);"' : '') + '>' +
+      '<td class="num">' + (i+1) + '</td>' +
+      '<td><div style="display:flex;align-items:center;">' + eqDe(p) + '<span style="font-weight:700;">' + escapeHtml(p.name) + '</span></div></td>' +
+      '<td class="num">' + p.po.gp + '</td><td class="num" style="font-weight:700;">' + p.po.g + '</td>' +
+      '<td class="num">' + p.po.a + '</td><td class="num" style="font-weight:800;color:#f59e0b;">' + p.po.pts + '</td>' +
+      '<td class="num" style="color:' + (p.po.plusminus > 0 ? '#22c55e' : p.po.plusminus < 0 ? '#ef4444' : 'var(--text-tertiary)') + ';">' + (p.po.plusminus > 0 ? '+' : '') + p.po.plusminus + '</td></tr>').join('');
+
+    const rangsGl = gl.map((g, i) =>
+      '<tr' + (i < 3 ? ' style="background:rgba(245,158,11,0.06);"' : '') + '>' +
+      '<td class="num">' + (i+1) + '</td>' +
+      '<td><div style="display:flex;align-items:center;">' + eqDe(g) + '<span style="font-weight:700;">' + escapeHtml(g.name) + '</span></div></td>' +
+      '<td class="num">' + g.po.gp + '</td><td class="num" style="font-weight:700;">' + g.po.w + '</td>' +
+      '<td class="num">' + g.po.l + '</td><td class="num">' + g.po.sv + '</td>' +
+      '<td class="num" style="font-weight:800;color:#f59e0b;">' + fmtPct(g.po.svpct) + '</td>' +
+      '<td class="num">' + g.po.gaa.toFixed(2) + '</td><td class="num">' + g.po.so + '</td></tr>').join('');
+
+    statsHtml =
+      '<div style="margin-top:26px;">' +
+      '<h3 style="font-family:\'Bebas Neue\';font-size:24px;letter-spacing:1.5px;color:#f59e0b;margin-bottom:4px;">📊 Statistiques des séries</h3>' +
+      '<p style="font-size:11px;color:var(--text-tertiary);margin-bottom:14px;">Séparées de la saison régulière — seuls les matchs des séries comptent ici.</p>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;align-items:start;">' +
+        '<div><div style="font-size:13px;font-weight:800;margin-bottom:8px;">🏒 Meneurs des séries</div>' +
+        '<div class="table-container"><table><thead><tr><th>#</th><th>Joueur</th><th class="num">MJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th><th class="num">+/-</th></tr></thead>' +
+        '<tbody>' + (rangsSk || '<tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:16px;">Aucun point encore</td></tr>') + '</tbody></table></div></div>' +
+        '<div><div style="font-size:13px;font-weight:800;margin-bottom:8px;">🥅 Gardiens des séries</div>' +
+        '<div class="table-container"><table><thead><tr><th>#</th><th>Gardien</th><th class="num">MJ</th><th class="num">V</th><th class="num">D</th><th class="num">ARR</th><th class="num">%ARR</th><th class="num">MOY</th><th class="num">BL</th></tr></thead>' +
+        '<tbody>' + (rangsGl || '<tr><td colspan="9" style="text-align:center;color:var(--text-tertiary);padding:16px;">Aucun match encore</td></tr>') + '</tbody></table></div></div>' +
+      '</div></div>';
+  }
+
   box.innerHTML = banniere +
     '<div style="display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;align-items:flex-start;">' + colonnes + '</div>' +
+    statsHtml +
     '<div style="margin-top:14px;font-size:11px;color:var(--text-tertiary);line-height:1.6;">' +
     '💡 Les gagnants avancent <b>automatiquement</b> dès qu\'un résultat est entré ou importé d\'EA. ' +
     'Les matchs des séries ne comptent pas au classement de la saison régulière.' +
@@ -5751,12 +5795,19 @@ function clearEstMatch() {
 function recalcEstPlayerStats() {
   const est = getEstData();
   if (!est) return;
-  (est.players || []).forEach(p => { p.gp = 0; p.g = 0; p.a = 0; p.pts = 0; p.plusminus = 0; });
-  (est.goalies || []).forEach(g => { g.gp = 0; g.w = 0; g.l = 0; g.otl = 0; g.ga = 0; g.sa = 0; g.sv = 0; g.so = 0; g.gaa = 0; g.svpct = 0; });
+  (est.players || []).forEach(p => {
+    p.gp = 0; p.g = 0; p.a = 0; p.pts = 0; p.plusminus = 0;
+    p.po = { gp:0, g:0, a:0, pts:0, plusminus:0 };   // stats des SÉRIES (séparées)
+  });
+  (est.goalies || []).forEach(g => {
+    g.gp = 0; g.w = 0; g.l = 0; g.otl = 0; g.ga = 0; g.sa = 0; g.sv = 0; g.so = 0; g.gaa = 0; g.svpct = 0;
+    g.po = { gp:0, w:0, l:0, otl:0, ga:0, sa:0, sv:0, so:0, gaa:0, svpct:0 };
+  });
 
   const weeks = est.schedule?.weeks || [];
   weeks.forEach(w => (w.matches || []).forEach(m => {
     if (!m.played || m.home_score == null || m.away_score == null) return;
+    const enSeries = !!w.playoff;   // séries = compteurs à part
     // Sur un forfait, les gardiens sont jugés sur le score RÉELLEMENT joué,
     // pas sur le 5-0 officiel (ils n'ont pas accordé ces buts-là).
     const hs = (m.forfeit && m.real_home_score != null) ? m.real_home_score : m.home_score;
@@ -5766,11 +5817,12 @@ function recalcEstPlayerStats() {
     (m.player_stats || []).forEach(s => {
       const p = (est.players || []).find(x => x.id === s.id);
       if (!p) return;
-      p.gp++;
-      p.g += s.g || 0;
-      p.a += s.a || 0;
+      const cible = enSeries ? p.po : p;   // séries → compteur séparé
+      cible.gp++;
+      cible.g += s.g || 0;
+      cible.a += s.a || 0;
       // Vrai +/- (import EA) si présent, sinon différentiel du score du match
-      p.plusminus += (s.pm !== undefined && s.pm !== null) ? s.pm : ((s.side === 'home') ? (hs - as) : (as - hs));
+      cible.plusminus += (s.pm !== undefined && s.pm !== null) ? s.pm : ((s.side === 'home') ? (hs - as) : (as - hs));
     });
 
     // Gardiens: MJ, V/D/DP, BA, arrêts, blanchissage
@@ -5782,21 +5834,27 @@ function recalcEstPlayerStats() {
       // Le résultat V/D suit le score OFFICIEL (donc le forfait l'emporte)
       const offH = m.home_score, offA = m.away_score;
       const won = isHome ? (offH > offA) : (offA > offH);
-      g.gp++;
-      g.ga += gaMatch;
-      g.sv += s.saves || 0;
-      g.sa += (s.saves || 0) + gaMatch;
-      if (won) g.w++;
-      else if (m.ot) g.otl++;
-      else g.l++;
-      if (gaMatch === 0) g.so++;
+      const cible = enSeries ? g.po : g;   // séries → compteur séparé
+      cible.gp++;
+      cible.ga += gaMatch;
+      cible.sv += s.saves || 0;
+      cible.sa += (s.saves || 0) + gaMatch;
+      if (won) cible.w++;
+      else if (m.ot) cible.otl++;
+      else cible.l++;
+      if (gaMatch === 0) cible.so++;
     });
   }));
 
-  (est.players || []).forEach(p => { p.pts = p.g + p.a; });
+  (est.players || []).forEach(p => {
+    p.pts = p.g + p.a;
+    p.po.pts = p.po.g + p.po.a;
+  });
   (est.goalies || []).forEach(g => {
     g.gaa = g.gp ? Math.round((g.ga / g.gp) * 100) / 100 : 0;
     g.svpct = g.sa ? Math.round((g.sv / g.sa) * 1000) / 10 : 0;
+    g.po.gaa = g.po.gp ? Math.round((g.po.ga / g.po.gp) * 100) / 100 : 0;
+    g.po.svpct = g.po.sa ? Math.round((g.po.sv / g.po.sa) * 1000) / 10 : 0;
   });
 }
 
