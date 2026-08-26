@@ -5170,9 +5170,10 @@ function renderEstPlayoffs() {
     : '';
 
   // ===== 📊 STATS DES SÉRIES (compteurs séparés de la saison) =====
+  // Toujours affichée dès que le bracket existe — les tableaux se remplissent
+  // au fil des matchs.
   let statsHtml = '';
-  const aDesMatchsJoues = weeks.some(w => (w.matches||[]).some(m => m.played));
-  if (aDesMatchsJoues) {
+  {
     const sk = (est.players || []).filter(p => p.po && p.po.gp > 0)
       .sort((a,b) => (b.po.pts - a.po.pts) || (b.po.g - a.po.g) || (a.po.gp - b.po.gp)).slice(0, 15);
     const gl = (est.goalies || []).filter(g => g.po && g.po.gp > 0)
@@ -5205,10 +5206,10 @@ function renderEstPlayoffs() {
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;align-items:start;">' +
         '<div><div style="font-size:13px;font-weight:800;margin-bottom:8px;">🏒 Meneurs des séries</div>' +
         '<div class="table-container"><table><thead><tr><th>#</th><th>Joueur</th><th class="num">MJ</th><th class="num">B</th><th class="num">A</th><th class="num">PTS</th><th class="num">+/-</th></tr></thead>' +
-        '<tbody>' + (rangsSk || '<tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:16px;">Aucun point encore</td></tr>') + '</tbody></table></div></div>' +
+        '<tbody>' + (rangsSk || '<tr><td colspan="7" style="text-align:center;color:var(--text-tertiary);padding:18px;">🏒 Les meneurs apparaîtront dès le premier match des séries</td></tr>') + '</tbody></table></div></div>' +
         '<div><div style="font-size:13px;font-weight:800;margin-bottom:8px;">🥅 Gardiens des séries</div>' +
         '<div class="table-container"><table><thead><tr><th>#</th><th>Gardien</th><th class="num">MJ</th><th class="num">V</th><th class="num">D</th><th class="num">ARR</th><th class="num">%ARR</th><th class="num">MOY</th><th class="num">BL</th></tr></thead>' +
-        '<tbody>' + (rangsGl || '<tr><td colspan="9" style="text-align:center;color:var(--text-tertiary);padding:16px;">Aucun match encore</td></tr>') + '</tbody></table></div></div>' +
+        '<tbody>' + (rangsGl || '<tr><td colspan="9" style="text-align:center;color:var(--text-tertiary);padding:18px;">🥅 Les gardiens apparaîtront dès le premier match des séries</td></tr>') + '</tbody></table></div></div>' +
       '</div></div>';
   }
 
