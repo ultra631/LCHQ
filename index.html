@@ -1655,6 +1655,7 @@
       <button class="nav-btn mode-est" data-page="est-topstats" onclick="navigate('est-topstats')" style="display:none;">🏆 Top Stats</button>
       <button class="nav-btn mode-est" data-page="est-trophies" onclick="navigate('est-trophies')" style="display:none;">🏆 Trophées</button>
       <button class="nav-btn mode-est" data-page="est-schedule" onclick="navigate('est-schedule')" style="display:none;">Calendrier</button>
+      <button class="nav-btn mode-est" data-page="est-playoffs" onclick="navigate('est-playoffs')" style="display:none;">🏆 Séries</button>
 
       <!-- Joueurs -->
       <div class="nav-group">
@@ -2145,6 +2146,19 @@
 </section>
 
 <!-- ESTIVAL — TROPHÉES -->
+<!-- ESTIVAL — SÉRIES ÉLIMINATOIRES -->
+<section id="page-est-playoffs" class="page">
+  <div class="division-banner" style="--division-color:#f59e0b">
+    <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🏆</div>
+    <div class="division-banner-text">
+      <h3>Séries éliminatoires · Saison Estivale 2026</h3>
+      <p id="estPlayoffsSubtitle">Élimination simple · 1 vs 16, 2 vs 15, ...</p>
+    </div>
+    <button class="btn btn-primary admin-only" onclick="estBuildPlayoffs()" style="margin-left:auto;">🏆 Générer le bracket</button>
+  </div>
+  <div id="estPlayoffsContent"></div>
+</section>
+
 <section id="page-est-trophies" class="page">
   <div class="division-banner" style="--division-color:#f59e0b">
     <div class="division-banner-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🏆</div>
@@ -4964,6 +4978,206 @@ function renderEstTeamDetail() {
 }
 
 // --- CALENDRIER ESTIVAL (rondes + scores) ---
+// ============================================================
+// 🏆 SÉRIES ÉLIMINATOIRES — bracket 16 équipes, élimination simple
+// Les rondes sont stockées comme des semaines spéciales (playoff: true)
+// pour que l'import EA et le modal ✏️ fonctionnent sans changement.
+// ============================================================
+const EST_PO = {
+  rounds: [
+    { week: 101, key: 'po1', label: 'Huitièmes de finale', n: 8 },
+    { week: 102, key: 'po2', label: 'Quarts de finale',    n: 4 },
+    { week: 103, key: 'po3', label: 'Demi-finales',        n: 2 },
+    { week: 104, key: 'po4', label: 'Finale',              n: 2 }
+  ],
+  // Qui affronte qui à la ronde suivante (source: id du match précédent)
+  liens: {
+    'po2_1': ['W:po1_1', 'W:po1_8'], 'po2_2': ['W:po1_2', 'W:po1_7'],
+    'po2_3': ['W:po1_3', 'W:po1_6'], 'po2_4': ['W:po1_4', 'W:po1_5'],
+    'po3_1': ['W:po2_1', 'W:po2_4'], 'po3_2': ['W:po2_2', 'W:po2_3'],
+    'po4_1': ['W:po3_1', 'W:po3_2'],          // Finale
+    'po4_2': ['L:po3_1', 'L:po3_2']           // Match de bronze
+  },
+  noms: { 'po4_1': '🥇 Grande finale', 'po4_2': '🥉 Match de bronze' }
+};
+
+function estPoWeeks(est) {
+  return (est?.schedule?.weeks || []).filter(w => w.playoff);
+}
+function estPoFindMatch(est, id) {
+  for (const w of estPoWeeks(est)) {
+    const m = (w.matches || []).find(x => x.id === id);
+    if (m) return m;
+  }
+  return null;
+}
+// Gagnant / perdant d'un match de série (null si pas encore décidé)
+function estPoResult(m, type) {
+  if (!m || !m.played || m.home_score == null || m.away_score == null) return null;
+  if (m.forfeit === 'both') return null;          // double forfait: personne n'avance
+  if (m.home_score === m.away_score) return null; // sécurité
+  const gagnant = m.home_score > m.away_score ? m.home : m.away;
+  const perdant = m.home_score > m.away_score ? m.away : m.home;
+  return type === 'W' ? gagnant : perdant;
+}
+
+// Fait avancer les gagnants dans le bracket. Retourne le nombre de changements.
+function estAdvancePlayoffs() {
+  const est = getEstData();
+  if (!est || !estPoWeeks(est).length) return 0;
+  let changements = 0;
+  // Deux passes: une ronde peut débloquer la suivante
+  for (let passe = 0; passe < 3; passe++) {
+    for (const [cible, sources] of Object.entries(EST_PO.liens)) {
+      const m = estPoFindMatch(est, cible);
+      if (!m || m.played) continue;   // on ne touche pas à un match déjà joué
+      sources.forEach((src, i) => {
+        const [type, srcId] = src.split(':');
+        const equipe = estPoResult(estPoFindMatch(est, srcId), type);
+        const champ = i === 0 ? 'home' : 'away';
+        if (equipe && m[champ] !== equipe) { m[champ] = equipe; changements++; }
+      });
+    }
+  }
+  return changements;
+}
+
+// Crée (ou recrée) le bracket à partir du classement final
+function estBuildPlayoffs() {
+  if (typeof isAdmin === 'undefined' || !isAdmin) { alert('Accès admin requis'); return; }
+  const est = getEstData();
+  if (!est?.teams) { alert('Données estivales introuvables'); return; }
+  const ordre = estCountriesByStandings(est);
+  if (ordre.length !== 16) {
+    if (!confirm('Le bracket est prévu pour 16 équipes, il y en a ' + ordre.length + '.\n\nContinuer quand même?')) return;
+  }
+  const dejaLa = estPoWeeks(est).length > 0;
+  if (dejaLa && !confirm('⚠️ Un bracket existe déjà.\n\nLe REGÉNÉRER effacera tous les résultats des séries et refera les duels selon le classement actuel.\n\nContinuer?')) return;
+
+  est.schedule.weeks = (est.schedule.weeks || []).filter(w => !w.playoff);
+  const seeds = ordre.slice(0, 16);
+  for (const r of EST_PO.rounds) {
+    const matches = [];
+    for (let i = 1; i <= r.n; i++) {
+      const id = r.key + '_' + i;
+      let home = null, away = null;
+      if (r.key === 'po1') { home = seeds[i-1] || null; away = seeds[16-i] || null; }
+      matches.push({
+        id, home, away, home_score: null, away_score: null, ot: false, played: false,
+        po_rang: r.key === 'po1' ? [i, 17-i] : null,
+        po_nom: EST_PO.noms[id] || null
+      });
+    }
+    est.schedule.weeks.push({ week: r.week, label: '🏆 ' + r.label, playoff: true, matches });
+  }
+  est.schedule.weeks.sort((a,b) => (a.week||0)-(b.week||0));
+  estAdvancePlayoffs();
+  saveToFirebase();
+  renderEstPlayoffs();
+  if (typeof renderEstSchedule === 'function') renderEstSchedule();
+  alert('🏆 Bracket généré!\n\nHuitièmes de finale:\n' +
+    seeds.slice(0,8).map((k,i) => '  ' + (i+1) + '. ' + (est.teams[k]?.name||k) + '  vs  ' + (16-i) + '. ' + (est.teams[seeds[15-i]]?.name||seeds[15-i])).join('\n'));
+}
+
+// --- Affichage du bracket ---
+function renderEstPlayoffs() {
+  const est = getEstData();
+  const box = document.getElementById('estPlayoffsContent');
+  if (!box) return;
+  const admin = (typeof isAdmin !== 'undefined' && isAdmin);
+  const weeks = estPoWeeks(est);
+  const sous = document.getElementById('estPlayoffsSubtitle');
+
+  if (!weeks.length) {
+    if (sous) sous.textContent = 'Élimination simple · 1 vs 16, 2 vs 15, ...';
+    box.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏆</div><p>Le bracket des séries n\'a pas encore été généré.</p>' +
+      (admin ? '<p style="font-size:13px;color:var(--text-tertiary);margin-top:8px;">Clique sur « 🏆 Générer le bracket » — les duels seront créés selon le classement actuel.</p>' : '') + '</div>';
+    return;
+  }
+
+  // Avancement automatique (et sauvegarde si l'admin est là pour la persister)
+  const chg = estAdvancePlayoffs();
+  if (chg && admin) saveToFirebase();
+
+  const nomEq = k => k ? (est.teams[k]?.name || k) : null;
+  const drapeau = k => {
+    const t = k ? est.teams[k] : null;
+    if (!t) return '<span style="width:24px;height:16px;display:inline-block;"></span>';
+    return t.flag
+      ? '<img src="' + t.flag + '" style="width:24px;height:16px;object-fit:cover;border-radius:3px;flex:none;">'
+      : '<span style="font-size:14px;flex:none;">' + (t.emoji || '🏒') + '</span>';
+  };
+  const provenance = (id, i) => {
+    const src = (EST_PO.liens[id] || [])[i];
+    if (!src) return 'À déterminer';
+    const [type, sid] = src.split(':');
+    const num = sid.split('_')[1];
+    const rd = EST_PO.rounds.find(r => r.key === sid.split('_')[0]);
+    return (type === 'W' ? 'Gagnant' : 'Perdant') + ' · ' + (rd ? rd.label.replace('s de finale','') : '') + ' #' + num;
+  };
+
+  const champion = (() => {
+    const f = estPoFindMatch(est, 'po4_1');
+    return estPoResult(f, 'W');
+  })();
+  if (sous) {
+    const total = weeks.reduce((s,w) => s + (w.matches||[]).length, 0);
+    const joues = weeks.reduce((s,w) => s + (w.matches||[]).filter(m => m.played).length, 0);
+    sous.textContent = champion
+      ? '🥇 Champion: ' + nomEq(champion) + '  ·  ' + joues + '/' + total + ' matchs joués'
+      : 'Élimination simple · ' + joues + '/' + total + ' matchs joués';
+  }
+
+  const colonnes = weeks.map(w => {
+    const wi = est.schedule.weeks.indexOf(w);
+    const cartes = (w.matches || []).map((m, mi) => {
+      const fini = m.played && m.home_score != null;
+      const gagnant = estPoResult(m, 'W');
+      const ligne = (k, score, cote) => {
+        const estGagnant = fini && gagnant === k;
+        const nom = nomEq(k) || '<span style="color:var(--text-tertiary);font-style:italic;font-size:11px;">' + provenance(m.id, cote) + '</span>';
+        return '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;' +
+          (estGagnant ? 'background:rgba(245,158,11,0.14);' : '') + '">' +
+          drapeau(k) +
+          '<span style="flex:1;font-size:12px;font-weight:' + (estGagnant ? '800' : '600') + ';color:' + (estGagnant ? '#f59e0b' : (k ? 'var(--text-primary)' : 'var(--text-tertiary)')) + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + nom + '</span>' +
+          (fini ? '<span style="font-family:\'Bebas Neue\';font-size:18px;color:' + (estGagnant ? '#f59e0b' : 'var(--text-tertiary)') + ';">' + score + '</span>' : '') +
+          (estGagnant ? '<span style="font-size:11px;">✅</span>' : '') +
+          '</div>';
+      };
+      const titre = m.po_nom || (m.po_rang ? ('#' + m.po_rang[0] + ' vs #' + m.po_rang[1]) : ('Match ' + (mi+1)));
+      return '<div style="background:var(--bg-card);border:1px solid ' + (fini ? 'rgba(245,158,11,0.4)' : 'var(--border)') + ';border-radius:10px;overflow:hidden;margin-bottom:10px;">' +
+        '<div style="display:flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);">' +
+          '<span style="font-size:10px;color:var(--text-tertiary);font-weight:700;letter-spacing:0.5px;flex:1;">' + titre + '</span>' +
+          (m.ot && fini ? '<span style="font-size:9px;color:#f59e0b;font-weight:700;">PROL</span>' : '') +
+          (m.forfeit ? '<span style="font-size:9px;color:#ef4444;font-weight:700;">' + (m.forfeit === 'both' ? 'DOUBLE FF' : 'FORFAIT') + '</span>' : '') +
+          (admin && m.home && m.away ? '<button onclick="openEstMatchModal(' + wi + ',\'' + m.id + '\')" style="background:none;border:none;cursor:pointer;font-size:12px;padding:0 2px;" title="Entrer le résultat">✏️</button>' : '') +
+        '</div>' +
+        ligne(m.home, m.home_score, 0) +
+        '<div style="height:1px;background:var(--border);"></div>' +
+        ligne(m.away, m.away_score, 1) +
+        '</div>';
+    }).join('');
+    return '<div style="min-width:230px;flex:1;">' +
+      '<div style="font-family:\'Bebas Neue\';font-size:17px;letter-spacing:1px;color:#f59e0b;margin-bottom:10px;text-align:center;">' + (w.label || '') + '</div>' +
+      cartes + '</div>';
+  }).join('');
+
+  const banniere = champion
+    ? '<div style="background:linear-gradient(135deg,rgba(245,158,11,0.22),rgba(217,119,6,0.10));border:1px solid rgba(245,158,11,0.5);border-radius:14px;padding:18px;text-align:center;margin-bottom:18px;">' +
+      '<div style="font-size:34px;">🏆</div>' +
+      '<div style="font-family:\'Bebas Neue\';font-size:26px;letter-spacing:2px;color:#f59e0b;">CHAMPION</div>' +
+      '<div style="font-size:19px;font-weight:800;margin-top:4px;">' + nomEq(champion) + '</div></div>'
+    : '';
+
+  box.innerHTML = banniere +
+    '<div style="display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;align-items:flex-start;">' + colonnes + '</div>' +
+    '<div style="margin-top:14px;font-size:11px;color:var(--text-tertiary);line-height:1.6;">' +
+    '💡 Les gagnants avancent <b>automatiquement</b> dès qu\'un résultat est entré ou importé d\'EA. ' +
+    'Les matchs des séries ne comptent pas au classement de la saison régulière.' +
+    (admin ? '<br>✏️ Clique sur le crayon d\'un match pour entrer le résultat (le bouton apparaît quand les 2 équipes sont connues).' : '') +
+    '</div>';
+}
+
 function renderEstSchedule() {
   const est = getEstData();
   const container = document.getElementById('estScheduleContent');
@@ -4975,6 +5189,7 @@ function renderEstSchedule() {
   }
   const admin = (typeof isAdmin !== 'undefined' && isAdmin);
   container.innerHTML = weeks.map((w, wi) => {
+    if (w.playoff) return '';   // affichées dans la page 🏆 Séries
     const matches = (w.matches || []).map(m => {
       const th = est.teams[m.home], ta = est.teams[m.away];
       const fh = th?.flag ? `<img src="${th.flag}" style="width:30px;height:20px;object-fit:cover;border-radius:3px;">` : `<span>${th?.emoji||'🏒'}</span>`;
@@ -5022,6 +5237,7 @@ function recalcEstStandings() {
   });
   const weeks = est.schedule?.weeks || [];
   weeks.forEach(w => (w.matches || []).forEach(m => {
+    if (w.playoff) return;   // les séries ne comptent pas au classement de la saison
     if (!m.played || m.home_score == null || m.away_score == null) return;
     const rh = est.teams[m.home]?.record, ra = est.teams[m.away]?.record;
     if (!rh || !ra) return;
@@ -5486,6 +5702,7 @@ function saveEstMatch() {
 
   recalcEstStandings();
   recalcEstPlayerStats();
+  if (typeof estAdvancePlayoffs === 'function') estAdvancePlayoffs();   // gagnants → ronde suivante
   closeModal('estMatchModal');
   estMatchEditing = null;
   saveToFirebase();
@@ -5862,7 +6079,7 @@ function setGameMode(mode) {
   // Mode estival : rendre les données et aller à l'accueil si on était sur une page d'un autre mode
   if (mode === 'est') {
     renderEstAll();
-    const estPages = ['home','est-teams','est-standings','est-schedule','est-players','est-goalies','est-team-detail','est-topstats','est-trophies'];
+    const estPages = ['home','est-teams','est-standings','est-schedule','est-players','est-goalies','est-team-detail','est-topstats','est-trophies','est-playoffs'];
     if (!estPages.includes(currentPage)) {
       navigate('home');
     }
@@ -5969,6 +6186,8 @@ function navigate(page) {
   } else if (page === 'est-goalies') {
     if (typeof isAdmin === 'undefined' || !isAdmin) { return navigate('est-topstats'); }
     renderEstGoalies();
+  } else if (page === 'est-playoffs') {
+    renderEstPlayoffs();
   } else if (page === 'est-schedule') {
     renderEstSchedule();
   } else if (page === 'est-team-detail') {
